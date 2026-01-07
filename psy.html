@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de dépistage mélangé</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 { text-align: center; }
+        .question {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+        .progress {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .bar {
+            height: 20px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            transition: width 0.4s;
+        }
+        .result {
+            text-align: center;
+            font-size: 2em;
+            margin: 40px 0;
+            padding: 20px;
+            background: #e0f7fa;
+            border-radius: 12px;
+        }
+        .arrow {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+        button {
+            display: block;
+            margin: 30px auto;
+            padding: 12px 30px;
+            font-size: 1.2em;
+            background: #00796b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover { background: #004d40; }
+    </style>
+</head>
+<body>
+    <h1>Test de dépistage 100% anonyme – Questions mélangées</h1>
+    <p style="text-align:center; color:#d32f2f;"><strong>Attention :</strong> Ceci n’est PAS un diagnostic. C’est un outil d’orientation.</p>
+
+    <div class="progress">
+        Questions restantes : <span id="remaining">24</span>/24
+        <div class="bar"><div class="fill" id="fill"></div></div>
+    </div>
+
+    <form id="quiz"></form>
+
+    <button onclick="calculer()">Voir le résultat orientatif</button>
+
+    <div class="result" id="result" style="display:none;">
+        <p>Résultat orientatif :</p>
+        <div class="arrow" id="arrow"></div>
+        <p id="texte"></p>
+        <p><strong>Rappel :</strong> Ce résultat n’est pas un diagnostic.</p>
+    </div>
+
+    <script>
+        // Liste des questions (type: 'bip' ou 'bpd')
+        const questions = [
+    { "text": "Avez-vous déjà connu une période où vous dormiez très peu (3 à 4 heures par nuit), mais où vous vous sentiez pleine d’énergie et particulièrement productive ?", "type": "bip" },
+    { "text": "Avez-vous déjà effectué des achats compulsifs très importants (par exemple, dépenser plusieurs milliers d’euros en quelques jours) alors que vous n’en aviez pas les moyens ?", "type": "bip" },
+    { "text": "Avez-vous déjà eu des idées qui se succédaient si rapidement que vous ne parveniez pas à les suivre ou à terminer vos phrases ?", "type": "bip" },
+    { "text": "Avez-vous déjà traversé des périodes où vous vous sentiez extrêmement confiante, presque invincible, au point d’être perçue comme arrogante par votre entourage ?", "type": "bip" },
+    { "text": "Avez-vous déjà pris des risques sexuels importants (par exemple, des relations non protégées avec des inconnus ou une multiplicité de partenaires en peu de temps) ?", "type": "bip" },
+    { "text": "Avez-vous déjà conduit à une vitesse excessive ou pris des risques inutiles au volant pendant une période d’excitation ?", "type": "bip" },
+    { "text": "Avez-vous déjà connu une irritabilité extrême, au point de crier ou de vous disputer violemment pour des raisons mineures ?", "type": "bip" },
+    { "text": "Avez-vous déjà lancé plusieurs projets en même temps sans parvenir à en terminer un seul, parce que vous aviez trop d’énergie ?", "type": "bip" },
+    { "text": "Faites-vous des efforts intenses pour éviter d’être abandonnée (par exemple, supplier une personne de ne pas partir ou proférer des menaces de suicide en cas de rupture) ?", "type": "bpd" },
+    { "text": "Vos relations amoureuses ou amicales sont-elles très intenses et instables (par exemple, idéaliser une personne puis la détester soudainement) ?", "type": "bpd" },
+    { "text": "Votre image de vous-même varie-t-elle beaucoup (un jour vous vous trouvez nulle, un autre jour vous vous sentez spéciale) ?", "type": "bpd" },
+    { "text": "Vous infligez-vous volontairement des blessures (par exemple, coupures profondes, brûlures) ?", "type": "bpd" },
+    { "text": "Votre humeur change-t-elle plusieurs fois dans la même journée (par exemple, euphorique le matin, effondrée l’après-midi) ?", "type": "bpd" },
+    { "text": "Ressentez-vous souvent un profond vide intérieur, comme si quelque chose manquait en permanence ?", "type": "bpd" },
+    { "text": "Avez-vous des accès de colère très forts et soudains que vous avez du mal à contrôler ?", "type": "bpd" },
+    { "text": "Sous l’effet d’un stress important, avez-vous l’impression que les gens sont contre vous ou que la réalité vous semble étrange (dissociation) ?", "type": "bpd" },
+    { "text": "Avez-vous déjà eu des gestes suicidaires ou formulé des menaces sérieuses de suicide ?", "type": "bpd" },
+    { "text": "Prenez-vous des risques impulsifs dans plusieurs domaines (par exemple, scarifications graves, jeûnes extrêmes, dépenses excessives) ?", "type": "bpd" },
+    { "text": "Avez-vous déjà connu une période d’euphorie ou d’énergie débordante qui durait plusieurs jours d’affilée ?", "type": "bip" },
+    { "text": "Parlez-vous parfois beaucoup plus vite et plus fort que d’habitude, au point que les autres ont du mal à vous suivre ?", "type": "bip" },
+    { "text": "Êtes-vous clairement anorexique de type restrictif (jeûne prolongé, perte de poids importante) sans crises de boulimie ni vomissements ?", "type": "bpd" },
+    { "text": "Avez-vous déjà connu une période où vous vous sentiez tellement excitée que vous n’aviez presque plus besoin de dormir ?", "type": "bip" },
+    { "text": "Ressentez-vous souvent un sentiment de vide, même lorsque tout va objectivement bien autour de vous ?", "type": "bpd" },
+    { "text": "Avez-vous déjà commis des actes physiquement très risqués (par exemple, des automutilations graves pouvant nécessiter des points de suture) ?", "type": "bpd" }
+];
+
+        // Mélange aléatoire
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const shuffled = shuffle(questions);
+
+        const form = document.getElementById('quiz');
+        shuffled.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.className = 'question';
+            div.innerHTML = `
+                <p><strong>${index + 1}.</strong> ${q.text}</p>
+                <label><input type="checkbox" name="q${index}" value="${q.type}" > Oui</label>
+            `;
+            form.appendChild(div);
+        });
+
+        const totalQuestions = questions.length;
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const remainingSpan = document.getElementById('remaining');
+        const fill = document.getElementById('fill');
+
+        function updateProgress() {
+            const answered = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const remaining = totalQuestions - answered;
+            remainingSpan.textContent = remaining;
+            const percent = (answered / totalQuestions) * 100;
+            fill.style.width = percent + '%';
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateProgress));
+
+        function calculer() {
+            let scoreBipolaire = 0;
+            let countBip = 0;
+            let scoreBorderline = 0;
+            let countBpd = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    if (cb.value === 'bip') {
+                        scoreBipolaire++;
+                        countBip++;
+                    } else if (cb.value === 'bpd') {
+                        scoreBorderline++;
+                        countBpd++;
+                    }
+                }
+            });
+
+            // Normalisation par le nombre de questions de chaque type
+            const ratioBip = countBip > 0 ? scoreBipolaire / countBip : 0;
+            const ratioBpd = countBpd > 0 ? scoreBorderline / countBpd : 0;
+
+            let difference = ratioBip - ratioBpd; // -1 à +1
+            let percent = Math.round(difference * 100);
+
+            let arrow = '';
+            let texte = '';
+
+            if (percent < -60) {
+                arrow = '←←←';
+                texte = `Orientation forte vers Dépression + Trouble Borderline (${-percent}% d'écart)`;
+            } else if (percent < -30) {
+                arrow = '←←';
+                texte = `Orientation modérée vers Dépression + Trouble Borderline (${-percent}% d'écart)`;
+            } else if (percent < -10) {
+                arrow = '←';
+                texte = `Légère orientation vers Dépression + Trouble Borderline`;
+            } else if (percent <= 10) {
+                arrow = '↔';
+                texte = 'Équilibre entre les deux hypothèses ou données insuffisantes';
+            } else if (percent <= 30) {
+                arrow = '→';
+                texte = `Légère orientation vers Trouble Bipolaire`;
+            } else if (percent <= 60) {
+                arrow = '→→';
+                texte = `Orientation modérée vers Trouble Bipolaire (${percent}% d'écart)`;
+            } else {
+                arrow = '→→→';
+                texte = `Orientation forte vers Trouble Bipolaire (${percent}% d'écart)`;
+            }
+
+            document.getElementById('arrow').textContent = arrow;
+            document.getElementById('texte').textContent = texte;
+            document.getElementById('result').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    </script>
+</body>
+</html>
