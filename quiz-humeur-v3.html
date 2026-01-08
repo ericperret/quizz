@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire d'Auto-Orientation Diagnostique v2.0</title>
+
+    <style>
+        :root {
+            --bg-primary: #faf9f7;
+            --bg-secondary: #f0eeea;
+            --bg-card: #ffffff;
+            --text-primary: #1a1816;
+            --text-secondary: #4a4744;
+            --text-muted: #7a7774;
+            --text-light: #9a9794;
+            
+            /* Couleurs diagnostiques - palette médicale sophistiquée */
+            --accent-bip: #4f46e5;
+            --accent-bip-light: #eef2ff;
+            --accent-bip-medium: #c7d2fe;
+            
+            --accent-bpd: #db2777;
+            --accent-bpd-light: #fdf2f8;
+            --accent-bpd-medium: #fbcfe8;
+            
+            --accent-dep: #374151;
+            --accent-dep-light: #f3f4f6;
+            --accent-dep-medium: #d1d5db;
+            
+            --accent-warning: #d97706;
+            --accent-warning-light: #fef3c7;
+            
+            --accent-success: #059669;
+            --accent-success-light: #d1fae5;
+            
+            --border: #e5e3df;
+            --border-strong: #d1cfcb;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Fond neutre sans texture externe */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        /* Header amélioré */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .header h1 {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 520px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Disclaimer amélioré */
+        .disclaimer {
+            background: linear-gradient(135deg, var(--accent-warning-light) 0%, #fde68a 100%);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent-warning);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .disclaimer-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .disclaimer p {
+            font-size: 0.9rem;
+            color: #78350f;
+            line-height: 1.6;
+        }
+
+        /* Nouveau : Fenêtre temporelle */
+        .timeframe-box {
+            background: var(--accent-bip-light);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--accent-bip-medium);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .timeframe-icon {
+            font-size: 1.5rem;
+        }
+
+        .timeframe-text {
+            font-size: 0.9rem;
+            color: var(--accent-bip);
+            font-weight: 500;
+        }
+
+        .timeframe-text strong {
+            color: var(--text-primary);
+        }
+
+        /* Progress Bar améliorée */
+        .progress-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .progress-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-bip), var(--accent-bpd));
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+
+        /* Section indicator */
+        .section-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .section-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .section-dot.bip { background: var(--accent-bip-medium); }
+        .section-dot.bpd { background: var(--accent-bpd-medium); }
+        .section-dot.dep { background: var(--accent-dep-medium); }
+        .section-dot.active { transform: scale(1.3); }
+        .section-dot.bip.active { background: var(--accent-bip); }
+        .section-dot.bpd.active { background: var(--accent-bpd); }
+        .section-dot.dep.active { background: var(--accent-dep); }
+
+        /* Question Card améliorée */
+        .question-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .question-category {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .question-category.bip {
+            background: var(--accent-bip-light);
+            color: var(--accent-bip);
+        }
+
+        .question-category.bpd {
+            background: var(--accent-bpd-light);
+            color: var(--accent-bpd);
+        }
+
+        .question-category.dep {
+            background: var(--accent-dep-light);
+            color: var(--accent-dep);
+        }
+
+        .question-category.control {
+            background: var(--accent-success-light);
+            color: var(--accent-success);
+        }
+
+        .question-text {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        /* Nouvelle échelle de Likert */
+        .likert-scale {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .likert-option {
+            position: relative;
+        }
+
+        .likert-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .likert-option label {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .likert-option label:hover {
+            background: var(--bg-secondary);
+        }
+
+        .likert-option input:checked + label {
+            background: var(--accent-bip-light);
+            border-color: var(--accent-bip);
+        }
+
+        .likert-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-strong);
+            border-radius: 50%;
+            margin-right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .likert-option input:checked + label .likert-indicator {
+            border-color: var(--accent-bip);
+            background: var(--accent-bip);
+        }
+
+        .likert-option input:checked + label .likert-indicator::after {
+            content: '';
+            width: 7px;
+            height: 7px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .likert-score {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-strong);
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: white;
+            flex: 1;
+            max-width: 220px;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:disabled {
+            background: var(--border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-results {
+            background: linear-gradient(135deg, var(--accent-bip), var(--accent-bpd));
+            width: 100%;
+            max-width: none;
+            padding: 18px 32px;
+            font-size: 1.1rem;
+        }
+
+        .btn-results:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
+        }
+
+        /* Results Section */
+        .results-container {
+            display: none;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .results-header h2 {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 1.85rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .results-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Validity Warning */
+        .validity-warning {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .validity-warning h4 {
+            color: #991b1b;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .validity-warning p {
+            color: #7f1d1d;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Score Cards */
+        .score-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .score-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .score-label {
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-label-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .score-card.bip .score-label-dot { background: var(--accent-bip); }
+        .score-card.bpd .score-label-dot { background: var(--accent-bpd); }
+        .score-card.dep .score-label-dot { background: var(--accent-dep); }
+
+        .score-value {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .score-card.bip .score-value { color: var(--accent-bip); }
+        .score-card.bpd .score-value { color: var(--accent-bpd); }
+        .score-card.dep .score-value { color: var(--accent-dep); }
+
+        .score-subtitle {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .score-bar {
+            height: 10px;
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .score-card.bip .score-fill { background: var(--accent-bip); }
+        .score-card.bpd .score-fill { background: var(--accent-bpd); }
+        .score-card.dep .score-fill { background: var(--accent-dep); }
+
+        /* Confidence zone markers */
+        .score-zones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        /* Interpretation Card */
+        .interpretation-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-bip);
+        }
+
+        .interpretation-card h3 {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .interpretation-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+
+        .interpretation-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .confidence-badge.low {
+            background: var(--accent-warning-light);
+            color: var(--accent-warning);
+        }
+
+        .confidence-badge.medium {
+            background: var(--accent-bip-light);
+            color: var(--accent-bip);
+        }
+
+        .confidence-badge.high {
+            background: var(--accent-success-light);
+            color: var(--accent-success);
+        }
+
+        /* Clinical Notes */
+        .clinical-notes {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .clinical-notes h4 {
+            color: #991b1b;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .clinical-notes ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .clinical-notes li {
+            color: #7f1d1d;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .clinical-notes li::before {
+            content: '⚠️';
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+
+        .clinical-notes li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Resources */
+        .resources-card {
+            background: var(--accent-success-light);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .resources-card h4 {
+            color: #065f46;
+            font-weight: 600;
+            margin-bottom: 14px;
+            font-size: 1rem;
+        }
+
+        .resources-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .resource-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #047857;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .resource-link:hover {
+            color: #065f46;
+            text-decoration: underline;
+        }
+
+        /* Export Button */
+        .export-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .export-info {
+            flex: 1;
+        }
+
+        .export-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+
+        .export-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-export {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .btn-export:hover {
+            background: var(--border);
+        }
+
+        /* Restart Button */
+        .restart-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .restart-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-strong);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            .question-card {
+                padding: 24px 20px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .btn-primary {
+                max-width: none;
+            }
+
+            .export-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .likert-option label {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Print styles for export */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .btn, .restart-btn, .export-section, .navigation {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 20px;
+            }
+
+            .results-container {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="header-badge">🔬 Version 2.0 — Cliniquement améliorée</span>
+            <h1>Questionnaire d'Auto-Orientation Diagnostique</h1>
+            <p>Un outil d'auto-réflexion structuré pour mieux comprendre votre fonctionnement émotionnel et guider une discussion avec un professionnel.</p>
+        </header>
+
+        <div class="disclaimer">
+            <div class="disclaimer-title">⚠️ Avertissement important</div>
+            <p>Ce questionnaire est un <strong>outil d'orientation</strong> et non un diagnostic médical. Il ne peut en aucun cas remplacer l'évaluation d'un psychiatre ou psychologue clinicien. Les résultats sont indicatifs et doivent être interprétés avec un professionnel.</p>
+        </div>
+
+        <div class="timeframe-box">
+            <span class="timeframe-icon">📅</span>
+            <span class="timeframe-text">Pour chaque question, pensez à vos expériences <strong>des 6 derniers mois</strong>, sauf mention contraire.</span>
+        </div>
+
+        <div id="quiz-container">
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span class="progress-text">Progression</span>
+                    <span class="progress-count"><span id="current-q">1</span>/<span id="total-q">32</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <div id="question-container"></div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary hidden" id="prev-btn" onclick="prevQuestion()">← Précédent</button>
+                <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Suivant →</button>
+            </div>
+        </div>
+
+        <div class="results-container" id="results-container">
+            <div class="results-header">
+                <h2>Vos Résultats</h2>
+                <p>Analyse détaillée de vos réponses</p>
+            </div>
+
+            <div id="validity-warning" class="validity-warning hidden">
+                <h4>⚠️ Attention à la validité</h4>
+                <p id="validity-text"></p>
+            </div>
+
+            <div class="score-cards">
+                <div class="score-card bip">
+                    <div class="score-header">
+                        <span class="score-label">
+                            <span class="score-label-dot"></span>
+                            Profil Cyclique (Spectre Bipolaire)
+                        </span>
+                        <span class="score-value" id="score-bip">0%</span>
+                    </div>
+                    <div class="score-subtitle">Variations endogènes de l'humeur et de l'énergie</div>
+                    <div class="score-bar">
+                        <div class="score-fill" id="bar-bip" style="width: 0%"></div>
+                    </div>
+                    <div class="score-zones">
+                        <span>Faible</span>
+                        <span>Zone grise</span>
+                        <span>Significatif</span>
+                    </div>
+                </div>
+
+                <div class="score-card bpd">
+                    <div class="score-header">
+                        <span class="score-label">
+                            <span class="score-label-dot"></span>
+                            Profil Réactif (Traits Borderline)
+                        </span>
+                        <span class="score-value" id="score-bpd">0%</span>
+                    </div>
+                    <div class="score-subtitle">Sensibilité interpersonnelle et dysrégulation émotionnelle</div>
+                    <div class="score-bar">
+                        <div class="score-fill" id="bar-bpd" style="width: 0%"></div>
+                    </div>
+                    <div class="score-zones">
+                        <span>Faible</span>
+                        <span>Zone grise</span>
+                        <span>Significatif</span>
+                    </div>
+                </div>
+
+                <div class="score-card dep">
+                    <div class="score-header">
+                        <span class="score-label">
+                            <span class="score-label-dot"></span>
+                            Profil Dépressif
+                        </span>
+                        <span class="score-value" id="score-dep">0%</span>
+                    </div>
+                    <div class="score-subtitle">Symptômes dépressifs persistants</div>
+                    <div class="score-bar">
+                        <div class="score-fill" id="bar-dep" style="width: 0%"></div>
+                    </div>
+                    <div class="score-zones">
+                        <span>Faible</span>
+                        <span>Zone grise</span>
+                        <span>Significatif</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interpretation-card" id="interpretation-card">
+                <span class="confidence-badge" id="confidence-badge">Confiance moyenne</span>
+                <h3 id="profile-title">Analyse du profil</h3>
+                <p id="profile-text"></p>
+                <p id="profile-description"></p>
+            </div>
+
+            <div class="clinical-notes hidden" id="clinical-notes">
+                <h4>⚕️ Points d'attention cliniques</h4>
+                <ul id="clinical-list"></ul>
+            </div>
+
+            <div class="resources-card hidden" id="resources-card">
+                <h4>📚 Ressources recommandées</h4>
+                <div class="resources-list" id="resources-list"></div>
+            </div>
+
+            <div class="export-section">
+                <div class="export-info">
+                    <h4>📄 Exporter vos résultats</h4>
+                    <p>Générez un résumé à partager avec votre médecin ou thérapeute</p>
+                </div>
+                <button class="btn-export" onclick="exportResults()">Exporter en PDF</button>
+            </div>
+
+            <button class="restart-btn" onclick="restartQuiz()">↺ Recommencer le questionnaire</button>
+        </div>
+    </div>
+
+    <script>
+        // ===============================================
+        // QUESTIONS AMÉLIORÉES AVEC PONDÉRATION
+        // ===============================================
+        const questions = [
+            // =====================
+            // BiP Questions (10) - Spectre bipolaire
+            // =====================
+            {
+                id: 1,
+                text: "Vous arrive-t-il de dormir très peu (3-5 heures) pendant plusieurs jours consécutifs et de vous sentir parfaitement en forme, voire plus énergique que d'habitude ?",
+                type: "bip",
+                weight: 2.0, // Critère pathognomonique
+                dsm: "Réduction du besoin de sommeil"
+            },
+            {
+                id: 2,
+                text: "Avez-vous vécu des périodes où votre humeur s'est nettement améliorée sans raison particulière, comme si un interrupteur s'était allumé ?",
+                type: "bip",
+                weight: 1.5,
+                dsm: "Élévation de l'humeur"
+            },
+            {
+                id: 3,
+                text: "Pendant certaines périodes, avez-vous l'impression que vos pensées vont beaucoup plus vite que d'habitude, avec des idées qui s'enchaînent rapidement ?",
+                type: "bip",
+                weight: 1.5,
+                dsm: "Fuite des idées"
+            },
+            {
+                id: 4,
+                text: "Vous est-il arrivé de démarrer plusieurs projets ambitieux en même temps avec enthousiasme, puis de les abandonner quelques semaines plus tard ?",
+                type: "bip",
+                weight: 1.0,
+                dsm: "Augmentation de l'activité orientée vers un but"
+            },
+            {
+                id: 5,
+                text: "Avez-vous connu des périodes où vous vous sentiez exceptionnellement confiant(e), capable de tout réussir, avec une estime de vous nettement supérieure à la normale ?",
+                type: "bip",
+                weight: 1.5,
+                dsm: "Estime de soi augmentée / grandiosité"
+            },
+            {
+                id: 6,
+                text: "Pendant certaines phases, avez-vous fait des dépenses inhabituelles ou excessives, pris des risques au volant, ou eu des comportements sexuels plus intenses que d'ordinaire ?",
+                type: "bip",
+                weight: 1.5,
+                dsm: "Engagement excessif dans des activités à risque"
+            },
+            {
+                id: 7,
+                text: "Vos proches vous ont-ils déjà fait remarquer que vous parliez plus vite, plus fort, ou que vous étiez inhabituellement agité(e) pendant certaines périodes ?",
+                type: "bip",
+                weight: 1.5,
+                dsm: "Logorrhée / agitation psychomotrice"
+            },
+            {
+                id: 8,
+                text: "Reconnaissez-vous des cycles distincts dans votre humeur, avec des hauts et des bas qui durent plusieurs semaines chacun ?",
+                type: "bip",
+                weight: 1.5,
+                dsm: "Pattern cyclique"
+            },
+            // NOUVEAUX items BiP
+            {
+                id: 9,
+                text: "Pendant vos phases d'énergie élevée, êtes-vous facilement distrait(e) par des détails sans importance, au point de ne pas terminer ce que vous faisiez ?",
+                type: "bip",
+                weight: 1.0,
+                dsm: "Distractibilité"
+            },
+            {
+                id: 10,
+                text: "Vos épisodes de haute énergie ou d'euphorie durent-ils généralement plusieurs jours consécutifs (4 jours ou plus) ?",
+                type: "bip",
+                weight: 2.0, // Critère temporel DSM
+                dsm: "Durée épisode hypomaniaque"
+            },
+
+            // =====================
+            // BPD Questions (11) - Trouble de la personnalité borderline
+            // =====================
+            {
+                id: 11,
+                text: "Quand quelqu'un que vous aimez met du temps à vous répondre, ressentez-vous rapidement de l'angoisse, de l'irritation ou de la panique ?",
+                type: "bpd",
+                weight: 1.5,
+                dsm: "Peur de l'abandon"
+            },
+            {
+                id: 12,
+                text: "Vous arrive-t-il de changer radicalement d'opinion sur une personne proche en l'espace de quelques heures ou jours (de l'idéaliser à la détester) ?",
+                type: "bpd",
+                weight: 1.5,
+                dsm: "Relations instables / clivage"
+            },
+            {
+                id: 13,
+                text: "Ressentez-vous souvent un vide intérieur profond et difficile à décrire, même quand les choses vont objectivement bien dans votre vie ?",
+                type: "bpd",
+                weight: 2.0, // Très spécifique BPD
+                dsm: "Sentiment chronique de vide"
+            },
+            {
+                id: 14,
+                text: "Vous arrive-t-il de faire des choses impulsives (manger excessivement, acheter, consommer des substances, etc.) principalement pour calmer une émotion intense ?",
+                type: "bpd",
+                weight: 1.0,
+                dsm: "Impulsivité"
+            },
+            {
+                id: 15,
+                text: "Avez-vous déjà eu recours à vous faire du mal physiquement (vous couper, vous brûler, vous frapper) pour soulager une douleur émotionnelle ?",
+                type: "bpd",
+                weight: 1.5,
+                dsm: "Automutilation",
+                flag: "selfharm"
+            },
+            {
+                id: 16,
+                text: "Votre humeur est-elle fortement influencée par la qualité de vos relations avec une ou deux personnes en particulier (partenaire, ami proche, parent) ?",
+                type: "bpd",
+                weight: 1.5,
+                dsm: "Réactivité interpersonnelle"
+            },
+            {
+                id: 17,
+                text: "Votre estime de vous-même peut-elle passer de « je suis nul(le) » à « je suis quelqu'un de bien » plusieurs fois dans une même journée ou semaine ?",
+                type: "bpd",
+                weight: 1.0,
+                dsm: "Perturbation de l'identité"
+            },
+            {
+                id: 18,
+                text: "Lors de conflits relationnels intenses, vous arrive-t-il de vous sentir déconnecté(e) de vous-même, comme si vous observiez de l'extérieur, ou de perdre la notion du temps ?",
+                type: "bpd",
+                weight: 1.0,
+                dsm: "Dissociation liée au stress"
+            },
+            {
+                id: 19,
+                text: "Faites-vous des efforts importants pour éviter d'être abandonné(e), même si ce risque n'est pas toujours réel ou imminent ?",
+                type: "bpd",
+                weight: 1.5,
+                dsm: "Efforts pour éviter l'abandon"
+            },
+            // NOUVEAUX items BPD
+            {
+                id: 20,
+                text: "Avez-vous des accès de colère intense et disproportionnée, que vous avez du mal à contrôler, souvent déclenchés par des problèmes relationnels ?",
+                type: "bpd",
+                weight: 1.5,
+                dsm: "Colère inappropriée"
+            },
+            {
+                id: 21,
+                text: "Avez-vous du mal à définir clairement qui vous êtes vraiment (vos valeurs fondamentales, vos objectifs de vie, votre orientation) de façon stable ?",
+                type: "bpd",
+                weight: 1.5,
+                dsm: "Perturbation de l'identité"
+            },
+
+            // =====================
+            // DEP Questions (9) - Dépression
+            // =====================
+            {
+                id: 22,
+                text: "Y a-t-il des périodes où vous ressentez le besoin de dormir beaucoup plus que d'habitude, parfois 10-12 heures ou plus par jour ?",
+                type: "dep",
+                weight: 1.0,
+                dsm: "Hypersomnie"
+            },
+            {
+                id: 23,
+                text: "Vous sentez-vous souvent fatigué(e) ou épuisé(e) même après une nuit de sommeil correcte, avec une sensation de « plomb dans les membres » ?",
+                type: "dep",
+                weight: 1.0,
+                dsm: "Fatigue / perte d'énergie"
+            },
+            {
+                id: 24,
+                text: "Avez-vous perdu l'intérêt ou le plaisir pour des activités que vous aimiez auparavant, même celles qui vous passionnaient ?",
+                type: "dep",
+                weight: 1.5,
+                dsm: "Anhédonie"
+            },
+            {
+                id: 25,
+                text: "Avez-vous souvent l'impression de ne servir à rien, d'être un poids pour les autres, ou de mériter ce qui vous arrive de négatif ?",
+                type: "dep",
+                weight: 1.5,
+                dsm: "Dévalorisation / culpabilité"
+            },
+            {
+                id: 26,
+                text: "Avez-vous tendance à vous isoler et à éviter les contacts sociaux quand vous ne vous sentez pas bien, même avec des proches bienveillants ?",
+                type: "dep",
+                weight: 1.0,
+                dsm: "Retrait social"
+            },
+            {
+                id: 27,
+                text: "Trouvez-vous difficile de vous motiver pour accomplir des tâches simples du quotidien (se lever, se laver, ranger) ?",
+                type: "dep",
+                weight: 1.0,
+                dsm: "Ralentissement psychomoteur"
+            },
+            {
+                id: 28,
+                text: "Avez-vous du mal à vous concentrer, à prendre des décisions, comme si votre esprit était dans le brouillard ?",
+                type: "dep",
+                weight: 1.0,
+                dsm: "Difficultés de concentration"
+            },
+            {
+                id: 29,
+                text: "Avez-vous des pensées sombres récurrentes, un sentiment que l'avenir est sans espoir ou que les choses ne s'amélioreront jamais ?",
+                type: "dep",
+                weight: 1.5,
+                dsm: "Pensées de mort / désespoir",
+                flag: "hopelessness"
+            },
+            // NOUVEAU item DEP spécifique
+            {
+                id: 30,
+                text: "Votre humeur basse est-elle relativement STABLE au fil des semaines, sans vraies remontées ou fluctuations vers le haut ?",
+                type: "dep",
+                weight: 1.5, // Discriminant unipolaire
+                dsm: "Stabilité de l'humeur dépressive",
+                discriminant: true
+            },
+
+            // =====================
+            // Items de contrôle de validité (2)
+            // =====================
+            {
+                id: 31,
+                text: "Vous arrive-t-il parfois de vous sentir stressé(e) ou contrarié(e) face aux difficultés normales de la vie quotidienne ?",
+                type: "control_positive",
+                weight: 0,
+                expectedAnswer: 3 // Attendu : "Souvent" ou plus
+            },
+            {
+                id: 32,
+                text: "Êtes-vous capable de contrôler parfaitement toutes vos émotions en toutes circonstances, sans jamais être déstabilisé(e) ?",
+                type: "control_negative",
+                weight: 0,
+                expectedAnswer: 0 // Attendu : "Jamais"
+            }
+        ];
+
+        // Échelle de Likert
+        const likertOptions = [
+            { value: 0, label: "Jamais", description: "" },
+            { value: 1, label: "Rarement", description: "1-2 fois dans ma vie" },
+            { value: 2, label: "Parfois", description: "Quelques fois par an" },
+            { value: 3, label: "Souvent", description: "Plusieurs fois par mois" },
+            { value: 4, label: "Très souvent", description: "Quasi quotidiennement" }
+        ];
+
+        // Shuffle function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // State
+        let shuffledQuestions = shuffleArray(questions);
+        let currentQuestion = 0;
+        let answers = {};
+        const totalQuestions = questions.length;
+
+        // Update total count
+        document.getElementById('total-q').textContent = totalQuestions;
+
+        function getCategoryLabel(type) {
+            const labels = {
+                'bip': 'Cyclique',
+                'bpd': 'Réactif',
+                'dep': 'Dépressif',
+                'control_positive': 'Contrôle',
+                'control_negative': 'Contrôle'
+            };
+            return labels[type] || '';
+        }
+
+        function getCategoryClass(type) {
+            if (type.startsWith('control')) return 'control';
+            return type;
+        }
+
+        function renderQuestion() {
+            const q = shuffledQuestions[currentQuestion];
+            const container = document.getElementById('question-container');
+            
+            let optionsHTML = likertOptions.map(opt => `
+                <div class="likert-option">
+                    <input type="radio" name="q${q.id}" id="q${q.id}_${opt.value}" value="${opt.value}" 
+                           ${answers[q.id] === opt.value ? 'checked' : ''} 
+                           onchange="selectAnswer(${q.id}, ${opt.value})">
+                    <label for="q${q.id}_${opt.value}">
+                        <span class="likert-indicator"></span>
+                        <span>${opt.label}</span>
+                        ${opt.description ? `<span class="likert-score">${opt.description}</span>` : ''}
+                    </label>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="question-card" key="${currentQuestion}">
+                    <div class="question-meta">
+                        <span class="question-number">Question ${currentQuestion + 1} / ${totalQuestions}</span>
+                        <span class="question-category ${getCategoryClass(q.type)}">${getCategoryLabel(q.type)}</span>
+                    </div>
+                    <p class="question-text">${q.text}</p>
+                    <div class="likert-scale">
+                        ${optionsHTML}
+                    </div>
+                </div>
+            `;
+
+            // Update progress
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+            document.getElementById('progress-fill').style.width = `${((currentQuestion + 1) / totalQuestions) * 100}%`;
+
+            // Update buttons
+            document.getElementById('prev-btn').classList.toggle('hidden', currentQuestion === 0);
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (currentQuestion === totalQuestions - 1) {
+                nextBtn.textContent = 'Voir les résultats';
+                nextBtn.classList.add('btn-results');
+            } else {
+                nextBtn.textContent = 'Suivant →';
+                nextBtn.classList.remove('btn-results');
+            }
+            
+            nextBtn.disabled = answers[q.id] === undefined;
+        }
+
+        function selectAnswer(qId, value) {
+            answers[qId] = value;
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                currentQuestion++;
+                renderQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function calculateWeightedScores() {
+            let scores = {
+                bip: { weighted: 0, maxWeight: 0, raw: 0, count: 0 },
+                bpd: { weighted: 0, maxWeight: 0, raw: 0, count: 0 },
+                dep: { weighted: 0, maxWeight: 0, raw: 0, count: 0 }
+            };
+
+            questions.forEach(q => {
+                if (q.type === 'bip' || q.type === 'bpd' || q.type === 'dep') {
+                    const answer = answers[q.id] || 0;
+                    const normalizedAnswer = answer / 4; // Normalize 0-4 to 0-1
+                    const weight = q.weight || 1.0;
+                    
+                    scores[q.type].weighted += normalizedAnswer * weight;
+                    scores[q.type].maxWeight += weight;
+                    scores[q.type].raw += answer;
+                    scores[q.type].count++;
+                }
+            });
+
+            return {
+                bip: Math.round((scores.bip.weighted / scores.bip.maxWeight) * 100),
+                bpd: Math.round((scores.bpd.weighted / scores.bpd.maxWeight) * 100),
+                dep: Math.round((scores.dep.weighted / scores.dep.maxWeight) * 100)
+            };
+        }
+
+        function checkValidity() {
+            const issues = [];
+            
+            // Check control positive (should answer "Souvent" or more = 3+)
+            const controlPos = answers[31];
+            if (controlPos !== undefined && controlPos < 2) {
+                issues.push("Vous avez indiqué ne jamais/rarement vous sentir stressé(e) face aux difficultés, ce qui est inhabituel et peut indiquer une sous-déclaration des symptômes.");
+            }
+            
+            // Check control negative (should answer "Jamais" or "Rarement" = 0-1)
+            const controlNeg = answers[32];
+            if (controlNeg !== undefined && controlNeg > 2) {
+                issues.push("Vous avez indiqué contrôler parfaitement vos émotions en toutes circonstances, ce qui suggère soit une réponse idéalisée, soit une difficulté à reconnaître vos émotions.");
+            }
+
+            // Check for all-same answers (acquiescence bias)
+            const answerValues = Object.values(answers).filter(v => v !== undefined);
+            const allSame = answerValues.every(v => v === answerValues[0]);
+            if (allSame && answerValues.length > 10) {
+                issues.push("Toutes vos réponses sont identiques, ce qui peut indiquer un biais de réponse. Les résultats doivent être interprétés avec prudence.");
+            }
+
+            return issues;
+        }
+
+        function showResults() {
+            const scores = calculateWeightedScores();
+            const validityIssues = checkValidity();
+            
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('results-container').style.display = 'block';
+
+            // Show validity warnings if any
+            if (validityIssues.length > 0) {
+                document.getElementById('validity-warning').classList.remove('hidden');
+                document.getElementById('validity-text').innerHTML = validityIssues.join('<br><br>');
+            }
+
+            // Animate scores
+            setTimeout(() => {
+                document.getElementById('score-bip').textContent = scores.bip + '%';
+                document.getElementById('bar-bip').style.width = scores.bip + '%';
+                
+                document.getElementById('score-bpd').textContent = scores.bpd + '%';
+                document.getElementById('bar-bpd').style.width = scores.bpd + '%';
+                
+                document.getElementById('score-dep').textContent = scores.dep + '%';
+                document.getElementById('bar-dep').style.width = scores.dep + '%';
+            }, 100);
+
+            // Determine profile and confidence
+            generateInterpretation(scores);
+            generateClinicalNotes(scores);
+            generateResources(scores);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function generateInterpretation(scores) {
+            const highScores = [];
+            const moderateScores = [];
+            
+            if (scores.bip >= 60) highScores.push({ name: 'Cyclique (BiP)', score: scores.bip, key: 'bip' });
+            else if (scores.bip >= 40) moderateScores.push({ name: 'Cyclique (BiP)', score: scores.bip, key: 'bip' });
+            
+            if (scores.bpd >= 60) highScores.push({ name: 'Réactif (BPD)', score: scores.bpd, key: 'bpd' });
+            else if (scores.bpd >= 40) moderateScores.push({ name: 'Réactif (BPD)', score: scores.bpd, key: 'bpd' });
+            
+            if (scores.dep >= 60) highScores.push({ name: 'Dépressif', score: scores.dep, key: 'dep' });
+            else if (scores.dep >= 40) moderateScores.push({ name: 'Dépressif', score: scores.dep, key: 'dep' });
+
+            let profileTitle, profileText, profileDesc, confidence;
+
+            if (highScores.length === 0 && moderateScores.length === 0) {
+                profileTitle = "Aucun profil fortement marqué";
+                profileText = "Vos réponses ne montrent pas de tendance dominante claire.";
+                profileDesc = "Cela peut indiquer un fonctionnement équilibré ou des symptômes sub-cliniques. Si vous ressentez néanmoins une souffrance significative, une consultation reste pertinente pour explorer d'autres pistes.";
+                confidence = "low";
+            } else if (highScores.length === 1 && moderateScores.length === 0) {
+                const profile = highScores[0];
+                profileTitle = `Profil ${profile.name} (${profile.score}%)`;
+                confidence = profile.score >= 75 ? "high" : "medium";
+                
+                if (profile.key === 'bip') {
+                    profileText = "Vos réponses suggèrent un fonctionnement avec des variations cycliques de l'humeur et de l'énergie.";
+                    profileDesc = "Ces variations semblent survenir de façon relativement spontanée (endogène), avec des périodes distinctes de haute énergie suivies de phases basses. Ce pattern est compatible avec le spectre des troubles bipolaires et mérite une évaluation spécialisée.";
+                } else if (profile.key === 'bpd') {
+                    profileText = "Vos réponses suggèrent une sensibilité importante aux relations interpersonnelles.";
+                    profileDesc = "Vos émotions semblent intenses et réactives aux événements relationnels, avec une possible instabilité de l'image de soi et des stratégies de régulation émotionnelle à renforcer. Ce pattern est compatible avec des traits de personnalité borderline.";
+                } else {
+                    profileText = "Vos réponses suggèrent une tendance dépressive significative.";
+                    profileDesc = "Ces symptômes (fatigue, perte d'intérêt, repli sur soi, pensées négatives) semblent persistants et stables plutôt que fluctuants. Une évaluation permettrait de déterminer s'il s'agit d'un épisode dépressif majeur ou d'un trouble dépressif persistant.";
+                }
+            } else {
+                // Mixed profile
+                const all = [...highScores, ...moderateScores].sort((a, b) => b.score - a.score);
+                profileTitle = `Profil mixte : ${all.map(s => `${s.name} ${s.score}%`).join(' + ')}`;
+                confidence = "medium";
+
+                if (scores.bpd >= 50 && scores.dep >= 50 && scores.bip < 40) {
+                    profileText = "Combinaison BPD + Dépression fréquemment observée.";
+                    profileDesc = "La dépression peut être secondaire à la dysrégulation émotionnelle et aux difficultés relationnelles. Il est important de distinguer si la dépression est primaire ou réactionnelle. Une psychothérapie spécialisée (DBT, MBT) est souvent plus efficace que les antidépresseurs seuls dans ce cas.";
+                } else if (scores.bip >= 50 && scores.dep >= 50 && scores.bpd < 40) {
+                    profileText = "Profil compatible avec le spectre bipolaire.";
+                    profileDesc = "La présence de traits cycliques avec des épisodes dépressifs est cohérente avec un trouble bipolaire (les phases dépressives sont souvent plus fréquentes et plus longues que les phases hautes). Une évaluation spécialisée est recommandée avant toute prescription d'antidépresseur.";
+                } else if (scores.bip >= 50 && scores.bpd >= 50) {
+                    profileText = "Profil nécessitant une évaluation différentielle approfondie.";
+                    profileDesc = "Les profils cyclique (BiP) et réactif (BPD) peuvent coexister ou être confondus. L'instabilité émotionnelle du BPD peut mimer des cycles rapides. Un entretien clinique structuré permettrait de clarifier la chronologie et les déclencheurs des épisodes.";
+                } else {
+                    profileText = "Votre profil présente des caractéristiques de plusieurs patterns.";
+                    profileDesc = "Cette complexité est fréquente en pratique clinique. Une évaluation professionnelle permettrait de clarifier le tableau clinique et de prioriser les interventions.";
+                }
+            }
+
+            document.getElementById('profile-title').textContent = profileTitle;
+            document.getElementById('profile-text').textContent = profileText;
+            document.getElementById('profile-description').textContent = profileDesc;
+            
+            const badge = document.getElementById('confidence-badge');
+            badge.className = `confidence-badge ${confidence}`;
+            badge.textContent = confidence === 'high' ? 'Orientation claire' : 
+                               confidence === 'medium' ? 'Orientation probable' : 'Orientation incertaine';
+        }
+
+        function generateClinicalNotes(scores) {
+            const warnings = [];
+            
+            if (scores.bip >= 60) {
+                warnings.push("Score BiP significatif : Un traitement antidépresseur ISRS seul pourrait présenter un risque de virage maniaque ou d'accélération des cycles. Une évaluation spécialisée est recommandée avant toute prescription.");
+            }
+            
+            if (scores.bpd >= 60 && scores.dep >= 50) {
+                warnings.push("La dépression dans un contexte de traits BPD répond souvent mieux à une psychothérapie spécialisée (DBT, MBT, TFP) qu'aux antidépresseurs seuls.");
+            }
+            
+            if (scores.dep >= 70 && scores.bip < 35) {
+                warnings.push("Score dépressif élevé sans composante cyclique apparente : un traitement antidépresseur classique pourrait être approprié, à évaluer avec un professionnel.");
+            }
+
+            // Check specific flags
+            const selfharmQ = questions.find(q => q.flag === 'selfharm');
+            if (selfharmQ && answers[selfharmQ.id] >= 2) {
+                warnings.push("Vous avez mentionné des comportements d'automutilation. Si cela persiste ou s'intensifie, il est important d'en parler à un professionnel de santé. Des techniques alternatives de régulation émotionnelle peuvent être apprises en thérapie.");
+            }
+
+            const hopelessQ = questions.find(q => q.flag === 'hopelessness');
+            if (hopelessQ && answers[hopelessQ.id] >= 3) {
+                warnings.push("Vous avez indiqué des pensées sombres fréquentes. Si ces pensées deviennent envahissantes ou si vous pensez à vous faire du mal, contactez un proche stable ou rendez-vous aux urgences.");
+            }
+
+            if (warnings.length === 0) {
+                document.getElementById('clinical-notes').classList.add('hidden');
+            } else {
+                document.getElementById('clinical-notes').classList.remove('hidden');
+                document.getElementById('clinical-list').innerHTML = warnings.map(w => `<li>${w}</li>`).join('');
+            }
+        }
+
+        function generateResources(scores) {
+            const resources = [];
+            
+            if (scores.bip >= 50) {
+                resources.push({ 
+                    text: "Association Argos 2001 — Troubles bipolaires (rechercher en ligne)", 
+                    url: "#" 
+                });
+                resources.push({ 
+                    text: "FondaMental — Fondation de recherche (rechercher en ligne)", 
+                    url: "#" 
+                });
+            }
+            
+            if (scores.bpd >= 50) {
+                resources.push({ 
+                    text: "AAPEL — Association d'aide aux personnes avec un trouble borderline (rechercher en ligne)", 
+                    url: "#" 
+                });
+            }
+            
+            if (scores.dep >= 50) {
+                resources.push({ 
+                    text: "France Dépression (rechercher en ligne)", 
+                    url: "#" 
+                });
+            }
+
+            // Always show crisis line
+            resources.push({ 
+                text: "3114 — Numéro national de prévention du suicide (24h/24) ou un proche stable ", 
+                url: "#" 
+            });
+
+            if (resources.length > 0) {
+                document.getElementById('resources-card').classList.remove('hidden');
+                document.getElementById('resources-list').innerHTML = resources.map(r => 
+                    `<a href="${r.url}" target="_blank" class="resource-link">→ ${r.text}</a>`
+                ).join('');
+            }
+        }
+
+        function exportResults() {
+            // Simple print-based export
+            window.print();
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            shuffledQuestions = shuffleArray(questions);
+            
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('validity-warning').classList.add('hidden');
+            
+            renderQuestion();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        renderQuestion();
+    </script>
+</body>
+</html>
