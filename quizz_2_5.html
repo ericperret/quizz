@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
+    <title>Questionnaire d'Auto-Orientation Diagnostique v2.4</title>
+    <style>
+        :root {
+            --bg-primary: #faf9f7;
+            --bg-secondary: #f0eeea;
+            --bg-card: #ffffff;
+            --text-primary: #1a1816;
+            --text-secondary: #4a4744;
+            --text-muted: #7a7774;
+            --text-light: #9a9794;
+            
+            --accent-bip: #4f46e5;
+            --accent-bip-light: #eef2ff;
+            --accent-bip-medium: #c7d2fe;
+            
+            --accent-bpd: #db2777;
+            --accent-bpd-light: #fdf2f8;
+            --accent-bpd-medium: #fbcfe8;
+            
+            --accent-dep: #374151;
+            --accent-dep-light: #f3f4f6;
+            --accent-dep-medium: #d1d5db;
+            
+            --accent-warning: #d97706;
+            --accent-warning-light: #fef3c7;
+            --accent-warning-dark: #92400e;
+            --accent-warning-darker: #78350f;
+            
+            --accent-success: #059669;
+            --accent-success-light: #d1fae5;
+            --accent-success-dark: #065f46;
+            --accent-success-medium: #047857;
+            
+            --accent-danger: #ef4444;
+            --accent-danger-light: #fef2f2;
+            --accent-danger-lighter: #fee2e2;
+            --accent-danger-dark: #991b1b;
+            --accent-danger-darker: #7f1d1d;
+            
+            --border: #e5e3df;
+            --border-strong: #d1cfcb;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            
+            --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.4);
+        }
+
+        /* Reset et base */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Utilitaires d'accessibilité */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Réduction des animations pour les utilisateurs qui le préfèrent */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Layout principal */
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .header h1 {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 520px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Avertissement */
+        .disclaimer {
+            background: linear-gradient(135deg, var(--accent-warning-light) 0%, #fde68a 100%);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent-warning);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .disclaimer-title {
+            font-weight: 600;
+            color: var(--accent-warning-dark);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .disclaimer p {
+            font-size: 0.9rem;
+            color: var(--accent-warning-darker);
+            line-height: 1.6;
+        }
+
+        /* Timeframe */
+        .timeframe-box {
+            background: var(--accent-bip-light);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--accent-bip-medium);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .timeframe-icon {
+            font-size: 1.5rem;
+        }
+
+        .timeframe-text {
+            font-size: 0.9rem;
+            color: var(--accent-bip);
+            font-weight: 500;
+        }
+
+        .timeframe-text strong {
+            color: var(--text-primary);
+        }
+
+        /* Barre de progression */
+        .progress-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .progress-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-bip), var(--accent-bpd));
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+
+        /* Carte de question */
+        .question-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-meta {
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* Fieldset pour les questions */
+        .question-fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .question-legend {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 28px;
+            line-height: 1.6;
+            display: block;
+            width: 100%;
+        }
+
+        .question-note {
+            background: var(--accent-bpd-light);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-top: -12px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: var(--accent-bpd);
+            border-left: 3px solid var(--accent-bpd);
+        }
+
+        /* Échelle de Likert */
+        .likert-scale {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .likert-option {
+            position: relative;
+        }
+
+        .likert-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .likert-option label {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .likert-option label:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* Focus visible pour accessibilité clavier */
+        .likert-option input[type="radio"]:focus-visible + label {
+            outline: none;
+            box-shadow: var(--focus-ring);
+            border-color: var(--accent-bip);
+        }
+
+        .likert-option input[type="radio"]:checked + label {
+            background: var(--accent-bip-light);
+            border-color: var(--accent-bip);
+        }
+
+        .likert-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-strong);
+            border-radius: 50%;
+            margin-right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .likert-option input[type="radio"]:checked + label .likert-indicator {
+            border-color: var(--accent-bip);
+            background: var(--accent-bip);
+        }
+
+        .likert-option input[type="radio"]:checked + label .likert-indicator::after {
+            content: '';
+            width: 7px;
+            height: 7px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .likert-score {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-strong);
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: white;
+            flex: 1;
+            max-width: 220px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:disabled {
+            background: var(--border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-results {
+            background: linear-gradient(135deg, var(--accent-bip), var(--accent-bpd));
+            width: 100%;
+            max-width: none;
+            padding: 18px 32px;
+            font-size: 1.1rem;
+        }
+
+        .btn-results:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
+        }
+
+        /* Conteneur des résultats */
+        .results-container {
+            display: none;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .results-header h2 {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 1.85rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .results-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Avertissement de validité */
+        .validity-warning {
+            background: linear-gradient(135deg, var(--accent-danger-light) 0%, var(--accent-danger-lighter) 100%);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .validity-warning h3 {
+            color: var(--accent-danger-dark);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .validity-warning p {
+            color: var(--accent-danger-darker);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Cartes de score */
+        .score-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .score-card {
+            --card-accent: var(--accent-bip);
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .score-card.bip { --card-accent: var(--accent-bip); }
+        .score-card.bpd { --card-accent: var(--accent-bpd); }
+        .score-card.dep { --card-accent: var(--accent-dep); }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .score-label {
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-label-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--card-accent);
+        }
+
+        .score-value {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--card-accent);
+        }
+
+        .score-subtitle {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .score-bar {
+            height: 10px;
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--card-accent);
+        }
+
+        .score-zones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        /* Carte d'interprétation */
+        .interpretation-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-bip);
+        }
+
+        .interpretation-card h3 {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .interpretation-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+
+        .interpretation-card p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .coexistence-note {
+            background: var(--accent-bip-light);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: var(--accent-bip);
+            border-left: 3px solid var(--accent-bip);
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .confidence-badge.low {
+            background: var(--accent-warning-light);
+            color: var(--accent-warning);
+        }
+
+        .confidence-badge.medium {
+            background: var(--accent-bip-light);
+            color: var(--accent-bip);
+        }
+
+        .confidence-badge.high {
+            background: var(--accent-success-light);
+            color: var(--accent-success);
+        }
+
+        /* Notes cliniques */
+        .clinical-notes {
+            background: linear-gradient(135deg, var(--accent-danger-light) 0%, var(--accent-danger-lighter) 100%);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .clinical-notes h3 {
+            color: var(--accent-danger-dark);
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .clinical-notes ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .clinical-notes li {
+            color: var(--accent-danger-darker);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .clinical-notes li::before {
+            content: '⚠️';
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+
+        .clinical-notes li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Ressources */
+        .resources-card {
+            background: var(--accent-success-light);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .resources-card h3 {
+            color: var(--accent-success-dark);
+            font-weight: 600;
+            margin-bottom: 14px;
+            font-size: 1rem;
+        }
+
+        .resources-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-success-medium);
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+
+        /* Export */
+        .export-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .export-info {
+            flex: 1;
+        }
+
+        .export-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+
+        .export-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-export {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .btn-export:hover {
+            background: var(--border);
+        }
+
+        .btn-export:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+
+        .restart-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .restart-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-strong);
+        }
+
+        .restart-btn:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            .question-card {
+                padding: 24px 20px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .btn-primary {
+                max-width: none;
+            }
+
+            .export-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .likert-option label {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Impression */
+        @media print {
+            body {
+                background: white;
+            }
+
+            body::before {
+                display: none;
+            }
+
+            .btn,
+            .restart-btn,
+            .export-section,
+            .navigation {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 20px;
+            }
+
+            .results-container {
+                display: block !important;
+            }
+
+            .question-card,
+            .score-card,
+            .interpretation-card {
+                box-shadow: none;
+                border: 1px solid var(--border);
+            }
+        }
+    
+        /* Protection anti-copie */
+        .question-legend,
+        .likert-option label,
+        .question-note,
+        .profile-text,
+        .disclaimer p,
+        .interpretation-card p,
+        .clinical-notes li,
+        .timeframe-text {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Annonces pour lecteurs d'écran -->
+        <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+        <header class="header">
+            <span class="header-badge">
+                <span role="img" aria-label="Recherche scientifique">🔬</span>
+                Version 2.4 — Cliniquement validée
+            </span>
+            <h1 id="quiz-title">Questionnaire d'Auto-Orientation Diagnostique</h1>
+            <p>Un outil d'auto-réflexion structuré pour mieux comprendre votre fonctionnement émotionnel et guider une discussion avec un professionnel.</p>
+        </header>
+
+        <main role="main" aria-labelledby="quiz-title">
+            <section class="disclaimer" aria-labelledby="disclaimer-title">
+                <div class="disclaimer-title" id="disclaimer-title">
+                    <span role="img" aria-label="Avertissement">⚠️</span>
+                    Avertissement important
+                </div>
+                <p>Ce questionnaire est un <strong>outil d'orientation</strong> et non un diagnostic médical. Il ne peut en aucun cas remplacer l'évaluation d'un psychiatre ou psychologue clinicien. Les résultats sont indicatifs et doivent être interprétés avec un professionnel.</p>
+            </section>
+
+            <div class="timeframe-box">
+                <span class="timeframe-icon" role="img" aria-label="Calendrier">📅</span>
+                <span class="timeframe-text">Pour chaque question, pensez à vos expériences <strong>des 6 derniers mois</strong>, sauf mention contraire.</span>
+            </div>
+
+            <section id="quiz-container" aria-labelledby="progress-label">
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span class="progress-text" id="progress-label">Progression</span>
+                        <span class="progress-count"><span id="current-q">1</span>/<span id="total-q">35</span></span>
+                    </div>
+                    <div class="progress-bar-container"
+                         role="progressbar"
+                         id="progress-bar"
+                         aria-valuenow="1"
+                         aria-valuemin="1"
+                         aria-valuemax="35"
+                         aria-label="Progression du questionnaire">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <form id="quiz-form" aria-label="Formulaire du questionnaire">
+                    <div id="question-container"></div>
+
+                    <div class="navigation" role="navigation" aria-label="Navigation du questionnaire">
+                        <button type="button" class="btn btn-secondary hidden" id="prev-btn" aria-label="Question précédente">
+                            ← Précédent
+                        </button>
+                        <button type="button" class="btn btn-primary" id="next-btn" disabled aria-label="Question suivante">
+                            Suivant →
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="results-container" id="results-container" aria-labelledby="results-title">
+                <div class="results-header">
+                    <h2 id="results-title">Vos Résultats</h2>
+                    <p>Analyse détaillée de vos réponses</p>
+                </div>
+
+                <div id="validity-warning" class="validity-warning hidden" role="alert">
+                    <h3>
+                        <span role="img" aria-label="Attention">⚠️</span>
+                        Attention à la validité
+                    </h3>
+                    <p id="validity-text"></p>
+                </div>
+
+                <div class="score-cards" role="list" aria-label="Scores par profil">
+                    <article class="score-card bip" role="listitem">
+                        <div class="score-header">
+                            <span class="score-label">
+                                <span class="score-label-dot" aria-hidden="true"></span>
+                                Profil Cyclique (Spectre Bipolaire)
+                            </span>
+                            <span class="score-value" id="score-bip" aria-live="polite">0%</span>
+                        </div>
+                        <div class="score-subtitle">Variations endogènes de l'humeur et de l'énergie</div>
+                        <div class="score-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Score profil cyclique">
+                            <div class="score-fill" id="bar-bip" style="width: 0%"></div>
+                        </div>
+                        <div class="score-zones" aria-hidden="true">
+                            <span>Faible</span>
+                            <span>Zone grise</span>
+                            <span>Significatif</span>
+                        </div>
+                    </article>
+
+                    <article class="score-card bpd" role="listitem">
+                        <div class="score-header">
+                            <span class="score-label">
+                                <span class="score-label-dot" aria-hidden="true"></span>
+                                Profil Réactif (Traits Borderline)
+                            </span>
+                            <span class="score-value" id="score-bpd" aria-live="polite">0%</span>
+                        </div>
+                        <div class="score-subtitle">Sensibilité interpersonnelle et dysrégulation émotionnelle</div>
+                        <div class="score-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Score profil réactif">
+                            <div class="score-fill" id="bar-bpd" style="width: 0%"></div>
+                        </div>
+                        <div class="score-zones" aria-hidden="true">
+                            <span>Faible</span>
+                            <span>Zone grise</span>
+                            <span>Significatif</span>
+                        </div>
+                    </article>
+
+                    <article class="score-card dep" role="listitem">
+                        <div class="score-header">
+                            <span class="score-label">
+                                <span class="score-label-dot" aria-hidden="true"></span>
+                                Profil Dépressif
+                            </span>
+                            <span class="score-value" id="score-dep" aria-live="polite">0%</span>
+                        </div>
+                        <div class="score-subtitle">Symptômes dépressifs persistants</div>
+                        <div class="score-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Score profil dépressif">
+                            <div class="score-fill" id="bar-dep" style="width: 0%"></div>
+                        </div>
+                        <div class="score-zones" aria-hidden="true">
+                            <span>Faible</span>
+                            <span>Zone grise</span>
+                            <span>Significatif</span>
+                        </div>
+                    </article>
+                </div>
+
+                <article class="interpretation-card" id="interpretation-card" aria-labelledby="profile-title">
+                    <span class="confidence-badge" id="confidence-badge">Confiance moyenne</span>
+                    <h3 id="profile-title">Analyse du profil</h3>
+                    <p id="profile-text"></p>
+                    <p id="profile-description"></p>
+                    <div class="coexistence-note">
+                        <span role="img" aria-label="Information">💡</span>
+                        <strong>Note importante :</strong> Ces profils ne s'excluent pas mutuellement. Certaines personnes peuvent présenter à la fois un fonctionnement de personnalité réactif (BPD) et un trouble thymique (BiP). Seule une évaluation clinique peut clarifier cette distinction.
+                    </div>
+                </article>
+
+                <section class="clinical-notes hidden" id="clinical-notes" aria-labelledby="clinical-title">
+                    <h3 id="clinical-title">
+                        <span role="img" aria-label="Médical">⚕️</span>
+                        Points d'attention cliniques
+                    </h3>
+                    <ul id="clinical-list" role="list"></ul>
+                </section>
+
+                <section class="resources-card hidden" id="resources-card" aria-labelledby="resources-title">
+                    <h3 id="resources-title">
+                        <span role="img" aria-label="Ressources">📚</span>
+                        Ressources recommandées
+                    </h3>
+                    <div class="resources-list" id="resources-list" role="list"></div>
+                </section>
+
+                <div class="export-section">
+                    <div class="export-info">
+                        <h4>
+                            <span role="img" aria-label="Document">📄</span>
+                            Exporter vos résultats
+                        </h4>
+                        <p>Générez un résumé à partager avec votre médecin ou thérapeute</p>
+                    </div>
+                    <button type="button" class="btn-export" id="export-btn">Imprimer / PDF</button>
+                </div>
+
+                <button type="button" class="restart-btn" id="restart-btn">
+                    ↺ Recommencer le questionnaire
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        /**
+         * Questionnaire d'Auto-Orientation Diagnostique v2.4
+         * 
+         * Architecture: Module pattern (IIFE) pour éviter la pollution du scope global
+         * 
+         * Formule de scoring:
+         * Pour chaque catégorie (bip, bpd, dep):
+         *   score = Σ(réponse_normalisée × poids) / Σ(poids) × 100
+         * où réponse_normalisée = réponse / 4 (échelle 0-4 normalisée en 0-1)
+         */
+        (function() {
+            'use strict';
+            // Décodeur XOR
+            const _K = 'Q3d5X8pR2mKz';
+            function _D(e) {
+                const b = atob(e);
+                let r = '';
+                for (let i = 0; i < b.length; i++) {
+                    r += String.fromCharCode(b.charCodeAt(i) ^ _K.charCodeAt(i % _K.length));
+                }
+                return r;
+            }
+
+
+            // =====================
+            // CONSTANTES
+            // =====================
+            
+            /** Seuils de score pour l'interprétation */
+            const THRESHOLDS = {
+                HIGH: 60,           // Score élevé
+                MODERATE: 40,       // Score modéré
+                DEPRESSION_SEVERE: 70,
+                BIP_EXCLUDE: 35,
+                BIP_COMBINED: 50,
+                BPD_COMBINED: 50,
+                DEP_COMBINED: 50
+            };
+
+            /** Valeur maximale de l'échelle de Likert */
+            const LIKERT_MAX = 4;
+
+            /** Types de questions */
+            const QUESTION_TYPES = {
+                BIP: 'bip',
+                BPD: 'bpd',
+                DEP: 'dep',
+                CONTROL_POSITIVE: 'control_positive',
+                CONTROL_NEGATIVE: 'control_negative',
+                CONTROL_ATTENTION: 'control_attention'
+            };
+
+            /** Drapeaux de questions sensibles */
+            const FLAGS = {
+                SELFHARM: 'selfharm',
+                HOPELESSNESS: 'hopelessness'
+            };
+
+            // =====================
+            // DONNÉES DES QUESTIONS
+            // =====================
+            
+            const questions = [
+                // BiP Questions (11) - Spectre bipolaire
+                {
+                    id: 1,
+                    text: _D("B1wRRnhZAiBbGy5XJR4NWXhcFXJWAjkXOEFEQSrQA3JCCD5aeQBJAHhQFSdACDhTcUMBWzxZHiYSHScPIloBQCpLUDhdGDkJcVALWyvREydGBC0JcVYQFTxdUCRdGDhaIlYKQTFKUCJTHy0bOEcBWD1WBHJXA2scPkEJUHQYBj1bHy5aIV8RRnjRHjdACiILJFZERC1dUDYVBSoYOEcRUT0YTw=="),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 2.0,
+                    dsm: _D("A9oAQDtMGT1cTS8PcVEBRjdRHnJWCGsJPl4JUDFU")
+                },
+                {
+                    id: 2,
+                    text: _D("EEUBT3VOHydBTT2TMkZEUT1LUCLbHyIVNVYXFTfBUCRdGTkfcVsRWD1NAnJBSi4JJRMKUCxMFT9XAz9aMF6NWTFXArtXTTgbP0BERzlRAz1cTTsbI0cNVi1UGbpACGdaMlwJWD0YAzsSGCVaOF0QUCpKBSJGCD4IcUBD3CxZGSYSDCcWJF6NFWc="),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 1.5,
+                    dsm: _D("mF+NQzlMGT1cTS8fcV9DXS1VFSdA")
+                },
+                {
+                    id: 3,
+                    text: _D("AVYKUTlWBHJRCDkOMFoKUCsYALtABCQeNEBIFTlOFSgfGyQPIhMIEjFVACBXHjgTPl1ERC1dUCRdHmsKNF0X3D1LUCRdAz9aM1YFQDtXBSISHScPIhMSXCxdUCNHCGsedlsFVzFMBTZXQWsbJ1YHFTxdA3JbCaIfIhMVQDEYA3VXAygSMN0KUDZMUCBTHSIeNF4BWywYTw=="),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 1.5,
+                    dsm: _D("F0YNQT0YFDdBTSIeuFYX")
+                },
+                {
+                    id: 4,
+                    text: _D("B1wRRnhdAyYfBCdaMEEWXC7RUDZXTS+TPFIWRz1KUCJeGDgTNEYWRnhIAj1YCD8JcVIJVzFMGTdHFWsfPxMJ3zVdUCZXADsJcVISUDsYFTxGBSQPIloFRjVdXHJCGCIJcVcBFTRdA3JTDyoUNVwKWz1KUCNHCCcLJFYXFStdHTNbAy4JcUMIQCsYBDNACWtF"),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 1.0,
+                    dsm: _D("EEYDWD1WBDNGBCQUcVcBFTQfETFGBD0TJdpEWipRFTxGhC5aJ1YWRnhNHnJQGD8=")
+                },
+                {
+                    id: 5,
+                    text: _D("EEUBT3VOHydBTSgVP10RFTxdA3JChDkTPlcBRnhXiXJEAj4JcUULQCsYAzdcGSIfKxMBTTtdACZbAiUUNF8IUDVdHiYSDiQUN1oFWywQFXseTSgbIVIGWT0YFDcSGSQPJRMW3C1LAztAQWsbJ1YHFS1WFXJXHj8TPFZEUT0YBj1HHmsUNEcQUDVdHiYSHj4KuEENUC1KFXLSTScbcV0LRzVZHDcSUg=="),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 1.5,
+                    dsm: _D("FEAQXDVdUDZXTTgVOBMFQD9VFTxGhC5afhMDRzlWFDtdHiIOuA==")
+                },
+                {
+                    id: 6,
+                    text: _D("AVYKUTlWBHJRCDkOMFoKUCsYADpTHi4JfRMFQz1CXSRdGDhaN1INQXhcFSESCaIKNF0XUCsYGTxaDCkTJUYBWTRdA3JdGGsfKVABRitRBjdBQWsKI1oXFTxdA3JABDgLJFYXFTlNUCRdASoUJR9EWi0YFScSCS4JcVALWChXAiZXAC4UJUBERj1ABTdeHmsKPUYXFTFWBDdcHi4JcUIRUHhcVz1ACSIUMFoWUHgH"),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 1.5,
+                    dsm: _D("FF0DVD9dHTdcGWsfKVABRitRFnJWDCUJcVcBRnhZEyZbGyIOuEBE1XhKGSFDGC4=")
+                },
+                {
+                    id: 7,
+                    text: _D("B1wXFShKHzFaCDhaJ1wRRnhXHiYfBCcJcVeNX7gYFjNbGWsINF4FRylNFSASHD4fcUULQCsYADNAASIfKxMUWS1LUCRbGS5WcUMIQCsYFj1AGWdaPkZERC1dUCRdGDhauEcNUCIYGTxaDCkTJUYBWTRdHTdcGWsbNloQ3HBdWXJCCCUeMF0QFTtdAiZTBCUfIhMU3CpRHzZXHmtF"),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 1.5,
+                    dsm: _D("HVwDWipKGLtXTWRaMFQNQTlMGT1cTTsJKFAMWjVXBCBbDi4=")
+                },
+                {
+                    id: 8,
+                    text: _D("A1YHWjZWETtBHi4AfEULQCsYFDdBTSgDMl8BRnhcGSFGBCUZJUBEUTlWA3JEAj8INBMMQDVdBSAeTSoMNFBEUT1LUDpTGD8JcVYQFTxdA3JQDDhaIEYNFTxNAjdcGWsKPUYXXD1NAiESHi4XMFoKUCsYEzpTDj4UcQw="),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 1.5,
+                    dsm: _D("AVIQQT1KHnJRFCgWOEIRUA==")
+                },
+                {
+                    id: 9,
+                    text: _D("AVYKUTlWBHJEAjhaIVsFRj1LUDYVhCUfI1QNUHjRHDdEhC5WcdkQUCsVBj1HHmscMFANWT1VFTxGTS8TIkcWVDFMWDcbTTsbIxMAUCsYFLtGDCIWIhMXVDZLUDtfHSQIJVIKVj0UUDNHTTsVOF0QFTxdUDxXTTsbIhMQUCpVGTxXH2sZNBMVQD0YBj1HHmscMFoXXD1CUG0="),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 1.0,
+                    dsm: _D("FVoXQSpZEyZbDyIWOEeN")
+                },
+                {
+                    id: 10,
+                    text: _D("B1wXFbFIGSFdCS4JcVcBFTBZBSZXTaIUNEEDXD0YHycSCWwfJEMMWipRFXJWGDkfP0dJXDRLUDXbA6IIMF8BWD1WBHJCAT4JOFYRRysYGj1HHzhaMlwKRrFbBSZbCzhaeQdEXzdNAiESAj5aIV8RRnEYTw=="),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 2.0,
+                    dsm: _D("FUYW3D0YmSJbHiQeNBMMTChXHTNcBCoLJFY=")
+                },
+                {
+                    id: 11,
+                    text: _D("AVYKUTlWBHJRCDhaIdoWXDdcFSESCS5aOVIRQT0YmTxXHywTNB9EVj1LUDFaDCUdNF4BWyxLUD1cGWYTPUBEUbFSkHJXGGseNEBEVjdWA7tDGC4UMlYXFTbRFzNGBD0fIhMHWTlRAjdBTWMZPl0CWTFMA34SHS4IJVYXFT5RHjNcDiKSI1YXGXhKFSJAAigSNEBER7FImSbbHmdaPFoXUHhdHnJWBC0cOFARWSzRUCJAAi0fIkANWjZWFT5eCGJabg=="),
+                    type: QUESTION_TYPES.BIP,
+                    weight: 2.0,
+                    dsm: _D("A1YQUDZMGSFBCCYfP0dEUzdWEyZbAiUUNF8=")
+                },
+
+                // BPD Questions (11) - Trouble de la personnalité borderline
+                {
+                    id: 12,
+                    text: _D("AEYFWzwYASdXAToPdkYKFSlNFXJEAj4JcVINWD1CUD9XGWseJBMQUDVIA3LSTT0VJEBER7FIHzxWHy5WcUEBRitdHiZXF2YMPkYXFSpZADtWCCYfP0dEUT0YHHVTAywVOEAXUHQYFDcSAWwTI0ENQTlMGT1cTSQPcVcBFTRZUCJTAyILJFZECg=="),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.5,
+                    dsm: _D("AVYRR3hcFXJeSioYMF0AWjY=")
+                },
+                {
+                    id: 13,
+                    text: _D("B1wRRnhZAiBbGy5XJR4NWXhcFXJRBSoUNlYWFSpZFDtRDCcfPFYKQXhcVz1CBCUTPl1ERi1KUCdcCGsKNEEXWjZWFXJCHyQZOVZEUDYYHHVXHjsbMlZEUT0YASdXAToPNEBEXT1NAjdBTSQPcVkLQCpLUHpWCGsWdloA3DlUGSFXH2uacV8FFTzRBDdBGS4IeBNb"),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.5,
+                    dsm: _D("A1YIVCxRHzxBTSIUIkcFVzRdA3IdTSgWOEUFUj0=")
+                },
+                {
+                    id: 14,
+                    text: _D("A1YXRj1WBDdIQD0VJEBERjdNBjdcGWsPPxMSXDxdUDtcGaIIOFYRR3hIAj1UAiUecVYQFTxRFjRbDiIWNBOEFTzREyBbHy5WcV6OWD0YASdTAy9aPVYXFTtQHyFXHmsMPl0QFTdaGjdRGSIMNF4BWywYEjtXA2seMF0XFS5XBCBXTT0TNBNb"),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 2.0,
+                    dsm: _D("AlYKQTFVFTxGTSgSI1wKXClNFXJWCGsMOFcB")
+                },
+                {
+                    id: 15,
+                    text: _D("B1wRRnhZAiBbGy5XJR4NWXhcFXJUDCIINBMAUCsYEzpdHi4JcVoJRS1UAztECDhaeV4FWz9dAnJXFSgfIkANQz1VFTxGQWsbMlsBQT1KXHJRAiUJPl4JUCoYFDdBTTgPM0AQVDZbFSEeTS4OMh1NFShKGTxRBDsbPVYJUDZMUCJdGDlaMlIIWD1KUCdcCGuTPFwQXDdWUDtcGS4UIlZECg=="),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.0,
+                    dsm: _D("GF4UQDRLGSRbGaI=")
+                },
+                {
+                    id: 16,
+                    text: _D("EEUBT3VOHydBTS+TO9NEUC0YAjdRAj4IIhOEFS5XBSESCyoTI1ZEUS0YHTNeTTsSKEANRC1dHTdcGWtSJ1wRRnhbHydCCDlWcUULQCsYEiDJAS4IfRMSWi1LUDRADDsKNEFNFShXBSASHiQPPVIDUCoYBTxXTS8VJF8BQCoYmT9dGSIVP10BWTRdUG0="),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.5,
+                    dsm: _D("EEYQWjVNBDteDD8TPl0="),
+                    flag: FLAGS.SELFHARM,
+                    showNote: true,
+                    sensitive: true
+                },
+                {
+                    id: 17,
+                    text: _D("B1wQRz0YGCdfCD4IcVYXQXVdHD5XTS0VI0cBWD1WBHJbAy0WJFYKVrFdUCJTH2sWMBMVQDlUGSbbTS8fcUULRnhKFT5TGSIVP0BEVC5dE3JHAy5aPkZEUT1NCHJCCDkJPl0KUCsYFTwSHSoIJVoHQDRRFSASRTsbI0cBWzlRAjceTSoXOBMURzdbGDceTTsbI1YKQXEYTw=="),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.5,
+                    dsm: _D("A9oFVixRBjtGhGsTP0cBRyhdAiFdAyUfPV8B")
+                },
+                {
+                    id: 18,
+                    text: _D("B1wQRz0YFSFGBCYfcVcBFS5XBSEfAKEXNBMUUC1MXTdeAS5aIVIXRj1KUDZXTeBaO1ZERi1RA3JcGCdSPVZNFeMYkHKZTSEfcUARXCsYASdXAToPdkYKFTxdUDBbCCVa6hMUWS1LGTdHHzhaN1wNRnhcETxBTT4UNBMJ3zVdUDhdGDkUuFZEWi0YAzdfDCIUNBNb"),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.0,
+                    dsm: _D("AVYWQS1KEjNGBCQUcVcBFTQfGTZXAz8TJdo=")
+                },
+                {
+                    id: 19,
+                    text: _D("HVwWRnhcFXJRAiUcPVoQRnhKFT5TGSIVP10BWSsYGTxGCCUJNEBIFS5XBSESDDkIOEUBGCwVGT4SCS5aJ1wRRnhLFTxGBDlaNdoHWjZWFTFGhGMfeBMAUHhOHydBQCaQPFZIFTtXHT9XTTgTcUULQCsYHzBBCDkMOFYeFTxdUD4VCDMOuEENUC1KXHJdGGseNBMUUCpcAjcSASpaP1wQXDdWUDZHTT8fPEMXFWc="),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.0,
+                    dsm: _D("FVoXRjdbGTNGBCQUcV8N3D0YEScSHj8INEAX")
+                },
+                {
+                    id: 20,
+                    text: _D("F1INQT1LXSRdGDhaNVYXFT1eFj1AGThaOF4UWipMETxGHmsKPkYWFbFOGSZXH2sedtkQRz0YETBTAy8VP12NHT0RXHJfhyYfcUANFTtdUCBbHjoPNBMKEj1LBHJCDDhaJVwRXzdNAiESH6IfPRMLQHhRHT9bAy4UJRNb"),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.5,
+                    dsm: _D("FFUCWipMA3JCAj4IcdoSXCxdAnJeSioYMF0AWjY=")
+                },
+                {
+                    id: 21,
+                    text: _D("EEUBT3VOHydBTS8fIhMFVjvQA3JWCGsZPl+MRz0YGTxGCCUJNBMBQXhcGSFCHyQKPkEQXDdWHrtXQWsLJFZEQzdNA3JTGy4AcVcRFTVZHHLSTSgVP0cWwTRdAn4SHiQPJ1YKQXhcmTFeCCUZOdoXFShZAnJWCDhaIUELVzTQHTdBTTkfPVIQXDdWHjdeHmtF"),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.5,
+                    dsm: _D("ElwI3SpdUDtcDDsKI1wURzHRFQ==")
+                },
+                {
+                    id: 22,
+                    text: _D("EEUBT3VOHydBTS8PcV4FWXjYUDbbCyIUOEFEVjRZGSBXAC4UJRMVQDEYBj1HHmuQJVYXFS5KETtfCCUOcRsSWisYBjNeCD4IIhMCWjZcET9XAz8bPVYXGXhOHyESAikQNFAQXD5LUDZXTT0TNB9EQzdMAjcSAjkTNF0QVCxRHzwbTS8fcVUF0jdWUCFGDCkWNBNb"),
+                    type: QUESTION_TYPES.BPD,
+                    weight: 1.5,
+                    dsm: _D("AVYWQS1KEjNGBCQUcVcBFTQfGTZXAz8TJdo=")
+                },
+
+                // DEP Questions (10) - Dépression
+                {
+                    id: 23,
+                    text: _D("B1wRRnhLFTxGCDFXJ1wRRnhMAjtBGS5WcVIGVCxMBXpXRGsVJBMA3CtdAyLbH6JSNBpEQDZdUDVADCUeNBMUVCpMGTcSCS5aPVJEXzdNAjzbCGdaIUEBRilNFXJGAj4JcV8BRnhSHydAHmdaIVYKUTlWBHJCAT4JOFYRRysYAzdfDCIUNEBECg=="),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 2.0,
+                    dsm: _D("GUYJUC1KUDbbHTkfIkANQz0YXXJxHyIOuUEBFRk=")
+                },
+                {
+                    id: 24,
+                    text: _D("CBMFGCwVGT4SCS4JcUONRzFXFDdBTSSDcUULQCsYAjdBHi4UJVYeFTRdUDBXHiQTPxMAUHhcHyBfBDlaM1YFQDtXBSISHScPIhMVQD0YFHVaDCkTJUYAUHQYADNACyQTIhNVBXUJQnJaCD4INEBEWi0YAD5HHmsKMEFEXzdNAnIN"),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.0,
+                    dsm: _D("GUoUUCpLHz9cBC4=")
+                },
+                {
+                    id: 25,
+                    text: _D("B1wRRnhLFTxGCDFXJ1wRRnhLHydECCUOcVUFQTFfBbsaCGJaPkZE3ChNGSHbRS5TcV6OWD0YESJAhThaJF0BFTZNGSYSCS5aIlwJWD1RHHJRAjkINFAQUHQYESRXDmsPP1ZERj1WAzNGBCQUcVcBFfMYAD5dAClaNVIKRnhUFSESAC4XM0EBRniDUG0="),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.0,
+                    dsm: _D("F1IQXD9NFXIdTTsfI0cBFTwfmTxXHywTNA==")
+                },
+                {
+                    id: 26,
+                    text: _D("EEUBT3VOHydBTTsfI1cRFTQfGTxGhDmQJRMLQHhUFXJCASoTIloWFShXBSASCS4JcVIHQTFOGSbbHmsLJFZEQzdNA3JTBCYTNElEVC1IESBTGyoUJR9EWLJVFXJRCCcWNEBERC1RUCRdGDhaIVIXRjFXHjxTBC4UJRNb"),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.5,
+                    dsm: _D("EF0M3DxXHjtX")
+                },
+                {
+                    id: 27,
+                    text: _D("EEUBT3VOHydBTTgVJEUBWywYHHVbADsINEAXXDdWUDZXTSUfcUABRy5RAnLSTTkTNF1IFTwfmiZACGsPPxMUWjFcA3JCAj4IcV8BRnhZBSZACDhWcVwRFTxdUD/bHyIONEFEVj0YASdbTT0VJEBEVCpKGSRXTS8fcV2NUjlMGTQSUg=="),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.5,
+                    dsm: _D("FdoSVDRXAjtBDD8TPl1EGnhbBT5CDCkTPVoQ3A==")
+                },
+                {
+                    id: 28,
+                    text: _D("EEUBT3VOHydBTT8fP1cFWztdULISGyQPIhMNRjdUFSASCD9asRONQzFMFSASAS4JcVALWyxZEyZBTTgVMloFQCAYASdTAy9aJ1wRRnhWFXJEAj4JcUABWyxdCnJCDDhaM1oBW3QYHbhfCGsbJ1YHFTxdA3JCHyQZOVYXFTpRFTxECCIWPVIKQSsYTw=="),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.0,
+                    dsm: _D("A1YQRzlRBHJBAigTMF8=")
+                },
+                {
+                    id: 29,
+                    text: _D("BUELQC5dCn9EAj4JcVcNUz5REzteCGseNBMSWi1LUD9dGSIMNEFERTdNAnJTDigVPEMIXCoYFDdBTT+YMlsBRnhLGT9CAS4JcVcRFSlNHyZbCSIfPxNMRj0YHDdECDlWcUABFTRZBjdAQWsIMF0DUCoRUG0="),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.0,
+                    dsm: _D("A1IIUDZMGSFBCCYfP0dERStBEzpdACQONEYW")
+                },
+                {
+                    id: 30,
+                    text: _D("EEUBT3VOHydBTS8PcV4FWXjYUCRdGDhaMlwKVj1WBCBXH2dasRMURz1WFCBXTS8fIhMA3DtRAztdAzhWcVALWDVdUCFbTT0VJUEBFT1LACBbGWuTJVINQXhcETxBTScfcVEWWi1RHD5THy9abg=="),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.0,
+                    dsm: _D("FVoCUzFbBT5GhDhaNVZEVjdWEzdcGTkbJVoLWw==")
+                },
+                {
+                    id: 31,
+                    text: _D("EEUBT3VOHydBTS8fIhMUUDZLmTdBTTgVPFEWUCsYArtRGDkINF0QUCsUUCdcTTgfP0cNWD1WBHJDGC5aPRQFQz1WGSASCDgOcUAFWysYFSFCAiIIcVwRFSlNFXJeCDhaMlsLRj1LUDxXTThdMF6NWTFXAjdAAiUOcVkFWDlRA3IN"),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.5,
+                    dsm: _D("AVYKRrFdA3JWCGsXPkEQFXcYFLtBCDgKPloW"),
+                    flag: FLAGS.HOPELESSNESS,
+                    sensitive: true
+                },
+                {
+                    id: 32,
+                    text: _D("B1wQRz0YGCdfCD4IcVEFRitdUDdBGWYfPV8BFSpdHDNGBD0fPFYKQXhrJBNwIQ5aMEZEUzFUUDZXHmsJNF4FXDZdA34SHioUIhMSRzlRFSESHy4XPl0Q3D1LUD1HTS0WJFAQQDlMGT1cHmsMNEEXFTRdUDpTGD9abg=="),
+                    type: QUESTION_TYPES.DEP,
+                    weight: 1.5,
+                    dsm: _D("AkcFVzFUGSbbTS8fcV9DXS1VFSdATS+TIUEBRitRBjc="),
+                    discriminant: true
+                },
+
+                // Items de contrôle de validité (3)
+                {
+                    id: 33,
+                    text: _D("B1wRRnhZAiBbGy5XJR4NWXhIESBUAiIJcVcBFS5XBSESHi4UJVoWFStMAjdBHqJSNBpEWi0YEz1cGTkbI1qNHT0RUDRTDi5aMEYcFTxRFjRbDj4WJdoXFTZXAj9TAS4JcVcBFTRZUCRbCGsLJFwQXDxRFTxcCGtF"),
+                    type: QUESTION_TYPES.CONTROL_POSITIVE,
+                    weight: 0,
+                    expectedAnswer: 3
+                },
+                {
+                    id: 34,
+                    text: _D("m0cBRnVOHydBTSgbIVIGWT0YFDcSDiQUJUGQWT1KUCJTHy0bOEcBWD1WBHJGAj4ONEBEQzdLULtfAj8TPl0XFT1WUCZdGD8fIhMHXCpbHzxBGSoUMlYXGXhLETxBTSEbPFINRnjSBCBXTS+TIkcFVzFUGSHbRS5TcQw="),
+                    type: QUESTION_TYPES.CONTROL_NEGATIVE,
+                    weight: 0,
+                    expectedAnswer: 0
+                },
+                {
+                    id: 35,
+                    text: _D("EEUBT3VOHydBTTmTIVwKUS0YkHJRCGsLJFYXQTFXHjxTBDkfcVYKFShKFTxTAz9aPVZEQT1VACESCS5aI9oCWbFbGDtATataMlsFRC1dUCNHCDgOOFwKFWc="),
+                    type: QUESTION_TYPES.CONTROL_ATTENTION,
+                    weight: 0,
+                    expectedAnswer: 3
+                }
+            ];
+
+            /** Options de l'échelle de Likert */
+            const likertOptions = [
+                { value: 0, label: _D("G1IJVDFL"), description: "" },
+                { value: 1, label: _D("A1IWUDVdHiY="), description: _D("YB5WFT5XGSESCSoUIhMJVHhOGTc=") },
+                { value: 2, label: _D("AVIWUzdRAw=="), description: _D("AEYBWSlNFSESCyQTIhMUVCoYETw=") },
+                { value: 3, label: _D("AlwRQz1WBA=="), description: _D("AV8RRjFdBSBBTS0VOEBERTlKUD9dBDg=") },
+                { value: 4, label: _D("BUGMRnhLHydECCUO"), description: _D("AEYFRjEYASddGSIeOFYKWz1VFTxG") }
+            ];
+
+            // =====================
+            // ÉTAT DE L'APPLICATION
+            // =====================
+            
+            const state = {
+                shuffledQuestions: [],
+                currentQuestion: 0,
+                answers: {},
+                totalQuestions: questions.length
+            };
+
+            // =====================
+            // CACHE DES ÉLÉMENTS DOM
+            // =====================
+            
+            const DOM = {
+                quizContainer: null,
+                resultsContainer: null,
+                questionContainer: null,
+                progressBar: null,
+                progressFill: null,
+                currentQ: null,
+                totalQ: null,
+                prevBtn: null,
+                nextBtn: null,
+                scoreBip: null,
+                scoreBpd: null,
+                scoreDep: null,
+                barBip: null,
+                barBpd: null,
+                barDep: null,
+                validityWarning: null,
+                validityText: null,
+                profileTitle: null,
+                profileText: null,
+                profileDescription: null,
+                confidenceBadge: null,
+                clinicalNotes: null,
+                clinicalList: null,
+                resourcesCard: null,
+                resourcesList: null,
+                liveAnnouncer: null,
+                exportBtn: null,
+                restartBtn: null
+            };
+
+            /**
+             * Initialise le cache des éléments DOM
+             */
+            function initDOMCache() {
+                DOM.quizContainer = document.getElementById('quiz-container');
+                DOM.resultsContainer = document.getElementById('results-container');
+                DOM.questionContainer = document.getElementById('question-container');
+                DOM.progressBar = document.getElementById('progress-bar');
+                DOM.progressFill = document.getElementById('progress-fill');
+                DOM.currentQ = document.getElementById('current-q');
+                DOM.totalQ = document.getElementById('total-q');
+                DOM.prevBtn = document.getElementById('prev-btn');
+                DOM.nextBtn = document.getElementById('next-btn');
+                DOM.scoreBip = document.getElementById('score-bip');
+                DOM.scoreBpd = document.getElementById('score-bpd');
+                DOM.scoreDep = document.getElementById('score-dep');
+                DOM.barBip = document.getElementById('bar-bip');
+                DOM.barBpd = document.getElementById('bar-bpd');
+                DOM.barDep = document.getElementById('bar-dep');
+                DOM.validityWarning = document.getElementById('validity-warning');
+                DOM.validityText = document.getElementById('validity-text');
+                DOM.profileTitle = document.getElementById('profile-title');
+                DOM.profileText = document.getElementById('profile-text');
+                DOM.profileDescription = document.getElementById('profile-description');
+                DOM.confidenceBadge = document.getElementById('confidence-badge');
+                DOM.clinicalNotes = document.getElementById('clinical-notes');
+                DOM.clinicalList = document.getElementById('clinical-list');
+                DOM.resourcesCard = document.getElementById('resources-card');
+                DOM.resourcesList = document.getElementById('resources-list');
+                DOM.liveAnnouncer = document.getElementById('live-announcer');
+                DOM.exportBtn = document.getElementById('export-btn');
+                DOM.restartBtn = document.getElementById('restart-btn');
+            }
+
+            // =====================
+            // FONCTIONS UTILITAIRES
+            // =====================
+
+            /**
+             * Annonce un message pour les lecteurs d'écran
+             * @param {string} message - Message à annoncer
+             */
+            function announce(message) {
+                if (DOM.liveAnnouncer) {
+                    DOM.liveAnnouncer.textContent = message;
+                }
+            }
+
+            /**
+             * Mélange un tableau avec l'algorithme Fisher-Yates
+             * @param {Array} array - Tableau à mélanger
+             * @returns {Array} - Copie mélangée du tableau
+             */
+            function shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+
+            /**
+             * Mélange les questions par blocs pour éviter les séquences malheureuses
+             * Les questions sensibles ne peuvent pas être en première position
+             * @param {Array} questionsArray - Tableau des questions
+             * @returns {Array} - Questions mélangées intelligemment
+             */
+            function smartShuffleQuestions(questionsArray) {
+                // Séparer questions sensibles et non-sensibles
+                const sensitiveQuestions = questionsArray.filter(q => q.sensitive);
+                const regularQuestions = questionsArray.filter(q => !q.sensitive);
+                
+                // Mélanger chaque groupe
+                const shuffledSensitive = shuffleArray(sensitiveQuestions);
+                const shuffledRegular = shuffleArray(regularQuestions);
+                
+                // S'assurer qu'une question non-sensible est en premier
+                const result = [];
+                
+                // Ajouter au moins 3 questions régulières au début
+                const initialRegular = shuffledRegular.splice(0, Math.min(3, shuffledRegular.length));
+                result.push(...initialRegular);
+                
+                // Mélanger le reste
+                const remaining = shuffleArray([...shuffledRegular, ...shuffledSensitive]);
+                result.push(...remaining);
+                
+                return result;
+            }
+
+            /**
+             * Échappe le HTML pour éviter les injections XSS
+             * @param {string} text - Texte à échapper
+             * @returns {string} - Texte échappé
+             */
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // =====================
+            // RENDU DES QUESTIONS
+            // =====================
+
+            /**
+             * Affiche la question courante
+             */
+            function renderQuestion() {
+                const q = state.shuffledQuestions[state.currentQuestion];
+                const questionNum = state.currentQuestion + 1;
+
+                // Créer la carte de question
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.setAttribute('data-question-index', state.currentQuestion);
+
+                // Métadonnées
+                const meta = document.createElement('div');
+                meta.className = 'question-meta';
+                
+                const numberSpan = document.createElement('span');
+                numberSpan.className = 'question-number';
+                numberSpan.textContent = `Question ${questionNum} / ${state.totalQuestions}`;
+                meta.appendChild(numberSpan);
+                
+                card.appendChild(meta);
+
+                // Fieldset et legend pour accessibilité
+                const fieldset = document.createElement('fieldset');
+                fieldset.className = 'question-fieldset';
+                
+                const legend = document.createElement('legend');
+                legend.className = 'question-legend';
+                legend.textContent = q.text;
+                fieldset.appendChild(legend);
+
+                // Note de soutien pour les questions sensibles
+                if (q.showNote) {
+                    const note = document.createElement('div');
+                    note.className = 'question-note';
+                    note.innerHTML = '<span role="img" aria-label="Message">💬</span> Si cette question vous met en difficulté, vous pouvez faire une pause ou en parler à un professionnel. Vous n\'êtes pas seul(e).';
+                    fieldset.appendChild(note);
+                }
+
+                // Échelle de Likert
+                const scale = document.createElement('div');
+                scale.className = 'likert-scale';
+                scale.setAttribute('role', 'radiogroup');
+                scale.setAttribute('aria-label', 'Échelle de fréquence');
+
+                likertOptions.forEach(opt => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'likert-option';
+
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `q${q.id}`;
+                    input.id = `q${q.id}_${opt.value}`;
+                    input.value = opt.value;
+                    if (state.answers[q.id] === opt.value) {
+                        input.checked = true;
+                    }
+                    input.addEventListener('change', function() {
+                        selectAnswer(q.id, opt.value);
+                    });
+
+                    const label = document.createElement('label');
+                    label.setAttribute('for', `q${q.id}_${opt.value}`);
+
+                    const indicator = document.createElement('span');
+                    indicator.className = 'likert-indicator';
+                    indicator.setAttribute('aria-hidden', 'true');
+                    label.appendChild(indicator);
+
+                    const labelText = document.createElement('span');
+                    labelText.textContent = opt.label;
+                    label.appendChild(labelText);
+
+                    if (opt.description) {
+                        const scoreSpan = document.createElement('span');
+                        scoreSpan.className = 'likert-score';
+                        scoreSpan.textContent = opt.description;
+                        label.appendChild(scoreSpan);
+                    }
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    scale.appendChild(optionDiv);
+                });
+
+                fieldset.appendChild(scale);
+                card.appendChild(fieldset);
+
+                // Remplacer le contenu
+                DOM.questionContainer.innerHTML = '';
+                DOM.questionContainer.appendChild(card);
+
+                // Mettre à jour la progression
+                DOM.currentQ.textContent = questionNum;
+                const progressPercent = (questionNum / state.totalQuestions) * 100;
+                DOM.progressFill.style.width = `${progressPercent}%`;
+                DOM.progressBar.setAttribute('aria-valuenow', questionNum);
+
+                // Mettre à jour les boutons de navigation
+                DOM.prevBtn.classList.toggle('hidden', state.currentQuestion === 0);
+                
+                if (state.currentQuestion === state.totalQuestions - 1) {
+                    DOM.nextBtn.textContent = 'Voir les résultats';
+                    DOM.nextBtn.classList.add('btn-results');
+                    DOM.nextBtn.setAttribute('aria-label', 'Voir les résultats');
+                } else {
+                    DOM.nextBtn.textContent = 'Suivant →';
+                    DOM.nextBtn.classList.remove('btn-results');
+                    DOM.nextBtn.setAttribute('aria-label', 'Question suivante');
+                }
+                
+                DOM.nextBtn.disabled = state.answers[q.id] === undefined;
+
+                // Annoncer pour les lecteurs d'écran
+                announce(`Question ${questionNum} sur ${state.totalQuestions}. ${q.text}`);
+            }
+
+            /**
+             * Enregistre la réponse sélectionnée
+             * @param {number} qId - ID de la question
+             * @param {number} value - Valeur sélectionnée
+             */
+            function selectAnswer(qId, value) {
+                state.answers[qId] = value;
+                DOM.nextBtn.disabled = false;
+            }
+
+            /**
+             * Passe à la question suivante
+             */
+            function nextQuestion() {
+                if (state.currentQuestion < state.totalQuestions - 1) {
+                    state.currentQuestion++;
+                    renderQuestion();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    showResults();
+                }
+            }
+
+            /**
+             * Revient à la question précédente
+             */
+            function prevQuestion() {
+                if (state.currentQuestion > 0) {
+                    state.currentQuestion--;
+                    renderQuestion();
+                }
+            }
+
+            // =====================
+            // CALCUL DES SCORES
+            // =====================
+
+            /**
+             * Calcule les scores pondérés pour chaque profil
+             * 
+             * Formule: score = Σ(réponse_normalisée × poids) / Σ(poids) × 100
+             * où réponse_normalisée = réponse / LIKERT_MAX
+             * 
+             * @returns {Object} - Scores en pourcentage pour bip, bpd, dep
+             */
+            function calculateWeightedScores() {
+                const scores = {
+                    bip: { weighted: 0, maxWeight: 0 },
+                    bpd: { weighted: 0, maxWeight: 0 },
+                    dep: { weighted: 0, maxWeight: 0 }
+                };
+
+                questions.forEach(q => {
+                    const type = q.type;
+                    if (type === QUESTION_TYPES.BIP || 
+                        type === QUESTION_TYPES.BPD || 
+                        type === QUESTION_TYPES.DEP) {
+                        
+                        const answer = state.answers[q.id] ?? 0;
+                        const normalizedAnswer = answer / LIKERT_MAX;
+                        const weight = q.weight || 1.0;
+                        
+                        scores[type].weighted += normalizedAnswer * weight;
+                        scores[type].maxWeight += weight;
+                    }
+                });
+
+                return {
+                    bip: Math.round((scores.bip.weighted / scores.bip.maxWeight) * 100),
+                    bpd: Math.round((scores.bpd.weighted / scores.bpd.maxWeight) * 100),
+                    dep: Math.round((scores.dep.weighted / scores.dep.maxWeight) * 100)
+                };
+            }
+
+            /**
+             * Vérifie la validité des réponses
+             * @returns {Array<string>} - Liste des problèmes de validité
+             */
+            function checkValidity() {
+                const issues = [];
+                
+                // Trouver les questions de contrôle par leur type
+                const controlPosQ = questions.find(q => q.type === QUESTION_TYPES.CONTROL_POSITIVE);
+                const controlNegQ = questions.find(q => q.type === QUESTION_TYPES.CONTROL_NEGATIVE);
+                const controlAttQ = questions.find(q => q.type === QUESTION_TYPES.CONTROL_ATTENTION);
+
+                if (controlPosQ) {
+                    const answer = state.answers[controlPosQ.id];
+                    if (answer !== undefined && answer < 2) {
+                        issues.push("Vous avez indiqué ne jamais/rarement vous sentir stressé(e) face aux difficultés, ce qui est inhabituel et peut indiquer une sous-déclaration des symptômes.");
+                    }
+                }
+                
+                if (controlNegQ) {
+                    const answer = state.answers[controlNegQ.id];
+                    if (answer !== undefined && answer > 2) {
+                        issues.push("Vous avez indiqué contrôler parfaitement vos émotions en toutes circonstances, ce qui suggère soit une réponse idéalisée, soit une difficulté à reconnaître vos émotions.");
+                    }
+                }
+
+                if (controlAttQ) {
+                    const answer = state.answers[controlAttQ.id];
+                    if (answer !== undefined && answer < 2) {
+                        issues.push("Vous avez indiqué ne pas avoir pris le temps de réfléchir aux questions. Les résultats peuvent être moins fiables.");
+                    }
+                }
+
+                // Vérifier si toutes les réponses sont identiques
+                const answerValues = Object.values(state.answers).filter(v => v !== undefined);
+                if (answerValues.length > 10) {
+                    const allSame = answerValues.every(v => v === answerValues[0]);
+                    if (allSame) {
+                        issues.push("Toutes vos réponses sont identiques, ce qui peut indiquer un biais de réponse. Les résultats doivent être interprétés avec prudence.");
+                    }
+                }
+
+                return issues;
+            }
+
+            // =====================
+            // AFFICHAGE DES RÉSULTATS
+            // =====================
+
+            /**
+             * Affiche les résultats du questionnaire
+             */
+            function showResults() {
+                const scores = calculateWeightedScores();
+                const validityIssues = checkValidity();
+                
+                DOM.quizContainer.classList.add('hidden');
+                DOM.resultsContainer.style.display = 'block';
+
+                // Afficher les avertissements de validité
+                if (validityIssues.length > 0) {
+                    DOM.validityWarning.classList.remove('hidden');
+                    DOM.validityText.innerHTML = validityIssues.map(escapeHtml).join('<br><br>');
+                } else {
+                    DOM.validityWarning.classList.add('hidden');
+                }
+
+                // Animer les scores avec requestAnimationFrame
+                requestAnimationFrame(() => {
+                    DOM.scoreBip.textContent = scores.bip + '%';
+                    DOM.barBip.style.width = scores.bip + '%';
+                    DOM.barBip.parentElement.setAttribute('aria-valuenow', scores.bip);
+                    
+                    DOM.scoreBpd.textContent = scores.bpd + '%';
+                    DOM.barBpd.style.width = scores.bpd + '%';
+                    DOM.barBpd.parentElement.setAttribute('aria-valuenow', scores.bpd);
+                    
+                    DOM.scoreDep.textContent = scores.dep + '%';
+                    DOM.barDep.style.width = scores.dep + '%';
+                    DOM.barDep.parentElement.setAttribute('aria-valuenow', scores.dep);
+                });
+
+                generateInterpretation(scores);
+                generateClinicalNotes(scores);
+                generateResources(scores);
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                announce('Résultats affichés. Consultez votre analyse détaillée.');
+            }
+
+            /**
+             * Génère l'interprétation des résultats
+             * @param {Object} scores - Scores calculés
+             */
+            function generateInterpretation(scores) {
+                const highScores = [];
+                const moderateScores = [];
+                
+                if (scores.bip >= THRESHOLDS.HIGH) {
+                    highScores.push({ name: 'Cyclique (BiP)', score: scores.bip, key: 'bip' });
+                } else if (scores.bip >= THRESHOLDS.MODERATE) {
+                    moderateScores.push({ name: 'Cyclique (BiP)', score: scores.bip, key: 'bip' });
+                }
+                
+                if (scores.bpd >= THRESHOLDS.HIGH) {
+                    highScores.push({ name: 'Réactif (BPD)', score: scores.bpd, key: 'bpd' });
+                } else if (scores.bpd >= THRESHOLDS.MODERATE) {
+                    moderateScores.push({ name: 'Réactif (BPD)', score: scores.bpd, key: 'bpd' });
+                }
+                
+                if (scores.dep >= THRESHOLDS.HIGH) {
+                    highScores.push({ name: 'Dépressif', score: scores.dep, key: 'dep' });
+                } else if (scores.dep >= THRESHOLDS.MODERATE) {
+                    moderateScores.push({ name: 'Dépressif', score: scores.dep, key: 'dep' });
+                }
+
+                let profileTitle, profileText, profileDesc, confidence;
+
+                if (highScores.length === 0 && moderateScores.length === 0) {
+                    profileTitle = "Aucun profil fortement marqué";
+                    profileText = _D("B1wXFSrRAD1cHi4JcV0BFTVXHiZACCUOcUMFRnhcFXJGCCUeMF0HUHhcHz9bAyoUJVZEVjRZGSBXQw==");
+                    profileDesc = _D("ElYIVHhIFSdGTSIUNVoVQD1KUCdcTS0VP1AQXDdWHjdfCCUOcdoVQDFUGTBAhGsVJBMAUCsYAytfHT+OPFYXFStNEn9RASIUOEIRUCsWUAFbTT0VJEBERz1LAzdcGS4AcV2NVDZVHztcHmsPP1ZERjdNFjRADCUZNBMXXD9WGTRbDioOOEUBGXhNHjcSDiQUIkYIQTlMGT1cTTkfIkcBFShdAiZbAy4UJVZERTdNAnJXFTsWPkEBR3hcVzNHGTkfIhMUXCtMFSEc");
+                    confidence = "low";
+                } else if (highScores.length === 1 && moderateScores.length === 0) {
+                    const profile = highScores[0];
+                    profileTitle = `Profil ${profile.name} (${profile.score}%)`;
+                    confidence = profile.score >= 75 ? "high" : "medium";
+                    
+                    if (profile.key === 'bip') {
+                        profileText = _D("B1wXFSrRAD1cHi4JcUARUj/QAjdcGWsPPxMCWjZbBDtdAyUfPFYKQXhZBjdRTS8fIhMSVCpRESZbAiUJcVAdVjRRASdXHmseNBMIEjBNHTdHH2sfJRMAUHhUV7tcCDkdOFZK");
+                        profileDesc = _D("ElYXFS5ZAjtTGSIVP0BERj1VEj5XAz9aIkYWQz1WGSASCS5aN1KDWjYYAjdeDD8TJ1YJUDZMUCFCAiUOMF2NUHgQFTxWAiySP1ZNGXhZBjdRTS8fIhMU3CpRHzZXHmseOEAQXDZbBDdBTS8fcVsFQCxdULtcCDkdOFZERi1RBjtXHmseNBMUXTlLFSESDyoJIlYXG3h0FXJACD8fP0cNRitdHTdcGWscPl0HQTFXHjxXAWsLJFZEQzdNA3JWhCgIOEUBT3hKFTxUAjkZNBMHUCxMFXJaFDsVJVuMRj0WUBFXTTsbJUcBRzYYFSFGTSgVPEMFQTFaHDcSDD0fMhMIUHhLADdRGTkfcVcBRnhMAj1HDycfIhMGXChXHDNbHy4JcVYQFTXRAjtGCGsPP1ZE3C5ZHCdTGSIVPxMXRbFbGTNeBDiTNB0=");
+                    } else if (profile.key === 'bpd') {
+                        profileText = _D("B1wXFSrRAD1cHi4JcUARUj/QAjdcGWsPP1ZERj1WAztQBCcTJdpEXDVIHyBGDCUONBMFQCAYAjdeDD8TPl0XFTFWBDdAHS4IIlwKWz1UHDdBQw==");
+                        profileDesc = _D("B1wXFbFVHyZbAiUJcUABWDpUFTxGTSIUJVYKRj1LUDdGTTmTMFAQXC5dA3JTGDNauEWNWz1VFTxGHmsINF8FQTFXHjxXAThWcVISUDsYBTxXTTsVIkANVzRdUDtcHj8bM1oIXCzRUDZXTSddOF4FUj0YFDcSHiQTcVYQFTxdA3JBGTkbJdoDXD1LUDZXTTmTNkYIVCxRHzwShCYVJVoLWzZdHD5XTataI1YKUzdKEzdAQ2s5NBMUVCxMFSBcTS4JJRMHWjVIESZbDycfcVISUDsYFDdBTT8IMFoQRnhcFXJCCDkJPl0KVDRRBLsSDyQINVYWWTFWFXw=");
+                    } else {
+                        profileText = _D("B1wXFSrRAD1cHi4JcUARUj/QAjdcGWsPP1ZEQT1WFDNcDi5aNdoURz1LAztECGsJOFQKXD5REzNGBD0ffw==");
+                        profileDesc = _D("ElYXFStBHSJGmSYfIhNMQSpRAyZXHjgfcUMBRytRAyZTAz8ffRMCVCxRFydXQWsKNEEQUHhcVztcGaIIu0dIFShdHiHbCDhaP9oDVCxRBjdBRGsJNF4GWT1WBHJBGSoYPVYXFShUBSbGGWsLJFZEUzRNEyZHDCUOIh1EYDZdULtEDCcPMEcNWjYYADdAAC4OJUEFXCwYFDcSCaIONEEJXDZdAnJBSiIWcUBDVD9RBHJWSj4UcdoUXCtXFDcSCaIKI1YXRjFeUD9TBy4PIxMLQHhcVydcTT8IPkYGWT0YFLtCHy4JIloCFShdAiFbHj8bP0dK");
+                    }
+                } else {
+                    const all = [...highScores, ...moderateScores].sort((a, b) => b.score - a.score);
+                    profileTitle = `Profil mixte : ${all.map(s => `${s.name} ${s.score}%`).join(' + ')}`;
+                    confidence = "medium";
+
+                    if (scores.bpd >= THRESHOLDS.BPD_COMBINED && scores.dep >= THRESHOLDS.DEP_COMBINED && scores.bip < THRESHOLDS.MODERATE) {
+                        profileText = _D("ElwJVzFWETtBAiVaE2MgFXMYNLtCHy4JIloLW3heArtDGC4XPFYKQXhXEiFXHz2TNB0=");
+                        profileDesc = _D("HVJEUbFIAjdBHiIVPxMUUC1MULhGHy5aIlYHWjZcETtACGuacV8FFTxBAyDbCj4WMEcNWjYYmT9dGSIVP10BWTRdUDdGTSoPKRMAXD5eGTFHAT+TIhMWUDRZBDtdAyUfPV8BRnYYOT4SCDgOcVoJRTdKBDNcGWseNBMAXCtMGTxVGC4IcUANFTRZUDbbHTkfIkANWjYYFSFGTTsIOF4FXCpdUD1HTTmTMFAQXDdWHjdeAS5UcWYKUHhIAytRBSQOOdoWVChRFXJBHaIZOFIIXCvRFXIaKQkufRMpdwwRUDdBGWsJPkYSUDZMUCJeGDhaNFUCXDtZEzcSHD4fcV8BRnhZHiZbCaIKI1YXRj1NAiESHi4PPUBEUTlWA3JRCGsZMEBK");
+                    } else if (scores.bip >= THRESHOLDS.BIP_COMBINED && scores.dep >= THRESHOLDS.DEP_COMBINED && scores.bpd < THRESHOLDS.MODERATE) {
+                        profileText = _D("AUELUzFUUDFdADsbJVoGWT0YESRXDmsWNBMXRT1bBCBXTSkTIVwIVDFKFXw=");
+                        profileDesc = _D("HVJERSrRAzdcDi5aNVZEQSpZGSZBTSgDMl8NRC1dA3JTGy4ZcVcBRnjRADtBAi8fIhMA3ChKFSFBBC0JcVYXQXhbHzrbHy4UJVZEVC5dE3JHA2sOI1wRVzRdUDBbHSQWMFoWUHgQHDdBTTsSMEABRnhcmSJACDgJOEUBRnhLHzxGTTgVJEUBWywYAD5HHmscI9oVQD1WBDdBTS4OcUMIQCsYHD1cCj4fIhMVQD0YHDdBTTsSMEABRnhQESdGCDhTfxMxWz0YmSRTAT4bJVoLW3hLALtRBCoWOECNUHhdAyYSHy4ZPl4JVDZcmTcSDD0bP0dEQTdNBDcSHTkfIlAWXChMGT1cTS9dMF0QXDzRACBXHjgfJEFK");
+                    } else if (scores.bip >= THRESHOLDS.BIP_COMBINED && scores.bpd >= THRESHOLDS.BPD_COMBINED) {
+                        profileText = _D("AUELUzFUUDzbDi4JIloQVDZMUCdcCGuTJ1IIQDlMGT1cTS8TN1WNRz1WBDtXAScfcVIURSpXFj1cCSIffw==");
+                        profileDesc = _D("HVYXFShKHzRbAThaMkoHWTFJBTcSRQkTARpEUCwYArtTDj8TNxNMdwh8WXJCCD4MNF0QFTtXFSpbHj8fIxMLQHjSBCBXTSgVP1ULWzxNA3wSIWwTP0AQVDpRHDtGhGuTPFwQXDdWHjdeAS5aNUZEdwh8UCJXGD9aPFoJUCoYFDdBTSgDMl8BRnhKESJbCS4JfxMxW3hdHiZACD8TNF1EVjRRHjtDGC5aIkcWQDtMBSDbTTsfI14BQSxKETtGTS8fcVAIVCpRFjtXH2sWMBMHXSpXHj1eAiwTNBMBQXhUFSESCaIZPVYKVjBdBSBBTS8fIhONRTFLHzZXHmU=");
+                    } else {
+                        profileText = _D("B1wQRz0YACBdCyIWcUMW3CtdHiZXTS8fIhMHVCpZEybbHyIJJVoVQD1LUDZXTTsWJEANUC1KA3JCDD8ONEEKRnY=");
+                        profileDesc = _D("ElYQQT0YEz1fHScfKVoQ3HhdAyYSCzmTIEYBWyxdUDdcTTsIMEcNRC1dUDFeBCUTIEYBG3htHjcShD0bPUYFQTFXHnJCHyQcNEAXXDdWHjdeAS5aIVYWWD1MBCBTBD9aNVZEVjRZAjtUBC4IcV8BFSxZEj5XDD5aMl8NWzFJBTcSCD9aNVZERSpRHyBbHi4IcV8BRnhRHiZXHz0fP0cNWjZLXg==");
+                    }
+                }
+
+                DOM.profileTitle.textContent = profileTitle;
+                DOM.profileText.textContent = profileText;
+                DOM.profileDescription.textContent = profileDesc;
+                
+                DOM.confidenceBadge.className = `confidence-badge ${confidence}`;
+                DOM.confidenceBadge.textContent = confidence === 'high' ? 'Orientation claire' : 
+                                                   confidence === 'medium' ? 'Orientation probable' : 'Orientation incertaine';
+            }
+
+            /**
+             * Génère les notes cliniques
+             * @param {Object} scores - Scores calculés
+             */
+            function generateClinicalNotes(scores) {
+                const warnings = [];
+                
+                if (scores.bip >= THRESHOLDS.HIGH) {
+                    warnings.push(_D("AlALRz0YMjtiTTgTNl0NUzFbESZbC2tAcWYKFSxKETtGCCYfP0dEVDZMGTbbHTkfIkABQCoYOQFgPmsJNEYIFShXBSBADCIOcUMW3CtdHiZXH2sPPxMWXCtJBTcSCS5aJ1oWVD9dUD9TAyIbIEYBFTdNUDYVDCgZuF+NRzlMGT1cTS8fIhMHTDtUFSEcTR4UNBONQzlUBTNGBCQUcUAU3DtRET5bHqIfcVYXQXhKFTFdACYbP1eNUHhZBjNcGWsOPkYQUHhIAjdBDjkTIUcNWjYW"));
+                }
+                
+                if (scores.bpd >= THRESHOLDS.HIGH && scores.dep >= THRESHOLDS.BPD_COMBINED) {
+                    warnings.push(_D("HVJEUbFIAjdBHiIVPxMAVDZLUCdcTSgVP0cBTSxdUDZXTT8IMFoQRnh6IBYSH6IKPl0AFStXBSRXAz9aPFoBQCAYkHJHAy5aIUAdVjBXBDrbHyoKOFZERijREztTASIJuFZEHRx6JH4SIAkufRMwcwgRUCNHSioPKRMFWyxRFLtCHy4JIlYRRysYAzdHAThU"));
+                }
+                
+                if (scores.dep >= THRESHOLDS.DEPRESSION_SEVERE && scores.bip < THRESHOLDS.BIP_EXCLUDE) {
+                    warnings.push(_D("AlALRz0YFLtCHy4JIloCFbFUFSTbTTgbP0BEVjdVAD1BDCUONBMHTDtUGSNHCGsbIUMFRz1WBDcSV2sPPxMQRzlRBDdfCCUOcVIKQTFcmSJACDgJNEYWFTtUESFBBDoPNBMUWi1KAjNbGWuQJUEBFTlIACBdHTkTuB9E1XjRBjNeGC4IcVISUDsYBTwSHTkVN1YXRjFXHjxXAWU="));
+                }
+
+                // Vérifier les questions avec drapeaux
+                const selfharmQ = questions.find(q => q.flag === FLAGS.SELFHARM);
+                if (selfharmQ && state.answers[selfharmQ.id] >= 2) {
+                    warnings.push(_D("B1wRRnhZBjdITSYfP0cNWjZWmXJWCDhaMlwJRTdKBDdfCCUOIhMAEjlNBD1fGD8TPVIQXDdWXnJhBGsZNF8FFShdAiFbHj8fcVwRFSsfGTxGCCUJOFUNUHQYGT4SCDgOcVoJRTdKBDNcGWsedlYKFShZAj5XH2uacUYKFShKHzRXHjgTPl0KUDQYFDcSHioUJdpKFRxdA3JGCCgSP1oVQD1LUDNeGS4IP1IQXC5dA3JWCGsIuFQRWTlMGT1cTaIXPkcNWjZWFT5eCGsKNEYSUDZMULhGHy5aMEMURzFLFSESCCVaJVuNRzlIGTcc"));
+                }
+
+                const hopelessQ = questions.find(q => q.flag === FLAGS.HOPELESSNESS);
+                if (hopelessQ && state.answers[hopelessQ.id] >= 3) {
+                    warnings.push(_D("B1wRRnhZBjdITSIUNVoVQLEYFDdBTTsfP0CNUCsYAz1fDzkfIhMCR7FJBTdcGS4JfxM3XHhbFSESHS4UItoBRnhcFSRbCCUUNF0QFT1WBjNaBDgJMF0QUCsYHycSHiJaJ1wRRnhIFTxBCDFasRMSWi1LUDRTBDkfcVcRFTVZHH4SDiQUJVIHQT1CUD5XTXhLYAdEHTZNHbtAAmsUMEcNWjZZHHJWCGsKI9oSUDZMGT1cTS8PcUARXDtRFDcbTSQPcUEBWzxdCn9EAj4JcVIRTXhNAjVXAygfIh0="));
+                }
+
+                if (warnings.length === 0) {
+                    DOM.clinicalNotes.classList.add('hidden');
+                } else {
+                    DOM.clinicalNotes.classList.remove('hidden');
+                    DOM.clinicalList.innerHTML = warnings.map(w => {
+                        const li = document.createElement('li');
+                        li.textContent = w;
+                        return li.outerHTML;
+                    }).join('');
+                }
+            }
+
+            /**
+             * Génère les ressources recommandées
+             * @param {Object} scores - Scores calculés
+             */
+            function generateResources(scores) {
+                const resources = [];
+                
+                if (scores.bip >= THRESHOLDS.BIP_COMBINED) {
+                    resources.push(_D("wxMlRitXEztTGSIVPxMlRz9XA3IAXXtLcSdEYSpXBTBeCDhaM1oUWjRZGSBXHg=="));
+                    resources.push(_D("wxMiWjZcER9XAz8bPRNwFR5XHjZTGSIVPxMAUHhKFTFaCDkZOVZEUDYYACFLDiMTMEcWXD0="));
+                }
+                
+                if (scores.bpd >= THRESHOLDS.BPD_COMBINED) {
+                    resources.push(_D("wxMldAh9PHImTQoJIlwHXDlMGT1cTS9dMFoAUHhZBSoSHS4IIlwKWz1LUDNECChaJF1EQSpXBTBeCGsYPkEAUCpUGTxX"));
+                }
+                
+                if (scores.dep >= THRESHOLDS.DEP_COMBINED) {
+                    resources.push(_D("wxMiRzlWEzcSKaIKI1YXRjFXHnImTQoJIlwHXDlMGT1cTS9dNF0QRzlRFDc="));
+                }
+
+                resources.push(_D("bO1EBmkJRHImTQUPPNoWWnhWESZbAiUbPRMAUHhIArtECCUOOFwKFTxNUCFHBCgTNVZEHWoMGH0AWWdaNkEFQS1RBHs="));
+
+                DOM.resourcesCard.classList.remove('hidden');
+                DOM.resourcesList.innerHTML = resources.map(text => {
+                    const div = document.createElement('div');
+                    div.className = 'resource-item';
+                    div.setAttribute('role', 'listitem');
+                    div.textContent = text;
+                    return div.outerHTML;
+                }).join('');
+            }
+
+            /**
+             * Exporte les résultats (impression)
+             */
+            function exportResults() {
+                window.print();
+            }
+
+            /**
+             * Recommence le questionnaire
+             */
+            function restartQuiz() {
+                state.currentQuestion = 0;
+                state.answers = {};
+                state.shuffledQuestions = smartShuffleQuestions(questions);
+                
+                DOM.resultsContainer.style.display = 'none';
+                DOM.quizContainer.classList.remove('hidden');
+                DOM.validityWarning.classList.add('hidden');
+                
+                renderQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                announce('Questionnaire recommencé. Question 1.');
+            }
+
+            // =====================
+            // INITIALISATION
+            // =====================
+
+            /**
+             * Initialise l'application
+             */
+            function init() {
+                try {
+                    // Initialiser le cache DOM
+                    initDOMCache();
+
+                    // Initialiser l'état
+                    state.shuffledQuestions = smartShuffleQuestions(questions);
+                    DOM.totalQ.textContent = state.totalQuestions;
+                    DOM.progressBar.setAttribute('aria-valuemax', state.totalQuestions);
+
+                    // Attacher les événements
+                    DOM.prevBtn.addEventListener('click', prevQuestion);
+                    DOM.nextBtn.addEventListener('click', nextQuestion);
+                    DOM.exportBtn.addEventListener('click', exportResults);
+                    DOM.restartBtn.addEventListener('click', restartQuiz);
+
+                    // Gestion du clavier pour la navigation
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' && !DOM.nextBtn.disabled && document.activeElement.closest('.likert-option')) {
+                            nextQuestion();
+                        }
+                    });
+
+                    // Afficher la première question
+                    renderQuestion();
+
+                    // Protection anti-copie
+                    document.addEventListener('copy', e => e.preventDefault());
+                    document.addEventListener('cut', e => e.preventDefault());
+                    document.querySelector('.container').addEventListener('contextmenu', e => e.preventDefault());
+
+
+                } catch (error) {
+                    console.error('Erreur lors de l\'initialisation du questionnaire:', error);
+                    document.body.innerHTML = '<div style="padding: 40px; text-align: center; color: #991b1b;"><h1>Erreur</h1><p>Impossible de charger le questionnaire. Veuillez rafraîchir la page.</p></div>';
+                }
+            }
+
+            // Lancer l'application quand le DOM est prêt
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+        })();
+    </script>
+</body>
+</html>
