@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer and Base64 Exporter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        button, input {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Charger et Redimensionner Image</h1>
+    
+    <input type="file" id="imageInput" accept="image/*">
+    <canvas id="canvas" width="256" height="256"></canvas>
+    <button id="exportBtn" disabled>Exporter Base64 vers image_B64.txt</button>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const exportBtn = document.getElementById('exportBtn');
+
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Redimensionner l'image à 256x256
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, 256, 256);
+                        exportBtn.disabled = false;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        exportBtn.addEventListener('click', () => {
+            // Exporter en base64
+            const base64 = canvas.toDataURL('image/jpeg'); // Ou 'image/png' si préféré
+            const blob = new Blob([base64], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'image_B64.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
