@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triage Pédiatrique - Aide à l'orientation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .category {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .category h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            font-size: 1.2em;
+        }
+        .symptom-item {
+            margin: 10px 0;
+        }
+        .symptom-item > label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .symptom-item > label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .sub-options {
+            display: none;
+            margin-left: 35px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #007bff;
+        }
+        .sub-options.visible {
+            display: block;
+        }
+        .sub-options label {
+            display: block;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .sub-options input[type="radio"],
+        .sub-options input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        .red-flag {
+            color: #dc3545;
+        }
+        .red-flag::after {
+            content: " ⚠️";
+        }
+        button#analyser {
+            display: block;
+            width: 100%;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        button#analyser:hover {
+            background: #0056b3;
+        }
+        button#reset {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        #resultat {
+            display: none;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        #resultat.niveau-rouge {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+        #resultat.niveau-orange {
+            background: #ffe5d0;
+            border: 2px solid #fd7e14;
+        }
+        #resultat.niveau-jaune {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+        #resultat.niveau-vert {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+        #resultat h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .urgence-icon {
+            font-size: 2em;
+        }
+        .pathologies-probables {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+        }
+        .pathologies-probables h4 {
+            margin-top: 0;
+        }
+        .pathologie-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .pathologie-item:last-child {
+            border-bottom: none;
+        }
+        .conseils {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+        }
+        .conseils h4 {
+            margin-top: 0;
+        }
+        .conseils ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .surveillance {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .surveillance h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .psy-alert {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e2e3f3;
+            border-radius: 8px;
+            border-left: 4px solid #6f42c1;
+        }
+    </style>
+</head>
+<body>
+    <h1>🩺 Triage Pédiatrique (6-15 ans)</h1>
+    
+    <div class="disclaimer">
+        <strong>⚠️ Cet outil ne remplace pas un avis médical.</strong><br>
+        Il aide à évaluer l'urgence d'une consultation. En cas de doute, consultez toujours un professionnel de santé.
+        En cas d'urgence vitale, appelez le <strong>15</strong> ou le <strong>112</strong>.
+    </div>
+
+    <!-- GÉNÉRAL -->
+    <div class="category">
+        <h2>🌡️ État général</h2>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="fievre" onchange="toggleSub(this)"> Fièvre</label>
+            <div class="sub-options" id="sub-fievre">
+                <strong>Température :</strong><br>
+                <label><input type="radio" name="temp" value="38"> 38 - 38.5°C (légère)</label>
+                <label><input type="radio" name="temp" value="38.5"> 38.5 - 39°C (modérée)</label>
+                <label><input type="radio" name="temp" value="39"> 39 - 40°C (élevée)</label>
+                <label class="red-flag"><input type="radio" name="temp" value="40"> &gt; 40°C</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="fatigue" onchange="toggleSub(this)"> Fatigue inhabituelle</label>
+            <div class="sub-options" id="sub-fatigue">
+                <label><input type="radio" name="fatigue-level" value="legere"> Légère - moins actif que d'habitude</label>
+                <label><input type="radio" name="fatigue-level" value="marquee"> Marquée - reste couché, peu d'intérêt</label>
+                <label class="red-flag"><input type="radio" name="fatigue-level" value="prostration"> Prostration - ne réagit presque plus</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="appetit"> Perte d'appétit</label>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="frissons"> Frissons / Sueurs</label>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="courbatures"> Courbatures / Douleurs musculaires intenses</label>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="douleur-yeux"> Douleur derrière les yeux (rétro-orbitaire)</label>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="paleur" onchange="toggleSub(this)"> Pâleur / Teint anormal</label>
+            <div class="sub-options" id="sub-paleur">
+                <label><input type="radio" name="paleur-type" value="pale"> Pâle</label>
+                <label><input type="radio" name="paleur-type" value="gris"> Teint gris / terreux</label>
+                <label class="red-flag"><input type="radio" name="paleur-type" value="marbrures"> Marbrures (taches violacées)</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESPIRATOIRE -->
+    <div class="category">
+        <h2>🫁 Respiratoire</h2>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="toux" onchange="toggleSub(this)"> Toux</label>
+            <div class="sub-options" id="sub-toux">
+                <label><input type="radio" name="toux-type" value="seche"> Sèche</label>
+                <label><input type="radio" name="toux-type" value="grasse"> Grasse (productive)</label>
+                <label><input type="radio" name="toux-type" value="aboyante"> Aboyante (comme un chien)</label>
+                <label><input type="radio" name="toux-type" value="quinteuse"> Quinteuse (séries prolongées)</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="nez" onchange="toggleSub(this)"> Nez qui coule</label>
+            <div class="sub-options" id="sub-nez">
+                <label><input type="radio" name="nez-type" value="clair"> Clair / transparent</label>
+                <label><input type="radio" name="nez-type" value="jaune"> Jaune / vert (épais)</label>
+                <label><input type="radio" name="nez-type" value="sang"> Avec du sang</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="gorge" onchange="toggleSub(this)"> Mal de gorge</label>
+            <div class="sub-options" id="sub-gorge">
+                <label><input type="radio" name="gorge-type" value="douleur"> Douleur simple</label>
+                <label><input type="radio" name="gorge-type" value="avaler"> Difficulté à avaler</label>
+                <label class="red-flag"><input type="radio" name="gorge-type" value="bave"> Ne déglutit plus / bave</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="respiration" onchange="toggleSub(this)"> Difficultés respiratoires</label>
+            <div class="sub-options" id="sub-respiration">
+                <label><input type="radio" name="respi-type" value="rapide"> Respiration rapide</label>
+                <label><input type="radio" name="respi-type" value="sifflante"> Sifflements</label>
+                <label class="red-flag"><input type="radio" name="respi-type" value="tirage"> Tirage (creuse entre les côtes)</label>
+                <label class="red-flag"><input type="radio" name="respi-type" value="cyanose"> Lèvres / ongles bleutés</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="voix" onchange="toggleSub(this)"> Voix modifiée</label>
+            <div class="sub-options" id="sub-voix">
+                <label><input type="radio" name="voix-type" value="enrouee"> Enrouée</label>
+                <label><input type="radio" name="voix-type" value="eteinte"> Éteinte</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIGESTIF -->
+    <div class="category">
+        <h2>🤢 Digestif</h2>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="vomissements" onchange="toggleSub(this)"> Vomissements</label>
+            <div class="sub-options" id="sub-vomissements">
+                <strong>Aspect :</strong><br>
+                <label><input type="radio" name="vomi-type" value="alimentaire"> Alimentaires</label>
+                <label><input type="radio" name="vomi-type" value="glaires"> Glaires / mousseux</label>
+                <label><input type="radio" name="vomi-type" value="bilieux"> Bilieux (verdâtre)</label>
+                <label class="red-flag"><input type="radio" name="vomi-type" value="sang"> Sang rouge</label>
+                <label class="red-flag"><input type="radio" name="vomi-type" value="marc"> Marc de café (noirâtre)</label>
+                <hr>
+                <strong>Fréquence :</strong><br>
+                <label><input type="radio" name="vomi-freq" value="isole"> Isolé (1-2 fois)</label>
+                <label><input type="radio" name="vomi-freq" value="repete"> Répétés</label>
+                <label><input type="radio" name="vomi-freq" value="incoercible"> Incoercibles (ne garde rien)</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="diarrhee" onchange="toggleSub(this)"> Diarrhée</label>
+            <div class="sub-options" id="sub-diarrhee">
+                <strong>Consistance :</strong><br>
+                <label><input type="radio" name="diarrhee-type" value="molle"> Molle</label>
+                <label><input type="radio" name="diarrhee-type" value="liquide"> Liquide</label>
+                <label><input type="radio" name="diarrhee-type" value="explosive"> Explosive / très fréquente</label>
+                <hr>
+                <strong>Couleur :</strong><br>
+                <label><input type="radio" name="diarrhee-couleur" value="normale"> Normale / brunâtre</label>
+                <label><input type="radio" name="diarrhee-couleur" value="pale"> Pâle / décolorée</label>
+                <label class="red-flag"><input type="radio" name="diarrhee-couleur" value="sang"> Sang rouge</label>
+                <label class="red-flag"><input type="radio" name="diarrhee-couleur" value="noire"> Noire (méléna)</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="douleur-abdo" onchange="toggleSub(this)"> Douleur abdominale</label>
+            <div class="sub-options" id="sub-douleur-abdo">
+                <strong>Localisation :</strong><br>
+                <label><input type="radio" name="abdo-loc" value="diffuse"> Diffuse (partout)</label>
+                <label><input type="radio" name="abdo-loc" value="estomac"> Estomac (haut)</label>
+                <label><input type="radio" name="abdo-loc" value="nombril"> Autour du nombril</label>
+                <label><input type="radio" name="abdo-loc" value="fid"> En bas à droite</label>
+                <label><input type="radio" name="abdo-loc" value="fig"> En bas à gauche</label>
+                <hr>
+                <strong>Caractéristiques :</strong><br>
+                <label><input type="checkbox" name="abdo-carac" value="constante"> Constante</label>
+                <label><input type="checkbox" name="abdo-carac" value="crampes"> Par crampes</label>
+                <label class="red-flag"><input type="checkbox" name="abdo-carac" value="defense"> Ventre dur / ne se laisse pas toucher</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="constipation"> Constipation (pas de selles &gt; 3 jours)</label>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="deshydratation" onchange="toggleSub(this)"> Signes de déshydratation</label>
+            <div class="sub-options" id="sub-deshydratation">
+                <label><input type="checkbox" name="desh" value="soif"> Soif importante</label>
+                <label><input type="checkbox" name="desh" value="bouche"> Bouche sèche</label>
+                <label><input type="checkbox" name="desh" value="urines"> Urines rares / foncées</label>
+                <label class="red-flag"><input type="checkbox" name="desh" value="pli"> Pli cutané persistant</label>
+                <label class="red-flag"><input type="checkbox" name="desh" value="yeux"> Yeux creux / cernés</label>
+                <label class="red-flag"><input type="checkbox" name="desh" value="pasurines"> Pas d'urines depuis &gt; 8h</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUTANÉ -->
+    <div class="category">
+        <h2>🔴 Cutané (peau)</h2>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="eruption" onchange="toggleSub(this)"> Éruption / Boutons</label>
+            <div class="sub-options" id="sub-eruption">
+                <strong>Type :</strong><br>
+                <label><input type="radio" name="eruption-type" value="boutons"> Boutons rouges</label>
+                <label><input type="radio" name="eruption-type" value="plaques"> Plaques rouges</label>
+                <label><input type="radio" name="eruption-type" value="vesicules"> Vésicules (petites cloques)</label>
+                <label><input type="radio" name="eruption-type" value="urticaire"> Urticaire (relief, démangeaisons)</label>
+                <label class="red-flag"><input type="radio" name="eruption-type" value="purpura"> Taches rouge/violet qui NE S'EFFACENT PAS à la pression</label>
+                <hr>
+                <label><input type="checkbox" id="eruption-gratte"> Ça gratte</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="oedeme" onchange="toggleSub(this)"> Gonflement (œdème)</label>
+            <div class="sub-options" id="sub-oedeme">
+                <label><input type="radio" name="oedeme-loc" value="visage"> Visage</label>
+                <label><input type="radio" name="oedeme-loc" value="levres"> Lèvres / langue</label>
+                <label><input type="radio" name="oedeme-loc" value="membres"> Membres</label>
+                <label><input type="radio" name="oedeme-loc" value="oeil"> Œil / paupière</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="ictere"> Jaunisse (yeux/peau jaunes)</label>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="saignements" onchange="toggleSub(this)" class="red-flag"> Saignements spontanés</label>
+            <div class="sub-options" id="sub-saignements">
+                <label><input type="checkbox" name="saign" value="gencives"> Gencives qui saignent</label>
+                <label><input type="checkbox" name="saign" value="nez"> Saignements de nez répétés</label>
+                <label><input type="checkbox" name="saign" value="ecchymoses"> Ecchymoses (bleus) spontanées</label>
+                <label><input type="checkbox" name="saign" value="petechies"> Petits points rouges (pétéchies)</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="extremites-froides"> Extrémités froides / moites</label>
+        </div>
+    </div>
+
+    <!-- NEUROLOGIQUE -->
+    <div class="category">
+        <h2>🧠 Neurologique</h2>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="cephalee" onchange="toggleSub(this)"> Mal de tête</label>
+            <div class="sub-options" id="sub-cephalee">
+                <label><input type="radio" name="cephalee-type" value="leger"> Léger</label>
+                <label><input type="radio" name="cephalee-type" value="modere"> Modéré</label>
+                <label><input type="radio" name="cephalee-type" value="intense"> Intense</label>
+                <label class="red-flag"><input type="radio" name="cephalee-type" value="brutal"> Brutal et très intense ("pire de sa vie")</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="raideur-nuque"> Raideur de nuque (ne peut pas toucher poitrine avec menton)</label>
+        </div>
+
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="convulsions"> Convulsions</label>
+        </div>
+
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="confusion"> Confusion / Comportement anormal / Somnolence excessive</label>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="vertiges"> Vertiges</label>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="photophobie"> Gêné par la lumière (photophobie)</label>
+        </div>
+    </div>
+
+    <!-- ORL -->
+    <div class="category">
+        <h2>👂 ORL / Tête</h2>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="oreille" onchange="toggleSub(this)"> Douleur d'oreille</label>
+            <div class="sub-options" id="sub-oreille">
+                <label><input type="radio" name="oreille-cote" value="uni"> Une oreille</label>
+                <label><input type="radio" name="oreille-cote" value="bi"> Les deux oreilles</label>
+                <hr>
+                <label><input type="checkbox" name="oreille-ecoul" value="oui"> Écoulement (liquide qui sort)</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="ganglions" onchange="toggleSub(this)"> Ganglions palpables</label>
+            <div class="sub-options" id="sub-ganglions">
+                <label><input type="radio" name="ganglions-loc" value="cou"> Cou</label>
+                <label><input type="radio" name="ganglions-loc" value="multiple"> Plusieurs zones</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="yeux" onchange="toggleSub(this)"> Problème aux yeux</label>
+            <div class="sub-options" id="sub-yeux">
+                <label><input type="checkbox" name="yeux-type" value="rouge"> Rouges</label>
+                <label><input type="checkbox" name="yeux-type" value="colles"> Collés / sécrétions</label>
+                <label><input type="checkbox" name="yeux-type" value="larmoie"> Larmoiement</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="anosmie"> Perte d'odorat et/ou de goût</label>
+        </div>
+    </div>
+
+    <!-- URINAIRE -->
+    <div class="category">
+        <h2>💧 Urinaire</h2>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="urinaire" onchange="toggleSub(this)"> Problèmes urinaires</label>
+            <div class="sub-options" id="sub-urinaire">
+                <label><input type="checkbox" name="uri" value="brulure"> Brûlures en urinant</label>
+                <label><input type="checkbox" name="uri" value="frequent"> Envies fréquentes</label>
+                <label><input type="checkbox" name="uri" value="trouble"> Urines troubles</label>
+                <label><input type="checkbox" name="uri" value="odeur"> Urines malodorantes</label>
+                <label class="red-flag"><input type="checkbox" name="uri" value="sang"> Sang dans les urines</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="douleur-lombaire"> Douleur dans le dos (lombaire)</label>
+        </div>
+    </div>
+
+    <!-- OSTÉO -->
+    <div class="category">
+        <h2>🦴 Ostéo-articulaire</h2>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="douleur-articulaire" onchange="toggleSub(this)"> Douleurs articulaires</label>
+            <div class="sub-options" id="sub-douleur-articulaire">
+                <strong>Intensité :</strong><br>
+                <label><input type="radio" name="artic-intensite" value="legere"> Légères</label>
+                <label><input type="radio" name="artic-intensite" value="moderee"> Modérées</label>
+                <label><input type="radio" name="artic-intensite" value="intense"> Intenses / invalidantes</label>
+                <hr>
+                <strong>Localisation :</strong><br>
+                <label><input type="checkbox" name="artic-loc" value="petites"> Petites articulations (doigts, poignets, chevilles)</label>
+                <label><input type="checkbox" name="artic-loc" value="grosses"> Grosses articulations (genoux, coudes)</label>
+                <label><input type="checkbox" name="artic-loc" value="multiples"> Plusieurs articulations touchées</label>
+            </div>
+        </div>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="douleur-membre" onchange="toggleSub(this)"> Douleur membre</label>
+            <div class="sub-options" id="sub-douleur-membre">
+                <label><input type="radio" name="membre-type" value="effort"> Après effort / sport</label>
+                <label><input type="radio" name="membre-type" value="spontanee"> Spontanée</label>
+                <label><input type="checkbox" name="membre-signe" value="boiterie"> Boiterie</label>
+                <label><input type="checkbox" name="membre-signe" value="gonfle"> Articulation gonflée</label>
+                <label><input type="checkbox" name="membre-signe" value="rouge"> Articulation rouge / chaude</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTEXTE PSY -->
+    <div class="category" style="border-left: 4px solid #6f42c1;">
+        <h2>💭 Contexte émotionnel / comportemental</h2>
+        <p style="font-size: 0.9em; color: #666;">Ces éléments aident à identifier un éventuel facteur stress/anxiété</p>
+        
+        <div class="symptom-item">
+            <label><input type="checkbox" id="psy-ecole"> Symptômes surtout avant école / contrôle / examen</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="psy-weekend"> Amélioration nette le week-end / vacances</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="psy-recurrent"> Plaintes récurrentes sans cause médicale trouvée</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="psy-event"> Événement stressant récent (déménagement, séparation, deuil, conflit...)</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="psy-sommeil"> Troubles du sommeil récents</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="psy-humeur"> Changement d'humeur marqué</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="psy-verbalise"> Exprime de l'anxiété / tristesse / peur</label>
+        </div>
+    </div>
+
+    <button id="analyser" onclick="analyser()">🔍 Analyser les symptômes</button>
+    <button id="reset" onclick="resetForm()">↺ Réinitialiser</button>
+
+    <div id="resultat"></div>
+
+    <script>
+        function toggleSub(checkbox) {
+            const subId = 'sub-' + checkbox.id;
+            const subDiv = document.getElementById(subId);
+            if (subDiv) {
+                subDiv.classList.toggle('visible', checkbox.checked);
+            }
+        }
+
+        function getVal(name) {
+            const el = document.querySelector(`input[name="${name}"]:checked`);
+            return el ? el.value : null;
+        }
+
+        function isChecked(id) {
+            const el = document.getElementById(id);
+            return el ? el.checked : false;
+        }
+
+        function getCheckedValues(name) {
+            const els = document.querySelectorAll(`input[name="${name}"]:checked`);
+            return Array.from(els).map(e => e.value);
+        }
+
+        function analyser() {
+            // Données collectées
+            const data = {
+                fievre: isChecked('fievre'),
+                temp: getVal('temp'),
+                fatigue: isChecked('fatigue'),
+                fatigueLevel: getVal('fatigue-level'),
+                appetit: isChecked('appetit'),
+                frissons: isChecked('frissons'),
+                courbatures: isChecked('courbatures'),
+                douleurYeux: isChecked('douleur-yeux'),
+                paleur: isChecked('paleur'),
+                paleurType: getVal('paleur-type'),
+                
+                toux: isChecked('toux'),
+                touxType: getVal('toux-type'),
+                nez: isChecked('nez'),
+                nezType: getVal('nez-type'),
+                gorge: isChecked('gorge'),
+                gorgeType: getVal('gorge-type'),
+                respiration: isChecked('respiration'),
+                respiType: getVal('respi-type'),
+                voix: isChecked('voix'),
+                voixType: getVal('voix-type'),
+                
+                vomissements: isChecked('vomissements'),
+                vomiType: getVal('vomi-type'),
+                vomiFreq: getVal('vomi-freq'),
+                diarrhee: isChecked('diarrhee'),
+                diarrheeType: getVal('diarrhee-type'),
+                dirrheeCouleur: getVal('diarrhee-couleur'),
+                douleurAbdo: isChecked('douleur-abdo'),
+                abdoLoc: getVal('abdo-loc'),
+                abdoCarac: getCheckedValues('abdo-carac'),
+                constipation: isChecked('constipation'),
+                deshydratation: isChecked('deshydratation'),
+                deshSignes: getCheckedValues('desh'),
+                
+                eruption: isChecked('eruption'),
+                eruptionType: getVal('eruption-type'),
+                eruptionGratte: isChecked('eruption-gratte'),
+                oedeme: isChecked('oedeme'),
+                oedemeLoc: getVal('oedeme-loc'),
+                ictere: isChecked('ictere'),
+                saignements: isChecked('saignements'),
+                saignSignes: getCheckedValues('saign'),
+                extremitesFroides: isChecked('extremites-froides'),
+                
+                cephalee: isChecked('cephalee'),
+                cephaleeType: getVal('cephalee-type'),
+                raideurNuque: isChecked('raideur-nuque'),
+                convulsions: isChecked('convulsions'),
+                confusion: isChecked('confusion'),
+                vertiges: isChecked('vertiges'),
+                photophobie: isChecked('photophobie'),
+                
+                oreille: isChecked('oreille'),
+                oreilleCote: getVal('oreille-cote'),
+                oreilleEcoul: getCheckedValues('oreille-ecoul').length > 0,
+                ganglions: isChecked('ganglions'),
+                ganglionsLoc: getVal('ganglions-loc'),
+                yeux: isChecked('yeux'),
+                yeuxTypes: getCheckedValues('yeux-type'),
+                anosmie: isChecked('anosmie'),
+                
+                urinaire: isChecked('urinaire'),
+                uriSignes: getCheckedValues('uri'),
+                douleurLombaire: isChecked('douleur-lombaire'),
+                
+                douleurArticulaire: isChecked('douleur-articulaire'),
+                articIntensite: getVal('artic-intensite'),
+                articLoc: getCheckedValues('artic-loc'),
+                douleurMembre: isChecked('douleur-membre'),
+                membreType: getVal('membre-type'),
+                membreSignes: getCheckedValues('membre-signe'),
+                
+                psyEcole: isChecked('psy-ecole'),
+                psyWeekend: isChecked('psy-weekend'),
+                psyRecurrent: isChecked('psy-recurrent'),
+                psyEvent: isChecked('psy-event'),
+                psySommeil: isChecked('psy-sommeil'),
+                psyHumeur: isChecked('psy-humeur'),
+                psyVerbalise: isChecked('psy-verbalise')
+            };
+
+            // DRAPEAUX ROUGES - urgence immédiate
+            const drapeauxRouges = [];
+            
+            if (data.eruptionType === 'purpura' && data.fievre) {
+                drapeauxRouges.push("Purpura fébrile - suspicion de méningite/septicémie");
+            }
+            if (data.raideurNuque && data.fievre) {
+                drapeauxRouges.push("Syndrome méningé (fièvre + raideur de nuque)");
+            }
+            if (data.raideurNuque && data.cephalee) {
+                drapeauxRouges.push("Syndrome méningé (céphalées + raideur de nuque)");
+            }
+            if (data.convulsions) {
+                drapeauxRouges.push("Convulsions");
+            }
+            if (data.respiType === 'cyanose') {
+                drapeauxRouges.push("Cyanose - détresse respiratoire sévère");
+            }
+            if (data.respiType === 'tirage') {
+                drapeauxRouges.push("Tirage respiratoire - détresse respiratoire");
+            }
+            if (data.fatigueLevel === 'prostration') {
+                drapeauxRouges.push("Prostration - altération sévère de l'état général");
+            }
+            if (data.confusion) {
+                drapeauxRouges.push("Confusion / troubles de la conscience");
+            }
+            if (data.vomiType === 'sang' || data.vomiType === 'marc') {
+                drapeauxRouges.push("Vomissements sanglants - hémorragie digestive");
+            }
+            if (data.dirrheeCouleur === 'noire' || data.dirrheeCouleur === 'sang') {
+                drapeauxRouges.push("Sang dans les selles - hémorragie digestive");
+            }
+            if (data.abdoCarac.includes('defense')) {
+                drapeauxRouges.push("Défense abdominale - possible urgence chirurgicale");
+            }
+            if (data.cephaleeType === 'brutal') {
+                drapeauxRouges.push("Céphalée brutale intense - possible urgence neurologique");
+            }
+            if (data.deshSignes.includes('pli') || data.deshSignes.includes('yeux') || data.deshSignes.includes('pasurines')) {
+                drapeauxRouges.push("Déshydratation sévère");
+            }
+            if (data.gorgeType === 'bave') {
+                drapeauxRouges.push("Impossibilité de déglutir - possible épiglottite");
+            }
+            if (data.paleurType === 'marbrures') {
+                drapeauxRouges.push("Marbrures cutanées - signe de choc");
+            }
+            if (data.temp === '40' && data.fatigueLevel === 'marquee') {
+                drapeauxRouges.push("Fièvre très élevée avec altération de l'état général");
+            }
+            if (data.oedemeLoc === 'levres' && (data.respiration || data.eruption)) {
+                drapeauxRouges.push("Possible réaction anaphylactique");
+            }
+            if (data.saignements && data.saignSignes.length >= 2 && data.fievre) {
+                drapeauxRouges.push("Syndrome hémorragique fébrile - suspicion dengue sévère");
+            }
+            if (data.extremitesFroides && data.fievre) {
+                drapeauxRouges.push("Extrémités froides avec fièvre - signe de choc");
+            }
+            if (data.douleurAbdo && data.abdoCarac.includes('constante') && data.vomiFreq === 'incoercible' && data.fievre) {
+                drapeauxRouges.push("Douleur abdominale intense + vomissements persistants + fièvre - alerte dengue sévère");
+            }
+
+            // Si drapeaux rouges -> URGENCE
+            if (drapeauxRouges.length > 0) {
+                afficherResultat('rouge', drapeauxRouges, [], data);
+                return;
+            }
+
+            // ANALYSE DES PATHOLOGIES PROBABLES
+            const pathologies = [];
+            let scoreUrgence = 0;
+
+            // Rhinopharyngite
+            if (data.nez && (data.nezType === 'clair' || data.nezType === 'jaune') && 
+                (!data.fievre || data.temp === '38' || data.temp === '38.5')) {
+                pathologies.push({
+                    nom: "Rhinopharyngite (rhume)",
+                    score: 0,
+                    description: "Infection virale bénigne des voies respiratoires supérieures"
+                });
+            }
+
+            // Gastro-entérite
+            if ((data.vomissements || data.diarrhee) && !data.dirrheeCouleur?.includes('sang')) {
+                let gastroScore = 0;
+                if (data.vomiFreq === 'incoercible') gastroScore = 2;
+                else if (data.diarrheeType === 'explosive') gastroScore = 1;
+                if (data.deshydratation) gastroScore += 1;
+                pathologies.push({
+                    nom: "Gastro-entérite",
+                    score: gastroScore,
+                    description: "Infection digestive le plus souvent virale"
+                });
+                scoreUrgence = Math.max(scoreUrgence, gastroScore);
+            }
+
+            // Otite
+            if (data.oreille && data.fievre) {
+                pathologies.push({
+                    nom: "Otite moyenne aiguë",
+                    score: 1,
+                    description: "Infection de l'oreille moyenne, fréquente chez l'enfant"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 1);
+            }
+
+            // Angine
+            if (data.gorge && data.fievre && data.ganglions) {
+                pathologies.push({
+                    nom: "Angine",
+                    score: 1,
+                    description: "Infection des amygdales, virale ou bactérienne (strepto)"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 1);
+            }
+
+            // Grippe
+            if (data.fievre && (data.temp === '39' || data.temp === '40') && 
+                data.frissons && (data.toux || data.cephalee)) {
+                pathologies.push({
+                    nom: "Syndrome grippal",
+                    score: 1,
+                    description: "Infection virale avec fièvre élevée et courbatures"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 1);
+            }
+
+            // Dengue
+            if (data.fievre && (data.temp === '39' || data.temp === '40') && 
+                (data.douleurYeux || data.courbatures) && data.cephalee) {
+                let dengueScore = 1;
+                if (data.eruption) dengueScore = 1;
+                if (data.saignements) dengueScore = 3;
+                if (data.douleurAbdo && data.vomissements) dengueScore = 2;
+                pathologies.push({
+                    nom: "Suspicion de dengue",
+                    score: dengueScore,
+                    description: "Arbovirose transmise par moustique - surveillance étroite recommandée"
+                });
+                scoreUrgence = Math.max(scoreUrgence, dengueScore);
+            }
+
+            // Chikungunya
+            if (data.fievre && data.douleurArticulaire && 
+                (data.articIntensite === 'intense' || data.articLoc.includes('multiples'))) {
+                pathologies.push({
+                    nom: "Suspicion de chikungunya",
+                    score: 1,
+                    description: "Arbovirose avec douleurs articulaires caractéristiques"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 1);
+            }
+
+            // COVID-19
+            if ((data.fievre && data.anosmie) || 
+                (data.toux && data.anosmie && (data.fatigue || data.cephalee))) {
+                pathologies.push({
+                    nom: "Suspicion de COVID-19",
+                    score: 1,
+                    description: "Infection respiratoire - isolement et test recommandés"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 1);
+            }
+
+            // Varicelle
+            if (data.eruption && data.eruptionType === 'vesicules' && data.eruptionGratte) {
+                pathologies.push({
+                    nom: "Varicelle",
+                    score: 0,
+                    description: "Infection virale bénigne avec vésicules prurigineuses"
+                });
+            }
+
+            // Bronchite
+            if (data.toux && data.touxType === 'grasse' && data.fievre) {
+                pathologies.push({
+                    nom: "Bronchite",
+                    score: 1,
+                    description: "Inflammation des bronches, souvent virale"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 1);
+            }
+
+            // Laryngite
+            if (data.toux && data.touxType === 'aboyante' && data.voix) {
+                pathologies.push({
+                    nom: "Laryngite",
+                    score: 2,
+                    description: "Inflammation du larynx avec toux caractéristique"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 2);
+            }
+
+            // Cystite
+            if (data.urinaire && data.uriSignes.includes('brulure') && !data.fievre) {
+                pathologies.push({
+                    nom: "Infection urinaire basse (cystite)",
+                    score: 1,
+                    description: "Infection de la vessie"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 1);
+            }
+
+            // Pyélonéphrite
+            if (data.urinaire && data.fievre && data.douleurLombaire) {
+                pathologies.push({
+                    nom: "Pyélonéphrite",
+                    score: 2,
+                    description: "Infection du rein nécessitant un traitement rapide"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 2);
+            }
+
+            // Appendicite
+            if (data.douleurAbdo && data.abdoLoc === 'fid' && data.fievre) {
+                let appendScore = 2;
+                if (data.vomissements) appendScore = 3;
+                pathologies.push({
+                    nom: "Possible appendicite",
+                    score: appendScore,
+                    description: "Inflammation de l'appendice - consultation urgente nécessaire"
+                });
+                scoreUrgence = Math.max(scoreUrgence, appendScore);
+            }
+
+            // Pneumonie
+            if (data.fievre && (data.temp === '39' || data.temp === '40') && 
+                data.toux && data.respiType === 'rapide') {
+                pathologies.push({
+                    nom: "Possible pneumonie",
+                    score: 2,
+                    description: "Infection pulmonaire nécessitant évaluation médicale"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 2);
+            }
+
+            // Asthme / crise
+            if (data.respiration && data.respiType === 'sifflante') {
+                pathologies.push({
+                    nom: "Bronchospasme / crise d'asthme",
+                    score: 2,
+                    description: "Rétrécissement des bronches - à surveiller de près"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 2);
+            }
+
+            // Conjonctivite
+            if (data.yeux && (data.yeuxTypes.includes('rouge') || data.yeuxTypes.includes('colles'))) {
+                pathologies.push({
+                    nom: "Conjonctivite",
+                    score: 0,
+                    description: "Inflammation de l'œil, souvent virale ou allergique"
+                });
+            }
+
+            // Urticaire / allergie
+            if (data.eruption && data.eruptionType === 'urticaire') {
+                let allergieScore = 0;
+                if (data.oedeme) allergieScore = 2;
+                pathologies.push({
+                    nom: "Urticaire / réaction allergique",
+                    score: allergieScore,
+                    description: "Réaction cutanée, surveiller l'évolution"
+                });
+                scoreUrgence = Math.max(scoreUrgence, allergieScore);
+            }
+
+            // Arthrite
+            if (data.douleurMembre && data.membreSignes.includes('gonfle') && 
+                data.membreSignes.includes('rouge') && data.fievre) {
+                pathologies.push({
+                    nom: "Possible arthrite septique",
+                    score: 2,
+                    description: "Infection articulaire nécessitant consultation rapide"
+                });
+                scoreUrgence = Math.max(scoreUrgence, 2);
+            }
+
+            // ANALYSE CONTEXTE PSY
+            const psyScore = [data.psyEcole, data.psyWeekend, data.psyRecurrent, 
+                            data.psyEvent, data.psySommeil, data.psyHumeur, 
+                            data.psyVerbalise].filter(Boolean).length;
+
+            // Déterminer le niveau
+            let niveau;
+            if (scoreUrgence >= 3) {
+                niveau = 'orange';
+            } else if (scoreUrgence >= 2) {
+                niveau = 'orange';
+            } else if (scoreUrgence >= 1 || pathologies.length > 0) {
+                niveau = 'jaune';
+            } else {
+                niveau = 'vert';
+            }
+
+            // Si pas de symptômes cochés
+            const anySymptom = Object.values(data).some(v => v === true || (Array.isArray(v) && v.length > 0));
+            if (!anySymptom) {
+                document.getElementById('resultat').innerHTML = '<p>Veuillez cocher au moins un symptôme.</p>';
+                document.getElementById('resultat').style.display = 'block';
+                document.getElementById('resultat').className = '';
+                return;
+            }
+
+            afficherResultat(niveau, [], pathologies, data, psyScore);
+        }
+
+        function afficherResultat(niveau, drapeauxRouges, pathologies, data, psyScore = 0) {
+            const resultat = document.getElementById('resultat');
+            let html = '';
+
+            const niveaux = {
+                rouge: {
+                    classe: 'niveau-rouge',
+                    icon: '🚨',
+                    titre: 'URGENCE - Appeler le 15 ou se rendre aux urgences',
+                    couleur: '#dc3545'
+                },
+                orange: {
+                    classe: 'niveau-orange', 
+                    icon: '⚠️',
+                    titre: 'Consultation médicale dans la journée',
+                    couleur: '#fd7e14'
+                },
+                jaune: {
+                    classe: 'niveau-jaune',
+                    icon: '📋',
+                    titre: 'Consultation dans les 24-48h',
+                    couleur: '#ffc107'
+                },
+                vert: {
+                    classe: 'niveau-vert',
+                    icon: '🏠',
+                    titre: 'Surveillance à domicile',
+                    couleur: '#28a745'
+                }
+            };
+
+            const n = niveaux[niveau];
+            resultat.className = n.classe;
+
+            html += `<h3><span class="urgence-icon">${n.icon}</span> ${n.titre}</h3>`;
+
+            // Drapeaux rouges
+            if (drapeauxRouges.length > 0) {
+                html += '<div class="pathologies-probables"><h4>⚠️ Signes d\'alerte détectés :</h4>';
+                drapeauxRouges.forEach(d => {
+                    html += `<div class="pathologie-item"><strong>${d}</strong></div>`;
+                });
+                html += '</div>';
+                html += '<div class="conseils"><h4>Action immédiate :</h4>';
+                html += '<ul><li><strong>Appelez le 15 (SAMU)</strong> ou le 112</li>';
+                html += '<li>Ou rendez-vous aux urgences pédiatriques les plus proches</li>';
+                html += '<li>Ne donnez ni à manger ni à boire en attendant l\'avis médical</li></ul></div>';
+            }
+
+            // Pathologies probables
+            if (pathologies.length > 0) {
+                // Trier par score décroissant
+                pathologies.sort((a, b) => b.score - a.score);
+                html += '<div class="pathologies-probables"><h4>🩺 Hypothèses possibles :</h4>';
+                pathologies.forEach(p => {
+                    html += `<div class="pathologie-item"><strong>${p.nom}</strong><br><small>${p.description}</small></div>`;
+                });
+                html += '</div>';
+            }
+
+            // Conseils selon niveau
+            if (niveau !== 'rouge') {
+                html += '<div class="conseils"><h4>💡 Conseils :</h4><ul>';
+                
+                if (niveau === 'orange') {
+                    html += '<li>Consultez un médecin aujourd\'hui (médecin traitant, maison médicale de garde)</li>';
+                    html += '<li>Si aggravation : appelez le 15</li>';
+                }
+                
+                if (niveau === 'jaune') {
+                    html += '<li>Prenez rendez-vous avec votre médecin</li>';
+                    html += '<li>En attendant, assurez hydratation et repos</li>';
+                }
+
+                if (niveau === 'vert') {
+                    html += '<li>Pas de signe de gravité immédiate</li>';
+                    html += '<li>Repos et hydratation</li>';
+                    html += '<li>Paracétamol si fièvre ou douleur (selon posologie adaptée au poids)</li>';
+                }
+
+                // Conseils spécifiques
+                if (data.fievre) {
+                    html += '<li>Fièvre : ne pas trop couvrir, hydrater régulièrement</li>';
+                }
+                if (data.vomissements || data.diarrhee) {
+                    html += '<li>Réhydratation par petites quantités fréquentes (SRO en pharmacie)</li>';
+                }
+                if (data.toux && data.touxType === 'aboyante') {
+                    html += '<li>Laryngite : air frais/humide peut soulager, position assise</li>';
+                }
+                
+                // Conseils arboviroses
+                const suspectDengue = pathologies.some(p => p.nom.includes('dengue'));
+                const suspectChik = pathologies.some(p => p.nom.includes('chikungunya'));
+                const suspectCovid = pathologies.some(p => p.nom.includes('COVID'));
+                
+                if (suspectDengue || suspectChik) {
+                    html += '<li><strong>Arbovirose suspectée :</strong> PAS d\'aspirine ni d\'ibuprofène (risque hémorragique) - Paracétamol uniquement</li>';
+                    html += '<li>Protection anti-moustiques pour éviter la transmission</li>';
+                    html += '<li>Hydratation ++ (eau, bouillons, SRO)</li>';
+                }
+                if (suspectDengue) {
+                    html += '<li><strong>Dengue :</strong> Surveiller signes d\'alerte entre J3 et J7 (douleur abdominale, saignements, agitation)</li>';
+                }
+                if (suspectCovid) {
+                    html += '<li><strong>COVID suspecté :</strong> Isolement et test recommandés</li>';
+                }
+
+                html += '</ul></div>';
+            }
+
+            // Surveillance
+            html += '<div class="surveillance"><h4>👁️ Signes à surveiller (reconsulter si) :</h4><ul>';
+            html += '<li>Fièvre qui persiste plus de 48-72h ou s\'aggrave</li>';
+            html += '<li>Apparition de difficultés respiratoires</li>';
+            html += '<li>Prostration, somnolence inhabituelle</li>';
+            html += '<li>Refus total de boire</li>';
+            html += '<li>Éruption qui ne s\'efface pas à la pression</li>';
+            html += '<li>Douleur qui s\'intensifie ou se localise</li>';
+            
+            // Surveillance dengue spécifique
+            const hasDengue = pathologies.some(p => p.nom.includes('dengue'));
+            if (hasDengue) {
+                html += '<li><strong>⚠️ Dengue - signes d\'alerte :</strong> douleur abdominale intense, vomissements persistants, saignements (gencives, nez, ecchymoses), agitation ou léthargie, extrémités froides</li>';
+            }
+            
+            html += '<li>Tout signe qui vous inquiète</li>';
+            html += '</ul></div>';
+
+            // Contexte psy
+            if (psyScore >= 2) {
+                html += '<div class="psy-alert"><h4>💭 Contexte émotionnel à considérer</h4>';
+                html += '<p>Plusieurs éléments suggèrent un possible <strong>facteur stress/anxiété</strong> associé aux symptômes :</p><ul>';
+                if (data.psyEcole) html += '<li>Symptômes liés au contexte scolaire</li>';
+                if (data.psyWeekend) html += '<li>Amélioration hors période scolaire</li>';
+                if (data.psyRecurrent) html += '<li>Plaintes récurrentes sans cause médicale identifiée</li>';
+                if (data.psyEvent) html += '<li>Événement stressant récent</li>';
+                if (data.psySommeil) html += '<li>Troubles du sommeil</li>';
+                if (data.psyHumeur) html += '<li>Changement d\'humeur</li>';
+                if (data.psyVerbalise) html += '<li>Expression d\'anxiété ou tristesse</li>';
+                html += '</ul>';
+                html += '<p><strong>Cela ne signifie pas que les symptômes ne sont pas réels</strong> — le stress peut provoquer de vrais symptômes physiques. ';
+                html += 'Une écoute attentive et, si besoin, un accompagnement (médecin, psychologue scolaire) peuvent aider.</p></div>';
+            }
+
+            resultat.innerHTML = html;
+            resultat.style.display = 'block';
+            resultat.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => {
+                el.checked = false;
+            });
+            document.querySelectorAll('.sub-options').forEach(el => {
+                el.classList.remove('visible');
+            });
+            document.getElementById('resultat').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
