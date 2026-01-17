@@ -6,6 +6,9 @@
 
 **Interactive quiz application** for mental health training and pediatric triage, with music therapy tools.
 
+▶️ [Lancer l'application](index2.html)
+
+
 ![Screenshot](screenshot.png)
 
 ## 🚀 Features
@@ -90,5 +93,6 @@ Développé pour l'éducation médicale en Martinique, avec attention particuli�
 CC BY 4.0
 
 ## 👤 Auteur
+
 
 **Eric PERRET** — [GitHub](https://github.com/ericperret)
