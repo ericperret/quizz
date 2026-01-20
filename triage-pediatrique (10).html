@@ -1678,6 +1678,44 @@
                 html += '</div>';
             }
 
+            // ===== TRIAGE OFFICIEL =====
+            const triageOfficiel = calculerTriageOfficiel(data, drapeauxRouges);
+
+            html += '<div class="pathologies-probables" style="margin-top: 20px; background: #f8f9fa; border: 2px solid #6c757d;">';
+            html += '<h4>📊 Niveaux de triage (protocoles officiels)</h4>';
+            html += '<p style="font-size: 0.85em; color: #666; margin-bottom: 15px;">Classification selon 3 standards internationaux :</p>';
+
+            // CTAS
+            const ctasColors = ['', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#17a2b8'];
+            const ctasLabels = ['', 'Réanimation', 'Très urgent', 'Urgent', 'Moins urgent', 'Non urgent'];
+            const ctasDelais = ['', 'Immédiat', '< 15 min', '< 30 min', '< 60 min', '< 120 min'];
+            html += `<div style="display: flex; align-items: center; padding: 10px; margin: 5px 0; background: white; border-radius: 6px; border-left: 4px solid ${ctasColors[triageOfficiel.ctas.niveau]};">`;
+            html += `<span style="font-weight: bold; min-width: 120px;">🇨🇦 CTAS</span>`;
+            html += `<span style="background: ${ctasColors[triageOfficiel.ctas.niveau]}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold; margin-right: 10px;">Niveau ${triageOfficiel.ctas.niveau}</span>`;
+            html += `<span style="flex: 1;">${ctasLabels[triageOfficiel.ctas.niveau]} (${ctasDelais[triageOfficiel.ctas.niveau]})</span>`;
+            html += `</div>`;
+
+            // ESI
+            const esiColors = ['', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#17a2b8'];
+            const esiLabels = ['', 'Réanimation', 'Haut risque', 'Urgence', 'Peu urgent', 'Non urgent'];
+            html += `<div style="display: flex; align-items: center; padding: 10px; margin: 5px 0; background: white; border-radius: 6px; border-left: 4px solid ${esiColors[triageOfficiel.esi.niveau]};">`;
+            html += `<span style="font-weight: bold; min-width: 120px;">🇺🇸 ESI</span>`;
+            html += `<span style="background: ${esiColors[triageOfficiel.esi.niveau]}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold; margin-right: 10px;">Niveau ${triageOfficiel.esi.niveau}</span>`;
+            html += `<span style="flex: 1;">${esiLabels[triageOfficiel.esi.niveau]}</span>`;
+            html += `</div>`;
+
+            // French SAMU
+            const frenchColors = ['', '#dc3545', '#fd7e14', '#ffc107', '#28a745'];
+            const frenchLabels = ['', 'P1 - Urgence absolue', 'P2 - Urgence vraie', 'P3 - Urgence relative', 'P4 - Consultation'];
+            html += `<div style="display: flex; align-items: center; padding: 10px; margin: 5px 0; background: white; border-radius: 6px; border-left: 4px solid ${frenchColors[triageOfficiel.french.niveau]};">`;
+            html += `<span style="font-weight: bold; min-width: 120px;">🇫🇷 SAMU</span>`;
+            html += `<span style="background: ${frenchColors[triageOfficiel.french.niveau]}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold; margin-right: 10px;">${frenchLabels[triageOfficiel.french.niveau].split(' - ')[0]}</span>`;
+            html += `<span style="flex: 1;">${frenchLabels[triageOfficiel.french.niveau].split(' - ')[1] || ''}</span>`;
+            html += `</div>`;
+
+            html += '<p style="font-size: 0.8em; color: #888; margin-top: 10px; margin-bottom: 0;">⚖️ Ces classifications sont indicatives et ne remplacent pas l\'avis médical.</p>';
+            html += '</div>';
+
             // Conseils selon niveau
             if (niveau !== 'rouge') {
                 html += '<div class="conseils"><h4>💡 Conseils :</h4><ul>';
@@ -3257,6 +3295,180 @@
             resultats.sort((a, b) => b.score - a.score);
             
             return resultats;
+        }
+
+        // ========== TRIAGE OFFICIEL (CTAS / ESI / FRENCH) ==========
+        function calculerTriageOfficiel(data, drapeauxRouges) {
+            
+            // ===== CTAS (Canadian Triage and Acuity Scale) =====
+            // Niveau 1: Réanimation (immédiat)
+            // Niveau 2: Très urgent (<15 min)
+            // Niveau 3: Urgent (<30 min)
+            // Niveau 4: Moins urgent (<60 min)
+            // Niveau 5: Non urgent (<120 min)
+            
+            let ctas = 5;
+            let ctasRaison = "Pas de critère de gravité identifié";
+            
+            // CTAS 1 - Réanimation
+            if (drapeauxRouges.length > 0 ||
+                data.convulsions ||
+                data.respiType === 'cyanose' ||
+                (data.hasSpo2 && data.spo2Val === '90') ||
+                data.fatigueLevel === 'prostration' ||
+                data.confusion ||
+                data.difficulteRespirerMuscles) {
+                ctas = 1;
+                ctasRaison = "Détresse vitale / Drapeau rouge critique";
+            }
+            // CTAS 2 - Très urgent
+            else if (
+                data.respiType === 'tirage' ||
+                (data.hasSpo2 && data.spo2Val === '92') ||
+                data.cephaleeType === 'brutal' ||
+                data.paleurType === 'marbrures' ||
+                data.gorgeType === 'bave' ||
+                (data.fievre && data.temp === '40' && data.fatigueLevel === 'marquee') ||
+                (data.fievre && data.raideurNuque) ||
+                (data.fievre && data.eruptionType === 'purpura') ||
+                data.abdoCarac.includes('defense') ||
+                (data.saignements && data.fievre)) {
+                ctas = 2;
+                ctasRaison = "Signes de gravité nécessitant évaluation rapide";
+            }
+            // CTAS 3 - Urgent
+            else if (
+                data.fievre && (data.temp === '39' || data.temp === '40') ||
+                data.deshydratation ||
+                data.vomiFreq === 'incoercible' ||
+                data.respiType === 'rapide' || data.respiType === 'sifflante' ||
+                data.touxType === 'aboyante' ||
+                (data.douleurAbdo && data.abdoLoc === 'fid') ||
+                (data.douleurLombaire && data.fievre) ||
+                data.ictere) {
+                ctas = 3;
+                ctasRaison = "Symptômes nécessitant évaluation dans les 30 min";
+            }
+            // CTAS 4 - Moins urgent
+            else if (
+                data.fievre && (data.temp === '38' || data.temp === '38.5') ||
+                data.toux || data.nez || data.gorge ||
+                data.oreille ||
+                data.vomissements || data.diarrhee ||
+                data.douleurAbdo ||
+                data.eruption ||
+                data.urinaire) {
+                ctas = 4;
+                ctasRaison = "Symptômes stables, évaluation dans l'heure";
+            }
+            
+            // ===== ESI (Emergency Severity Index, USA) =====
+            // Basé sur: 1) Détresse vitale? 2) Haut risque? 3) Nb ressources
+            
+            let esi = 5;
+            let esiRaison = "Consultation simple, peu de ressources";
+            
+            // ESI 1 - Intervention immédiate pour sauver la vie
+            if (drapeauxRouges.length > 0 ||
+                data.convulsions ||
+                data.respiType === 'cyanose' ||
+                data.fatigueLevel === 'prostration' ||
+                data.difficulteRespirerMuscles) {
+                esi = 1;
+                esiRaison = "Intervention vitale immédiate requise";
+            }
+            // ESI 2 - Situation à haut risque, ne doit pas attendre
+            else if (
+                data.confusion ||
+                data.respiType === 'tirage' ||
+                (data.hasSpo2 && (data.spo2Val === '90' || data.spo2Val === '92')) ||
+                data.cephaleeType === 'brutal' ||
+                data.abdoCarac.includes('defense') ||
+                (data.fievre && data.temp === '40') ||
+                data.paleurType === 'marbrures' ||
+                data.gorgeType === 'bave') {
+                esi = 2;
+                esiRaison = "Haut risque, ne doit pas attendre";
+            }
+            // ESI 3 - Multiple ressources nécessaires (examens, perf, etc.)
+            else if (
+                (data.fievre && data.temp === '39') ||
+                data.deshydratation ||
+                (data.douleurAbdo && (data.abdoLoc === 'fid' || data.abdoCarac.includes('migration'))) ||
+                (data.douleurLombaire && data.fievre) ||
+                data.respiration ||
+                data.ictere ||
+                (data.membreSignes && data.membreSignes.includes('gonfle') && data.fievre)) {
+                esi = 3;
+                esiRaison = "Plusieurs examens/ressources probables";
+            }
+            // ESI 4 - Une ressource nécessaire
+            else if (
+                data.fievre ||
+                data.oreille ||
+                data.gorge ||
+                data.urinaire ||
+                data.eruption ||
+                data.vomissements || data.diarrhee) {
+                esi = 4;
+                esiRaison = "Une ressource (exam/prescription) probable";
+            }
+            
+            // ===== FRENCH (inspiré grille SAMU / SFMU) =====
+            // P1: Urgence absolue (pronostic vital)
+            // P2: Urgence vraie (1-2h)
+            // P3: Urgence relative (consultation rapide)
+            // P4: Consultation simple
+            
+            let french = 4;
+            let frenchRaison = "Consultation de médecine générale";
+            
+            // P1 - Urgence absolue
+            if (drapeauxRouges.length > 0 ||
+                data.convulsions ||
+                data.respiType === 'cyanose' ||
+                data.fatigueLevel === 'prostration' ||
+                data.confusion ||
+                (data.fievre && data.raideurNuque) ||
+                (data.fievre && data.eruptionType === 'purpura') ||
+                data.difficulteRespirerMuscles ||
+                (data.oedemeLoc === 'levres' && data.respiration)) {
+                french = 1;
+                frenchRaison = "Urgence vitale - SAMU 15";
+            }
+            // P2 - Urgence vraie
+            else if (
+                data.respiType === 'tirage' ||
+                (data.hasSpo2 && data.spo2Val === '92') ||
+                data.abdoCarac.includes('defense') ||
+                (data.fievre && data.temp === '40') ||
+                data.paleurType === 'marbrures' ||
+                data.cephaleeType === 'brutal' ||
+                data.gorgeType === 'bave' ||
+                (data.saignements && data.fievre) ||
+                data.extremitesFroides) {
+                french = 2;
+                frenchRaison = "Urgence vraie - Consultation immédiate";
+            }
+            // P3 - Urgence relative
+            else if (
+                (data.fievre && data.temp === '39') ||
+                data.deshydratation ||
+                data.vomiFreq === 'incoercible' ||
+                data.touxType === 'aboyante' ||
+                (data.douleurAbdo && data.abdoLoc === 'fid') ||
+                (data.douleurLombaire && data.fievre) ||
+                data.ictere ||
+                data.respiration) {
+                french = 3;
+                frenchRaison = "Urgence relative - Consultation dans la journée";
+            }
+            
+            return {
+                ctas: { niveau: ctas, raison: ctasRaison },
+                esi: { niveau: esi, raison: esiRaison },
+                french: { niveau: french, raison: frenchRaison }
+            };
         }
 
         // ========== AFFICHAGE MALADIE ==========
