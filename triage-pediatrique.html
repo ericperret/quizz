@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Triage Pédiatrique - Martinique</title>
+    <title>Triage Pédiatrique</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -226,10 +226,8 @@
     <button onclick="switchMode('reverse')">📚 Référence</button>
 </div>
 
-<!-- MODE TRIAGE -->
 <div id="mode-triage" class="active">
 
-    <!-- ÉTAT GÉNÉRAL -->
     <div class="category">
         <h2>🌡️ État Général</h2>
         
@@ -283,7 +281,6 @@
         </div>
     </div>
 
-    <!-- CONSTANTES VITALES -->
     <div class="category" style="border-left: 4px solid #17a2b8;">
         <h2>📊 Constantes vitales (si mesurées)</h2>
         
@@ -338,7 +335,6 @@
         </div>
     </div>
 
-    <!-- ORL / RESPIRATOIRE -->
     <div class="category">
         <h2>🫁 ORL / Respiratoire</h2>
         
@@ -411,7 +407,6 @@
         </div>
     </div>
 
-    <!-- DIGESTIF -->
     <div class="category">
         <h2>🤢 Digestif</h2>
         
@@ -487,7 +482,6 @@
         </div>
     </div>
 
-    <!-- CUTANÉ -->
     <div class="category">
         <h2>🔴 Cutané</h2>
         
@@ -497,7 +491,7 @@
                 <strong>Type :</strong><br>
                 <label><input type="radio" name="eruption-type" value="macules"> Taches rouges plates</label>
                 <label><input type="radio" name="eruption-type" value="papules"> Boutons en relief</label>
-                <label><input type="radio" name="eruption-type" value="vesicules"> Vésicules (cloques)</label>
+                <label><input type="radio" name="eruption-type" value="vesicules"> Petites cloques (avec liquide)</label>
                 <label><input type="radio" name="eruption-type" value="urticaire"> Plaques qui grattent</label>
                 <label class="red-flag"><input type="radio" name="eruption-type" value="purpura"> Ne s'efface PAS à la pression</label>
                 <hr>
@@ -511,7 +505,7 @@
                 <hr>
                 <strong>Texture :</strong><br>
                 <label><input type="checkbox" name="eruption-texture" value="rugueuse"> Rugueuse (papier de verre)</label>
-                <label><input type="checkbox" name="eruption-texture" value="desquamation"> Desquamation</label>
+                <label><input type="checkbox" name="eruption-texture" value="desquamation"> Peau qui pèle</label>
                 <hr>
                 <strong>Évolution :</strong><br>
                 <label><input type="radio" name="eruption-evolution" value="centrifuge"> Du centre vers extérieur</label>
@@ -547,7 +541,6 @@
         </div>
     </div>
 
-    <!-- NEUROLOGIQUE -->
     <div class="category">
         <h2>🧠 Neurologique</h2>
         
@@ -561,7 +554,12 @@
         </div>
         
         <div class="symptom-item">
-            <label class="red-flag"><input type="checkbox" id="raideurNuque"> Raideur de nuque</label>
+            <label class="red-flag"><input type="checkbox" id="raideurNuque" onchange="toggleSub(this)"> Raideur de nuque</label>
+            <div class="sub-options" id="sub-raideurNuque">
+                <strong>Signes méningés spécifiques :</strong><br>
+                <label class="red-flag"><input type="checkbox" id="kernig"> Signe de Kernig (douleur quand on tend la jambe, enfant couché)</label>
+                <label class="red-flag"><input type="checkbox" id="brudzinski"> Signe de Brudzinski (jambes se plient quand on penche la tête)</label>
+            </div>
         </div>
         <div class="symptom-item">
             <label class="red-flag"><input type="checkbox" id="convulsions"> Convulsions</label>
@@ -589,7 +587,6 @@
         </div>
     </div>
 
-    <!-- AUTRES -->
     <div class="category">
         <h2>👁️ Autres signes</h2>
         
@@ -635,7 +632,6 @@
         </div>
     </div>
 
-    <!-- URINAIRE -->
     <div class="category">
         <h2>💧 Urinaire</h2>
         
@@ -661,7 +657,6 @@
         </div>
     </div>
 
-    <!-- OSTÉO-ARTICULAIRE -->
     <div class="category">
         <h2>🦴 Ostéo-articulaire</h2>
         
@@ -678,9 +673,8 @@
         </div>
     </div>
 
-    <!-- GÉNITAL GARÇON -->
     <div class="category">
-        <h2>🩺 Génital (garçon)</h2>
+        <h2>🩲 Génital (garçon)</h2>
         
         <div class="symptom-item">
             <label class="red-flag"><input type="checkbox" id="douleurTesticule" onchange="toggleSub(this)"> Douleur testiculaire</label>
@@ -696,7 +690,6 @@
         </div>
     </div>
 
-    <!-- GYNÉCO -->
     <div class="category">
         <h2>♀️ Gynécologique</h2>
         
@@ -719,7 +712,6 @@
         </div>
     </div>
 
-    <!-- CONTEXTE -->
     <div class="category" style="border-left: 4px solid #20c997;">
         <h2>🌍 Contexte / Terrain</h2>
         
@@ -737,6 +729,16 @@
         </div>
         <div class="symptom-item">
             <label><input type="checkbox" id="drepanocytose"> Drépanocytose connue</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="asthme" onchange="toggleSub(this)"> Asthme connu</label>
+            <div class="sub-options" id="sub-asthme">
+                <strong>Déclencheurs récents :</strong><br>
+                <label><input type="checkbox" name="asthme-trigger" value="effort"> Effort physique</label>
+                <label><input type="checkbox" name="asthme-trigger" value="allergie"> Contact allergène (pollen, poussière, animal)</label>
+                <label><input type="checkbox" name="asthme-trigger" value="infection"> Infection respiratoire</label>
+                <label><input type="checkbox" name="asthme-trigger" value="froid"> Air froid</label>
+            </div>
         </div>
         <div class="symptom-item">
             <label><input type="checkbox" id="immunodepression"> Immunodéprimé</label>
@@ -760,12 +762,11 @@
     </div>
 
     <button id="analyser" onclick="analyser()">🔍 ANALYSER</button>
-    <button id="reset" onclick="resetForm()">↺ Réinitialiser</button>
+    <button id="reset" onclick="resetForm()">↶ Réinitialiser</button>
     
     <div id="resultat"></div>
 </div>
 
-<!-- MODE RÉFÉRENCE -->
 <div id="mode-reverse">
     <select class="maladie-select" id="maladie-select" onchange="afficherMaladie()">
         <option value="">📚 Choisissez une pathologie</option>
@@ -971,6 +972,46 @@ const maladiesDB = {
         nonFaire: [
             "Antibiotiques (inefficaces si viral)",
             "Antitussifs si toux grasse (la toux évacue les sécrétions)"
+        ]
+    },
+
+    crise_asthme: {
+        nom: "Crise d'asthme",
+        description: "Obstruction bronchique réversible. Fréquente chez l'enfant. Peut être grave si non traitée.",
+        niveau: "orange",
+        criteres: [
+            { texte: "Asthme connu", champ: "asthme", op: "==", val: true },
+            { texte: "Sifflements respiratoires", champ: "respiType", op: "==", val: "sifflante" },
+            { texte: "Difficultés respiratoires", champ: "respiration", op: "==", val: true },
+            { texte: "Toux", champ: "toux", op: "==", val: true },
+            { texte: "Déclencheur identifié", champ: "asthmeTriggers", op: "!=", val: [] }
+        ],
+        exclusions: [
+            { texte: "Fièvre élevée", champ: "temp", op: ">=", val: 38.5 }
+        ],
+        urgence: {
+            condition: (data) => data.asthme && (data.respiType === 'tirage' || data.respiType === 'cyanose' || data.difficulteParler),
+            message: "CRISE D'ASTHME SÉVÈRE - SAMU 15 - Salbutamol + corticoïdes"
+        },
+        alertes: [
+            "Difficulté à parler (phrases courtes)",
+            "Tirage intercostal",
+            "Cyanose (lèvres bleues)",
+            "SpO2 < 92%",
+            "Pas d'amélioration après bronchodilatateur",
+            "Agitation ou prostration"
+        ],
+        conseils: [
+            "Bronchodilatateur (Ventoline) : 2-4 bouffées avec chambre d'inhalation",
+            "Position assise",
+            "Calmer l'enfant",
+            "Si pas d'amélioration en 20 min → Urgences",
+            "Consulter médecin dans les 48h après crise"
+        ],
+        nonFaire: [
+            "Allonger l'enfant",
+            "Donner des sédatifs",
+            "Retarder le traitement"
         ]
     },
 
@@ -1547,7 +1588,7 @@ const maladiesDB = {
         criteres: [
             { texte: "Angine avec fièvre élevée", champ: "gorge", op: "==", val: true },
             { texte: "Fièvre élevée", champ: "temp", op: ">=", val: 38.5 },
-            { texte: "Éruption granité", champ: "eruptionTexture", op: "contains", val: "granite" },
+            { texte: "Éruption granitée", champ: "eruptionTexture", op: "contains", val: "granite" },
             { texte: "Langue framboisée", champ: "langueType", op: "==", val: "framboise" },
             { texte: "Ganglions", champ: "ganglions", op: "==", val: true }
         ],
@@ -2258,6 +2299,8 @@ const maladiesDB = {
             { texte: "Fièvre élevée", champ: "temp", op: ">=", val: 38.5 },
             { texte: "Céphalées intenses", champ: "cephaleeType", op: "in", val: ["intense", "brutal"] },
             { texte: "Raideur de nuque", champ: "raideurNuque", op: "==", val: true },
+            { texte: "Signe de Kernig", champ: "kernig", op: "==", val: true },
+            { texte: "Signe de Brudzinski", champ: "brudzinski", op: "==", val: true },
             { texte: "Photophobie", champ: "photophobie", op: "==", val: true },
             { texte: "Vomissements en jet", champ: "vomissements", op: "==", val: true },
             { texte: "Confusion/somnolence", champ: "confusion", op: "==", val: true },
@@ -2265,12 +2308,13 @@ const maladiesDB = {
         ],
         exclusions: [],
         urgence: {
-            condition: (data) => data.raideurNuque && data.fievre && (data.confusion || data.eruptionType === 'purpura'),
+            condition: (data) => data.raideurNuque && data.fievre && (data.confusion || data.eruptionType === 'purpura' || data.kernig || data.brudzinski),
             message: "MÉNINGITE - SAMU immédiat - Si purpura : C3G sur place"
         },
         alertes: [
             "TOUS ces symptômes sont des alertes",
-            "Purpura = URGENCE ABSOLUE (appeler 15)"
+            "Purpura = URGENCE ABSOLUE (appeler 15)",
+            "Signes de Kernig/Brudzinski = haute spécificité"
         ],
         conseils: [
             "APPELER LE 15 IMMÉDIATEMENT",
@@ -2424,524 +2468,6 @@ const maladiesDB = {
         criteres: [
             { texte: "Fièvre (ou hypothermie)", champ: "fievre", op: "==", val: true },
             { texte: "Extrémités froides", champ: "extremitesFroides", op: "==", val: true },
-            { texte: "Marbrures", champ: "paleurType", op: "==", val: "marbrures" },
-            { texte: "Confusion/agitation", champ: "confusion", op: "==", val: true },
-            { texte: "Polypnée", champ: "respiType", op: "==", val: "rapide" }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.extremitesFroides && data.paleurType === 'marbrures' && data.confusion,
-            message: "SEPSIS / CHOC - ATB < 1h - Remplissage - SAMU"
-        },
-        alertes: [
-            "qSOFA ≥ 2 (confusion, PAS < 100, FR > 22)",
-            "Hypotension réfractaire au remplissage = choc septique"
-        ],
-        conseils: [
-            "Antibiothérapie large spectre < 1 HEURE",
-            "Remplissage vasculaire",
-            "Prélèvements (mais ne retardent pas ATB)",
-            "Réanimation si choc"
-        ],
-        nonFaire: [
-            "Attendre les résultats pour traiter"
-        ]
-    },
-
-    fasciite_necrosante: {
-        nom: "Fasciite nécrosante",
-        description: "Infection nécrosante des tissus mous. Progression de plusieurs cm/heure. Mortalité élevée.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Fièvre élevée", champ: "temp", op: ">=", val: 39 },
-            { texte: "Éruption/lésion cutanée", champ: "eruption", op: "==", val: true },
-            { texte: "Prostration", champ: "fatigueLevel", op: "==", val: "prostration" },
-            { texte: "Extrémités froides", champ: "extremitesFroides", op: "==", val: true }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.temp >= 40 && data.eruption && data.fatigueLevel === 'prostration',
-            message: "FASCIITE NÉCROSANTE - Chirurgie urgente - ATB IV"
-        },
-        alertes: [
-            "TOUS ces signes = URGENCE VITALE",
-            "Progression horaire"
-        ],
-        conseils: [
-            "Chirurgie de débridement URGENTE",
-            "Antibiothérapie large spectre IV",
-            "Réanimation"
-        ],
-        nonFaire: [
-            "Traiter comme cellulite simple",
-            "Attendre pour voir l'évolution"
-        ]
-    },
-
-    choc_toxique: {
-        nom: "Syndrome de choc toxique",
-        description: "Choc lié à toxines staphylococciques ou streptococciques. Contexte : plaie, varicelle surinfectée...",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Fièvre élevée brutale", champ: "temp", op: ">=", val: 39 },
-            { texte: "Éruption diffuse", champ: "eruption", op: "==", val: true },
-            { texte: "Éruption tronc", champ: "eruptionLoc", op: "contains", val: "tronc" },
-            { texte: "Vomissements/diarrhée", champ: "vomissements", op: "==", val: true },
-            { texte: "Courbatures intenses", champ: "courbatures", op: "==", val: true },
-            { texte: "Confusion", champ: "confusion", op: "==", val: true }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.temp >= 40 && data.eruption && data.confusion,
-            message: "CHOC TOXIQUE - Réanimation - ATB anti-staph"
-        },
-        alertes: [
-            "Choc = urgence vitale"
-        ],
-        conseils: [
-            "Réanimation",
-            "Retrait corps étranger",
-            "Antibiothérapie anti-staph/strepto",
-            "Immunoglobulines discutées"
-        ],
-        nonFaire: []
-    },
-
-    botulisme: {
-        nom: "Botulisme",
-        description: "Intoxication par toxine botulique (conserves maison). Paralysie descendante. URGENCE VITALE.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Vision trouble/double", champ: "visionTrouble", op: "==", val: true },
-            { texte: "Paupières tombantes", champ: "paupieresTombantes", op: "==", val: true },
-            { texte: "Difficultés à parler", champ: "difficulteParler", op: "==", val: true },
-            { texte: "Difficultés à avaler", champ: "gorgeType", op: "==", val: "avaler" },
-            { texte: "Faiblesse musculaire", champ: "faiblesseMusculaire", op: "==", val: true },
-            { texte: "Constipation", champ: "constipation", op: "==", val: true },
-            { texte: "Bouche sèche", champ: "langueType", op: "==", val: "seche" },
-            { texte: "Conserves maison", champ: "conserveMaison", op: "==", val: true }
-        ],
-        exclusions: [
-            { texte: "Fièvre", champ: "fievre", op: "==", val: true }
-        ],
-        urgence: {
-            condition: (data) => data.visionTrouble && data.faiblesseMusculaire && !data.fievre,
-            message: "BOTULISME - Paralysie descendante - Réanimation - Sérum"
-        },
-        alertes: [
-            "TOUS ces symptômes sont des alertes",
-            "Difficultés respiratoires = URGENCE EXTRÊME"
-        ],
-        conseils: [
-            "APPELER LE 15 IMMÉDIATEMENT",
-            "Ne pas attendre l'aggravation",
-            "Conserver les aliments suspects"
-        ],
-        nonFaire: [
-            "Attendre"
-        ]
-    },
-
-    // ============================================
-    // MÉTABOLIQUES
-    // ============================================
-
-    acidocetose: {
-        nom: "Acidocétose diabétique",
-        description: "Complication aiguë du diabète (souvent révélatrice chez l'enfant). Souvent confondue avec gastro.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Déshydratation", champ: "deshydratation", op: "==", val: true },
-            { texte: "Nausées/vomissements", champ: "vomissements", op: "==", val: true },
-            { texte: "Douleurs abdominales", champ: "douleurAbdo", op: "==", val: true },
-            { texte: "Polypnée ample", champ: "respiType", op: "==", val: "rapide" },
-            { texte: "Confusion", champ: "confusion", op: "==", val: true }
-        ],
-        exclusions: [
-            { texte: "Fièvre", champ: "fievre", op: "==", val: true }
-        ],
-        urgence: {
-            condition: (data) => data.deshydratation && data.respiType === 'rapide' && data.confusion && !data.fievre,
-            message: "ACIDOCÉTOSE - Glycémie urgente - Insuline IVSE"
-        },
-        alertes: [
-            "Tous ces signes = urgence vitale"
-        ],
-        conseils: [
-            "Glycémie capillaire IMMÉDIATE (> 2.5 g/L)",
-            "Bandelette urinaire (glycosurie, cétonurie)",
-            "Réhydratation prudente",
-            "Insuline IVSE",
-            "Potassium à surveiller"
-        ],
-        nonFaire: [
-            "Insuline rapide SC bolus (risque hypokaliémie brutale)",
-            "Bicarbonates (sauf pH < 6.9)"
-        ]
-    },
-
-    insuffisance_surrenale: {
-        nom: "Insuffisance surrénale aiguë",
-        description: "Déficit en cortisol. Contexte : arrêt brutal de corticoïdes. Choc hypovolémique.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Prostration", champ: "fatigueLevel", op: "==", val: "prostration" },
-            { texte: "Nausées/vomissements", champ: "vomissements", op: "==", val: true },
-            { texte: "Douleurs abdominales", champ: "douleurAbdo", op: "==", val: true },
-            { texte: "Déshydratation", champ: "deshydratation", op: "==", val: true },
-            { texte: "Confusion", champ: "confusion", op: "==", val: true }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.fatigueLevel === 'prostration' && data.vomissements && data.deshydratation,
-            message: "INSUFFISANCE SURRÉNALE - Hydrocortisone IV immédiat"
-        },
-        alertes: [
-            "Choc réfractaire au remplissage"
-        ],
-        conseils: [
-            "Hydrocortisone IV IMMÉDIATEMENT (100 mg puis 50 mg/6h)",
-            "Remplissage NaCl 0.9%",
-            "Glucose si hypoglycémie"
-        ],
-        nonFaire: [
-            "Attendre le dosage de cortisol pour traiter"
-        ]
-    },
-
-    // ============================================
-    // HÉMATOLOGIQUES
-    // ============================================
-
-    leucemie_aigue: {
-        nom: "Leucémie aiguë",
-        description: "Cancer des cellules sanguines. Présentation trompeuse. NFS systématique si doute.",
-        niveau: "orange",
-        criteres: [
-            { texte: "Pâleur progressive", champ: "paleur", op: "==", val: true },
-            { texte: "Fatigue persistante", champ: "fatigueLevel", op: "in", val: ["marquee", "prostration"] },
-            { texte: "Ecchymoses/pétéchies spontanées", champ: "saignements", op: "==", val: true },
-            { texte: "Adénopathies multiples", champ: "ganglionsLoc", op: "==", val: "multiple" },
-            { texte: "Douleurs osseuses", champ: "douleurArticulaire", op: "==", val: true }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.paleur && data.saignements && data.ganglionsLoc === 'multiple',
-            message: "Suspicion hémopathie - NFS URGENTE"
-        },
-        alertes: [
-            "Hyperleucocytose majeure (risque leucostase)",
-            "Syndrome hémorragique",
-            "Syndrome de lyse tumorale"
-        ],
-        conseils: [
-            "NFS EN URGENCE",
-            "Frottis sanguin",
-            "Hospitalisation immédiate si confirmé",
-            "Ne pas transfuser sans avis hémato"
-        ],
-        nonFaire: [
-            "Transfusion plaquettaire sans avis (risque CIVD)"
-        ]
-    },
-
-    shu: {
-        nom: "Syndrome Hémolytique et Urémique (SHU)",
-        description: "Triade anémie hémolytique + thrombopénie + insuffisance rénale. Souvent post-diarrhée E.coli.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Diarrhée sanglante récente", champ: "diarrheeCouleur", op: "==", val: "sang" },
-            { texte: "Pâleur brutale", champ: "paleur", op: "==", val: true },
-            { texte: "Ictère", champ: "ictere", op: "==", val: true },
-            { texte: "Oligurie/anurie", champ: "deshSignes", op: "contains", val: "pasurines" },
-            { texte: "Déshydratation", champ: "deshydratation", op: "==", val: true }
-        ],
-        exclusions: [
-            { texte: "Fièvre", champ: "fievre", op: "==", val: true }
-        ],
-        urgence: {
-            condition: (data) => data.diarrheeCouleur === 'sang' && data.paleur && data.deshSignes && data.deshSignes.includes('pasurines'),
-            message: "SHU - Fonction rénale urgente - Dialyse probable"
-        },
-        alertes: [
-            "Anurie",
-            "HTA sévère",
-            "Convulsions (atteinte cérébrale)"
-        ],
-        conseils: [
-            "NFS, schizocytes, créatinine, LDH en urgence",
-            "Hospitalisation néphro-pédiatrique",
-            "Dialyse souvent nécessaire",
-            "Éculizumab discuté"
-        ],
-        nonFaire: [
-            "Antibiotiques si diarrhée (augmentent risque SHU)",
-            "Anti-diarrhéiques"
-        ]
-    },
-
-    crise_drepano: {
-        nom: "Crise vaso-occlusive drépanocytaire",
-        description: "Occlusion microvasculaire par hématies falciformes. Douleurs osseuses intenses.",
-        niveau: "orange",
-        criteres: [
-            { texte: "Drépanocytose connue", champ: "drepanocytose", op: "==", val: true },
-            { texte: "Douleurs osseuses intenses", champ: "douleurArticulaire", op: "==", val: true },
-            { texte: "Intensité sévère", champ: "articIntensite", op: "==", val: "intense" }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.drepanocytose && data.fievre,
-            message: "Drépanocytose + fièvre - Risque infectieux - Hospitalisation"
-        },
-        alertes: [
-            "Fièvre > 38.5°C (risque infection invasive)",
-            "Douleur thoracique + dyspnée (STA)",
-            "Priapisme",
-            "AVC",
-            "Séquestration splénique (pâleur + splénomégalie brutale)"
-        ],
-        conseils: [
-            "Antalgiques rapidement (morphine si sévère)",
-            "Hyperhydratation",
-            "Oxygénothérapie si SpO2 < 95%",
-            "Hospitalisation si fièvre ou signes de gravité",
-            "Transfusion si STA, AVC, séquestration"
-        ],
-        nonFaire: [
-            "Sous-estimer la douleur",
-            "Retarder les antalgiques"
-        ]
-    },
-
-    syndrome_thoracique_aigu: {
-        nom: "Syndrome thoracique aigu (STA)",
-        description: "Complication grave de la drépanocytose. Infiltrat pulmonaire + symptômes respiratoires.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Drépanocytose connue", champ: "drepanocytose", op: "==", val: true },
-            { texte: "Fièvre", champ: "fievre", op: "==", val: true },
-            { texte: "Douleur thoracique", champ: "douleurThorax", op: "==", val: true },
-            { texte: "Dyspnée", champ: "respiration", op: "==", val: true },
-            { texte: "Toux", champ: "toux", op: "==", val: true }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.drepanocytose && data.fievre && data.respiration,
-            message: "SYNDROME THORACIQUE AIGU - Transfusion urgente"
-        },
-        alertes: [
-            "Tous ces signes = hospitalisation urgente",
-            "Dégradation respiratoire rapide possible"
-        ],
-        conseils: [
-            "Hospitalisation immédiate",
-            "Oxygénothérapie",
-            "Antalgiques",
-            "Transfusion / échange transfusionnel",
-            "Antibiothérapie"
-        ],
-        nonFaire: [
-            "Traiter en ambulatoire"
-        ]
-    },
-
-    // ============================================
-    // UROLOGIQUES / GYNÉCOLOGIQUES
-    // ============================================
-
-    torsion_testiculaire: {
-        nom: "Torsion testiculaire",
-        description: "Torsion du cordon spermatique avec ischémie testiculaire. URGENCE CHIRURGICALE < 6h.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Douleur testiculaire", champ: "douleurTesticule", op: "==", val: true },
-            { texte: "Début brutal", champ: "testiculeDebut", op: "==", val: "brutal" },
-            { texte: "Testicule ascensionné", champ: "testiculeSignes", op: "contains", val: "haut" },
-            { texte: "Testicule gonflé", champ: "testiculeSignes", op: "contains", val: "gonfle" },
-            { texte: "Nausées/vomissements", champ: "testiculeSignes", op: "contains", val: "nausees" }
-        ],
-        exclusions: [
-            { texte: "Fièvre", champ: "testiculeSignes", op: "contains", val: "fievre" }
-        ],
-        urgence: {
-            condition: (data) => data.douleurTesticule && data.testiculeDebut === 'brutal',
-            message: "TORSION TESTICULAIRE - Chirurgie < 6h"
-        },
-        alertes: [
-            "TOUS ces symptômes = URGENCE ABSOLUE",
-            "Délai < 6h pour sauver le testicule"
-        ],
-        conseils: [
-            "APPELER LE 15 / Urgences IMMÉDIATEMENT",
-            "Chirurgie urgente (détorsion + orchidopexie)",
-            "NE PAS attendre"
-        ],
-        nonFaire: [
-            "Attendre",
-            "Traiter comme infection",
-            "Manipuler le testicule soi-même"
-        ]
-    },
-
-    orchiepididymite: {
-        nom: "Orchi-épididymite",
-        description: "Inflammation infectieuse du testicule et de l'épididyme. Début progressif avec fièvre.",
-        niveau: "jaune",
-        criteres: [
-            { texte: "Douleur testiculaire", champ: "douleurTesticule", op: "==", val: true },
-            { texte: "Début progressif", champ: "testiculeDebut", op: "==", val: "progressif" },
-            { texte: "Fièvre", champ: "testiculeSignes", op: "contains", val: "fievre" },
-            { texte: "Testicule gonflé", champ: "testiculeSignes", op: "contains", val: "gonfle" }
-        ],
-        exclusions: [
-            { texte: "Début brutal", champ: "testiculeDebut", op: "==", val: "brutal" },
-            { texte: "Testicule ascensionné", champ: "testiculeSignes", op: "contains", val: "haut" }
-        ],
-        urgence: null,
-        alertes: [
-            "En cas de doute avec torsion → Urgences chirurgicales",
-            "Toute douleur testiculaire brutale = torsion jusqu'à preuve du contraire"
-        ],
-        conseils: [
-            "Consultation médicale nécessaire",
-            "Antibiothérapie adaptée",
-            "Repos, suspensoir"
-        ],
-        nonFaire: [
-            "Négliger une douleur testiculaire brutale chez l'adolescent"
-        ]
-    },
-
-    torsion_ovaire: {
-        nom: "Torsion d'annexe (ovaire)",
-        description: "Torsion du pédicule ovarien. Urgence chirurgicale pour sauver l'ovaire.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Douleur pelvienne", champ: "douleurPelvienne", op: "==", val: true },
-            { texte: "Début brutal", champ: "pelvienDebut", op: "==", val: "brutal" },
-            { texte: "Nausées/vomissements", champ: "vomissements", op: "==", val: true }
-        ],
-        exclusions: [
-            { texte: "Fièvre", champ: "fievre", op: "==", val: true },
-            { texte: "Signes urinaires", champ: "urinaire", op: "==", val: true }
-        ],
-        urgence: {
-            condition: (data) => data.douleurPelvienne && data.pelvienDebut === 'brutal' && !data.fievre,
-            message: "TORSION ANNEXE - Chirurgie < 6h"
-        },
-        alertes: [
-            "Délai < 6h pour sauver l'ovaire"
-        ],
-        conseils: [
-            "Échographie pelvienne urgente (Doppler)",
-            "Cœlioscopie chirurgicale",
-            "Ne pas attendre"
-        ],
-        nonFaire: [
-            "Traiter comme infection urinaire sans imagerie"
-        ]
-    },
-
-    geu: {
-        nom: "Grossesse extra-utérine (GEU)",
-        description: "Grossesse implantée hors de l'utérus. Risque de rupture hémorragique. Urgence vitale.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Grossesse possible", champ: "grossessePossible", op: "==", val: true },
-            { texte: "Retard de règles", champ: "retardRegles", op: "==", val: true },
-            { texte: "Douleur pelvienne", champ: "douleurPelvienne", op: "==", val: true },
-            { texte: "Métrorragies noirâtres", champ: "metrorragies", op: "==", val: true },
-            { texte: "Vertiges/malaise", champ: "vertiges", op: "==", val: true },
-            { texte: "Douleur scapulaire", champ: "douleurEpaule", op: "==", val: true }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => (data.grossessePossible || data.retardRegles) && data.douleurPelvienne && (data.paleur || data.vertiges),
-            message: "GEU suspectée - βHCG + Écho urgente - Si choc : SAMU"
-        },
-        alertes: [
-            "Choc hémorragique si rupture",
-            "Défense abdominale"
-        ],
-        conseils: [
-            "βHCG + échographie urgente",
-            "Chirurgie si rupture",
-            "Réanimation si choc"
-        ],
-        nonFaire: [
-            "Exclure le diagnostic car 'elle dit ne pas être enceinte'"
-        ]
-    },
-
-    priapisme: {
-        nom: "Priapisme",
-        description: "Érection prolongée douloureuse sans stimulation sexuelle. Urgence urologique. Fréquent chez drépanocytaires.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Drépanocytose", champ: "drepanocytose", op: "==", val: true },
-            { texte: "Douleur testiculaire prolongée", champ: "douleurTesticule", op: "==", val: true }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.drepanocytose && data.douleurTesticule,
-            message: "PRIAPISME - Urologie < 6h"
-        },
-        alertes: [
-            "Délai < 6h pour éviter séquelles définitives (dysfonction érectile)"
-        ],
-        conseils: [
-            "Urgence urologique",
-            "Ponction des corps caverneux",
-            "Injection d'alpha-stimulants",
-            "Chez drépanocytaire : hydratation, échange transfusionnel"
-        ],
-        nonFaire: [
-            "Attendre",
-            "Application de glace (inefficace)"
-        ]
-    },
-
-    arthrite_septique: {
-        nom: "Arthrite septique",
-        description: "Infection bactérienne d'une articulation. Urgence pour préserver l'articulation.",
-        niveau: "orange",
-        criteres: [
-            { texte: "Articulation gonflée", champ: "membreSignes", op: "contains", val: "gonfle" },
-            { texte: "Articulation rouge/chaude", champ: "membreSignes", op: "contains", val: "rouge" },
-            { texte: "Douleur intense au mouvement", champ: "articIntensite", op: "==", val: "intense" },
-            { texte: "Boiterie/impotence", champ: "membreSignes", op: "contains", val: "boiterie" },
-            { texte: "Fièvre", champ: "fievre", op: "==", val: true }
-        ],
-        exclusions: [],
-        urgence: {
-            condition: (data) => data.fievre && data.douleurArticulaire && data.articIntensite === 'intense',
-            message: "ARTHRITE SEPTIQUE - Ponction + ATB urgents"
-        },
-        alertes: [
-            "Tous ces symptômes nécessitent consultation urgente"
-        ],
-        conseils: [
-            "Consultation urgente",
-            "Ne pas mobiliser l'articulation",
-            "Ponction articulaire souvent nécessaire"
-        ],
-        nonFaire: [
-            "Anti-inflammatoires avant diagnostic",
-            "Masser ou mobiliser"
-        ]
-    },
-
-    // ============================================
-    // TOXICOLOGIQUES
-    // ============================================
-
-    intox_paracetamol: {
-        nom: "Intoxication au paracétamol",
-        description: "Hépatotoxicité retardée (24-72h). Asymptomatique au début = faussement rassurant. Antidote efficace si < 8h.",
-        niveau: "rouge",
-        criteres: [
-            { texte: "Nausées/vomissements", champ: "vomissements", op: "==", val: true },
             { texte: "Douleur HCD", champ: "abdoLoc", op: "==", val: "hcd" },
             { texte: "Ictère", champ: "ictere", op: "==", val: true }
         ],
@@ -3006,7 +2532,7 @@ const maladiesDB = {
 
     kawasaki: {
         nom: "Maladie de Kawasaki",
-        description: "Vascularite fébrile aiguë. Risque de complications coronariennes si non traité. Urgence diagnostique.",
+        description: "Vascularite fébrile aiguë. Risque de complications coronariennes si non traitée. Urgence diagnostique.",
         niveau: "orange",
         criteres: [
             { texte: "Fièvre ≥ 5 jours", champ: "fievreDuree", op: "==", val: "5j-plus" },
@@ -3099,19 +2625,73 @@ function evaluer(data, critere) {
     return false;
 }
 
+// Red flags : critères critiques pondérés x3
+const RED_FLAGS = {
+    // Champs booléens
+    raideurNuque: true,
+    kernig: true,
+    brudzinski: true,
+    convulsions: true,
+    confusion: true,
+    faiblesseMusculaire: true,
+    // Valeurs spécifiques
+    eruptionType: ['purpura'],
+    respiType: ['tirage', 'cyanose'],
+    paleurType: ['marbrures'],
+    gorgeType: ['bave'],
+    fatigueLevel: ['prostration'],
+    vomiType: ['sang'],
+    diarrheeType: ['sang'],
+    diarrheeCouleur: ['sang', 'noire'],
+    testiculeDebut: ['brutal'],
+    cephaleeType: ['brutal']
+};
+
+function estRedFlag(critere, data) {
+    const champ = critere.champ;
+    const val = critere.val;
+    
+    // Si c'est un champ booléen red flag
+    if (RED_FLAGS[champ] === true && val === true) {
+        return true;
+    }
+    
+    // Si c'est une valeur spécifique red flag
+    if (Array.isArray(RED_FLAGS[champ])) {
+        if (typeof val === 'string' && RED_FLAGS[champ].includes(val)) {
+            return true;
+        }
+        // Pour les opérateurs 'in' avec des valeurs red flag
+        if (critere.op === 'in' && Array.isArray(val)) {
+            return val.some(v => RED_FLAGS[champ].includes(v));
+        }
+    }
+    
+    // Température >= 40
+    if (champ === 'temp' && critere.op === '>=' && val >= 40) {
+        return true;
+    }
+    
+    return false;
+}
+
 function scorerMaladie(data, maladie) {
     let score = 0;
+    let scoreMax = 0;
     let matches = [];
     
-    // Critères positifs
+    // Critères positifs avec pondération
     for (const c of maladie.criteres) {
+        const poids = estRedFlag(c, data) ? 3 : 1;
+        scoreMax += poids;
+        
         if (evaluer(data, c)) {
-            score++;
+            score += poids;
             matches.push(c.texte);
         }
     }
     
-    // Exclusions (diminuent le score)
+    // Exclusions (diminuent le score de 1)
     for (const e of maladie.exclusions || []) {
         if (evaluer(data, e)) {
             score--;
@@ -3121,8 +2701,8 @@ function scorerMaladie(data, maladie) {
     
     return {
         score: Math.max(0, score),
-        max: maladie.criteres.length,
-        pourcent: maladie.criteres.length > 0 ? Math.round(100 * Math.max(0, score) / maladie.criteres.length) : 0,
+        max: scoreMax,
+        pourcent: scoreMax > 0 ? Math.round(100 * Math.max(0, score) / scoreMax) : 0,
         matches: matches
     };
 }
@@ -3290,6 +2870,8 @@ function collecterDonnees() {
         cephalee: isChecked('cephalee'),
         cephaleeType: getVal('cephalee-type'),
         raideurNuque: isChecked('raideurNuque'),
+        kernig: isChecked('kernig'),
+        brudzinski: isChecked('brudzinski'),
         convulsions: isChecked('convulsions'),
         confusion: isChecked('confusion'),
         vertiges: isChecked('vertiges'),
@@ -3339,6 +2921,8 @@ function collecterDonnees() {
         collectivite: isChecked('collectivite'),
         baignade: isChecked('baignade'),
         drepanocytose: isChecked('drepanocytose'),
+        asthme: isChecked('asthme'),
+        asthmeTriggers: getCheckedValues('asthme-trigger'),
         immunodepression: isChecked('immunodepression'),
         zonePalu: isChecked('zonePalu'),
         paluZone: getVal('palu-zone'),
@@ -3640,7 +3224,7 @@ function afficherResultat(resultats, drapeaux, data) {
             html += `<div class="patho-desc">${r.description}</div>`;
             
             // CRITÈRES ATTENDUS (bleu pâle, cerclé vert si coché)
-            // Dédupliquer par texte, mais cercler vert si AU MOINS UN critère avec ce texte matche
+            // Dédoupliquer par texte, mais cercler vert si AU MOINS UN critère avec ce texte matche
             const criteresParTexte = {};
             m.criteres.forEach(c => {
                 if (!criteresParTexte[c.texte]) criteresParTexte[c.texte] = [];
