@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -39,11 +39,12 @@
             cursor: pointer;
         }
         .mode-switch button:first-child { border-radius: 8px 0 0 8px; }
-        .mode-switch button:last-child { border-radius: 0 8px 8px 0; border-left: none; }
+        .mode-switch button:last-child { border-radius: 0 8px 8px 0; }
+        .mode-switch button:not(:first-child) { border-left: none; }
         .mode-switch button.active { background: #007bff; color: white; }
         
-        #mode-triage, #mode-reverse { display: none; }
-        #mode-triage.active, #mode-reverse.active { display: block; }
+        #mode-triage, #mode-reverse, #mode-suivi { display: none; }
+        #mode-triage.active, #mode-reverse.active, #mode-suivi.active { display: block; }
         
         /* Catégories */
         .category {
@@ -210,6 +211,131 @@
             border-radius: 10px;
             margin-bottom: 15px;
         }
+        
+        /* Mode Suivi */
+        .suivi-header {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .suivi-header select, .suivi-header input {
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .suivi-header select { flex: 1; min-width: 150px; }
+        .suivi-header input[type="text"] { width: 120px; }
+        .suivi-header input[type="number"] { width: 70px; }
+        .suivi-header button {
+            padding: 10px 15px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-add { background: #28a745; color: white; }
+        .btn-del { background: #dc3545; color: white; }
+        .btn-export { background: #17a2b8; color: white; }
+        .btn-purge { background: #6c757d; color: white; }
+        
+        .constantes-form {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .constantes-form h3 { margin-top: 0; }
+        .constantes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        .constante-input {
+            display: flex;
+            flex-direction: column;
+        }
+        .constante-input label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .constante-input input, .constante-input select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .constante-input input:focus { border-color: #007bff; outline: none; }
+        
+        /* EVA Wong-Baker */
+        .eva-faces {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .eva-face {
+            flex: 1;
+            text-align: center;
+            padding: 5px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .eva-face:hover { background: #f0f0f0; }
+        .eva-face.selected { border-color: #007bff; background: #e3f2fd; }
+        .eva-face span { font-size: 1.5em; display: block; }
+        .eva-face small { font-size: 0.7em; color: #666; }
+        
+        /* Tableau historique */
+        .historique-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .historique-table th, .historique-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .historique-table th {
+            background: #007bff;
+            color: white;
+            font-weight: 500;
+        }
+        .historique-table tr:hover { background: #f8f9fa; }
+        .val-alerte { background: #f8d7da !important; color: #721c24; font-weight: bold; }
+        .val-warning { background: #fff3cd !important; color: #856404; }
+        .val-ok { color: #155724; }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            background: white;
+            border-radius: 10px;
+        }
+        
+        .export-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 0.85em;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -224,6 +350,7 @@
 <div class="mode-switch">
     <button class="active" onclick="switchMode('triage')">🔍 Triage</button>
     <button onclick="switchMode('reverse')">📚 Référence</button>
+    <button onclick="switchMode('suivi')">📊 Suivi 24h</button>
 </div>
 
 <div id="mode-triage" class="active">
@@ -772,6 +899,95 @@
         <option value="">📚 Choisissez une pathologie</option>
     </select>
     <div id="maladie-detail"></div>
+</div>
+
+<div id="mode-suivi">
+    <!-- Gestion patients -->
+    <div class="suivi-header">
+        <select id="patient-select" onchange="chargerPatient()">
+            <option value="">👶 Sélectionner un patient</option>
+        </select>
+        <input type="text" id="new-patient-prenom" placeholder="Prénom">
+        <input type="text" id="new-patient-initiale" placeholder="M." maxlength="2" style="width:50px">
+        <input type="number" id="new-patient-age" placeholder="Âge" min="6" max="15">
+        <button class="btn-add" onclick="ajouterPatient()">+ Ajouter</button>
+        <button class="btn-del" onclick="supprimerPatient()">🗑️</button>
+    </div>
+    
+    <!-- Formulaire saisie constantes -->
+    <div id="constantes-form-container" style="display:none;">
+        <div class="constantes-form">
+            <h3>📝 Nouvelle mesure pour <span id="patient-nom-display"></span></h3>
+            <div class="constantes-grid">
+                <div class="constante-input">
+                    <label>🌡️ Température (°C)</label>
+                    <input type="number" id="c-temp" step="0.1" min="35" max="42" placeholder="37.5">
+                </div>
+                <div class="constante-input">
+                    <label>❤️ FC (bpm)</label>
+                    <input type="number" id="c-fc" min="40" max="220" placeholder="80">
+                </div>
+                <div class="constante-input">
+                    <label>🫁 FR (/min)</label>
+                    <input type="number" id="c-fr" min="8" max="60" placeholder="18">
+                </div>
+                <div class="constante-input">
+                    <label>🩸 SpO2 (%)</label>
+                    <input type="number" id="c-spo2" min="70" max="100" placeholder="98">
+                </div>
+                <div class="constante-input">
+                    <label>💉 TA sys (mmHg)</label>
+                    <input type="number" id="c-ta-sys" min="60" max="200" placeholder="110">
+                </div>
+                <div class="constante-input">
+                    <label>💉 TA dia (mmHg)</label>
+                    <input type="number" id="c-ta-dia" min="30" max="120" placeholder="70">
+                </div>
+                <div class="constante-input">
+                    <label>🍬 Glycémie (g/L)</label>
+                    <input type="number" id="c-glycemie" step="0.01" min="0.2" max="6" placeholder="0.9">
+                </div>
+                <div class="constante-input">
+                    <label>🚽 Dernière miction</label>
+                    <input type="time" id="c-miction">
+                </div>
+                <div class="constante-input">
+                    <label>💧 Hydratation (mL)</label>
+                    <input type="number" id="c-hydratation" min="0" max="2000" step="50" placeholder="200">
+                </div>
+            </div>
+            
+            <!-- EVA Douleur -->
+            <div style="margin-top:15px;">
+                <label style="font-size:0.85em;color:#666;">😣 Douleur (EVA Wong-Baker)</label>
+                <div class="eva-faces" id="eva-container">
+                    <div class="eva-face" data-val="0" onclick="selectEva(this)"><span>😊</span><small>0</small></div>
+                    <div class="eva-face" data-val="2" onclick="selectEva(this)"><span>🙂</span><small>2</small></div>
+                    <div class="eva-face" data-val="4" onclick="selectEva(this)"><span>😐</span><small>4</small></div>
+                    <div class="eva-face" data-val="6" onclick="selectEva(this)"><span>🙁</span><small>6</small></div>
+                    <div class="eva-face" data-val="8" onclick="selectEva(this)"><span>😢</span><small>8</small></div>
+                    <div class="eva-face" data-val="10" onclick="selectEva(this)"><span>😭</span><small>10</small></div>
+                </div>
+            </div>
+            
+            <button id="analyser" style="margin-top:20px;" onclick="enregistrerConstantes()">💾 Enregistrer</button>
+        </div>
+        
+        <!-- Historique -->
+        <h3>📋 Historique des mesures</h3>
+        <div id="historique-container"></div>
+        
+        <!-- Actions -->
+        <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap;">
+            <button class="btn-export" onclick="exporterSuivi()">📤 Exporter pour médecin</button>
+            <button class="btn-purge" onclick="purgerPatient()">🗑️ Purger historique</button>
+        </div>
+        <div id="export-container"></div>
+    </div>
+    
+    <div id="no-patient-msg" class="no-data">
+        <p>👆 Sélectionnez ou ajoutez un patient pour commencer le suivi.</p>
+    </div>
 </div>
 
 
@@ -2762,9 +2978,10 @@ if (typeof module !== 'undefined' && module.exports) {
 // === SWITCH MODE ===
 function switchMode(mode) {
     document.querySelectorAll('.mode-switch button').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('#mode-triage, #mode-reverse').forEach(d => d.classList.remove('active'));
+    document.querySelectorAll('#mode-triage, #mode-reverse, #mode-suivi').forEach(d => d.classList.remove('active'));
     document.getElementById('mode-' + mode).classList.add('active');
     event.target.classList.add('active');
+    if (mode === 'suivi') initSuivi();
 }
 
 // === TOGGLE SUB-OPTIONS ===
@@ -3468,12 +3685,431 @@ function afficherMaladie() {
     detailDiv.innerHTML = html;
 }
 
+// ============================================
+// MODE SUIVI - GESTION PATIENTS ET CONSTANTES
+// ============================================
+
+// Normes pédiatriques par âge
+const NORMES_PEDIATRIQUES = {
+    // FC : [min, max] par tranche d'âge
+    fc: { '6-8': [70, 110], '9-12': [65, 105], '13-15': [60, 100] },
+    // FR : [min, max]
+    fr: { '6-8': [18, 24], '9-12': [16, 22], '13-15': [12, 20] },
+    // TA systolique : [min, max]
+    taSys: { '6-8': [90, 115], '9-12': [95, 120], '13-15': [100, 125] },
+    taDia: { '6-8': [55, 75], '9-12': [57, 78], '13-15': [60, 80] },
+    // SpO2
+    spo2: { min: 95 },
+    // Température
+    temp: { min: 36, max: 38 },
+    // Glycémie
+    glycemie: { min: 0.7, max: 1.1 }
+};
+
+function getTrancheAge(age) {
+    if (age >= 6 && age <= 8) return '6-8';
+    if (age >= 9 && age <= 12) return '9-12';
+    return '13-15';
+}
+
+// Charger patients depuis localStorage
+function getPatients() {
+    const data = localStorage.getItem('triagePediatrique_patients');
+    return data ? JSON.parse(data) : {};
+}
+
+// Sauvegarder patients
+function savePatients(patients) {
+    localStorage.setItem('triagePediatrique_patients', JSON.stringify(patients));
+}
+
+// Initialisation du mode suivi
+function initSuivi() {
+    const select = document.getElementById('patient-select');
+    const patients = getPatients();
+    
+    // Vider et reconstruire la liste
+    select.innerHTML = '<option value="">👶 Sélectionner un patient</option>';
+    for (const [id, p] of Object.entries(patients)) {
+        const opt = document.createElement('option');
+        opt.value = id;
+        opt.textContent = `${p.prenom} ${p.initiale}. (${p.age} ans)`;
+        select.appendChild(opt);
+    }
+}
+
+// Ajouter un patient
+function ajouterPatient() {
+    const prenom = document.getElementById('new-patient-prenom').value.trim();
+    const initiale = document.getElementById('new-patient-initiale').value.trim().toUpperCase();
+    const age = parseInt(document.getElementById('new-patient-age').value);
+    
+    if (!prenom) { alert('Prénom requis'); return; }
+    if (!initiale) { alert('Initiale requise'); return; }
+    if (!age || age < 6 || age > 15) { alert('Âge entre 6 et 15 ans'); return; }
+    
+    const patients = getPatients();
+    const id = 'p_' + Date.now();
+    patients[id] = {
+        prenom: prenom,
+        initiale: initiale.charAt(0),
+        age: age,
+        mesures: []
+    };
+    savePatients(patients);
+    
+    // Reset champs
+    document.getElementById('new-patient-prenom').value = '';
+    document.getElementById('new-patient-initiale').value = '';
+    document.getElementById('new-patient-age').value = '';
+    
+    // Rafraîchir et sélectionner
+    initSuivi();
+    document.getElementById('patient-select').value = id;
+    chargerPatient();
+}
+
+// Supprimer le patient sélectionné
+function supprimerPatient() {
+    const select = document.getElementById('patient-select');
+    const id = select.value;
+    if (!id) { alert('Sélectionnez un patient'); return; }
+    
+    const patients = getPatients();
+    const p = patients[id];
+    if (!confirm(`Supprimer ${p.prenom} ${p.initiale}. et tout son historique ?`)) return;
+    
+    delete patients[id];
+    savePatients(patients);
+    initSuivi();
+    chargerPatient();
+}
+
+// Charger un patient
+function chargerPatient() {
+    const select = document.getElementById('patient-select');
+    const id = select.value;
+    const formContainer = document.getElementById('constantes-form-container');
+    const noPatientMsg = document.getElementById('no-patient-msg');
+    
+    if (!id) {
+        formContainer.style.display = 'none';
+        noPatientMsg.style.display = 'block';
+        return;
+    }
+    
+    formContainer.style.display = 'block';
+    noPatientMsg.style.display = 'none';
+    
+    const patients = getPatients();
+    const p = patients[id];
+    document.getElementById('patient-nom-display').textContent = `${p.prenom} ${p.initiale}. (${p.age} ans)`;
+    
+    // Reset formulaire
+    resetFormConstantes();
+    
+    // Afficher historique
+    afficherHistorique(p);
+}
+
+// Reset formulaire constantes
+function resetFormConstantes() {
+    ['c-temp', 'c-fc', 'c-fr', 'c-spo2', 'c-ta-sys', 'c-ta-dia', 'c-glycemie', 'c-miction', 'c-hydratation'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    document.querySelectorAll('.eva-face').forEach(f => f.classList.remove('selected'));
+    document.getElementById('export-container').innerHTML = '';
+}
+
+// Sélection EVA
+function selectEva(el) {
+    document.querySelectorAll('.eva-face').forEach(f => f.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+// Enregistrer constantes
+function enregistrerConstantes() {
+    const select = document.getElementById('patient-select');
+    const id = select.value;
+    if (!id) return;
+    
+    const patients = getPatients();
+    const p = patients[id];
+    
+    // Collecter valeurs
+    const mesure = {
+        timestamp: new Date().toISOString(),
+        temp: document.getElementById('c-temp').value || null,
+        fc: document.getElementById('c-fc').value || null,
+        fr: document.getElementById('c-fr').value || null,
+        spo2: document.getElementById('c-spo2').value || null,
+        taSys: document.getElementById('c-ta-sys').value || null,
+        taDia: document.getElementById('c-ta-dia').value || null,
+        glycemie: document.getElementById('c-glycemie').value || null,
+        miction: document.getElementById('c-miction').value || null,
+        hydratation: document.getElementById('c-hydratation').value || null,
+        eva: null
+    };
+    
+    // EVA
+    const evaSelected = document.querySelector('.eva-face.selected');
+    if (evaSelected) mesure.eva = evaSelected.dataset.val;
+    
+    // Vérifier qu'au moins une valeur
+    const hasValue = Object.entries(mesure).some(([k, v]) => k !== 'timestamp' && v !== null && v !== '');
+    if (!hasValue) {
+        alert('Saisissez au moins une constante');
+        return;
+    }
+    
+    // Convertir en nombres
+    ['temp', 'fc', 'fr', 'spo2', 'taSys', 'taDia', 'glycemie', 'hydratation', 'eva'].forEach(k => {
+        if (mesure[k] !== null && mesure[k] !== '') mesure[k] = parseFloat(mesure[k]);
+        else mesure[k] = null;
+    });
+    
+    p.mesures.push(mesure);
+    savePatients(patients);
+    
+    resetFormConstantes();
+    afficherHistorique(p);
+}
+
+// Évaluer si une constante est hors normes
+function evaluerConstante(type, valeur, age) {
+    if (valeur === null || valeur === undefined) return '';
+    const tranche = getTrancheAge(age);
+    
+    switch (type) {
+        case 'temp':
+            if (valeur >= 40) return 'alerte';
+            if (valeur >= 38.5) return 'warning';
+            if (valeur < 36) return 'warning';
+            if (valeur >= 38) return 'warning';
+            return 'ok';
+        case 'fc':
+            const fcNorm = NORMES_PEDIATRIQUES.fc[tranche];
+            if (valeur > fcNorm[1] + 30 || valeur < fcNorm[0] - 15) return 'alerte';
+            if (valeur > fcNorm[1] || valeur < fcNorm[0]) return 'warning';
+            return 'ok';
+        case 'fr':
+            const frNorm = NORMES_PEDIATRIQUES.fr[tranche];
+            if (valeur > frNorm[1] + 10 || valeur < frNorm[0] - 5) return 'alerte';
+            if (valeur > frNorm[1] || valeur < frNorm[0]) return 'warning';
+            return 'ok';
+        case 'spo2':
+            if (valeur < 92) return 'alerte';
+            if (valeur < 95) return 'warning';
+            return 'ok';
+        case 'taSys':
+            const taSysNorm = NORMES_PEDIATRIQUES.taSys[tranche];
+            if (valeur < 80 || valeur > 150) return 'alerte';
+            if (valeur < taSysNorm[0] || valeur > taSysNorm[1]) return 'warning';
+            return 'ok';
+        case 'glycemie':
+            if (valeur < 0.5 || valeur > 3) return 'alerte';
+            if (valeur < 0.7 || valeur > 1.26) return 'warning';
+            return 'ok';
+        case 'eva':
+            if (valeur >= 8) return 'alerte';
+            if (valeur >= 5) return 'warning';
+            return 'ok';
+        default:
+            return '';
+    }
+}
+
+// Calculer délai depuis dernière miction
+function calculerDelaiMiction(mesures) {
+    // Trouver la dernière miction enregistrée
+    for (let i = mesures.length - 1; i >= 0; i--) {
+        if (mesures[i].miction) {
+            const now = new Date();
+            const [h, m] = mesures[i].miction.split(':').map(Number);
+            const mictionTime = new Date();
+            mictionTime.setHours(h, m, 0, 0);
+            
+            // Si l'heure est dans le futur, c'était hier
+            if (mictionTime > now) mictionTime.setDate(mictionTime.getDate() - 1);
+            
+            const diffH = (now - mictionTime) / (1000 * 60 * 60);
+            return diffH;
+        }
+    }
+    return null;
+}
+
+// Afficher historique
+function afficherHistorique(patient) {
+    const container = document.getElementById('historique-container');
+    const mesures = patient.mesures;
+    
+    if (mesures.length === 0) {
+        container.innerHTML = '<div class="no-data">Aucune mesure enregistrée.</div>';
+        return;
+    }
+    
+    // Filtrer sur 24h
+    const now = new Date();
+    const h24ago = new Date(now - 24 * 60 * 60 * 1000);
+    const mesures24h = mesures.filter(m => new Date(m.timestamp) >= h24ago);
+    
+    let html = '<table class="historique-table">';
+    html += '<thead><tr>';
+    html += '<th>Heure</th><th>T°</th><th>FC</th><th>FR</th><th>SpO2</th><th>TA</th><th>Gly</th><th>💧</th><th>🚽</th><th>EVA</th>';
+    html += '</tr></thead><tbody>';
+    
+    // Afficher du plus récent au plus ancien
+    const delaiMiction = calculerDelaiMiction(mesures);
+    
+    mesures24h.slice().reverse().forEach(m => {
+        const dt = new Date(m.timestamp);
+        const heure = dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        
+        html += '<tr>';
+        html += `<td>${heure}</td>`;
+        html += cellule(m.temp, 'temp', patient.age, '°C');
+        html += cellule(m.fc, 'fc', patient.age, '');
+        html += cellule(m.fr, 'fr', patient.age, '');
+        html += cellule(m.spo2, 'spo2', patient.age, '%');
+        html += `<td>${m.taSys && m.taDia ? m.taSys + '/' + m.taDia : '-'}</td>`;
+        html += cellule(m.glycemie, 'glycemie', patient.age, '');
+        html += `<td>${m.hydratation || '-'}</td>`;
+        html += `<td>${m.miction || '-'}</td>`;
+        html += cellule(m.eva, 'eva', patient.age, '');
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    
+    // Alerte miction > 8h
+    if (delaiMiction !== null && delaiMiction > 8) {
+        html += `<div style="background:#f8d7da;padding:10px;border-radius:8px;margin-top:10px;color:#721c24;">
+            <strong>⚠️ Alerte :</strong> Dernière miction il y a ${Math.round(delaiMiction)}h (> 8h)
+        </div>`;
+    }
+    
+    // Résumé hydratation
+    const totalHydrat = mesures24h.reduce((sum, m) => sum + (m.hydratation || 0), 0);
+    if (totalHydrat > 0) {
+        html += `<div style="background:#d4edda;padding:10px;border-radius:8px;margin-top:10px;color:#155724;">
+            💧 Hydratation totale (24h) : <strong>${totalHydrat} mL</strong>
+        </div>`;
+    }
+    
+    container.innerHTML = html;
+}
+
+function cellule(val, type, age, unite) {
+    if (val === null || val === undefined) return '<td>-</td>';
+    const status = evaluerConstante(type, val, age);
+    let cls = '';
+    if (status === 'alerte') cls = 'val-alerte';
+    else if (status === 'warning') cls = 'val-warning';
+    else if (status === 'ok') cls = 'val-ok';
+    return `<td class="${cls}">${val}${unite}</td>`;
+}
+
+// Exporter pour médecin
+function exporterSuivi() {
+    const select = document.getElementById('patient-select');
+    const id = select.value;
+    if (!id) return;
+    
+    const patients = getPatients();
+    const p = patients[id];
+    const tranche = getTrancheAge(p.age);
+    
+    let txt = `SUIVI PÉDIATRIQUE - ${new Date().toLocaleDateString('fr-FR')}\n`;
+    txt += `${'='.repeat(50)}\n\n`;
+    txt += `Patient : ${p.prenom} ${p.initiale}.\n`;
+    txt += `Âge : ${p.age} ans\n`;
+    txt += `Normes FC : ${NORMES_PEDIATRIQUES.fc[tranche].join('-')} bpm\n`;
+    txt += `Normes FR : ${NORMES_PEDIATRIQUES.fr[tranche].join('-')} /min\n\n`;
+    
+    txt += `MESURES (24 dernières heures)\n`;
+    txt += `${'-'.repeat(50)}\n`;
+    
+    const now = new Date();
+    const h24ago = new Date(now - 24 * 60 * 60 * 1000);
+    const mesures24h = p.mesures.filter(m => new Date(m.timestamp) >= h24ago);
+    
+    if (mesures24h.length === 0) {
+        txt += 'Aucune mesure sur cette période.\n';
+    } else {
+        mesures24h.forEach(m => {
+            const dt = new Date(m.timestamp);
+            txt += `\n${dt.toLocaleString('fr-FR')}\n`;
+            if (m.temp !== null) txt += `  Température : ${m.temp}°C ${evaluerConstante('temp', m.temp, p.age) !== 'ok' ? '⚠️' : ''}\n`;
+            if (m.fc !== null) txt += `  FC : ${m.fc} bpm ${evaluerConstante('fc', m.fc, p.age) !== 'ok' ? '⚠️' : ''}\n`;
+            if (m.fr !== null) txt += `  FR : ${m.fr}/min ${evaluerConstante('fr', m.fr, p.age) !== 'ok' ? '⚠️' : ''}\n`;
+            if (m.spo2 !== null) txt += `  SpO2 : ${m.spo2}% ${evaluerConstante('spo2', m.spo2, p.age) !== 'ok' ? '⚠️' : ''}\n`;
+            if (m.taSys !== null && m.taDia !== null) txt += `  TA : ${m.taSys}/${m.taDia} mmHg\n`;
+            if (m.glycemie !== null) txt += `  Glycémie : ${m.glycemie} g/L ${evaluerConstante('glycemie', m.glycemie, p.age) !== 'ok' ? '⚠️' : ''}\n`;
+            if (m.hydratation !== null) txt += `  Hydratation : ${m.hydratation} mL\n`;
+            if (m.miction) txt += `  Dernière miction : ${m.miction}\n`;
+            if (m.eva !== null) txt += `  EVA douleur : ${m.eva}/10 ${evaluerConstante('eva', m.eva, p.age) !== 'ok' ? '⚠️' : ''}\n`;
+        });
+        
+        // Total hydratation
+        const totalHydrat = mesures24h.reduce((sum, m) => sum + (m.hydratation || 0), 0);
+        txt += `\nTotal hydratation 24h : ${totalHydrat} mL\n`;
+        
+        // Délai miction
+        const delai = calculerDelaiMiction(p.mesures);
+        if (delai !== null) {
+            txt += `Délai depuis dernière miction : ${Math.round(delai)}h`;
+            if (delai > 8) txt += ' ⚠️ (>8h)';
+            txt += '\n';
+        }
+    }
+    
+    txt += `\n${'='.repeat(50)}\n`;
+    txt += `Généré par Triage Pédiatrique - ${new Date().toLocaleString('fr-FR')}\n`;
+    
+    // Afficher
+    document.getElementById('export-container').innerHTML = `
+        <div class="export-box">${txt}</div>
+        <button style="margin-top:10px;padding:8px 15px;cursor:pointer;" onclick="copierExport()">📋 Copier</button>
+    `;
+}
+
+function copierExport() {
+    const box = document.querySelector('.export-box');
+    if (box) {
+        navigator.clipboard.writeText(box.textContent).then(() => {
+            alert('Copié dans le presse-papiers !');
+        });
+    }
+}
+
+// Purger historique patient
+function purgerPatient() {
+    const select = document.getElementById('patient-select');
+    const id = select.value;
+    if (!id) return;
+    
+    const patients = getPatients();
+    const p = patients[id];
+    
+    if (!confirm(`Supprimer tout l'historique de ${p.prenom} ${p.initiale}. ? (Le patient sera conservé)`)) return;
+    
+    p.mesures = [];
+    savePatients(patients);
+    afficherHistorique(p);
+}
+
 // === INIT ===
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof maladiesDB !== 'undefined') {
         genererListeMaladies();
     } else {
         console.error('maladiesDB.js non chargé');
+    }
+    // Init suivi si localStorage disponible
+    if (typeof localStorage !== 'undefined') {
+        initSuivi();
     }
 });
 </script>
