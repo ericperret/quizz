@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Lecture & Orthographe — CM1/CM2</title>
+<style>
+:root {
+    --bg: #f0f0ec;
+    --card: #ffffff;
+    --accent: #2563eb;
+    --accent2: #0f4c81;
+    --warm: #d97706;
+    --green: #16a34a;
+    --red: #dc2626;
+    --orange: #ea580c;
+    --text: #1e293b;
+    --text2: #475569;
+    --border: #cbd5e1;
+    --soft: #f1f5f9;
+    --radius: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+.app {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+}
+/* Header */
+.app-header {
+    background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
+    color: white;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.app-header::after {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+}
+.app-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.app-header p { opacity: 0.85; font-size: 14px; }
+
+/* Progress */
+.progress-track {
+    background: var(--border);
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.progress-fill {
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    height: 100%;
+    transition: width 0.4s ease;
+    border-radius: 3px;
+}
+/* Nav */
+.nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.nav button {
+    padding: 7px 14px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text2);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.nav button:hover { border-color: var(--accent); color: var(--accent); }
+.nav button.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+.nav button.done {
+    background: #dcfce7;
+    border-color: var(--green);
+    color: var(--green);
+}
+/* Sections */
+.section { display: none; }
+.section.active { display: block; }
+.card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.card-header {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: white;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+}
+.card-header h2 { font-size: 18px; margin-bottom: 2px; }
+.card-header p { font-size: 13px; opacity: 0.85; }
+
+.instruction {
+    background: #fffbeb;
+    border-left: 4px solid var(--warm);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 14px;
+}
+.instruction strong { color: var(--warm); }
+.examiner-note {
+    background: #eff6ff;
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13px;
+    color: var(--accent2);
+}
+/* Timer */
+.timer-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--soft);
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+}
+.timer-display {
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent2);
+    min-width: 90px;
+}
+.timer-bar button {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-start { background: var(--green); color: white; }
+.btn-start:hover { background: #15803d; }
+.btn-stop { background: var(--red); color: white; }
+.btn-stop:hover { background: #b91c1c; }
+.btn-reset { background: var(--border); color: var(--text2); }
+
+/* Word grids */
+.level-group { margin-bottom: 20px; }
+.level-group h4 {
+    font-size: 13px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+}
+.word-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+}
+.word-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--soft);
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.word-card .word { font-size: 20px; font-weight: 600; }
+.word-card.error { border-color: var(--red); background: #fef2f2; }
+.word-card .error-type {
+    font-size: 11px;
+    background: var(--red);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.error-type-selector {
+    display: none;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+.word-card.error .error-type-selector { display: flex; }
+.error-type-selector button {
+    font-size: 11px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.error-type-selector button.selected {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+/* Questions */
+.q-block {
+    background: var(--soft);
+    padding: 16px;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+}
+.q-block h4 { font-size: 15px; margin-bottom: 10px; color: var(--text); }
+.q-options { display: flex; flex-direction: column; gap: 6px; }
+.q-options label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 14px;
+}
+.q-options label:hover { border-color: var(--accent); background: #f0f7ff; }
+.q-options input[type="radio"] { accent-color: var(--accent); width: 18px; height: 18px; }
+.q-options input[type="radio"]:checked + span { font-weight: 600; }
+
+/* Inputs */
+input[type="text"], textarea, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: white;
+}
+input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+textarea { min-height: 80px; resize: vertical; }
+
+/* Audio button */
+.audio-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-bottom: 10px;
+    transition: background 0.2s;
+}
+.audio-btn:hover { background: var(--accent2); }
+
+/* Buttons */
+.btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-secondary { background: var(--soft); color: var(--text2); border: 1.5px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+
+/* RAN Grid */
+.ran-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    margin-bottom: 16px;
+}
+.ran-cell {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+/* EVA */
+.eva-display {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: 24px;
+    text-align: center;
+    padding: 40px;
+    background: var(--soft);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', monospace;
+}
+/* Fluence */
+.fluence-text {
+    font-size: 18px;
+    line-height: 2.2;
+    padding: 20px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+}
+.fluence-text span {
+    cursor: pointer;
+    padding: 2px 1px;
+    transition: background 0.15s;
+}
+.fluence-text span:hover { background: #fef3c7; }
+.fluence-text span.marked { background: #bbf7d0; border-radius: 3px; }
+.fluence-text span.error-word { background: #fecaca; border-radius: 3px; }
+
+/* Anamnese */
+.anam-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.anam-item {
+    padding: 12px;
+    background: var(--soft);
+    border-radius: 6px;
+}
+.anam-item label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 6px;
+}
+@media (max-width: 600px) {
+    .anam-grid { grid-template-columns: 1fr; }
+    .ran-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* Checkboxes styled */
+.check-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0;
+}
+.check-row input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--accent);
+}
+
+/* Results */
+.result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border-left: 5px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.result-card.green { border-left-color: var(--green); background: #f0fdf4; }
+.result-card.orange { border-left-color: var(--orange); background: #fff7ed; }
+.result-card.red { border-left-color: var(--red); background: #fef2f2; }
+.result-card h3 { font-size: 15px; margin-bottom: 6px; }
+.result-card .score { font-size: 22px; font-weight: 700; }
+.result-card .detail { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.result-card .time-info { font-size: 13px; color: var(--accent2); margin-top: 4px; font-weight: 600; }
+
+.profile-box {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: white;
+    padding: 24px;
+    border-radius: var(--radius);
+    margin: 20px 0;
+}
+.profile-box h2 { font-size: 20px; margin-bottom: 8px; }
+.profile-box .risk { display: inline-block; padding: 4px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; margin-top: 8px; }
+.risk-high { background: rgba(239,68,68,0.3); }
+.risk-very-high { background: rgba(239,68,68,0.5); }
+.risk-medium { background: rgba(234,179,8,0.3); }
+.risk-low { background: rgba(34,197,94,0.3); }
+
+.reco-box {
+    background: var(--soft);
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-top: 16px;
+}
+.reco-box h3 { font-size: 16px; color: var(--accent2); margin-bottom: 12px; }
+.reco-box ul { margin-left: 18px; }
+.reco-box li { margin-bottom: 8px; font-size: 14px; line-height: 1.5; }
+
+.radar-container {
+    text-align: center;
+    padding: 20px;
+    background: var(--card);
+    border-radius: var(--radius);
+    margin: 20px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.radar-container h3 { margin-bottom: 16px; font-size: 16px; }
+
+.error-analysis {
+    background: #fffbeb;
+    padding: 16px;
+    border-radius: var(--radius);
+    margin-top: 12px;
+}
+.error-analysis h4 { font-size: 14px; color: var(--warm); margin-bottom: 8px; }
+.error-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 2px;
+}
+.error-tag.phono-plausible { background: #dbeafe; color: #1e40af; }
+.error-tag.phono-implausible { background: #fecaca; color: #991b1b; }
+.error-tag.inversion { background: #fef3c7; color: #92400e; }
+.error-tag.omission { background: #e0e7ff; color: #3730a3; }
+.error-tag.addition { background: #f3e8ff; color: #6b21a8; }
+.error-tag.substitution { background: #ffedd5; color: #9a3412; }
+
+.disclaimer {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    margin-top: 20px;
+    font-size: 13px;
+    color: #991b1b;
+}
+</style>
+</head>
+<body>
+<div class="app">
+    <div class="app-header">
+        <h1>🔬 Test de Lecture & Orthographe — CM1/CM2</h1>
+        <p>Identifier précisément où et pourquoi ça bloque en français · 10 épreuves · Maman supervise</p>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+    <div class="nav" id="nav"></div>
+
+    <!-- ==================== SECTIONS ==================== -->
+    <div id="sections"></div>
+
+    <!-- ==================== RÉSULTATS ==================== -->
+    <div class="section" id="resultSection"></div>
+</div>
+
+<script>
+// ============================================================
+//  DATA
+// ============================================================
+
+const TESTS = [
+    'Difficultés','Mots réguliers','Mots irréguliers','Pseudo-mots',
+    'Dénomination rapide','Conscience phono','Dictée',
+    'Fluence','Compréhension','Mémoire de travail','Empan visuel'
+];
+
+// --- 1. ANAMNÈSE ---
+const anamneseFields = [
+    { id:'classe', label:'Classe actuelle', type:'select', options:['CE2','CM1','CM2','6e'] },
+    { id:'diff_lecture_voix', label:'Lecture à voix haute', type:'select', options:['Pas de souci','Lente mais correcte','Erreurs fréquentes','Refuse / évite'] },
+    { id:'diff_lecture_sil', label:'Lecture silencieuse (compréhension)', type:'select', options:['Comprend bien','Comprend partiellement','Ne comprend pas ce qu\'elle lit'] },
+    { id:'diff_ortho', label:'Orthographe', type:'select', options:['Pas de souci','Quelques erreurs','Beaucoup d\'erreurs','Très difficile'] },
+    { id:'diff_copie', label:'Copie (recopier un texte)', type:'select', options:['Pas de souci','Lente','Erreurs en copiant','Lente + erreurs'] },
+    { id:'diff_ecriture', label:'Rédaction / expression écrite', type:'select', options:['Pas de souci','Idées OK mais orthographe KO','Difficultés à formuler','Bloquée'] },
+    { id:'fatigue_lecture', label:'Se fatigue-t-elle vite en lisant ?', type:'select', options:['Non','Un peu','Oui, rapidement'] },
+    { id:'remarques', label:'Autre chose à signaler ?', type:'textarea', placeholder:'Ex : confond certaines lettres, saute des lignes, se plaint de maux de tête en lisant...' }
+];
+
+// --- 2. MOTS RÉGULIERS (gradués) ---
+const regularWords = {
+    'Niveau 1 — Simples (CV, CVC)': ['ami','rue','bus','île','âne','col','dé','pic','vol','fée'],
+    'Niveau 2 — Bisyllabiques': ['table','robe','livre','lampe','porte','banane','robot','valise','tortue','ballon'],
+    'Niveau 3 — Trisyllabiques': ['chocolat','pantalon','cartable','mercredi','carotte','tulipe','lavabo','domino','solitude','catalogue'],
+    'Niveau 4 — Complexes': ['ordinateur','trampoline','rhinocéros','thermomètre','bibliothèque']
+};
+
+// --- 3. MOTS IRRÉGULIERS ---
+const irregularWords = {
+    'Niveau 1 — Fréquents': ['femme','monsieur','sept','fils','pays','ville','écho','clef','yacht','poêle'],
+    'Niveau 2 — Moyens': ['oignon','automne','album','paon','faon','choeur','rhume','sculpteur','baptême','orchidée'],
+    'Niveau 3 — Rares': ['aquarium','orchestre','compteur','chrysanthème','hypothèse']
+};
+
+// --- 4. PSEUDO-MOTS (gradués) ---
+const pseudoWords = {
+    'Niveau 1 — CVC / CVCV': ['bral','toup','fane','molu','rivo','daco','lupi','tobe'],
+    'Niveau 2 — CCVC / CVCCV': ['broton','clopir','flanque','drapule','flopir','grophe','trouche','plamure'],
+    'Niveau 3 — Complexes (CCC, graphèmes rares)': ['spanture','vrindale','chromile','phrétule','blansoir']
+};
+
+// --- 5. RAN ---
+const ranColors = ['#dc2626','#2563eb','#16a34a','#eab308','#1e1e1e'];
+const ranColorNames = ['rouge','bleu','vert','jaune','noir'];
+
+// --- 6. CONSCIENCE PHONOLOGIQUE ---
+const phonoQuestions = [
+    // Segmentation syllabique
+    { cat:'Segmentation', q:"Combien de syllabes dans « papillon » ?", opts:['2','3','4'], correct:1 },
+    { cat:'Segmentation', q:"Combien de syllabes dans « électricité » ?", opts:['4','5','6'], correct:1 },
+    // Identification phonème
+    { cat:'Identification', q:"Quel son entends-tu au début de « chameau » ?", opts:['/k/','/ʃ/ (ch)','/s/'], correct:1 },
+    { cat:'Identification', q:"Quel son entends-tu à la fin de « parapluie » ?", opts:['/i/','/ɥi/ (ui)','/e/'], correct:1 },
+    { cat:'Identification', q:"Combien de sons dans le mot « chat » ?", opts:['2','3','4'], correct:0 },
+    // Rime
+    { cat:'Rime', q:"Quel mot rime avec « maison » ?", opts:['poisson','raisin','mouton'], correct:0 },
+    { cat:'Rime', q:"Quel mot rime avec « cartable » ?", opts:['capable','carton','tableau'], correct:0 },
+    // Suppression
+    { cat:'Suppression', q:"Si on enlève /r/ à « train », qu'obtient-on ?", opts:['"tain"','"tin"','"tan"'], correct:0 },
+    { cat:'Suppression', q:"Si on enlève /p/ à « plat », qu'obtient-on ?", opts:['"la"','"lat"','"pa"'], correct:1 },
+    // FUSION (nouveau)
+    { cat:'Fusion', q:"Si on assemble /m/ + /a/ + /r/, quel mot obtient-on ?", opts:['mare','mars','marre'], correct:0 },
+    { cat:'Fusion', q:"Si on assemble /ʃ/ + /a/ + /t/, quel mot obtient-on ?", opts:['chat','chatte','char'], correct:1 },
+    // INVERSION (nouveau)
+    { cat:'Inversion', q:"Dis « sol » à l'envers (inversement des sons), qu'obtient-on ?", opts:['"los"','"ols"','"lo"'], correct:0 },
+    { cat:'Inversion', q:"Dis « car » à l'envers, qu'obtient-on ?", opts:['"rac"','"arc"','"cra"'], correct:0 },
+    // SUBSTITUTION (nouveau)
+    { cat:'Substitution', q:"Dans « car », remplace /k/ par /b/. Qu'obtient-on ?", opts:['"bar"','"par"','"tar"'], correct:0 },
+    // PAIRES MINIMALES (nouveau)
+    { cat:'Discrimination', q:"« pain » et « bain » : identiques ou différents ?", opts:['Identiques','Différents'], correct:1 },
+    { cat:'Discrimination', q:"« chou » et « joue » : identiques ou différents ?", opts:['Identiques','Différents'], correct:1 },
+];
+
+// --- 7. DICTÉE ---
+const dicteeWords = [
+    { word:'chat', audio:'Le mot : CHAT' },
+    { word:'fleur', audio:'Le mot : FLEUR' },
+    { word:'brosse', audio:'Le mot : BROSSE' },
+    { word:'école', audio:'Le mot : ÉCOLE' },
+    { word:'pharmacie', audio:'Le mot : PHARMACIE' },
+    { word:'grenouille', audio:'Le mot : GRENOUILLE' },
+    { word:'sympathique', audio:'Le mot : SYMPATHIQUE' },
+    { word:'enveloppe', audio:'Le mot : ENVELOPPE' }
+];
+const dicteePhrases = [
+    { text:'Le chat mange sa nourriture.', audio:'Phrase : Le chat mange sa nourriture.' },
+    { text:'Les enfants jouent dans le jardin.', audio:'Phrase : Les enfants jouent dans le jardin.' },
+    { text:"L'orchestre répète avant le spectacle.", audio:"Phrase : L'orchestre répète avant le spectacle." }
+];
+
+// Phonological equivalences (French grapheme groups producing same sound)
+const PHONO_EQUIV = {
+    'f': ['f','ph'],
+    'k': ['c','k','qu','q','ch'],  // ch=k in certain words
+    's': ['s','ss','c','ç','sc','t'],  // t in -tion
+    'z': ['z','s'],
+    'o': ['o','au','eau','ô'],
+    'e': ['e','é','è','ê','ai','ei','et'],
+    'ɛ̃': ['in','im','ain','aim','ein','en','yn','ym'],
+    'ɑ̃': ['an','am','en','em'],
+    'ɔ̃': ['on','om'],
+    'ʃ': ['ch'],
+    'ʒ': ['j','g','ge'],
+    'ɲ': ['gn'],
+    'ks': ['x','cc','cs'],
+    'gz': ['x'],
+    'i': ['i','î','ï','y','ee'],
+    'u': ['ou','oû','oo'],
+    'y': ['u','û','ü'],
+};
+
+// --- 8. FLUENCE ---
+const fluenceText = "Le matin, Pierre se lève très tôt pour aller à l'école. Il prend son petit déjeuner avec du pain et du chocolat chaud. Ensuite, il met son manteau et son cartable sur le dos. Sa mère le conduit en voiture car l'école est assez loin. Sur le chemin, Pierre regarde les arbres, les maisons et les voitures qui passent. Quand il arrive, il retrouve ses amis dans la cour. Ils jouent ensemble pendant quelques minutes avant que la cloche sonne. En classe, la maîtresse leur demande de sortir leurs cahiers de mathématiques. Pierre aime bien les nombres mais il trouve que les problèmes sont parfois difficiles. Après les mathématiques, c'est l'heure de la lecture. Aujourd'hui, ils lisent une histoire de chevaliers et de dragons. Pierre essaie de lire à voix haute quand la maîtresse le lui demande. À midi, il mange à la cantine avec ses camarades. L'après-midi passe vite entre la géographie et le dessin.";
+
+// --- 9. COMPRÉHENSION ---
+const compTexts = [
+    {
+        title: 'Le renard rusé (narratif)',
+        text: "Un matin d'hiver, un renard affamé aperçoit un corbeau perché tout en haut d'un grand chêne. Le corbeau tient dans son bec un gros morceau de fromage qu'il vient de voler dans une ferme voisine. Le renard, qui n'a rien mangé depuis deux jours, réfléchit à un plan. Il s'approche de l'arbre et lance d'une voix douce : « Quel magnifique plumage vous avez, cher corbeau ! Je suis certain que votre voix est aussi belle que vos plumes. » Le corbeau, tout fier d'être complimenté, ouvre grand son bec pour pousser un cri. Le fromage tombe aussitôt. Le renard s'en empare et s'enfuit en disant : « Apprenez que tout flatteur vit aux dépens de celui qui l'écoute. »",
+        questions: [
+            // Explicites
+            { q:"Que tient le corbeau dans son bec ?", opts:['Un ver','Du fromage','Un fruit'], correct:1, type:'explicite' },
+            { q:"Depuis combien de temps le renard n'a-t-il pas mangé ?", opts:['Un jour','Deux jours','Une semaine'], correct:1, type:'explicite' },
+            // Inférentielles
+            { q:"Comment le corbeau se sent-il quand il entend le compliment ?", opts:['Méfiant','Flatté et fier','En colère'], correct:1, type:'inférentielle' },
+            { q:"Pourquoi le renard fait-il un compliment au corbeau ?", opts:["Parce qu'il aime sa voix","Pour qu'il ouvre son bec et perde le fromage","Pour devenir son ami"], correct:1, type:'inférentielle' },
+            // Vocabulaire en contexte
+            { q:"Que signifie « tout flatteur vit aux dépens de celui qui l'écoute » ?", opts:["Ceux qui font des compliments sont gentils","Ceux qui flattent profitent de ceux qui les croient","Les flatteurs sont pauvres"], correct:1, type:'vocabulaire' },
+        ]
+    },
+    {
+        title: 'La migration des oiseaux (informatif)',
+        text: "Chaque automne, des millions d'oiseaux quittent les régions froides pour se diriger vers des pays plus chauds. Ce voyage s'appelle la migration. Les oiseaux migrateurs, comme les hirondelles et les cigognes, peuvent parcourir des milliers de kilomètres. Ils se repèrent grâce au soleil, aux étoiles et au champ magnétique de la Terre. Le voyage est dangereux : les oiseaux doivent affronter le vent, la pluie et les prédateurs. Beaucoup d'entre eux ne survivent pas. Ceux qui arrivent passent l'hiver au chaud, puis reviennent au printemps pour se reproduire. Les scientifiques étudient la migration en posant de petites bagues sur les pattes des oiseaux.",
+        questions: [
+            { q:"Quand la migration a-t-elle lieu ?", opts:['Au printemps','En automne','En été'], correct:1, type:'explicite' },
+            { q:"Comment les scientifiques étudient-ils la migration ?", opts:['Avec des caméras','Avec des bagues aux pattes','Avec des satellites'], correct:1, type:'explicite' },
+            { q:"Pourquoi beaucoup d'oiseaux ne survivent-ils pas au voyage ?", opts:["Parce qu'ils sont trop vieux","À cause du vent, de la pluie et des prédateurs","Parce qu'ils se perdent"], correct:1, type:'inférentielle' },
+            { q:"Que signifie « champ magnétique de la Terre » dans ce texte ?", opts:["Un aimant posé au sol","Une force invisible qui aide les oiseaux à s'orienter","Le vent qui souffle vers le sud"], correct:1, type:'vocabulaire' },
+        ]
+    }
+];
+
+// --- 10. MÉMOIRE DE TRAVAIL ---
+const memoryForward = [
+    { seq:'3-7', label:'Empan endroit — 2 chiffres' },
+    { seq:'5-1-9', label:'Empan endroit — 3 chiffres' },
+    { seq:'8-2-6-3', label:'Empan endroit — 4 chiffres' },
+    { seq:'4-7-1-9-2', label:'Empan endroit — 5 chiffres' },
+    { seq:'3-8-5-1-7-4', label:'Empan endroit — 6 chiffres' },
+];
+const memoryBackward = [
+    { seq:'6-2', label:'Empan envers — 2 chiffres', answer:'2-6' },
+    { seq:'3-9-1', label:'Empan envers — 3 chiffres', answer:'1-9-3' },
+    { seq:'7-2-5-4', label:'Empan envers — 4 chiffres', answer:'4-5-2-7' },
+    { seq:'1-8-3-6-2', label:'Empan envers — 5 chiffres', answer:'2-6-3-8-1' },
+];
+const memoryWords = [
+    { seq:'chat-table-livre', label:'Mots — 3 éléments' },
+    { seq:'soleil-fleur-arbre-eau', label:'Mots — 4 éléments' },
+    { seq:'rouge-lune-porte-main-clef', label:'Mots — 5 éléments' },
+];
+
+// --- 11. EMPAN VISUO-ATTENTIONNEL ---
+const evaSequences = [
+    { letters:'R H T', duration:300, label:'3 lettres — 300ms' },
+    { letters:'M B L D', duration:300, label:'4 lettres — 300ms' },
+    { letters:'R T M B L', duration:200, label:'5 lettres — 200ms' },
+    { letters:'F D S P N K', duration:200, label:'6 lettres — 200ms' },
+    { letters:'H R T B M L D', duration:200, label:'7 lettres — 200ms' },
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+const state = {
+    currentTest: 0,
+    anamnese: {},
+    // Lecture errors: { wordIndex: { error:true, types:[] } }
+    regularErrors: {},
+    irregularErrors: {},
+    pseudoErrors: {},
+    // Timers (ms)
+    timers: { regular:0, irregular:0, pseudo:0, ran:0, fluence:0 },
+    timerIntervals: {},
+    timerRunning: {},
+    // RAN
+    ranErrors: 0,
+    // Phono
+    phono: [],
+    // Dictée
+    dicteeWords: [],
+    dicteePhrases: [],
+    // Fluence
+    fluenceLastWord: -1,
+    fluenceErrors: [],
+    // Compréhension
+    comprehension: [],
+    // Mémoire
+    memForward: [],
+    memBackward: [],
+    memWords: [],
+    // EVA
+    eva: [],
+    // Nav done
+    done: new Set()
+};
+
+// ============================================================
+//  INIT
+// ============================================================
+function init() {
+    buildNav();
+    buildSections();
+    goTo(0);
+}
+
+function buildNav() {
+    const nav = document.getElementById('nav');
+    TESTS.forEach((t,i) => {
+        const b = document.createElement('button');
+        b.textContent = `${i+1}. ${t}`;
+        b.onclick = () => goTo(i);
+        nav.appendChild(b);
+    });
+}
+
+function goTo(idx) {
+    state.done.add(state.currentTest);
+    state.currentTest = idx;
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const sec = document.getElementById('sec'+idx);
+    if(sec) sec.classList.add('active');
+    // Nav update
+    document.querySelectorAll('.nav button').forEach((b,i) => {
+        b.classList.remove('active');
+        if(state.done.has(i) && i !== idx) b.classList.add('done');
+        else b.classList.remove('done');
+    });
+    document.querySelectorAll('.nav button')[idx].classList.add('active');
+    // Progress
+    document.getElementById('progressBar').style.width = ((idx+1)/TESTS.length*100)+'%';
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function goResults() {
+    state.done.add(state.currentTest);
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('resultSection').classList.add('active');
+    document.querySelectorAll('.nav button').forEach(b => { b.classList.remove('active'); b.classList.add('done'); });
+    document.getElementById('progressBar').style.width = '100%';
+    buildResults();
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ============================================================
+//  BUILD ALL SECTIONS
+// ============================================================
+function buildSections() {
+    const root = document.getElementById('sections');
+    root.innerHTML = '';
+    TESTS.forEach((t,i) => {
+        const div = document.createElement('div');
+        div.className = 'section';
+        div.id = 'sec'+i;
+        root.appendChild(div);
+    });
+    buildAnamnese();
+    buildReadingTest('regular', 1, 'Lecture de mots réguliers', 'Mots qui se lisent comme ils s\'écrivent', regularWords);
+    buildReadingTest('irregular', 2, 'Lecture de mots irréguliers', 'Mots qu\'il faut connaître — lecture globale', irregularWords);
+    buildReadingTest('pseudo', 3, 'Lecture de pseudo-mots', 'Mots inventés — décodage pur', pseudoWords);
+    buildRAN();
+    buildPhono();
+    buildDictee();
+    buildFluence();
+    buildComprehension();
+    buildMemory();
+    buildEVA();
+}
+
+// ============================================================
+//  0. ANAMNÈSE
+// ============================================================
+function buildAnamnese() {
+    const sec = document.getElementById('sec0');
+    let h = `
+        <div class="card-header"><h2>📋 Où ça coince en français ?</h2><p>Décrivez les difficultés observées — ça oriente l'interprétation des résultats</p></div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cochez ce qui correspond le mieux. Pas besoin de réfléchir longtemps, c'est votre ressenti au quotidien.</div>
+        <div class="card"><div class="anam-grid">`;
+    anamneseFields.forEach(f => {
+        h += `<div class="anam-item ${f.type==='textarea'?'style="grid-column:1/-1"':''}">
+            <label>${f.label}</label>`;
+        if(f.type === 'text') h += `<input type="text" id="anam_${f.id}" placeholder="${f.placeholder||''}" onchange="state.anamnese['${f.id}']=this.value">`;
+        else if(f.type === 'textarea') h += `<textarea id="anam_${f.id}" placeholder="${f.placeholder||''}" onchange="state.anamnese['${f.id}']=this.value"></textarea>`;
+        else if(f.type === 'select') {
+            h += `<select id="anam_${f.id}" onchange="state.anamnese['${f.id}']=this.value"><option value="">— Choisir —</option>`;
+            f.options.forEach(o => h += `<option value="${o}">${o}</option>`);
+            h += '</select>';
+        }
+        h += '</div>';
+    });
+    h += `</div></div>
+        <div class="btn-row"><button class="btn btn-primary" onclick="goTo(1)">C'est parti →</button></div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  READING TESTS (1, 2, 3) — with timer + examiner error types
+// ============================================================
+const ERROR_TYPES = [
+    { code:'vis', label:'Visuelle', desc:'b/d, p/q, m/n' },
+    { code:'phon', label:'Phonémique', desc:'t/d, f/v, ch/j' },
+    { code:'inv', label:'Inversion', desc:'lettres inversées' },
+    { code:'omis', label:'Omission', desc:'lettre/syllabe sautée' },
+    { code:'ajout', label:'Ajout', desc:'lettre/syllabe ajoutée' },
+    { code:'lex', label:'Lexicalisation', desc:'lit un autre mot' },
+    { code:'other', label:'Autre', desc:'' },
+];
+
+function buildReadingTest(key, testIdx, title, subtitle, wordData) {
+    const sec = document.getElementById('sec'+testIdx);
+    const timerKey = key;
+    let h = `
+        <div class="card-header"><h2>${title}</h2><p>${subtitle}</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Lis chaque mot à voix haute, le plus correctement possible.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lancez le chronomètre quand l'enfant commence. Cliquez sur un mot pour le marquer comme erreur, puis précisez le type d'erreur. Arrêtez le chrono quand il a fini.</div>
+        <div class="timer-bar">
+            <div class="timer-display" id="timer_${timerKey}">00:00.0</div>
+            <button class="btn-start" id="tbtn_${timerKey}" onclick="toggleTimer('${timerKey}')">▶ Démarrer</button>
+            <button class="btn-reset" onclick="resetTimer('${timerKey}')">↺ Reset</button>
+        </div>`;
+    Object.entries(wordData).forEach(([level, words]) => {
+        h += `<div class="level-group"><h4>${level}</h4><div class="word-grid">`;
+        words.forEach((w, wi) => {
+            const globalIdx = getGlobalWordIndex(wordData, level, wi);
+            h += `<div class="word-card" id="wc_${key}_${globalIdx}" onclick="toggleWordError('${key}',${globalIdx},this)">
+                <span class="word">${w}</span>
+                <div class="error-type-selector" id="et_${key}_${globalIdx}">
+                    ${ERROR_TYPES.map(et => `<button onclick="event.stopPropagation();setErrorType('${key}',${globalIdx},'${et.code}',this)" title="${et.desc}">${et.label}</button>`).join('')}
+                </div>
+            </div>`;
+        });
+        h += '</div></div>';
+    });
+    const prev = testIdx > 0 ? testIdx - 1 : 0;
+    const next = testIdx < TESTS.length - 1 ? testIdx + 1 : testIdx;
+    h += `<div class="btn-row">
+        ${testIdx > 0 ? `<button class="btn btn-secondary" onclick="goTo(${prev})">← Retour</button>` : ''}
+        <button class="btn btn-primary" onclick="goTo(${next})">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+function getGlobalWordIndex(wordData, targetLevel, localIdx) {
+    let global = 0;
+    for(const [level, words] of Object.entries(wordData)) {
+        if(level === targetLevel) return global + localIdx;
+        global += words.length;
+    }
+    return global + localIdx;
+}
+
+function getAllWords(wordData) {
+    return Object.values(wordData).flat();
+}
+
+function toggleWordError(key, idx, el) {
+    const stateKey = key + 'Errors';
+    if(state[stateKey][idx]) {
+        delete state[stateKey][idx];
+        el.classList.remove('error');
+    } else {
+        state[stateKey][idx] = { error:true, types:[] };
+        el.classList.add('error');
+    }
+}
+
+function setErrorType(key, idx, code, btn) {
+    const stateKey = key + 'Errors';
+    if(!state[stateKey][idx]) return;
+    const types = state[stateKey][idx].types;
+    const i = types.indexOf(code);
+    if(i >= 0) { types.splice(i,1); btn.classList.remove('selected'); }
+    else { types.push(code); btn.classList.add('selected'); }
+}
+
+// ============================================================
+//  TIMER
+// ============================================================
+function toggleTimer(key) {
+    const btn = document.getElementById('tbtn_'+key);
+    if(state.timerRunning[key]) {
+        clearInterval(state.timerIntervals[key]);
+        state.timerRunning[key] = false;
+        btn.textContent = '▶ Reprendre';
+        btn.className = 'btn-start';
+    } else {
+        const start = Date.now() - (state.timers[key]||0);
+        state.timerIntervals[key] = setInterval(() => {
+            state.timers[key] = Date.now() - start;
+            document.getElementById('timer_'+key).textContent = formatTime(state.timers[key]);
+        }, 100);
+        state.timerRunning[key] = true;
+        btn.textContent = '⏸ Pause';
+        btn.className = 'btn-stop';
+    }
+}
+
+function resetTimer(key) {
+    clearInterval(state.timerIntervals[key]);
+    state.timers[key] = 0;
+    state.timerRunning[key] = false;
+    document.getElementById('timer_'+key).textContent = '00:00.0';
+    const btn = document.getElementById('tbtn_'+key);
+    btn.textContent = '▶ Démarrer';
+    btn.className = 'btn-start';
+}
+
+function formatTime(ms) {
+    const s = Math.floor(ms/1000);
+    const d = Math.floor((ms%1000)/100);
+    const m = Math.floor(s/60);
+    return `${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}.${d}`;
+}
+
+// ============================================================
+//  4. RAN (Dénomination Rapide Automatisée)
+// ============================================================
+function buildRAN() {
+    const sec = document.getElementById('sec4');
+    // Generate 50 cells (5x10) random colors
+    let grid = [];
+    for(let i=0; i<50; i++) grid.push(Math.floor(Math.random()*5));
+    state._ranGrid = grid;
+
+    let h = `
+        <div class="card-header"><h2>🎨 Dénomination Rapide (RAN)</h2><p>Vitesse de dénomination automatisée — prédicteur de dyslexie</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Nomme chaque couleur le plus vite possible, ligne par ligne, de gauche à droite, sans te tromper.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lancez le chrono quand l'enfant commence. Notez le nombre d'erreurs. Arrêtez quand il a fini les 50 cases.</div>
+        <div class="timer-bar">
+            <div class="timer-display" id="timer_ran">00:00.0</div>
+            <button class="btn-start" id="tbtn_ran" onclick="toggleTimer('ran')">▶ Démarrer</button>
+            <button class="btn-reset" onclick="resetTimer('ran')">↺ Reset</button>
+        </div>
+        <div class="ran-grid">`;
+    grid.forEach(ci => {
+        h += `<div class="ran-cell" style="background:${ranColors[ci]}">${ci===4?'':'●'}</div>`;
+    });
+    h += `</div>
+        <div class="card" style="margin-top:12px">
+            <label style="font-weight:600;font-size:14px;">Nombre d'erreurs de dénomination :</label>
+            <input type="text" id="ranErrors" placeholder="0" style="max-width:100px;margin-top:8px" onchange="state.ranErrors=parseInt(this.value)||0">
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="goTo(3)">← Retour</button>
+            <button class="btn btn-primary" onclick="goTo(5)">Suivant →</button>
+        </div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  5. CONSCIENCE PHONOLOGIQUE
+// ============================================================
+function buildPhono() {
+    const sec = document.getElementById('sec5');
+    let h = `
+        <div class="card-header"><h2>🔊 Conscience phonologique</h2><p>Capacité à manipuler les sons du langage</p></div>
+        <div class="instruction"><strong>Consigne :</strong> Réponds aux questions sur les sons des mots.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lisez chaque question à voix haute si l'enfant a du mal à les lire. L'important est de tester les sons, pas la lecture.</div>`;
+    let currentCat = '';
+    phonoQuestions.forEach((q,i) => {
+        if(q.cat !== currentCat) {
+            currentCat = q.cat;
+            h += `<h4 style="margin:16px 0 8px;color:var(--accent2);font-size:13px;text-transform:uppercase;letter-spacing:1px">${currentCat}</h4>`;
+        }
+        h += `<div class="q-block"><h4>${i+1}. ${q.q}</h4><div class="q-options">`;
+        q.opts.forEach((o,j) => {
+            h += `<label><input type="radio" name="phono${i}" value="${j}" onchange="state.phono[${i}]=${j}"><span>${o}</span></label>`;
+        });
+        h += '</div></div>';
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(4)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(6)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  6. DICTÉE
+// ============================================================
+function buildDictee() {
+    const sec = document.getElementById('sec6');
+    let h = `
+        <div class="card-header"><h2>✍️ Dictée de mots et phrases</h2><p>Orthographe — analyse qualitative des erreurs</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Écoute bien et écris ce que tu entends.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cliquez sur le bouton pour faire entendre le mot/phrase. L'enfant écrit dans le champ. Le système analysera automatiquement les types d'erreurs.</div>
+        <h3 style="margin:16px 0 8px">Partie A : Mots isolés</h3>`;
+    dicteeWords.forEach((item,i) => {
+        h += `<div class="q-block">
+            <button class="audio-btn" onclick="speak('${item.audio}')">🔊 Écouter le mot ${i+1}</button>
+            <input type="text" placeholder="Écris le mot ici" id="dw${i}" onchange="state.dicteeWords[${i}]=this.value">
+        </div>`;
+    });
+    h += '<h3 style="margin:24px 0 8px">Partie B : Phrases</h3>';
+    dicteePhrases.forEach((item,i) => {
+        h += `<div class="q-block">
+            <button class="audio-btn" onclick="speak(\`${item.audio}\`)">🔊 Écouter la phrase ${i+1}</button>
+            <textarea placeholder="Écris la phrase ici" id="dp${i}" onchange="state.dicteePhrases[${i}]=this.value"></textarea>
+        </div>`;
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(5)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(7)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+function speak(text) {
+    if('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'fr-FR';
+        u.rate = 0.85;
+        speechSynthesis.speak(u);
+    } else {
+        alert('Texte à lire : ' + text);
+    }
+}
+
+// ============================================================
+//  7. FLUENCE DE LECTURE
+// ============================================================
+function buildFluence() {
+    const sec = document.getElementById('sec7');
+    const words = fluenceText.split(/\s+/);
+    let h = `
+        <div class="card-header"><h2>📖 Fluence de lecture (MCLM)</h2><p>Mots correctement lus par minute</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Lis ce texte à voix haute, du mieux que tu peux.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lancez le chrono quand l'enfant commence. Au bout d'<strong>1 minute</strong>, arrêtez-le et cliquez sur le <strong>dernier mot lu</strong> (il deviendra vert). Cliquez aussi sur les mots mal lus (ils deviendront rouges).</div>
+        <div class="timer-bar">
+            <div class="timer-display" id="timer_fluence">00:00.0</div>
+            <button class="btn-start" id="tbtn_fluence" onclick="toggleTimer('fluence')">▶ Démarrer</button>
+            <button class="btn-reset" onclick="resetTimer('fluence')">↺ Reset</button>
+            <span style="font-size:13px;color:var(--text2);margin-left:auto">Objectif : 1 minute</span>
+        </div>
+        <div class="fluence-text" id="fluenceContainer">`;
+    words.forEach((w, i) => {
+        h += `<span id="fw${i}" onclick="toggleFluenceWord(${i})" data-idx="${i}">${w} </span>`;
+    });
+    h += `</div>
+        <div class="card">
+            <p style="font-size:14px"><strong>Dernier mot lu (clic droit ou double-clic) :</strong> <span id="lastWordDisplay">Non défini</span></p>
+            <p style="font-size:13px;color:var(--text2);margin-top:4px">Double-cliquez sur le dernier mot atteint pour le marquer.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="goTo(6)">← Retour</button>
+            <button class="btn btn-primary" onclick="goTo(8)">Suivant →</button>
+        </div>`;
+    sec.innerHTML = h;
+    // Double click = set last word
+    words.forEach((w,i) => {
+        document.getElementById('fw'+i).addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            setLastWord(i);
+        });
+    });
+}
+
+function toggleFluenceWord(idx) {
+    const el = document.getElementById('fw'+idx);
+    if(el.classList.contains('error-word')) {
+        el.classList.remove('error-word');
+        state.fluenceErrors = state.fluenceErrors.filter(x => x !== idx);
+    } else {
+        el.classList.add('error-word');
+        state.fluenceErrors.push(idx);
+    }
+}
+
+function setLastWord(idx) {
+    // Clear previous
+    document.querySelectorAll('.fluence-text span.marked').forEach(s => s.classList.remove('marked'));
+    document.getElementById('fw'+idx).classList.add('marked');
+    state.fluenceLastWord = idx;
+    document.getElementById('lastWordDisplay').textContent = document.getElementById('fw'+idx).textContent.trim() + ` (mot n°${idx+1})`;
+}
+
+// ============================================================
+//  8. COMPRÉHENSION
+// ============================================================
+function buildComprehension() {
+    const sec = document.getElementById('sec8');
+    let h = `
+        <div class="card-header"><h2>📚 Compréhension de lecture</h2><p>Textes narratif et informatif — questions explicites, inférentielles et vocabulaire</p></div>
+        <div class="instruction"><strong>Consigne :</strong> Lis chaque texte puis réponds aux questions.</div>`;
+    let qIdx = 0;
+    compTexts.forEach((t, ti) => {
+        h += `<div class="card"><h3 style="margin-bottom:12px">${t.title}</h3>
+            <div style="background:var(--soft);padding:16px;border-radius:6px;line-height:1.9;font-size:16px;margin-bottom:16px">${t.text}</div>`;
+        t.questions.forEach((q, qi) => {
+            const typeLabel = q.type === 'explicite' ? '📌 Explicite' : q.type === 'inférentielle' ? '🔍 Inférentielle' : '📖 Vocabulaire';
+            h += `<div class="q-block"><h4><span style="font-size:11px;background:var(--soft);padding:2px 8px;border-radius:10px;margin-right:6px">${typeLabel}</span> ${q.q}</h4><div class="q-options">`;
+            q.opts.forEach((o, oi) => {
+                h += `<label><input type="radio" name="comp${qIdx}" value="${oi}" onchange="state.comprehension[${qIdx}]=${oi}"><span>${o}</span></label>`;
+            });
+            h += '</div></div>';
+            qIdx++;
+        });
+        h += '</div>';
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(7)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(9)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  9. MÉMOIRE DE TRAVAIL
+// ============================================================
+function buildMemory() {
+    const sec = document.getElementById('sec9');
+    let h = `
+        <div class="card-header"><h2>🧠 Mémoire de travail</h2><p>Empan endroit, empan envers, empan de mots</p></div>
+        <div class="instruction"><strong>Consigne :</strong> Écoute la séquence puis répète-la.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cliquez sur écouter, puis l'enfant tape sa réponse. Pour l'empan envers, l'enfant doit répéter <strong>à l'envers</strong>.</div>
+        <h3 style="margin:16px 0 8px">Empan endroit (répéter dans l'ordre)</h3>`;
+    memoryForward.forEach((m, i) => {
+        h += `<div class="q-block"><h4>${m.label}</h4>
+            <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
+            <input type="text" placeholder="Ex: ${m.seq.split('-').slice(0,2).join('-')}-..." id="mf${i}" onchange="state.memForward[${i}]=this.value">
+            <small style="color:var(--text2);display:block;margin-top:4px">Sépare les chiffres par des tirets</small>
+        </div>`;
+    });
+    h += '<h3 style="margin:24px 0 8px">Empan envers (répéter à l\'envers)</h3>';
+    memoryBackward.forEach((m, i) => {
+        h += `<div class="q-block"><h4>${m.label}</h4>
+            <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
+            <input type="text" placeholder="Répète à l'envers" id="mb${i}" onchange="state.memBackward[${i}]=this.value">
+            <small style="color:var(--text2);display:block;margin-top:4px">Exemple : si tu entends 3-5, écris 5-3</small>
+        </div>`;
+    });
+    h += '<h3 style="margin:24px 0 8px">Empan de mots</h3>';
+    memoryWords.forEach((m, i) => {
+        h += `<div class="q-block"><h4>${m.label}</h4>
+            <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
+            <input type="text" placeholder="Mots séparés par des tirets" id="mw${i}" onchange="state.memWords[${i}]=this.value">
+        </div>`;
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(8)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(10)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  10. EMPAN VISUO-ATTENTIONNEL (EVA)
+// ============================================================
+function buildEVA() {
+    const sec = document.getElementById('sec10');
+    let h = `
+        <div class="card-header"><h2>👁️ Empan visuo-attentionnel</h2><p>Capacité à traiter plusieurs lettres simultanément</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Des lettres vont apparaître très rapidement. Essaie de retenir toutes les lettres que tu vois.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cliquez sur « Flash » pour afficher brièvement les lettres. L'enfant tape ensuite ce qu'il a vu (dans l'ordre ou le désordre).</div>`;
+    evaSequences.forEach((e, i) => {
+        h += `<div class="q-block"><h4>${e.label}</h4>
+            <div class="eva-display" id="evaD${i}">Cliquez Flash →</div>
+            <button class="audio-btn" onclick="flashEVA(${i})" style="background:var(--warm)">⚡ Flash</button>
+            <input type="text" placeholder="Lettres vues (ex: R T M)" id="eva${i}" onchange="state.eva[${i}]=this.value" style="margin-top:8px">
+        </div>`;
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(9)">← Retour</button>
+        <button class="btn btn-primary" onclick="goResults()">📊 Voir les résultats</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+function flashEVA(idx) {
+    const el = document.getElementById('evaD'+idx);
+    const seq = evaSequences[idx];
+    el.textContent = seq.letters;
+    el.style.color = 'var(--text)';
+    setTimeout(() => {
+        el.textContent = '•••';
+        el.style.color = 'var(--border)';
+    }, seq.duration);
+}
+
+// ============================================================
+//  ANALYSIS ENGINE
+// ============================================================
+
+function computeScores() {
+    const scores = {};
+
+    // 1. Reading tests — accuracy + time
+    const regAll = getAllWords(regularWords);
+    const irrAll = getAllWords(irregularWords);
+    const pseAll = getAllWords(pseudoWords);
+
+    const regErrors = Object.keys(state.regularErrors).length;
+    const irrErrors = Object.keys(state.irregularErrors).length;
+    const pseErrors = Object.keys(state.pseudoErrors).length;
+
+    scores.regular = { correct: regAll.length - regErrors, total: regAll.length, pct: ((regAll.length - regErrors)/regAll.length)*100, time: state.timers.regular, errors: state.regularErrors, words: regAll };
+    scores.irregular = { correct: irrAll.length - irrErrors, total: irrAll.length, pct: ((irrAll.length - irrErrors)/irrAll.length)*100, time: state.timers.irregular, errors: state.irregularErrors, words: irrAll };
+    scores.pseudo = { correct: pseAll.length - pseErrors, total: pseAll.length, pct: ((pseAll.length - pseErrors)/pseAll.length)*100, time: state.timers.pseudo, errors: state.pseudoErrors, words: pseAll };
+
+    // 2. RAN
+    scores.ran = { time: state.timers.ran, errors: state.ranErrors };
+
+    // 3. Phono
+    let phonoCorrect = 0;
+    phonoQuestions.forEach((q, i) => { if(state.phono[i] === q.correct) phonoCorrect++; });
+    scores.phono = { correct: phonoCorrect, total: phonoQuestions.length, pct: (phonoCorrect/phonoQuestions.length)*100 };
+    // Sub-scores by category
+    const phonoCats = {};
+    phonoQuestions.forEach((q, i) => {
+        if(!phonoCats[q.cat]) phonoCats[q.cat] = {correct:0,total:0};
+        phonoCats[q.cat].total++;
+        if(state.phono[i] === q.correct) phonoCats[q.cat].correct++;
+    });
+    scores.phonoCats = phonoCats;
+
+    // 4. Dictée — qualitative analysis
+    scores.dictee = analyzeDictee();
+
+    // 5. Fluence
+    const fluenceWords = fluenceText.split(/\s+/);
+    const wordsRead = state.fluenceLastWord >= 0 ? state.fluenceLastWord + 1 : 0;
+    const fluenceErrorCount = state.fluenceErrors.length;
+    const mclm = wordsRead - fluenceErrorCount;
+    const fluenceTimeSec = state.timers.fluence / 1000;
+    const mclmPerMin = fluenceTimeSec > 0 ? Math.round((mclm / fluenceTimeSec) * 60) : 0;
+    scores.fluence = { wordsRead, errors: fluenceErrorCount, mclm, mclmPerMin, time: state.timers.fluence };
+
+    // 6. Compréhension
+    let compCorrect = 0;
+    let compTotal = 0;
+    let compByType = { explicite:{c:0,t:0}, inférentielle:{c:0,t:0}, vocabulaire:{c:0,t:0} };
+    let qIdx = 0;
+    compTexts.forEach(t => {
+        t.questions.forEach(q => {
+            compTotal++;
+            compByType[q.type].t++;
+            if(state.comprehension[qIdx] === q.correct) {
+                compCorrect++;
+                compByType[q.type].c++;
+            }
+            qIdx++;
+        });
+    });
+    scores.comp = { correct: compCorrect, total: compTotal, pct: (compCorrect/compTotal)*100, byType: compByType };
+
+    // 7. Memory
+    let fwdCorrect = 0;
+    let fwdMaxSpan = 0;
+    memoryForward.forEach((m, i) => {
+        if(state.memForward[i] && normalize(state.memForward[i]) === normalize(m.seq)) {
+            fwdCorrect++;
+            fwdMaxSpan = m.seq.split('-').length;
+        }
+    });
+    let bwdCorrect = 0;
+    let bwdMaxSpan = 0;
+    memoryBackward.forEach((m, i) => {
+        if(state.memBackward[i] && normalize(state.memBackward[i]) === normalize(m.answer)) {
+            bwdCorrect++;
+            bwdMaxSpan = m.answer.split('-').length;
+        }
+    });
+    let wordsMemCorrect = 0;
+    memoryWords.forEach((m, i) => {
+        if(state.memWords[i] && normalize(state.memWords[i]) === normalize(m.seq)) wordsMemCorrect++;
+    });
+    scores.memory = {
+        fwd: { correct: fwdCorrect, total: memoryForward.length, maxSpan: fwdMaxSpan },
+        bwd: { correct: bwdCorrect, total: memoryBackward.length, maxSpan: bwdMaxSpan },
+        words: { correct: wordsMemCorrect, total: memoryWords.length },
+        pctFwd: (fwdCorrect / memoryForward.length) * 100,
+        pctBwd: (bwdCorrect / memoryBackward.length) * 100,
+        pctAll: ((fwdCorrect + bwdCorrect + wordsMemCorrect) / (memoryForward.length + memoryBackward.length + memoryWords.length)) * 100
+    };
+
+    // 8. EVA
+    let evaCorrect = 0;
+    let evaMaxSpan = 0;
+    evaSequences.forEach((e, i) => {
+        const expected = e.letters.replace(/\s+/g,'').toLowerCase().split('');
+        const given = (state.eva[i]||'').replace(/\s+/g,'').toLowerCase().split('');
+        // Count how many expected letters are present in given (order doesn't matter)
+        let found = 0;
+        const givenCopy = [...given];
+        expected.forEach(l => {
+            const idx = givenCopy.indexOf(l);
+            if(idx >= 0) { found++; givenCopy.splice(idx,1); }
+        });
+        if(found === expected.length) { evaCorrect++; evaMaxSpan = expected.length; }
+    });
+    scores.eva = { correct: evaCorrect, total: evaSequences.length, maxSpan: evaMaxSpan, pct: (evaCorrect/evaSequences.length)*100 };
+
+    return scores;
+}
+
+function normalize(s) {
+    return (s||'').toLowerCase().trim().replace(/\s+/g,'-');
+}
+
+// ============================================================
+//  DICTÉE QUALITATIVE ANALYSIS
+// ============================================================
+function analyzeDictee() {
+    const results = { words: [], phrases: [], summary: { phonoPlausible:0, phonoImplausible:0, inversions:0, omissions:0, additions:0, substitutions:0, correct:0, total: dicteeWords.length + dicteePhrases.length } };
+
+    dicteeWords.forEach((item, i) => {
+        const expected = item.word.toLowerCase().trim();
+        const given = (state.dicteeWords[i]||'').toLowerCase().trim();
+        if(!given) {
+            results.words.push({ expected, given:'(vide)', correct:false, errors:['omission complète'] });
+            return;
+        }
+        if(given === expected) {
+            results.words.push({ expected, given, correct:true, errors:[] });
+            results.summary.correct++;
+            return;
+        }
+        const errors = classifySpellingErrors(expected, given);
+        results.words.push({ expected, given, correct:false, errors });
+        errors.forEach(e => {
+            if(e.includes('phonologiquement plausible')) results.summary.phonoPlausible++;
+            else if(e.includes('phonologiquement implausible')) results.summary.phonoImplausible++;
+            if(e.includes('inversion')) results.summary.inversions++;
+            if(e.includes('omission')) results.summary.omissions++;
+            if(e.includes('addition')) results.summary.additions++;
+            if(e.includes('substitution')) results.summary.substitutions++;
+        });
+    });
+
+    dicteePhrases.forEach((item, i) => {
+        const expected = item.text.toLowerCase().trim().replace(/[.,!?]/g,'').replace(/\s+/g,' ');
+        const given = (state.dicteePhrases[i]||'').toLowerCase().trim().replace(/[.,!?]/g,'').replace(/\s+/g,' ');
+        if(!given) {
+            results.phrases.push({ expected: item.text, given:'(vide)', correct:false, wordErrors:[] });
+            return;
+        }
+        if(given === expected) {
+            results.phrases.push({ expected: item.text, given, correct:true, wordErrors:[] });
+            results.summary.correct++;
+            return;
+        }
+        // Compare word by word
+        const expWords = expected.split(' ');
+        const givWords = given.split(' ');
+        const wordErrors = [];
+        const maxLen = Math.max(expWords.length, givWords.length);
+        for(let w=0; w<maxLen; w++) {
+            if(!expWords[w]) { wordErrors.push({ expected:'∅', given:givWords[w], errors:['mot ajouté'] }); continue; }
+            if(!givWords[w]) { wordErrors.push({ expected:expWords[w], given:'∅', errors:['mot omis'] }); continue; }
+            if(expWords[w] !== givWords[w]) {
+                wordErrors.push({ expected:expWords[w], given:givWords[w], errors: classifySpellingErrors(expWords[w], givWords[w]) });
+            }
+        }
+        results.phrases.push({ expected: item.text, given: state.dicteePhrases[i]||'', correct: wordErrors.length === 0, wordErrors });
+    });
+
+    return results;
+}
+
+function classifySpellingErrors(expected, given) {
+    const errors = [];
+    // Check inversion (transposition)
+    if(hasTransposition(expected, given)) errors.push('inversion de lettres');
+    // Check omission
+    if(given.length < expected.length) errors.push(`omission (${expected.length - given.length} lettre(s))`);
+    // Check addition
+    if(given.length > expected.length) errors.push(`addition (${given.length - expected.length} lettre(s))`);
+    // Check substitution
+    const subs = countSubstitutions(expected, given);
+    if(subs > 0) errors.push(`substitution (${subs})`);
+    // Phonological plausibility
+    if(isPhonologicallyPlausible(expected, given)) {
+        errors.push('→ phonologiquement plausible (voie d\'assemblage OK)');
+    } else if(errors.length > 0) {
+        errors.push('→ phonologiquement implausible');
+    }
+    return errors;
+}
+
+function hasTransposition(a, b) {
+    if(Math.abs(a.length - b.length) > 1) return false;
+    for(let i=0; i<Math.min(a.length, b.length)-1; i++) {
+        if(a[i] === b[i+1] && a[i+1] === b[i] && a.slice(0,i) === b.slice(0,i)) return true;
+    }
+    return false;
+}
+
+function countSubstitutions(a, b) {
+    let count = 0;
+    const len = Math.min(a.length, b.length);
+    for(let i=0; i<len; i++) { if(a[i] !== b[i]) count++; }
+    return count;
+}
+
+function isPhonologicallyPlausible(expected, given) {
+    // Simplified French phonological plausibility check
+    // Convert both to approximate phonetic representation and compare
+    const p1 = toApproxPhonetic(expected);
+    const p2 = toApproxPhonetic(given);
+    return p1 === p2;
+}
+
+function toApproxPhonetic(word) {
+    let p = word.toLowerCase();
+    // Order matters — longest patterns first
+    p = p.replace(/eau/g,'O').replace(/au/g,'O').replace(/ai/g,'E').replace(/ei/g,'E');
+    p = p.replace(/ou/g,'U').replace(/oi/g,'WA').replace(/on/g,'Ô').replace(/om(?=[bp])/g,'Ô');
+    p = p.replace(/an/g,'Ã').replace(/am(?=[bp])/g,'Ã').replace(/en/g,'Ã').replace(/em(?=[bp])/g,'Ã');
+    p = p.replace(/in/g,'Ĩ').replace(/im(?=[bp])/g,'Ĩ').replace(/ain/g,'Ĩ').replace(/ein/g,'Ĩ');
+    p = p.replace(/un/g,'Ĩ');
+    p = p.replace(/ph/g,'F').replace(/ch/g,'Ʃ').replace(/gn/g,'Ñ');
+    p = p.replace(/qu/g,'K').replace(/gu(?=[ei])/g,'G');
+    p = p.replace(/ss/g,'S').replace(/cc(?=[ei])/g,'KS');
+    p = p.replace(/ç/g,'S').replace(/c(?=[ei])/g,'S');
+    p = p.replace(/c/g,'K').replace(/q/g,'K');
+    p = p.replace(/ge(?=[ao])/g,'ƷO').replace(/g(?=[ei])/g,'Ʒ');
+    p = p.replace(/é/g,'E').replace(/è/g,'E').replace(/ê/g,'E').replace(/ë/g,'E');
+    p = p.replace(/î/g,'I').replace(/ï/g,'I');
+    p = p.replace(/ô/g,'O').replace(/û/g,'Y').replace(/ù/g,'Y');
+    p = p.replace(/â/g,'A').replace(/à/g,'A');
+    p = p.replace(/y/g,'I');
+    p = p.replace(/x$/g,'KS');
+    // Silent final letters
+    p = p.replace(/[estdgxzp]$/g,'');
+    // Double consonants
+    p = p.replace(/(.)\1/g,'$1');
+    p = p.replace(/h/g,'');
+    return p;
+}
+
+// ============================================================
+//  RESULTS
+// ============================================================
+function buildResults() {
+    const s = computeScores();
+    const container = document.getElementById('resultSection');
+
+    // Radar data
+    const radarAxes = [
+        { label:'Mots réguliers', value: s.regular.pct },
+        { label:'Mots irréguliers', value: s.irregular.pct },
+        { label:'Pseudo-mots', value: s.pseudo.pct },
+        { label:'Conscience phono', value: s.phono.pct },
+        { label:'Dictée', value: (s.dictee.summary.correct / s.dictee.summary.total)*100 },
+        { label:'Compréhension', value: s.comp.pct },
+        { label:'Mémoire endroit', value: s.memory.pctFwd },
+        { label:'Mémoire envers', value: s.memory.pctBwd },
+        { label:'Empan visuel', value: s.eva.pct },
+    ];
+
+    // Build profiles
+    const profiles = buildProfiles(s);
+
+    let h = '<h2 style="margin-bottom:20px">📊 Résultats détaillés</h2>';
+
+    // Radar chart
+    h += `<div class="radar-container"><h3>Profil global</h3><canvas id="radarCanvas" width="480" height="480" style="max-width:100%"></canvas></div>`;
+
+    // Anamnèse summary
+    if(Object.keys(state.anamnese).length > 0) {
+        h += `<div class="card"><h3 style="margin-bottom:8px">📋 Contexte signalé</h3><p style="font-size:14px;color:var(--text2)">`;
+        if(state.anamnese.classe) h += `Classe : ${state.anamnese.classe} · `;
+        if(state.anamnese.diff_lecture_voix) h += `Lecture voix haute : ${state.anamnese.diff_lecture_voix} · `;
+        if(state.anamnese.diff_ortho) h += `Orthographe : ${state.anamnese.diff_ortho} · `;
+        if(state.anamnese.fatigue_lecture) h += `Fatigue en lecture : ${state.anamnese.fatigue_lecture}`;
+        h += '</p>';
+        if(state.anamnese.remarques) h += `<p style="font-size:13px;color:var(--text2);margin-top:4px;font-style:italic">${state.anamnese.remarques}</p>`;
+        h += '</div>';
+    }
+
+    // Score cards
+    h += buildScoreCard('1. Lecture mots réguliers — Voie d\'assemblage', s.regular);
+    h += buildScoreCard('2. Lecture mots irréguliers — Voie lexicale', s.irregular);
+    h += buildScoreCard('3. Décodage pseudo-mots — Voie phonologique pure', s.pseudo);
+
+    // RAN
+    const ranSec = s.ran.time > 0 ? (s.ran.time/1000).toFixed(1) + 's' : 'Non chronométré';
+    h += `<div class="result-card ${s.ran.time > 0 && s.ran.time/1000 > 60 ? 'red' : s.ran.time > 0 && s.ran.time/1000 > 40 ? 'orange' : 'green'}">
+        <h3>4. Dénomination rapide (RAN)</h3>
+        <div class="time-info">⏱ Temps : ${ranSec} · Erreurs : ${s.ran.errors}</div>
+        <p class="detail">50 items · Vitesse de traitement et accès lexical</p>
+    </div>`;
+
+    // Phono
+    h += `<div class="result-card ${scoreClass(s.phono.pct)}">
+        <h3>5. Conscience phonologique</h3>
+        <div class="score">${s.phono.correct}/${s.phono.total} (${Math.round(s.phono.pct)}%)</div>
+        <div class="detail">`;
+    Object.entries(s.phonoCats).forEach(([cat, v]) => {
+        h += `${cat}: ${v.correct}/${v.total} · `;
+    });
+    h += '</div></div>';
+
+    // Dictée with qualitative analysis
+    h += `<div class="result-card ${scoreClass((s.dictee.summary.correct/s.dictee.summary.total)*100)}">
+        <h3>6. Dictée — Analyse qualitative</h3>
+        <div class="score">${s.dictee.summary.correct}/${s.dictee.summary.total} corrects</div>`;
+    if(s.dictee.summary.phonoPlausible || s.dictee.summary.phonoImplausible || s.dictee.summary.inversions) {
+        h += '<div class="error-analysis"><h4>Types d\'erreurs détectés</h4>';
+        if(s.dictee.summary.phonoPlausible) h += `<span class="error-tag phono-plausible">Phono plausibles : ${s.dictee.summary.phonoPlausible}</span>`;
+        if(s.dictee.summary.phonoImplausible) h += `<span class="error-tag phono-implausible">Phono implausibles : ${s.dictee.summary.phonoImplausible}</span>`;
+        if(s.dictee.summary.inversions) h += `<span class="error-tag inversion">Inversions : ${s.dictee.summary.inversions}</span>`;
+        if(s.dictee.summary.omissions) h += `<span class="error-tag omission">Omissions : ${s.dictee.summary.omissions}</span>`;
+        if(s.dictee.summary.additions) h += `<span class="error-tag addition">Additions : ${s.dictee.summary.additions}</span>`;
+        h += '</div>';
+    }
+    // Detail each word
+    h += '<div style="margin-top:12px">';
+    s.dictee.words.forEach(w => {
+        if(w.correct) {
+            h += `<div style="padding:4px 8px;font-size:13px">✅ <strong>${w.expected}</strong></div>`;
+        } else {
+            h += `<div style="padding:4px 8px;font-size:13px;background:#fef2f2;border-radius:4px;margin-bottom:4px">❌ <strong>${w.expected}</strong> → écrit : « ${w.given} » <span style="color:var(--text2);font-size:12px">(${w.errors.join(', ')})</span></div>`;
+        }
+    });
+    h += '</div></div>';
+
+    // Fluence
+    h += `<div class="result-card ${s.fluence.mclmPerMin >= 90 ? 'green' : s.fluence.mclmPerMin >= 60 ? 'orange' : 'red'}">
+        <h3>7. Fluence de lecture</h3>
+        <div class="score">${s.fluence.mclmPerMin} MCLM</div>
+        <div class="detail">Mots lus : ${s.fluence.wordsRead} · Erreurs : ${s.fluence.errors} · Temps : ${formatTime(s.fluence.time)}</div>
+        <div class="detail" style="margin-top:6px">
+            ${s.fluence.mclmPerMin > 0 ? `Repère CM2 : ~120 MCLM · CM1 : ~95 MCLM · CE2 : ~75 MCLM` : 'Non mesuré'}
+        </div>
+    </div>`;
+
+    // Compréhension
+    h += `<div class="result-card ${scoreClass(s.comp.pct)}">
+        <h3>8. Compréhension de lecture</h3>
+        <div class="score">${s.comp.correct}/${s.comp.total} (${Math.round(s.comp.pct)}%)</div>
+        <div class="detail">
+            Explicite : ${s.comp.byType.explicite.c}/${s.comp.byType.explicite.t} ·
+            Inférentielle : ${s.comp.byType['inférentielle'].c}/${s.comp.byType['inférentielle'].t} ·
+            Vocabulaire : ${s.comp.byType.vocabulaire.c}/${s.comp.byType.vocabulaire.t}
+        </div>
+    </div>`;
+
+    // Mémoire
+    h += `<div class="result-card ${scoreClass(s.memory.pctAll)}">
+        <h3>9. Mémoire de travail</h3>
+        <div class="detail">
+            <strong>Empan endroit :</strong> ${s.memory.fwd.correct}/${s.memory.fwd.total} · Plafond : ${s.memory.fwd.maxSpan} chiffres<br>
+            <strong>Empan envers :</strong> ${s.memory.bwd.correct}/${s.memory.bwd.total} · Plafond : ${s.memory.bwd.maxSpan} chiffres<br>
+            <strong>Empan de mots :</strong> ${s.memory.words.correct}/${s.memory.words.total}
+        </div>
+        <div class="detail" style="margin-top:6px">Norme 10 ans : empan endroit ≥ 5 · empan envers ≥ 3</div>
+    </div>`;
+
+    // EVA
+    h += `<div class="result-card ${scoreClass(s.eva.pct)}">
+        <h3>10. Empan visuo-attentionnel</h3>
+        <div class="score">${s.eva.correct}/${s.eva.total} · Plafond : ${s.eva.maxSpan} lettres</div>
+        <div class="detail">Norme 10 ans : ≥ 5 lettres traitées simultanément</div>
+    </div>`;
+
+    // Error type summary across reading tests
+    h += buildReadingErrorSummary(s);
+
+    // Profiles
+    if(profiles.length > 0) {
+        profiles.forEach(p => {
+            h += `<div class="profile-box">
+                <h2>🎯 ${p.name}</h2>
+                <p>${p.description}</p>
+                <span class="risk ${p.riskClass}">${p.risk}</span>
+            </div>
+            <div class="reco-box"><h3>💡 Recommandations</h3><ul>${p.recommendations.map(r => `<li>${r}</li>`).join('')}</ul></div>
+            <div class="reco-box"><h3>🎮 Exercices conseillés</h3><ul>${p.exercises.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
+        });
+    } else {
+        h += `<div class="profile-box" style="background:linear-gradient(135deg,#16a34a,#22c55e)">
+            <h2>✅ Profil dans la norme</h2>
+            <p>Les résultats ne montrent pas de difficultés significatives. Si l'enfant rencontre des difficultés à l'école, elles peuvent être liées à d'autres facteurs.</p>
+            <span class="risk risk-low">RISQUE FAIBLE</span>
+        </div>`;
+    }
+
+    h += `<div class="disclaimer">
+        <strong>⚠️ Important :</strong> Ce test est un outil de <strong>dépistage indicatif</strong>, pas un diagnostic. Les seuils sont indicatifs et non étalonnés. Il permet de <strong>localiser précisément les difficultés</strong> et de préparer un éventuel bilan orthophonique. En attendant un rendez-vous, les exercices conseillés peuvent être commencés à la maison.
+    </div>
+    <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-primary" onclick="window.print()">🖨 Imprimer</button>
+        <button class="btn btn-secondary" onclick="location.reload()">↺ Recommencer</button>
+    </div>`;
+
+    container.innerHTML = h;
+
+    // Draw radar chart
+    setTimeout(() => drawRadar(radarAxes), 100);
+}
+
+function buildScoreCard(title, data) {
+    const timeStr = data.time > 0 ? `⏱ ${formatTime(data.time)}` : '';
+    const errCount = Object.keys(data.errors).length;
+    let errorDetail = '';
+    if(errCount > 0) {
+        const typeCounts = {};
+        Object.values(data.errors).forEach(e => {
+            (e.types||[]).forEach(t => { typeCounts[t] = (typeCounts[t]||0) + 1; });
+        });
+        if(Object.keys(typeCounts).length > 0) {
+            errorDetail = Object.entries(typeCounts).map(([k,v]) => {
+                const label = ERROR_TYPES.find(et => et.code === k);
+                return label ? `${label.label}: ${v}` : '';
+            }).filter(Boolean).join(' · ');
+        }
+    }
+    return `<div class="result-card ${scoreClass(data.pct)}">
+        <h3>${title}</h3>
+        <div class="score">${data.correct}/${data.total} (${Math.round(data.pct)}%)</div>
+        ${timeStr ? `<div class="time-info">${timeStr}</div>` : ''}
+        ${errorDetail ? `<div class="detail">Types d'erreurs : ${errorDetail}</div>` : ''}
+    </div>`;
+}
+
+function buildReadingErrorSummary(s) {
+    const allErrors = { ...s.regular.errors, ...s.irregular.errors, ...s.pseudo.errors };
+    const typeCounts = {};
+    Object.values(allErrors).forEach(e => {
+        (e.types||[]).forEach(t => { typeCounts[t] = (typeCounts[t]||0) + 1; });
+    });
+    if(Object.keys(typeCounts).length === 0) return '';
+    let h = '<div class="card"><h3 style="margin-bottom:10px">🔎 Synthèse des erreurs de lecture</h3>';
+    ERROR_TYPES.forEach(et => {
+        if(typeCounts[et.code]) {
+            const pct = Math.round((typeCounts[et.code] / Object.keys(allErrors).length) * 100);
+            h += `<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                <span style="font-weight:600;min-width:100px;font-size:14px">${et.label}</span>
+                <div style="flex:1;background:var(--soft);height:20px;border-radius:10px;overflow:hidden">
+                    <div style="width:${pct}%;background:var(--red);height:100%;border-radius:10px;transition:width 0.5s"></div>
+                </div>
+                <span style="font-size:13px;min-width:60px">${typeCounts[et.code]} (${pct}%)</span>
+            </div>`;
+        }
+    });
+    h += '</div>';
+    return h;
+}
+
+function scoreClass(pct) {
+    if(pct >= 80) return 'green';
+    if(pct >= 60) return 'orange';
+    return 'red';
+}
+
+// ============================================================
+//  PROFILING — CUMULATIVE, ALL DETECTED
+// ============================================================
+function buildProfiles(s) {
+    const profiles = [];
+    const pseudoPct = s.pseudo.pct;
+    const irregPct = s.irregular.pct;
+    const regPct = s.regular.pct;
+    const phonoPct = s.phono.pct;
+    const dicteePct = (s.dictee.summary.correct / s.dictee.summary.total) * 100;
+    const compPct = s.comp.pct;
+    const memPct = s.memory.pctAll;
+    const evaPct = s.eva.pct;
+    const fwdSpan = s.memory.fwd.maxSpan;
+    const bwdSpan = s.memory.bwd.maxSpan;
+
+    // Dyslexie mixte (check first — most severe)
+    if(pseudoPct < 70 && irregPct < 70 && regPct < 70) {
+        profiles.push({
+            name:'Dyslexie mixte (probable)',
+            description:'Difficultés combinées touchant le décodage (voie phonologique) ET la reconnaissance globale (voie lexicale). Profil le plus sévère nécessitant une prise en charge intensive.',
+            risk:'TRÈS ÉLEVÉ', riskClass:'risk-very-high',
+            recommendations:[
+                'Bilan orthophonique à programmer (garder le RDV même si lointain) — ces résultats serviront à préparer le bilan',
+                'Plan d\'accompagnement personnalisé (PAP) à l\'école',
+                'Adaptations pédagogiques : temps supplémentaire, textes aérés, police adaptée (OpenDyslexic)',
+                'Outils numériques de compensation (synthèse vocale, dictée vocale)',
+                'Soutien psychologique si baisse d\'estime de soi'
+            ],
+            exercises:[
+                'Méthode multisensorielle (voir, dire, écrire, toucher les lettres)',
+                'Lecture accompagnée quotidienne 15 min',
+                'Audio-livres pour maintenir le plaisir de lire',
+                'Segmentation couleur des syllabes',
+                'Jeux de lecture sans enjeu (BD, magazines)'
+            ]
+        });
+    }
+
+    // Dyslexie phonologique
+    if(pseudoPct < 70 || (phonoPct < 65 && pseudoPct < 80)) {
+        if(!profiles.find(p => p.name.includes('mixte'))) {
+            profiles.push({
+                name:'Dyslexie phonologique (probable)',
+                description:'Difficultés de décodage : la conversion graphème-phonème est altérée. L\'enfant peine à lire les mots nouveaux mais peut reconnaître des mots familiers.',
+                risk:'ÉLEVÉ', riskClass:'risk-high',
+                recommendations:[
+                    'Bilan orthophonique à programmer — imprimer ces résultats pour le rendez-vous',
+                    'Travailler la conscience phonologique (segmentation, fusion, manipulation)',
+                    'Exercices de décodage syllabique progressif',
+                    'Supports audio pour les apprentissages',
+                    'Éviter les dictées non préparées'
+                ],
+                exercises:[
+                    'Jeux de rimes et comptines',
+                    'Découpage de mots en syllabes',
+                    'Lecture syllabique avec codage couleur',
+                    'Discrimination auditive (sons proches : b/p, d/t, f/v)',
+                    'Assemblage de syllabes pour former des mots'
+                ]
+            });
+        }
+    }
+
+    // Dyslexie de surface
+    if(irregPct < 70 && pseudoPct >= 70) {
+        profiles.push({
+            name:'Dyslexie de surface (probable)',
+            description:'Le décodage fonctionne mais la voie lexicale (reconnaissance globale) est déficiente. L\'enfant lit lentement, syllabe par syllabe, et peine avec les mots irréguliers.',
+            risk:'ÉLEVÉ', riskClass:'risk-high',
+            recommendations:[
+                'Bilan orthophonique à programmer — travail sur la voie lexicale',
+                'Répertoire de mots fréquents à mémoriser visuellement',
+                'Lecture répétée des mêmes textes (automatisation)',
+                'Moyens mnémotechniques pour l\'orthographe des mots irréguliers',
+                'Flashcards quotidiennes'
+            ],
+            exercises:[
+                'Flashcards de mots irréguliers fréquents',
+                'Jeu du memory avec paires de mots',
+                'Lecture rapide de mots flashés',
+                'Dictées de mots préparés (mémorisation visuelle)',
+                'Reconnaissance rapide de mots dans un texte'
+            ]
+        });
+    }
+
+    // Déficit EVA (empan visuo-attentionnel)
+    if(evaPct < 50 || s.eva.maxSpan < 4) {
+        profiles.push({
+            name:'Déficit de l\'empan visuo-attentionnel',
+            description:'L\'enfant ne peut traiter qu\'un nombre réduit de lettres simultanément, ce qui ralentit la lecture globale. Souvent associé à la dyslexie de surface (modèle de Bosse & Valdois).',
+            risk:'ÉLEVÉ', riskClass:'risk-high',
+            recommendations:[
+                'Mentionner ce résultat lors du bilan orthophonique',
+                'Travailler l\'attention visuelle et l\'empan de lettres',
+                'Exercices de lecture flash (mots affichés brièvement)',
+                'Jeux de repérage visuel (différences, labyrinthes)'
+            ],
+            exercises:[
+                'Flash de lettres avec durée décroissante',
+                'Jeux de Kim visuels',
+                'Recherche de mots dans une grille',
+                'Lecture de mots de plus en plus longs flashés brièvement'
+            ]
+        });
+    }
+
+    // Double déficit (phono + RAN)
+    if((pseudoPct < 70 || phonoPct < 65) && s.ran.time > 0 && s.ran.time/1000 > 50) {
+        profiles.push({
+            name:'Double déficit (phonologie + dénomination)',
+            description:'Combinaison d\'un déficit phonologique et d\'une lenteur de dénomination rapide. Selon le modèle de Wolf & Bowers, c\'est le profil le plus résistant à la rééducation.',
+            risk:'TRÈS ÉLEVÉ', riskClass:'risk-very-high',
+            recommendations:[
+                'Rééducation intensive combinant phonologie ET fluence',
+                'Consultation neuropédiatrique envisageable',
+                'Aménagements scolaires indispensables',
+                'Entraînement à la dénomination rapide'
+            ],
+            exercises:[
+                'Exercices de dénomination rapide quotidiens',
+                'Lecture chronométrée avec objectifs progressifs',
+                'Jeux de fluence verbale (nommer le max de mots en 1 min)',
+                'Combinaison exercices phonologiques + lecture rapide'
+            ]
+        });
+    }
+
+    // Dysorthographie
+    if(dicteePct < 55) {
+        profiles.push({
+            name:'Dysorthographie',
+            description:`Difficultés importantes en orthographe. ${s.dictee.summary.phonoPlausible > s.dictee.summary.phonoImplausible ? 'Les erreurs sont majoritairement phonologiquement plausibles → la voie phonologique fonctionne mais pas le stock orthographique.' : 'Erreurs phonologiquement implausibles → atteinte de la voie phonologique en écriture.'}`,
+            risk: pseudoPct < 70 || irregPct < 70 ? 'ÉLEVÉ' : 'MOYEN',
+            riskClass: pseudoPct < 70 || irregPct < 70 ? 'risk-high' : 'risk-medium',
+            recommendations:[
+                'Rééducation orthophonique ciblée sur l\'orthographe (à mentionner au RDV)',
+                'Dictées préparées et ciblées (pas de dictées pièges)',
+                'Correcteur orthographique autorisé en classe',
+                'Ne pas pénaliser l\'orthographe dans les autres matières',
+                'Valoriser le contenu plutôt que la forme'
+            ],
+            exercises:[
+                'Mémorisation visuelle de mots fréquents',
+                'Familles de mots pour comprendre les régularités',
+                'Dictées à trous progressives',
+                'Auto-correction guidée avec grille d\'erreurs',
+                'Jeux d\'orthographe ludiques (Scrabble, mots croisés)'
+            ]
+        });
+    }
+
+    // Difficultés de compréhension isolées
+    if(compPct < 65 && regPct >= 70) {
+        profiles.push({
+            name:'Difficultés de compréhension de lecture',
+            description:`La lecture technique est correcte mais la compréhension pose problème. ${s.comp.byType['inférentielle'].c < s.comp.byType['inférentielle'].t/2 ? 'Les inférences sont particulièrement difficiles.' : ''} ${s.comp.byType.vocabulaire.c < s.comp.byType.vocabulaire.t/2 ? 'Le vocabulaire en contexte est fragile.' : ''}`,
+            risk:'MOYEN', riskClass:'risk-medium',
+            recommendations:[
+                'Évaluer le vocabulaire et les connaissances générales',
+                'Vérifier l\'attention/concentration',
+                'Bilan orthophonique pour exclure un trouble du langage oral',
+                'Travailler les stratégies de compréhension explicitement'
+            ],
+            exercises:[
+                'Questions avant/pendant/après la lecture',
+                'Résumés oraux systématiques',
+                'Travail sur les connecteurs logiques',
+                'Enrichissement du vocabulaire quotidien',
+                'Inférences guidées (pourquoi ? comment ?)'
+            ]
+        });
+    }
+
+    // Mémoire de travail faible
+    if(memPct < 50 || (fwdSpan < 4 || bwdSpan < 2)) {
+        profiles.push({
+            name:'Faiblesse de la mémoire de travail',
+            description:`${bwdSpan < 3 ? 'L\'empan envers est particulièrement faible, ce qui indique une difficulté de manipulation en mémoire de travail (composante centrale de Baddeley).' : 'Difficultés à retenir des informations temporairement.'} Cela affecte tous les apprentissages.`,
+            risk:'MOYEN', riskClass:'risk-medium',
+            recommendations:[
+                'Fractionner les consignes en étapes courtes',
+                'Répéter et reformuler les instructions',
+                'Supports visuels systématiques',
+                'Bilan neuropsychologique si les difficultés persistent',
+                'Vérifier la compréhension régulièrement'
+            ],
+            exercises:[
+                'Jeux de Kim (mémoriser des objets)',
+                'Répétition de séquences croissantes',
+                'Mémorisation de comptines',
+                'Stratégies de chunking',
+                'Jeux de cartes (Memory, 7 familles)'
+            ]
+        });
+    }
+
+    // Fluence faible isolée
+    if(s.fluence.mclmPerMin > 0 && s.fluence.mclmPerMin < 70 && regPct >= 70) {
+        profiles.push({
+            name:'Déficit de fluence de lecture',
+            description:'La précision de lecture est correcte mais la vitesse est insuffisante. L\'automatisation de la lecture n\'est pas acquise, ce qui surcharge la mémoire de travail et gêne la compréhension.',
+            risk:'MOYEN', riskClass:'risk-medium',
+            recommendations:[
+                'Lecture répétée de textes (méthode de la fluence)',
+                'Lecture à deux voix (parent + enfant)',
+                'Chronométrer sans pression pour suivre la progression',
+                'Textes adaptés au niveau (ni trop faciles, ni trop durs)'
+            ],
+            exercises:[
+                'Relecture du même texte 3-4 fois',
+                'Lecture flash de mots/phrases',
+                'Théâtre de lecture (lire pour jouer)',
+                'Lecture alternée parent/enfant'
+            ]
+        });
+    }
+
+    return profiles;
+}
+
+// ============================================================
+//  RADAR CHART (Canvas)
+// ============================================================
+function drawRadar(axes) {
+    const canvas = document.getElementById('radarCanvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W/2, cy = H/2;
+    const R = Math.min(W, H) * 0.35;
+    const n = axes.length;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Background circles
+    for(let r=1; r<=5; r++) {
+        ctx.beginPath();
+        const rr = (r/5) * R;
+        for(let i=0; i<=n; i++) {
+            const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+            const x = cx + rr * Math.cos(angle);
+            const y = cy + rr * Math.sin(angle);
+            if(i===0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = r===4 ? '#94a3b8' : '#e2e8f0';
+        ctx.lineWidth = r===4 ? 1.5 : 0.8;
+        ctx.stroke();
+        // Label
+        if(r%2===0) {
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '11px system-ui';
+            ctx.fillText((r*20)+'%', cx+3, cy - rr + 14);
+        }
+    }
+
+    // Axis lines + labels
+    axes.forEach((a, i) => {
+        const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+        const x = cx + R * Math.cos(angle);
+        const y = cy + R * Math.sin(angle);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        // Label
+        const lx = cx + (R + 28) * Math.cos(angle);
+        const ly = cy + (R + 28) * Math.sin(angle);
+        ctx.fillStyle = '#334155';
+        ctx.font = '12px system-ui';
+        ctx.textAlign = angle > Math.PI/2 || angle < -Math.PI/2 ? 'right' : angle === -Math.PI/2 || angle === Math.PI/2 ? 'center' : 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(a.label, lx, ly);
+    });
+
+    // Data polygon
+    ctx.beginPath();
+    axes.forEach((a, i) => {
+        const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+        const val = Math.min(100, Math.max(0, a.value)) / 100;
+        const x = cx + R * val * Math.cos(angle);
+        const y = cy + R * val * Math.sin(angle);
+        if(i===0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(37, 99, 235, 0.15)';
+    ctx.fill();
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Data points
+    axes.forEach((a, i) => {
+        const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+        const val = Math.min(100, Math.max(0, a.value)) / 100;
+        const x = cx + R * val * Math.cos(angle);
+        const y = cy + R * val * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI*2);
+        ctx.fillStyle = a.value >= 80 ? '#16a34a' : a.value >= 60 ? '#ea580c' : '#dc2626';
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    });
+
+    // 80% threshold dashed
+    ctx.beginPath();
+    ctx.setLineDash([4,4]);
+    const rr80 = 0.8 * R;
+    for(let i=0; i<=n; i++) {
+        const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+        const x = cx + rr80 * Math.cos(angle);
+        const y = cy + rr80 * Math.sin(angle);
+        if(i===0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = '#16a34a';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+init();
+</script>
+</body>
+</html>
