@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Lecture & Orthographe — CM1/CM2</title>
+<style>
+:root {
+    --bg: #f0f0ec;
+    --card: #ffffff;
+    --accent: #2563eb;
+    --accent2: #0f4c81;
+    --warm: #d97706;
+    --green: #16a34a;
+    --red: #dc2626;
+    --orange: #ea580c;
+    --text: #1e293b;
+    --text2: #475569;
+    --border: #cbd5e1;
+    --soft: #f1f5f9;
+    --radius: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+.app {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+}
+/* Header */
+.app-header {
+    background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
+    color: white;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+.app-header::after {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+}
+.app-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.app-header p { opacity: 0.85; font-size: 14px; }
+
+/* Progress */
+.progress-track {
+    background: var(--border);
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.progress-fill {
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    height: 100%;
+    transition: width 0.4s ease;
+    border-radius: 3px;
+}
+/* Nav */
+.nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.nav button {
+    padding: 7px 14px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text2);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.nav button:hover { border-color: var(--accent); color: var(--accent); }
+.nav button.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+.nav button.done {
+    background: #dcfce7;
+    border-color: var(--green);
+    color: var(--green);
+}
+/* Sections */
+.section { display: none; }
+.section.active { display: block; }
+.card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.card-header {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: white;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+}
+.card-header h2 { font-size: 18px; margin-bottom: 2px; }
+.card-header p { font-size: 13px; opacity: 0.85; }
+
+.instruction {
+    background: #fffbeb;
+    border-left: 4px solid var(--warm);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 14px;
+}
+.instruction strong { color: var(--warm); }
+.examiner-note {
+    background: #eff6ff;
+    border-left: 4px solid var(--accent);
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13px;
+    color: var(--accent2);
+}
+/* Timer */
+.timer-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--soft);
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+}
+.timer-display {
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent2);
+    min-width: 90px;
+}
+.timer-bar button {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-start { background: var(--green); color: white; }
+.btn-start:hover { background: #15803d; }
+.btn-stop { background: var(--red); color: white; }
+.btn-stop:hover { background: #b91c1c; }
+.btn-reset { background: var(--border); color: var(--text2); }
+
+/* Word grids */
+.level-group { margin-bottom: 20px; }
+.level-group h4 {
+    font-size: 13px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+}
+.word-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+}
+.word-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--soft);
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.word-card .word { font-size: 20px; font-weight: 600; }
+.word-card.error { border-color: var(--red); background: #fef2f2; }
+.word-card .error-type {
+    font-size: 11px;
+    background: var(--red);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.error-type-selector {
+    display: none;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+.word-card.error .error-type-selector { display: flex; }
+.error-type-selector button {
+    font-size: 11px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.error-type-selector button.selected {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+/* Questions */
+.q-block {
+    background: var(--soft);
+    padding: 16px;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+}
+.q-block h4 { font-size: 15px; margin-bottom: 10px; color: var(--text); }
+.q-options { display: flex; flex-direction: column; gap: 6px; }
+.q-options label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 14px;
+}
+.q-options label:hover { border-color: var(--accent); background: #f0f7ff; }
+.q-options input[type="radio"] { accent-color: var(--accent); width: 18px; height: 18px; }
+.q-options input[type="radio"]:checked + span { font-weight: 600; }
+
+/* Inputs */
+input[type="text"], textarea, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: white;
+}
+input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+textarea { min-height: 80px; resize: vertical; }
+
+/* Audio button */
+.audio-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-bottom: 10px;
+    transition: background 0.2s;
+}
+.audio-btn:hover { background: var(--accent2); }
+
+/* Buttons */
+.btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-secondary { background: var(--soft); color: var(--text2); border: 1.5px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+
+/* RAN Grid */
+.ran-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    margin-bottom: 16px;
+}
+.ran-cell {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+/* EVA */
+.eva-display {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: 24px;
+    text-align: center;
+    padding: 40px;
+    background: var(--soft);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', monospace;
+}
+/* Fluence */
+.fluence-text {
+    font-size: 18px;
+    line-height: 2.2;
+    padding: 20px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+}
+.fluence-text span {
+    cursor: pointer;
+    padding: 2px 1px;
+    transition: background 0.15s;
+}
+.fluence-text span:hover { background: #fef3c7; }
+.fluence-text span.marked { background: #bbf7d0; border-radius: 3px; }
+.fluence-text span.error-word { background: #fecaca; border-radius: 3px; }
+
+/* Anamnese */
+.anam-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.anam-item {
+    padding: 12px;
+    background: var(--soft);
+    border-radius: 6px;
+}
+.anam-item label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 6px;
+}
+@media (max-width: 600px) {
+    .anam-grid { grid-template-columns: 1fr; }
+    .ran-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+/* Checkboxes styled */
+.check-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0;
+}
+.check-row input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--accent);
+}
+
+/* Results */
+.result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border-left: 5px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.result-card.green { border-left-color: var(--green); background: #f0fdf4; }
+.result-card.orange { border-left-color: var(--orange); background: #fff7ed; }
+.result-card.red { border-left-color: var(--red); background: #fef2f2; }
+.result-card h3 { font-size: 15px; margin-bottom: 6px; }
+.result-card .score { font-size: 22px; font-weight: 700; }
+.result-card .detail { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.result-card .time-info { font-size: 13px; color: var(--accent2); margin-top: 4px; font-weight: 600; }
+
+.profile-box {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: white;
+    padding: 24px;
+    border-radius: var(--radius);
+    margin: 20px 0;
+}
+.profile-box h2 { font-size: 20px; margin-bottom: 8px; }
+.profile-box .risk { display: inline-block; padding: 4px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; margin-top: 8px; }
+.risk-high { background: rgba(239,68,68,0.3); }
+.risk-very-high { background: rgba(239,68,68,0.5); }
+.risk-medium { background: rgba(234,179,8,0.3); }
+.risk-low { background: rgba(34,197,94,0.3); }
+
+.reco-box {
+    background: var(--soft);
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-top: 16px;
+}
+.reco-box h3 { font-size: 16px; color: var(--accent2); margin-bottom: 12px; }
+.reco-box ul { margin-left: 18px; }
+.reco-box li { margin-bottom: 8px; font-size: 14px; line-height: 1.5; }
+
+/* Exercises v3 styling */
+.exo-box {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    margin-top: 16px;
+    overflow: hidden;
+}
+.exo-box h3 {
+    font-size: 16px;
+    color: white;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    margin: 0;
+}
+.exo-box .exo-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 20px;
+    background: #f5f3ff;
+    border-bottom: 1px solid #e9e5f5;
+    font-size: 13px;
+    color: #5b21b6;
+    font-weight: 600;
+}
+.exo-box .exo-meta span { display: inline-flex; align-items: center; gap: 4px; }
+.exo-list { padding: 16px 20px; }
+.exo-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--soft);
+}
+.exo-item:last-child { border-bottom: none; }
+.exo-item strong { color: var(--accent2); font-size: 14px; }
+.exo-item p { font-size: 13px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+.exo-item .exo-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 4px;
+    margin-right: 4px;
+}
+.exo-tag.fun { background: #fef3c7; color: #92400e; }
+.exo-tag.evidence { background: #dcfce7; color: #166534; }
+.exo-tag.daily { background: #dbeafe; color: #1e40af; }
+.exo-tag.tool { background: #f3e8ff; color: #6b21a8; }
+
+.rti-box {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 2px solid #f59e0b;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    margin-top: 16px;
+}
+.rti-box h4 { color: #92400e; font-size: 14px; margin-bottom: 8px; }
+.rti-box p { font-size: 13px; color: #78350f; line-height: 1.6; }
+
+.radar-container {
+    text-align: center;
+    padding: 20px;
+    background: var(--card);
+    border-radius: var(--radius);
+    margin: 20px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.radar-container h3 { margin-bottom: 16px; font-size: 16px; }
+
+.error-analysis {
+    background: #fffbeb;
+    padding: 16px;
+    border-radius: var(--radius);
+    margin-top: 12px;
+}
+.error-analysis h4 { font-size: 14px; color: var(--warm); margin-bottom: 8px; }
+.error-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 2px;
+}
+.error-tag.phono-plausible { background: #dbeafe; color: #1e40af; }
+.error-tag.phono-implausible { background: #fecaca; color: #991b1b; }
+.error-tag.inversion { background: #fef3c7; color: #92400e; }
+.error-tag.omission { background: #e0e7ff; color: #3730a3; }
+.error-tag.addition { background: #f3e8ff; color: #6b21a8; }
+.error-tag.substitution { background: #ffedd5; color: #9a3412; }
+.error-tag.morpho { background: #d1fae5; color: #065f46; }
+
+.disclaimer {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    margin-top: 20px;
+    font-size: 13px;
+    color: #991b1b;
+}
+.threshold-note {
+    font-size: 11px;
+    color: var(--text2);
+    font-style: italic;
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: #f8fafc;
+    border-radius: 4px;
+}
+</style>
+</head>
+<body>
+<div class="app">
+    <div class="app-header">
+        <h1>🔬 Test de Lecture & Orthographe — CM1/CM2</h1>
+        <p>Identifier précisément où et pourquoi ça bloque en français · 10 épreuves · Maman supervise</p>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+    <div class="nav" id="nav"></div>
+
+    <div id="sections"></div>
+
+    <div class="section" id="resultSection"></div>
+</div>
+
+<script>
+// ============================================================
+//  DATA
+// ============================================================
+
+const TESTS = [
+    'Mots réguliers','Mots irréguliers','Pseudo-mots',
+    'Dénomination rapide','Conscience phono','Dictée',
+    'Fluence','Compréhension','Mémoire de travail','Empan visuel'
+];
+
+// --- 2. MOTS RÉGULIERS (gradués) ---
+const regularWords = {
+    'Niveau 1 — Simples (CV, CVC)': ['ami','rue','bus','île','âne','col','dé','pic','vol','fée'],
+    'Niveau 2 — Bisyllabiques': ['table','robe','livre','lampe','porte','banane','robot','valise','tortue','ballon'],
+    'Niveau 3 — Trisyllabiques': ['chocolat','pantalon','cartable','mercredi','carotte','tulipe','lavabo','domino','solitude','catalogue'],
+    'Niveau 4 — Complexes': ['ordinateur','trampoline','rhinocéros','thermomètre','bibliothèque']
+};
+
+// --- 3. MOTS IRRÉGULIERS ---
+const irregularWords = {
+    'Niveau 1 — Fréquents': ['femme','monsieur','sept','fils','pays','ville','écho','clef','yacht','poêle'],
+    'Niveau 2 — Moyens': ['oignon','automne','album','paon','faon','choeur','rhume','sculpteur','baptême','orchidée'],
+    'Niveau 3 — Rares': ['aquarium','orchestre','compteur','chrysanthème','hypothèse']
+};
+
+// --- 4. PSEUDO-MOTS (gradués) ---
+const pseudoWords = {
+    'Niveau 1 — CVC / CVCV': ['bral','toup','fane','molu','rivo','daco','lupi','tobe'],
+    'Niveau 2 — CCVC / CVCCV': ['broton','clopir','flanque','drapule','flopir','grophe','trouche','plamure'],
+    'Niveau 3 — Complexes (CCC, graphèmes rares)': ['spanture','vrindale','chromile','phrétule','blansoir']
+};
+
+// --- 5. RAN ---
+const ranColors = ['#dc2626','#2563eb','#16a34a','#eab308','#1e1e1e'];
+const ranColorNames = ['rouge','bleu','vert','jaune','noir'];
+
+// --- 6. CONSCIENCE PHONOLOGIQUE ---
+const phonoQuestions = [
+    { cat:'Segmentation', q:"Combien de syllabes dans « papillon » ?", opts:['2','3','4'], correct:1 },
+    { cat:'Segmentation', q:"Combien de syllabes dans « électricité » ?", opts:['4','5','6'], correct:1 },
+    { cat:'Identification', q:"Quel son entends-tu au début de « chameau » ?", opts:['/k/','/ʃ/ (ch)','/s/'], correct:1 },
+    { cat:'Identification', q:"Quel son entends-tu à la fin de « parapluie » ?", opts:['/i/','/ɥi/ (ui)','/e/'], correct:1 },
+    { cat:'Identification', q:"Combien de sons dans le mot « chat » ?", opts:['2','3','4'], correct:0 },
+    { cat:'Rime', q:"Quel mot rime avec « maison » ?", opts:['poisson','raisin','mouton'], correct:0 },
+    { cat:'Rime', q:"Quel mot rime avec « cartable » ?", opts:['capable','carton','tableau'], correct:0 },
+    { cat:'Suppression', q:"Si on enlève /r/ à « train », qu'obtient-on ?", opts:['"tain"','"tin"','"tan"'], correct:0 },
+    { cat:'Suppression', q:"Si on enlève /p/ à « plat », qu'obtient-on ?", opts:['"la"','"lat"','"pa"'], correct:1 },
+    { cat:'Fusion', q:"Si on assemble /m/ + /a/ + /r/, quel mot obtient-on ?", opts:['mare','mars','marre'], correct:0 },
+    { cat:'Fusion', q:"Si on assemble /ʃ/ + /a/ + /t/, quel mot obtient-on ?", opts:['chat','chatte','char'], correct:1 },
+    { cat:'Inversion', q:"Dis « sol » à l'envers (inversement des sons), qu'obtient-on ?", opts:['"los"','"ols"','"lo"'], correct:0 },
+    { cat:'Inversion', q:"Dis « car » à l'envers, qu'obtient-on ?", opts:['"rac"','"arc"','"cra"'], correct:0 },
+    { cat:'Substitution', q:"Dans « car », remplace /k/ par /b/. Qu'obtient-on ?", opts:['"bar"','"par"','"tar"'], correct:0 },
+    { cat:'Discrimination', q:"« pain » et « bain » : identiques ou différents ?", opts:['Identiques','Différents'], correct:1 },
+    { cat:'Discrimination', q:"« chou » et « joue » : identiques ou différents ?", opts:['Identiques','Différents'], correct:1 },
+];
+
+// --- 7. DICTÉE ---
+const dicteeWords = [
+    { word:'chat', audio:'Le mot : CHAT' },
+    { word:'fleur', audio:'Le mot : FLEUR' },
+    { word:'brosse', audio:'Le mot : BROSSE' },
+    { word:'école', audio:'Le mot : ÉCOLE' },
+    { word:'pharmacie', audio:'Le mot : PHARMACIE' },
+    { word:'grenouille', audio:'Le mot : GRENOUILLE' },
+    { word:'sympathique', audio:'Le mot : SYMPATHIQUE' },
+    { word:'enveloppe', audio:'Le mot : ENVELOPPE' }
+];
+const dicteePhrases = [
+    { text:'Le chat mange sa nourriture.', audio:'Phrase : Le chat mange sa nourriture.' },
+    { text:'Les enfants jouent dans le jardin.', audio:'Phrase : Les enfants jouent dans le jardin.' },
+    { text:"L'orchestre répète avant le spectacle.", audio:"Phrase : L'orchestre répète avant le spectacle." }
+];
+
+// --- 8. FLUENCE ---
+const fluenceText = "Le matin, Pierre se lève très tôt pour aller à l'école. Il prend son petit déjeuner avec du pain et du chocolat chaud. Ensuite, il met son manteau et son cartable sur le dos. Sa mère le conduit en voiture car l'école est assez loin. Sur le chemin, Pierre regarde les arbres, les maisons et les voitures qui passent. Quand il arrive, il retrouve ses amis dans la cour. Ils jouent ensemble pendant quelques minutes avant que la cloche sonne. En classe, la maîtresse leur demande de sortir leurs cahiers de mathématiques. Pierre aime bien les nombres mais il trouve que les problèmes sont parfois difficiles. Après les mathématiques, c'est l'heure de la lecture. Aujourd'hui, ils lisent une histoire de chevaliers et de dragons. Pierre essaie de lire à voix haute quand la maîtresse le lui demande. À midi, il mange à la cantine avec ses camarades. L'après-midi passe vite entre la géographie et le dessin.";
+
+// --- 9. COMPRÉHENSION ---
+const compTexts = [
+    {
+        title: 'Le renard rusé (narratif)',
+        text: "Un matin d'hiver, un renard affamé aperçoit un corbeau perché tout en haut d'un grand chêne. Le corbeau tient dans son bec un gros morceau de fromage qu'il vient de voler dans une ferme voisine. Le renard, qui n'a rien mangé depuis deux jours, réfléchit à un plan. Il s'approche de l'arbre et lance d'une voix douce : « Quel magnifique plumage vous avez, cher corbeau ! Je suis certain que votre voix est aussi belle que vos plumes. » Le corbeau, tout fier d'être complimenté, ouvre grand son bec pour pousser un cri. Le fromage tombe aussitôt. Le renard s'en empare et s'enfuit en disant : « Apprenez que tout flatteur vit aux dépens de celui qui l'écoute. »",
+        questions: [
+            { q:"Que tient le corbeau dans son bec ?", opts:['Un ver','Du fromage','Un fruit'], correct:1, type:'explicite' },
+            { q:"Depuis combien de temps le renard n'a-t-il pas mangé ?", opts:['Un jour','Deux jours','Une semaine'], correct:1, type:'explicite' },
+            { q:"Comment le corbeau se sent-il quand il entend le compliment ?", opts:['Méfiant','Flatté et fier','En colère'], correct:1, type:'inférentielle' },
+            { q:"Pourquoi le renard fait-il un compliment au corbeau ?", opts:["Parce qu'il aime sa voix","Pour qu'il ouvre son bec et perde le fromage","Pour devenir son ami"], correct:1, type:'inférentielle' },
+            { q:"Que signifie « tout flatteur vit aux dépens de celui qui l'écoute » ?", opts:["Ceux qui font des compliments sont gentils","Ceux qui flattent profitent de ceux qui les croient","Les flatteurs sont pauvres"], correct:1, type:'vocabulaire' },
+        ]
+    },
+    {
+        title: 'La migration des oiseaux (informatif)',
+        text: "Chaque automne, des millions d'oiseaux quittent les régions froides pour se diriger vers des pays plus chauds. Ce voyage s'appelle la migration. Les oiseaux migrateurs, comme les hirondelles et les cigognes, peuvent parcourir des milliers de kilomètres. Ils se repèrent grâce au soleil, aux étoiles et au champ magnétique de la Terre. Le voyage est dangereux : les oiseaux doivent affronter le vent, la pluie et les prédateurs. Beaucoup d'entre eux ne survivent pas. Ceux qui arrivent passent l'hiver au chaud, puis reviennent au printemps pour se reproduire. Les scientifiques étudient la migration en posant de petites bagues sur les pattes des oiseaux.",
+        questions: [
+            { q:"Quand la migration a-t-elle lieu ?", opts:['Au printemps','En automne','En été'], correct:1, type:'explicite' },
+            { q:"Comment les scientifiques étudient-ils la migration ?", opts:['Avec des caméras','Avec des bagues aux pattes','Avec des satellites'], correct:1, type:'explicite' },
+            { q:"Pourquoi beaucoup d'oiseaux ne survivent-ils pas au voyage ?", opts:["Parce qu'ils sont trop vieux","À cause du vent, de la pluie et des prédateurs","Parce qu'ils se perdent"], correct:1, type:'inférentielle' },
+            { q:"Que signifie « champ magnétique de la Terre » dans ce texte ?", opts:["Un aimant posé au sol","Une force invisible qui aide les oiseaux à s'orienter","Le vent qui souffle vers le sud"], correct:1, type:'vocabulaire' },
+        ]
+    }
+];
+
+// --- 10. MÉMOIRE DE TRAVAIL ---
+const memoryForward = [
+    { seq:'3-7', label:'Empan endroit — 2 chiffres' },
+    { seq:'5-1-9', label:'Empan endroit — 3 chiffres' },
+    { seq:'8-2-6-3', label:'Empan endroit — 4 chiffres' },
+    { seq:'4-7-1-9-2', label:'Empan endroit — 5 chiffres' },
+    { seq:'3-8-5-1-7-4', label:'Empan endroit — 6 chiffres' },
+];
+const memoryBackward = [
+    { seq:'6-2', label:'Empan envers — 2 chiffres', answer:'2-6' },
+    { seq:'3-9-1', label:'Empan envers — 3 chiffres', answer:'1-9-3' },
+    { seq:'7-2-5-4', label:'Empan envers — 4 chiffres', answer:'4-5-2-7' },
+    { seq:'1-8-3-6-2', label:'Empan envers — 5 chiffres', answer:'2-6-3-8-1' },
+];
+const memoryWords = [
+    { seq:'chat-table-livre', label:'Mots — 3 éléments' },
+    { seq:'soleil-fleur-arbre-eau', label:'Mots — 4 éléments' },
+    { seq:'rouge-lune-porte-main-clef', label:'Mots — 5 éléments' },
+];
+
+// --- 11. EMPAN VISUO-ATTENTIONNEL ---
+const evaSequences = [
+    { letters:'R H T', duration:300, label:'3 lettres — 300ms' },
+    { letters:'M B L D', duration:300, label:'4 lettres — 300ms' },
+    { letters:'R T M B L', duration:200, label:'5 lettres — 200ms' },
+    { letters:'F D S P N K', duration:200, label:'6 lettres — 200ms' },
+    { letters:'H R T B M L D', duration:200, label:'7 lettres — 200ms' },
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+const state = {
+    currentTest: 0,
+    regularErrors: {},
+    irregularErrors: {},
+    pseudoErrors: {},
+    timers: { regular:0, irregular:0, pseudo:0, ran:0, fluence:0 },
+    timerIntervals: {},
+    timerRunning: {},
+    ranErrors: 0,
+    phono: [],
+    dicteeWords: [],
+    dicteePhrases: [],
+    fluenceLastWord: -1,
+    fluenceErrors: [],
+    comprehension: [],
+    memForward: [],
+    memBackward: [],
+    memWords: [],
+    eva: [],
+    done: new Set()
+};
+
+// ============================================================
+//  INIT
+// ============================================================
+function init() {
+    buildNav();
+    buildSections();
+    goTo(0);
+}
+
+function buildNav() {
+    const nav = document.getElementById('nav');
+    TESTS.forEach((t,i) => {
+        const b = document.createElement('button');
+        b.textContent = `${i+1}. ${t}`;
+        b.onclick = () => goTo(i);
+        nav.appendChild(b);
+    });
+}
+
+function goTo(idx) {
+    state.done.add(state.currentTest);
+    state.currentTest = idx;
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const sec = document.getElementById('sec'+idx);
+    if(sec) sec.classList.add('active');
+    document.querySelectorAll('.nav button').forEach((b,i) => {
+        b.classList.remove('active');
+        if(state.done.has(i) && i !== idx) b.classList.add('done');
+        else b.classList.remove('done');
+    });
+    document.querySelectorAll('.nav button')[idx].classList.add('active');
+    document.getElementById('progressBar').style.width = ((idx+1)/TESTS.length*100)+'%';
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function goResults() {
+    state.done.add(state.currentTest);
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('resultSection').classList.add('active');
+    document.querySelectorAll('.nav button').forEach(b => { b.classList.remove('active'); b.classList.add('done'); });
+    document.getElementById('progressBar').style.width = '100%';
+    buildResults();
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ============================================================
+//  BUILD ALL SECTIONS
+// ============================================================
+function buildSections() {
+    const root = document.getElementById('sections');
+    root.innerHTML = '';
+    TESTS.forEach((t,i) => {
+        const div = document.createElement('div');
+        div.className = 'section';
+        div.id = 'sec'+i;
+        root.appendChild(div);
+    });
+    
+    // Indices décalés car l'anamnèse (0) a été supprimée
+    buildReadingTest('regular', 0, 'Lecture de mots réguliers', 'Mots qui se lisent comme ils s\'écrivent', regularWords);
+    buildReadingTest('irregular', 1, 'Lecture de mots irréguliers', 'Mots qu\'il faut connaître — lecture globale', irregularWords);
+    buildReadingTest('pseudo', 2, 'Lecture de pseudo-mots', 'Mots inventés — décodage pur', pseudoWords);
+    buildRAN();
+    buildPhono();
+    buildDictee();
+    buildFluence();
+    buildComprehension();
+    buildMemory();
+    buildEVA();
+}
+
+// ============================================================
+//  READING TESTS (0, 1, 2)
+// ============================================================
+const ERROR_TYPES = [
+    { code:'vis', label:'Visuelle', desc:'b/d, p/q, m/n' },
+    { code:'phon', label:'Phonémique', desc:'t/d, f/v, ch/j' },
+    { code:'inv', label:'Inversion', desc:'lettres inversées' },
+    { code:'omis', label:'Omission', desc:'lettre/syllabe sautée' },
+    { code:'ajout', label:'Ajout', desc:'lettre/syllabe ajoutée' },
+    { code:'lex', label:'Lexicalisation', desc:'lit un autre mot' },
+    { code:'other', label:'Autre', desc:'' },
+];
+
+function buildReadingTest(key, testIdx, title, subtitle, wordData) {
+    const sec = document.getElementById('sec'+testIdx);
+    const timerKey = key;
+    let h = `
+        <div class="card-header"><h2>${title}</h2><p>${subtitle}</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Lis chaque mot à voix haute, le plus correctement possible.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lancez le chronomètre quand l'enfant commence. Cliquez sur un mot pour le marquer comme erreur, puis précisez le type d'erreur. Arrêtez le chrono quand il a fini.</div>
+        <div class="timer-bar">
+            <div class="timer-display" id="timer_${timerKey}">00:00.0</div>
+            <button class="btn-start" id="tbtn_${timerKey}" onclick="toggleTimer('${timerKey}')">▶ Démarrer</button>
+            <button class="btn-reset" onclick="resetTimer('${timerKey}')">↺ Reset</button>
+        </div>`;
+    Object.entries(wordData).forEach(([level, words]) => {
+        h += `<div class="level-group"><h4>${level}</h4><div class="word-grid">`;
+        words.forEach((w, wi) => {
+            const globalIdx = getGlobalWordIndex(wordData, level, wi);
+            h += `<div class="word-card" id="wc_${key}_${globalIdx}" onclick="toggleWordError('${key}',${globalIdx},this)">
+                <span class="word">${w}</span>
+                <div class="error-type-selector" id="et_${key}_${globalIdx}">
+                    ${ERROR_TYPES.map(et => `<button onclick="event.stopPropagation();setErrorType('${key}',${globalIdx},'${et.code}',this)" title="${et.desc}">${et.label}</button>`).join('')}
+                </div>
+            </div>`;
+        });
+        h += '</div></div>';
+    });
+    const prev = testIdx > 0 ? testIdx - 1 : 0;
+    const next = testIdx < TESTS.length - 1 ? testIdx + 1 : testIdx;
+    h += `<div class="btn-row">
+        ${testIdx > 0 ? `<button class="btn btn-secondary" onclick="goTo(${prev})">← Retour</button>` : ''}
+        <button class="btn btn-primary" onclick="goTo(${next})">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+function getGlobalWordIndex(wordData, targetLevel, localIdx) {
+    let global = 0;
+    for(const [level, words] of Object.entries(wordData)) {
+        if(level === targetLevel) return global + localIdx;
+        global += words.length;
+    }
+    return global + localIdx;
+}
+
+function getAllWords(wordData) {
+    return Object.values(wordData).flat();
+}
+
+function toggleWordError(key, idx, el) {
+    const stateKey = key + 'Errors';
+    if(state[stateKey][idx]) {
+        delete state[stateKey][idx];
+        el.classList.remove('error');
+    } else {
+        state[stateKey][idx] = { error:true, types:[] };
+        el.classList.add('error');
+    }
+}
+
+function setErrorType(key, idx, code, btn) {
+    const stateKey = key + 'Errors';
+    if(!state[stateKey][idx]) return;
+    const types = state[stateKey][idx].types;
+    const i = types.indexOf(code);
+    if(i >= 0) { types.splice(i,1); btn.classList.remove('selected'); }
+    else { types.push(code); btn.classList.add('selected'); }
+}
+
+// ============================================================
+//  TIMER
+// ============================================================
+function toggleTimer(key) {
+    const btn = document.getElementById('tbtn_'+key);
+    if(state.timerRunning[key]) {
+        clearInterval(state.timerIntervals[key]);
+        state.timerRunning[key] = false;
+        btn.textContent = '▶ Reprendre';
+        btn.className = 'btn-start';
+    } else {
+        const start = Date.now() - (state.timers[key]||0);
+        state.timerIntervals[key] = setInterval(() => {
+            state.timers[key] = Date.now() - start;
+            document.getElementById('timer_'+key).textContent = formatTime(state.timers[key]);
+        }, 100);
+        state.timerRunning[key] = true;
+        btn.textContent = '⏸ Pause';
+        btn.className = 'btn-stop';
+    }
+}
+
+function resetTimer(key) {
+    clearInterval(state.timerIntervals[key]);
+    state.timers[key] = 0;
+    state.timerRunning[key] = false;
+    document.getElementById('timer_'+key).textContent = '00:00.0';
+    const btn = document.getElementById('tbtn_'+key);
+    btn.textContent = '▶ Démarrer';
+    btn.className = 'btn-start';
+}
+
+function formatTime(ms) {
+    const s = Math.floor(ms/1000);
+    const d = Math.floor((ms%1000)/100);
+    const m = Math.floor(s/60);
+    return `${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}.${d}`;
+}
+
+// ============================================================
+//  3. RAN
+// ============================================================
+function buildRAN() {
+    const sec = document.getElementById('sec3'); // index 3
+    let grid = [];
+    for(let i=0; i<50; i++) grid.push(Math.floor(Math.random()*5));
+    state._ranGrid = grid;
+
+    let h = `
+        <div class="card-header"><h2>🎨 Dénomination Rapide (RAN)</h2><p>Vitesse de dénomination automatisée — prédicteur de dyslexie</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Nomme chaque couleur le plus vite possible, ligne par ligne, de gauche à droite, sans te tromper.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lancez le chrono quand l'enfant commence. Notez le nombre d'erreurs. Arrêtez quand il a fini les 50 cases.</div>
+        <div class="timer-bar">
+            <div class="timer-display" id="timer_ran">00:00.0</div>
+            <button class="btn-start" id="tbtn_ran" onclick="toggleTimer('ran')">▶ Démarrer</button>
+            <button class="btn-reset" onclick="resetTimer('ran')">↺ Reset</button>
+        </div>
+        <div class="ran-grid">`;
+    grid.forEach(ci => {
+        h += `<div class="ran-cell" style="background:${ranColors[ci]}">${ci===4?'':'●'}</div>`;
+    });
+    h += `</div>
+        <div class="card" style="margin-top:12px">
+            <label style="font-weight:600;font-size:14px;">Nombre d'erreurs de dénomination :</label>
+            <input type="text" id="ranErrors" placeholder="0" style="max-width:100px;margin-top:8px" onchange="state.ranErrors=parseInt(this.value)||0">
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="goTo(2)">← Retour</button>
+            <button class="btn btn-primary" onclick="goTo(4)">Suivant →</button>
+        </div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  4. CONSCIENCE PHONOLOGIQUE
+// ============================================================
+function buildPhono() {
+    const sec = document.getElementById('sec4'); // index 4
+    let h = `
+        <div class="card-header"><h2>🔊 Conscience phonologique</h2><p>Capacité à manipuler les sons du langage</p></div>
+        <div class="instruction"><strong>Consigne :</strong> Réponds aux questions sur les sons des mots.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lisez chaque question à voix haute si l'enfant a du mal à les lire. L'important est de tester les sons, pas la lecture.</div>`;
+    let currentCat = '';
+    phonoQuestions.forEach((q,i) => {
+        if(q.cat !== currentCat) {
+            currentCat = q.cat;
+            h += `<h4 style="margin:16px 0 8px;color:var(--accent2);font-size:13px;text-transform:uppercase;letter-spacing:1px">${currentCat}</h4>`;
+        }
+        h += `<div class="q-block"><h4>${i+1}. ${q.q}</h4><div class="q-options">`;
+        q.opts.forEach((o,j) => {
+            h += `<label><input type="radio" name="phono${i}" value="${j}" onchange="state.phono[${i}]=${j}"><span>${o}</span></label>`;
+        });
+        h += '</div></div>';
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(3)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(5)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  5. DICTÉE
+// ============================================================
+function buildDictee() {
+    const sec = document.getElementById('sec5'); // index 5
+    let h = `
+        <div class="card-header"><h2>✏️ Dictée de mots et phrases</h2><p>Orthographe — analyse qualitative des erreurs</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Écoute bien et écris ce que tu entends.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cliquez sur le bouton pour faire entendre le mot/phrase. L'enfant écrit dans le champ. Le système analysera automatiquement les types d'erreurs.</div>
+        <h3 style="margin:16px 0 8px">Partie A : Mots isolés</h3>`;
+    dicteeWords.forEach((item,i) => {
+        h += `<div class="q-block">
+            <button class="audio-btn" onclick="speak('${item.audio}')">🔊 Écouter le mot ${i+1}</button>
+            <input type="text" placeholder="Écris le mot ici" id="dw${i}" onchange="state.dicteeWords[${i}]=this.value">
+        </div>`;
+    });
+    h += '<h3 style="margin:24px 0 8px">Partie B : Phrases</h3>';
+    dicteePhrases.forEach((item,i) => {
+        h += `<div class="q-block">
+            <button class="audio-btn" onclick="speak(\`${item.audio}\`)">🔊 Écouter la phrase ${i+1}</button>
+            <textarea placeholder="Écris la phrase ici" id="dp${i}" onchange="state.dicteePhrases[${i}]=this.value"></textarea>
+        </div>`;
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(4)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(6)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+function speak(text) {
+    if('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'fr-FR';
+        u.rate = 0.85;
+        speechSynthesis.speak(u);
+    } else {
+        alert('Texte à lire : ' + text);
+    }
+}
+
+// ============================================================
+//  6. FLUENCE DE LECTURE
+// ============================================================
+function buildFluence() {
+    const sec = document.getElementById('sec6'); // index 6
+    const words = fluenceText.split(/\s+/);
+    let h = `
+        <div class="card-header"><h2>📖 Fluence de lecture (MCLM)</h2><p>Mots correctement lus par minute</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Lis ce texte à voix haute, du mieux que tu peux.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lancez le chrono quand l'enfant commence. Au bout d'<strong>1 minute</strong>, arrêtez-le et cliquez sur le <strong>dernier mot lu</strong> (il deviendra vert). Cliquez aussi sur les mots mal lus (ils deviendront rouges).</div>
+        <div class="timer-bar">
+            <div class="timer-display" id="timer_fluence">00:00.0</div>
+            <button class="btn-start" id="tbtn_fluence" onclick="toggleTimer('fluence')">▶ Démarrer</button>
+            <button class="btn-reset" onclick="resetTimer('fluence')">↺ Reset</button>
+            <span style="font-size:13px;color:var(--text2);margin-left:auto">Objectif : 1 minute</span>
+        </div>
+        <div class="fluence-text" id="fluenceContainer">`;
+    words.forEach((w, i) => {
+        h += `<span id="fw${i}" onclick="toggleFluenceWord(${i})" data-idx="${i}">${w} </span>`;
+    });
+    h += `</div>
+        <div class="card">
+            <p style="font-size:14px"><strong>Dernier mot lu (double-clic) :</strong> <span id="lastWordDisplay">Non défini</span></p>
+            <p style="font-size:13px;color:var(--text2);margin-top:4px">Double-cliquez sur le dernier mot atteint pour le marquer.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="goTo(5)">← Retour</button>
+            <button class="btn btn-primary" onclick="goTo(7)">Suivant →</button>
+        </div>`;
+    sec.innerHTML = h;
+    words.forEach((w,i) => {
+        document.getElementById('fw'+i).addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            setLastWord(i);
+        });
+    });
+}
+
+function toggleFluenceWord(idx) {
+    const el = document.getElementById('fw'+idx);
+    if(el.classList.contains('error-word')) {
+        el.classList.remove('error-word');
+        state.fluenceErrors = state.fluenceErrors.filter(x => x !== idx);
+    } else {
+        el.classList.add('error-word');
+        state.fluenceErrors.push(idx);
+    }
+}
+
+function setLastWord(idx) {
+    document.querySelectorAll('.fluence-text span.marked').forEach(s => s.classList.remove('marked'));
+    document.getElementById('fw'+idx).classList.add('marked');
+    state.fluenceLastWord = idx;
+    document.getElementById('lastWordDisplay').textContent = document.getElementById('fw'+idx).textContent.trim() + ` (mot n°${idx+1})`;
+}
+
+// ============================================================
+//  7. COMPRÉHENSION
+// ============================================================
+function buildComprehension() {
+    const sec = document.getElementById('sec7'); // index 7
+    let h = `
+        <div class="card-header"><h2>📚 Compréhension de lecture</h2><p>Textes narratif et informatif — questions explicites, inférentielles et vocabulaire</p></div>
+        <div class="instruction"><strong>Consigne :</strong> Lis chaque texte puis réponds aux questions.</div>`;
+    let qIdx = 0;
+    compTexts.forEach((t, ti) => {
+        h += `<div class="card"><h3 style="margin-bottom:12px">${t.title}</h3>
+            <div style="background:var(--soft);padding:16px;border-radius:6px;line-height:1.9;font-size:16px;margin-bottom:16px">${t.text}</div>`;
+        t.questions.forEach((q, qi) => {
+            const typeLabel = q.type === 'explicite' ? '📌 Explicite' : q.type === 'inférentielle' ? '🔍 Inférentielle' : '📖 Vocabulaire';
+            h += `<div class="q-block"><h4><span style="font-size:11px;background:var(--soft);padding:2px 8px;border-radius:10px;margin-right:6px">${typeLabel}</span> ${q.q}</h4><div class="q-options">`;
+            q.opts.forEach((o, oi) => {
+                h += `<label><input type="radio" name="comp${qIdx}" value="${oi}" onchange="state.comprehension[${qIdx}]=${oi}"><span>${o}</span></label>`;
+            });
+            h += '</div></div>';
+            qIdx++;
+        });
+        h += '</div>';
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(6)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(8)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  8. MÉMOIRE DE TRAVAIL
+// ============================================================
+function buildMemory() {
+    const sec = document.getElementById('sec8'); // index 8
+    let h = `
+        <div class="card-header"><h2>🧠 Mémoire de travail</h2><p>Empan endroit, empan envers, empan de mots</p></div>
+        <div class="instruction"><strong>Consigne :</strong> Écoute la séquence puis répète-la.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cliquez sur écouter, puis l'enfant tape sa réponse. Pour l'empan envers, l'enfant doit répéter <strong>à l'envers</strong>.</div>
+        <h3 style="margin:16px 0 8px">Empan endroit (répéter dans l'ordre)</h3>`;
+    memoryForward.forEach((m, i) => {
+        h += `<div class="q-block"><h4>${m.label}</h4>
+            <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
+            <input type="text" placeholder="Ex: ${m.seq.split('-').slice(0,2).join('-')}-..." id="mf${i}" onchange="state.memForward[${i}]=this.value">
+            <small style="color:var(--text2);display:block;margin-top:4px">Sépare les chiffres par des tirets</small>
+        </div>`;
+    });
+    h += '<h3 style="margin:24px 0 8px">Empan envers (répéter à l\'envers)</h3>';
+    memoryBackward.forEach((m, i) => {
+        h += `<div class="q-block"><h4>${m.label}</h4>
+            <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
+            <input type="text" placeholder="Répète à l'envers" id="mb${i}" onchange="state.memBackward[${i}]=this.value">
+            <small style="color:var(--text2);display:block;margin-top:4px">Exemple : si tu entends 3-5, écris 5-3</small>
+        </div>`;
+    });
+    h += '<h3 style="margin:24px 0 8px">Empan de mots</h3>';
+    memoryWords.forEach((m, i) => {
+        h += `<div class="q-block"><h4>${m.label}</h4>
+            <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
+            <input type="text" placeholder="Mots séparés par des tirets" id="mw${i}" onchange="state.memWords[${i}]=this.value">
+        </div>`;
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(7)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(9)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+// ============================================================
+//  9. EMPAN VISUO-ATTENTIONNEL (EVA)
+// ============================================================
+function buildEVA() {
+    const sec = document.getElementById('sec9'); // index 9
+    let h = `
+        <div class="card-header"><h2>👁️ Empan visuo-attentionnel</h2><p>Capacité à traiter plusieurs lettres simultanément</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Des lettres vont apparaître très rapidement. Essaie de retenir toutes les lettres que tu vois.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cliquez sur « Flash » pour afficher brièvement les lettres. L'enfant tape ensuite ce qu'il a vu (dans l'ordre ou le désordre).</div>`;
+    evaSequences.forEach((e, i) => {
+        h += `<div class="q-block"><h4>${e.label}</h4>
+            <div class="eva-display" id="evaD${i}">Cliquez Flash →</div>
+            <button class="audio-btn" onclick="flashEVA(${i})" style="background:var(--warm)">⚡ Flash</button>
+            <input type="text" placeholder="Lettres vues (ex: R T M)" id="eva${i}" onchange="state.eva[${i}]=this.value" style="margin-top:8px">
+        </div>`;
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(8)">← Retour</button>
+        <button class="btn btn-primary" onclick="goResults()">📊 Voir les résultats</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+function flashEVA(idx) {
+    const el = document.getElementById('evaD'+idx);
+    const seq = evaSequences[idx];
+    el.textContent = seq.letters;
+    el.style.color = 'var(--text)';
+    setTimeout(() => {
+        el.textContent = '•••';
+        el.style.color = 'var(--border)';
+    }, seq.duration);
+}
+
+// ============================================================
+//  IMPROVED PHONETIC ENGINE (v3)
+// ============================================================
+function toApproxPhonetic(word) {
+    let p = word.toLowerCase().normalize('NFC');
+    // Longest patterns first
+    p = p.replace(/tion/g,'SJÕ');
+    p = p.replace(/sion/g,'ZJÕ');
+    p = p.replace(/ille/g,'IJ').replace(/ill/g,'IJ');
+    p = p.replace(/ail/g,'AJ').replace(/eil/g,'EJ').replace(/euil/g,'ŒJ').replace(/ouil/g,'UJ');
+    p = p.replace(/eau/g,'O').replace(/au/g,'O').replace(/ai/g,'E').replace(/ei/g,'E');
+    p = p.replace(/ou/g,'U').replace(/oi/g,'WA');
+    p = p.replace(/ain/g,'Ĩ').replace(/ein/g,'Ĩ').replace(/aim/g,'Ĩ');
+    p = p.replace(/on(?=[bp])/g,'Õ').replace(/om(?=[bp])/g,'Õ').replace(/on/g,'Õ').replace(/om$/g,'Õ');
+    p = p.replace(/an(?=[bp])/g,'Ã').replace(/am(?=[bp])/g,'Ã').replace(/en(?=[bp])/g,'Ã').replace(/em(?=[bp])/g,'Ã');
+    p = p.replace(/in/g,'Ĩ').replace(/im(?=[bp])/g,'Ĩ').replace(/yn/g,'Ĩ').replace(/ym(?=[bp])/g,'Ĩ');
+    p = p.replace(/un/g,'Ĩ');
+    p = p.replace(/an/g,'Ã').replace(/am$/g,'Ã').replace(/en/g,'Ã').replace(/em$/g,'Ã');
+    p = p.replace(/ph/g,'F').replace(/ch/g,'Ʃ').replace(/gn/g,'Ñ');
+    p = p.replace(/qu/g,'K').replace(/gu(?=[ei])/g,'G');
+    p = p.replace(/ss/g,'S').replace(/cc(?=[ei])/g,'KS');
+    p = p.replace(/ç/g,'S').replace(/c(?=[eiyéèê])/g,'S');
+    p = p.replace(/c/g,'K').replace(/q/g,'K');
+    p = p.replace(/ge(?=[aou])/g,'Ʒ').replace(/g(?=[eiyéèê])/g,'Ʒ');
+    p = p.replace(/é/g,'E').replace(/è/g,'E').replace(/ê/g,'E').replace(/ë/g,'E');
+    p = p.replace(/î/g,'I').replace(/ï/g,'I');
+    p = p.replace(/ô/g,'O').replace(/û/g,'Y').replace(/ù/g,'Y').replace(/ü/g,'Y');
+    p = p.replace(/â/g,'A').replace(/à/g,'A');
+    p = p.replace(/y/g,'I');
+    p = p.replace(/x$/g,'KS');
+    // Silent final letters (French)
+    p = p.replace(/ent$/g,''); // 3rd person plural verb ending
+    p = p.replace(/[estdgxzp]$/g,'');
+    // Double consonants
+    p = p.replace(/(.)\1/g,'$1');
+    p = p.replace(/h/g,'');
+    return p;
+}
+
+function isPhonologicallyPlausible(expected, given) {
+    const p1 = toApproxPhonetic(expected);
+    const p2 = toApproxPhonetic(given);
+    return p1 === p2;
+}
+
+// ============================================================
+//  LEVENSHTEIN WORD ALIGNMENT for phrase dictation
+// ============================================================
+function alignWords(expected, given) {
+    const n = expected.length, m = given.length;
+    // DP matrix
+    const dp = Array.from({length: n+1}, () => Array(m+1).fill(0));
+    const ops = Array.from({length: n+1}, () => Array(m+1).fill(''));
+    for(let i=0; i<=n; i++) { dp[i][0] = i; ops[i][0] = 'D'; }
+    for(let j=0; j<=m; j++) { dp[0][j] = j; ops[0][j] = 'I'; }
+    ops[0][0] = '';
+    for(let i=1; i<=n; i++) {
+        for(let j=1; j<=m; j++) {
+            if(expected[i-1] === given[j-1]) {
+                dp[i][j] = dp[i-1][j-1];
+                ops[i][j] = 'M'; // match
+            } else {
+                const sub = dp[i-1][j-1] + 1;
+                const del = dp[i-1][j] + 1;
+                const ins = dp[i][j-1] + 1;
+                if(sub <= del && sub <= ins) { dp[i][j] = sub; ops[i][j] = 'S'; }
+                else if(del <= ins) { dp[i][j] = del; ops[i][j] = 'D'; }
+                else { dp[i][j] = ins; ops[i][j] = 'I'; }
+            }
+        }
+    }
+    // Backtrack
+    const aligned = [];
+    let i = n, j = m;
+    while(i > 0 || j > 0) {
+        if(i > 0 && j > 0 && (ops[i][j] === 'M' || ops[i][j] === 'S')) {
+            aligned.unshift({ expected: expected[i-1], given: given[j-1], op: ops[i][j] });
+            i--; j--;
+        } else if(i > 0 && ops[i][j] === 'D') {
+            aligned.unshift({ expected: expected[i-1], given: null, op: 'D' });
+            i--;
+        } else {
+            aligned.unshift({ expected: null, given: given[j-1], op: 'I' });
+            j--;
+        }
+    }
+    return aligned;
+}
+
+// ============================================================
+//  MORPHOSYNTACTIC ERROR DETECTION
+// ============================================================
+function detectMorphoErrors(expectedWord, givenWord) {
+    const errors = [];
+    if(!expectedWord || !givenWord) return errors;
+    const e = expectedWord.toLowerCase();
+    const g = givenWord.toLowerCase();
+    if(e === g) return errors;
+    // Plural -s missing
+    if(e.endsWith('s') && !g.endsWith('s') && e.slice(0,-1) === g) {
+        errors.push('accord pluriel manquant (-s)');
+    }
+    // Plural -x missing
+    if(e.endsWith('x') && !g.endsWith('x') && e.slice(0,-1) === g) {
+        errors.push('accord pluriel manquant (-x)');
+    }
+    // Verb agreement -ent
+    if(e.endsWith('ent') && g.endsWith('e') && e.slice(0,-2) === g) {
+        errors.push('accord verbal manquant (-ent)');
+    }
+    // Feminine -e missing
+    if(e.endsWith('e') && !g.endsWith('e') && e.slice(0,-1) === g) {
+        errors.push('accord féminin manquant (-e)');
+    }
+    return errors;
+}
+
+// ============================================================
+//  DICTÉE QUALITATIVE ANALYSIS (v3)
+// ============================================================
+function analyzeDictee() {
+    const results = { words: [], phrases: [], summary: { phonoPlausible:0, phonoImplausible:0, inversions:0, omissions:0, additions:0, substitutions:0, morpho:0, correct:0, total: dicteeWords.length + dicteePhrases.length } };
+
+    dicteeWords.forEach((item, i) => {
+        const expected = item.word.toLowerCase().trim();
+        const given = (state.dicteeWords[i]||'').toLowerCase().trim();
+        if(!given) {
+            results.words.push({ expected, given:'(vide)', correct:false, errors:['omission complète'] });
+            return;
+        }
+        if(given === expected) {
+            results.words.push({ expected, given, correct:true, errors:[] });
+            results.summary.correct++;
+            return;
+        }
+        const errors = classifySpellingErrors(expected, given);
+        results.words.push({ expected, given, correct:false, errors });
+        errors.forEach(e => {
+            if(e.includes('phonologiquement plausible')) results.summary.phonoPlausible++;
+            else if(e.includes('phonologiquement implausible')) results.summary.phonoImplausible++;
+            if(e.includes('inversion')) results.summary.inversions++;
+            if(e.includes('omission')) results.summary.omissions++;
+            if(e.includes('addition')) results.summary.additions++;
+            if(e.includes('substitution')) results.summary.substitutions++;
+        });
+    });
+
+    // Phrase analysis with Levenshtein alignment
+    dicteePhrases.forEach((item, i) => {
+        const expRaw = item.text.toLowerCase().trim().replace(/[.,!?']/g,' ').replace(/\s+/g,' ').trim();
+        const givRaw = (state.dicteePhrases[i]||'').toLowerCase().trim().replace(/[.,!?']/g,' ').replace(/\s+/g,' ').trim();
+        if(!givRaw) {
+            results.phrases.push({ expected: item.text, given:'(vide)', correct:false, wordErrors:[] });
+            return;
+        }
+        const expWords = expRaw.split(' ').filter(Boolean);
+        const givWords = givRaw.split(' ').filter(Boolean);
+        const alignment = alignWords(expWords, givWords);
+        const wordErrors = [];
+        alignment.forEach(a => {
+            if(a.op === 'M') return; // match
+            if(a.op === 'D') {
+                wordErrors.push({ expected: a.expected, given:'∅', errors:['mot omis'] });
+                return;
+            }
+            if(a.op === 'I') {
+                wordErrors.push({ expected:'∅', given: a.given, errors:['mot ajouté'] });
+                return;
+            }
+            // Substitution — classify
+            const morphoErrs = detectMorphoErrors(a.expected, a.given);
+            if(morphoErrs.length > 0) {
+                wordErrors.push({ expected: a.expected, given: a.given, errors: morphoErrs });
+                results.summary.morpho += morphoErrs.length;
+            } else {
+                const errs = classifySpellingErrors(a.expected, a.given);
+                wordErrors.push({ expected: a.expected, given: a.given, errors: errs });
+            }
+        });
+        const isCorrect = wordErrors.length === 0;
+        if(isCorrect) results.summary.correct++;
+        results.phrases.push({ expected: item.text, given: state.dicteePhrases[i]||'', correct: isCorrect, wordErrors });
+    });
+
+    return results;
+}
+
+function classifySpellingErrors(expected, given) {
+    const errors = [];
+    if(hasTransposition(expected, given)) errors.push('inversion de lettres');
+    if(given.length < expected.length) errors.push(`omission (${expected.length - given.length} lettre(s))`);
+    if(given.length > expected.length) errors.push(`addition (${given.length - expected.length} lettre(s))`);
+    const subs = countSubstitutions(expected, given);
+    if(subs > 0) errors.push(`substitution (${subs})`);
+    if(isPhonologicallyPlausible(expected, given)) {
+        errors.push('→ phonologiquement plausible (voie d\'assemblage OK)');
+    } else if(errors.length > 0) {
+        errors.push('→ phonologiquement implausible');
+    }
+    return errors;
+}
+
+function hasTransposition(a, b) {
+    if(Math.abs(a.length - b.length) > 1) return false;
+    for(let i=0; i<Math.min(a.length, b.length)-1; i++) {
+        if(a[i] === b[i+1] && a[i+1] === b[i] && a.slice(0,i) === b.slice(0,i)) return true;
+    }
+    return false;
+}
+
+function countSubstitutions(a, b) {
+    let count = 0;
+    const len = Math.min(a.length, b.length);
+    for(let i=0; i<len; i++) { if(a[i] !== b[i]) count++; }
+    return count;
+}
+
+function normalize(s) {
+    return (s||'').toLowerCase().trim().replace(/\s+/g,'-');
+}
+
+// ============================================================
+//  COMPUTE SCORES
+// ============================================================
+function computeScores() {
+    const scores = {};
+    const regAll = getAllWords(regularWords);
+    const irrAll = getAllWords(irregularWords);
+    const pseAll = getAllWords(pseudoWords);
+    const regErrors = Object.keys(state.regularErrors).length;
+    const irrErrors = Object.keys(state.irregularErrors).length;
+    const pseErrors = Object.keys(state.pseudoErrors).length;
+
+    scores.regular = { correct: regAll.length - regErrors, total: regAll.length, pct: ((regAll.length - regErrors)/regAll.length)*100, time: state.timers.regular, errors: state.regularErrors, words: regAll };
+    scores.irregular = { correct: irrAll.length - irrErrors, total: irrAll.length, pct: ((irrAll.length - irrErrors)/irrAll.length)*100, time: state.timers.irregular, errors: state.irregularErrors, words: irrAll };
+    scores.pseudo = { correct: pseAll.length - pseErrors, total: pseAll.length, pct: ((pseAll.length - pseErrors)/pseAll.length)*100, time: state.timers.pseudo, errors: state.pseudoErrors, words: pseAll };
+
+    scores.ran = { time: state.timers.ran, errors: state.ranErrors };
+
+    let phonoCorrect = 0;
+    phonoQuestions.forEach((q, i) => { if(state.phono[i] === q.correct) phonoCorrect++; });
+    scores.phono = { correct: phonoCorrect, total: phonoQuestions.length, pct: (phonoCorrect/phonoQuestions.length)*100 };
+    const phonoCats = {};
+    phonoQuestions.forEach((q, i) => {
+        if(!phonoCats[q.cat]) phonoCats[q.cat] = {correct:0,total:0};
+        phonoCats[q.cat].total++;
+        if(state.phono[i] === q.correct) phonoCats[q.cat].correct++;
+    });
+    scores.phonoCats = phonoCats;
+
+    scores.dictee = analyzeDictee();
+
+    const fluenceWords = fluenceText.split(/\s+/);
+    const wordsRead = state.fluenceLastWord >= 0 ? state.fluenceLastWord + 1 : 0;
+    const fluenceErrorCount = state.fluenceErrors.length;
+    const mclm = wordsRead - fluenceErrorCount;
+    const fluenceTimeSec = state.timers.fluence / 1000;
+    const mclmPerMin = fluenceTimeSec > 0 ? Math.round((mclm / fluenceTimeSec) * 60) : 0;
+    scores.fluence = { wordsRead, errors: fluenceErrorCount, mclm, mclmPerMin, time: state.timers.fluence };
+
+    let compCorrect = 0, compTotal = 0;
+    let compByType = { explicite:{c:0,t:0}, 'inférentielle':{c:0,t:0}, vocabulaire:{c:0,t:0} };
+    let qIdx = 0;
+    compTexts.forEach(t => {
+        t.questions.forEach(q => {
+            compTotal++;
+            compByType[q.type].t++;
+            if(state.comprehension[qIdx] === q.correct) {
+                compCorrect++;
+                compByType[q.type].c++;
+            }
+            qIdx++;
+        });
+    });
+    scores.comp = { correct: compCorrect, total: compTotal, pct: (compCorrect/compTotal)*100, byType: compByType };
+
+    let fwdCorrect = 0, fwdMaxSpan = 0;
+    memoryForward.forEach((m, i) => {
+        if(state.memForward[i] && normalize(state.memForward[i]) === normalize(m.seq)) {
+            fwdCorrect++;
+            fwdMaxSpan = m.seq.split('-').length;
+        }
+    });
+    let bwdCorrect = 0, bwdMaxSpan = 0;
+    memoryBackward.forEach((m, i) => {
+        if(state.memBackward[i] && normalize(state.memBackward[i]) === normalize(m.answer)) {
+            bwdCorrect++;
+            bwdMaxSpan = m.answer.split('-').length;
+        }
+    });
+    let wordsMemCorrect = 0;
+    memoryWords.forEach((m, i) => {
+        if(state.memWords[i] && normalize(state.memWords[i]) === normalize(m.seq)) wordsMemCorrect++;
+    });
+    scores.memory = {
+        fwd: { correct: fwdCorrect, total: memoryForward.length, maxSpan: fwdMaxSpan },
+        bwd: { correct: bwdCorrect, total: memoryBackward.length, maxSpan: bwdMaxSpan },
+        words: { correct: wordsMemCorrect, total: memoryWords.length },
+        pctFwd: (fwdCorrect / memoryForward.length) * 100,
+        pctBwd: (bwdCorrect / memoryBackward.length) * 100,
+        pctAll: ((fwdCorrect + bwdCorrect + wordsMemCorrect) / (memoryForward.length + memoryBackward.length + memoryWords.length)) * 100
+    };
+
+    let evaCorrect = 0, evaMaxSpan = 0;
+    evaSequences.forEach((e, i) => {
+        const expected = e.letters.replace(/\s+/g,'').toLowerCase().split('');
+        const given = (state.eva[i]||'').replace(/\s+/g,'').toLowerCase().split('');
+        let found = 0;
+        const givenCopy = [...given];
+        expected.forEach(l => {
+            const idx = givenCopy.indexOf(l);
+            if(idx >= 0) { found++; givenCopy.splice(idx,1); }
+        });
+        if(found === expected.length) { evaCorrect++; evaMaxSpan = expected.length; }
+    });
+    scores.eva = { correct: evaCorrect, total: evaSequences.length, maxSpan: evaMaxSpan, pct: (evaCorrect/evaSequences.length)*100 };
+
+    return scores;
+}
+
+// ============================================================
+//  PROFILING v3 — with exercises protocols
+// ============================================================
+function buildProfiles(s) {
+    const profiles = [];
+    const pseudoPct = s.pseudo.pct;
+    const irregPct = s.irregular.pct;
+    const regPct = s.regular.pct;
+    const phonoPct = s.phono.pct;
+    const dicteePct = (s.dictee.summary.correct / s.dictee.summary.total) * 100;
+    const compPct = s.comp.pct;
+    const memPct = s.memory.pctAll;
+    const evaPct = s.eva.pct;
+    const fwdSpan = s.memory.fwd.maxSpan;
+    const bwdSpan = s.memory.bwd.maxSpan;
+    const ranSec = s.ran.time > 0 ? s.ran.time/1000 : 0;
+
+    // ========== Dyslexie mixte ==========
+    if(pseudoPct < 70 && irregPct < 70 && regPct < 70) {
+        profiles.push({
+            name:'Dyslexie mixte (probable)',
+            description:'Difficultés combinées touchant le décodage (voie phonologique) ET la reconnaissance globale (voie lexicale). Profil le plus sévère nécessitant une prise en charge intensive.',
+            risk:'TRÈS ÉLEVÉ', riskClass:'risk-very-high',
+            recommendations:[
+                'Bilan orthophonique à programmer en priorité — imprimer ces résultats pour le rendez-vous',
+                'Demander un Plan d\'Accompagnement Personnalisé (PAP) à l\'école',
+                'Adaptations pédagogiques : temps supplémentaire (+⅓), textes aérés (interligne 1.5+, espacement lettres +2.5pt), police sans-serif (Verdana, Lexie Readable, Luciole)',
+                'Outils numériques de compensation : synthèse vocale, dictée vocale, Lexibar (prédiction orthographique)',
+                'Soutien psychologique si baisse d\'estime de soi'
+            ],
+            exercises: buildExoMixte(),
+            rti: 'Si aucune amélioration visible après 8 semaines d\'exercices quotidiens → consultation neuropédiatrique. Ne pas attendre le bilan orthophonique pour commencer les exercices à la maison.'
+        });
+    }
+
+    // ========== Dyslexie phonologique ==========
+    if(pseudoPct < 70 || (phonoPct < 65 && pseudoPct < 80)) {
+        if(!profiles.find(p => p.name.includes('mixte'))) {
+            profiles.push({
+                name:'Dyslexie phonologique (probable)',
+                description:'Difficultés de décodage : la conversion graphème-phonème est altérée. L\'enfant peine à lire les mots nouveaux mais peut reconnaître des mots familiers.',
+                risk:'ÉLEVÉ', riskClass:'risk-high',
+                recommendations:[
+                    'Bilan orthophonique à programmer — imprimer ces résultats pour le rendez-vous',
+                    'Travailler la conscience phonologique quotidiennement (15 min/jour)',
+                    'Exercices de décodage syllabique progressif (méthode multisensorielle)',
+                    'Supports audio pour tous les apprentissages scolaires (manuels audio, podcasts éducatifs)',
+                    'Adapter les évaluations scolaires : éviter les dictées non préparées, autoriser l\'oral'
+                ],
+                exercises: buildExoPhono(),
+                rti: 'Protocole 12 semaines : exercices phonologiques 15 min/jour, 5 jours/semaine. Réévaluer la fluence après 6 semaines. Si pas de progrès → bilan orthophonique urgent.'
+            });
+        }
+    }
+
+    // ========== Dyslexie de surface ==========
+    if(irregPct < 70 && pseudoPct >= 70) {
+        profiles.push({
+            name:'Dyslexie de surface (probable)',
+            description:'Le décodage fonctionne mais la voie lexicale (reconnaissance globale) est déficiente. L\'enfant lit lentement, syllabe par syllabe, et peine avec les mots irréguliers.',
+            risk:'ÉLEVÉ', riskClass:'risk-high',
+            recommendations:[
+                'Bilan orthophonique à programmer — travail sur la voie lexicale',
+                'Constituer un répertoire visuel de mots fréquents (méthode Borel-Maisonny adaptée)',
+                'Lecture répétée des mêmes textes pour automatiser la reconnaissance',
+                'Utiliser l\'orthographe illustrée (dessiner le sens dans la forme du mot — approche Valdois)',
+                'Flashcards quotidiennes de mots irréguliers fréquents'
+            ],
+            exercises: buildExoSurface(),
+            rti: 'Protocole 12 semaines : 20 min/jour de lecture répétée + flashcards. Objectif mesurable : gain de 10+ MCLM en fluence après 6 semaines.'
+        });
+    }
+
+    // ========== Déficit EVA ==========
+    if(evaPct < 50 || s.eva.maxSpan < 4) {
+        profiles.push({
+            name:'Déficit de l\'empan visuo-attentionnel',
+            description:'L\'enfant ne peut traiter qu\'un nombre réduit de lettres simultanément, ce qui ralentit la lecture globale. Souvent associé à la dyslexie de surface (modèle de Bosse & Valdois).',
+            risk:'ÉLEVÉ', riskClass:'risk-high',
+            recommendations:[
+                'Mentionner ce résultat lors du bilan orthophonique — c\'est un marqueur important',
+                'Travailler l\'attention visuelle et l\'empan de lettres quotidiennement',
+                'Exercices de lecture flash (mots affichés brièvement) avec durée décroissante',
+                'Jeux de repérage visuel (différences, labyrinthes, Cherche et Trouve)'
+            ],
+            exercises: buildExoEVA(),
+            rti: 'Suivi hebdomadaire : noter le nombre de lettres retenues à chaque séance flash. Objectif : gagner 1 lettre d\'empan en 6 semaines.'
+        });
+    }
+
+    // ========== Déficit RAN isolé (NOUVEAU) ==========
+    if(ranSec > 40 && pseudoPct >= 70 && phonoPct >= 65) {
+        profiles.push({
+            name:'Déficit de dénomination rapide isolé',
+            description:'La vitesse de dénomination automatisée est ralentie malgré des compétences phonologiques préservées. Ce profil (Wolf & Bowers) affecte principalement la fluence de lecture et l\'automatisation.',
+            risk:'MOYEN', riskClass:'risk-medium',
+            recommendations:[
+                'Mentionner ce résultat au bilan orthophonique',
+                'Entraînement quotidien à la dénomination rapide (10 min/jour)',
+                'Lecture chronométrée avec objectifs progressifs (sans pression)',
+                'Exercices de fluence verbale quotidiens'
+            ],
+            exercises: buildExoRAN(),
+            rti: 'Protocole 8 semaines : dénomination rapide 10 min/jour. Objectif : réduire le temps de 20% sur la grille RAN.'
+        });
+    }
+
+    // ========== Double déficit (phono + RAN) ==========
+    if((pseudoPct < 70 || phonoPct < 65) && ranSec > 40) {
+        profiles.push({
+            name:'Double déficit (phonologie + dénomination)',
+            description:'Combinaison d\'un déficit phonologique et d\'une lenteur de dénomination rapide. Selon Wolf & Bowers, c\'est le profil le plus résistant à la rééducation et nécessite une approche combinée intensive.',
+            risk:'TRÈS ÉLEVÉ', riskClass:'risk-very-high',
+            recommendations:[
+                'Rééducation orthophonique intensive combinant phonologie ET fluence — priorité absolue',
+                'Consultation neuropédiatrique recommandée',
+                'Aménagements scolaires indispensables (PAP ou PPS)',
+                'Combiner exercices phonologiques + dénomination rapide + lecture répétée'
+            ],
+            exercises: buildExoDoubleDef(),
+            rti: 'Ce profil nécessite une rééducation professionnelle. Les exercices maison sont un complément, pas un substitut. Si le bilan orthophonique est dans plus de 3 mois, envisager un suivi en libéral.'
+        });
+    }
+
+    // ========== Dysorthographie ==========
+    if(dicteePct < 55) {
+        const phonoPlausibleDominant = s.dictee.summary.phonoPlausible > s.dictee.summary.phonoImplausible;
+        profiles.push({
+            name:'Dysorthographie',
+            description:`Difficultés importantes en orthographe. ${phonoPlausibleDominant ? 'Les erreurs sont majoritairement phonologiquement plausibles → la voie phonologique fonctionne mais le stock orthographique est insuffisant (déficit lexical).' : 'Erreurs phonologiquement implausibles → atteinte de la voie phonologique en écriture.'}${s.dictee.summary.morpho > 0 ? ' Des erreurs morphosyntaxiques (accords) ont aussi été détectées.' : ''}`,
+            risk: pseudoPct < 70 || irregPct < 70 ? 'ÉLEVÉ' : 'MOYEN',
+            riskClass: pseudoPct < 70 || irregPct < 70 ? 'risk-high' : 'risk-medium',
+            recommendations:[
+                'Rééducation orthophonique ciblée sur l\'orthographe (à mentionner au RDV)',
+                'Dictées préparées et ciblées uniquement (jamais de dictées pièges ou non préparées)',
+                'Correcteur orthographique autorisé en classe (Lexibar, Lire Couleur)',
+                'Ne pas pénaliser l\'orthographe dans les autres matières (SVT, histoire, etc.)',
+                'Valoriser le contenu et les idées plutôt que la forme'
+            ],
+            exercises: buildExoOrtho(phonoPlausibleDominant),
+            rti: 'Protocole 12 semaines : 5 mots nouveaux par semaine appris visuellement + dictée préparée hebdomadaire. Objectif : 80% de réussite sur les mots travaillés.'
+        });
+    }
+
+    // ========== Compréhension isolée ==========
+    if(compPct < 55 && regPct >= 70) {
+        profiles.push({
+            name:'Difficultés de compréhension de lecture',
+            description:`La lecture technique est correcte mais la compréhension pose problème. ${s.comp.byType['inférentielle'].c < s.comp.byType['inférentielle'].t/2 ? 'Les inférences sont particulièrement difficiles — l\'enfant a du mal à "lire entre les lignes".' : ''} ${s.comp.byType.vocabulaire.c < s.comp.byType.vocabulaire.t/2 ? 'Le vocabulaire en contexte est fragile.' : ''}`,
+            risk:'MOYEN', riskClass:'risk-medium',
+            recommendations:[
+                'Évaluer le vocabulaire et les connaissances générales en profondeur',
+                'Vérifier l\'attention/concentration (un déficit attentionnel peut mimer un trouble de compréhension)',
+                'Bilan orthophonique pour exclure un trouble du langage oral',
+                'Utiliser la méthode Lector & Lectrix (Goigoux & Cèbe) — référence française en compréhension'
+            ],
+            exercises: buildExoComprehension(),
+            rti: 'Protocole 12 semaines : 1 texte par jour avec questions guidées. Objectif : l\'enfant sait résumer un texte de 10 lignes en 3 phrases après 6 semaines.'
+        });
+    }
+
+    // ========== Mémoire de travail faible ==========
+    if(memPct < 50 || (fwdSpan < 4 || bwdSpan < 2)) {
+        profiles.push({
+            name:'Faiblesse de la mémoire de travail',
+            description:`${bwdSpan < 3 ? 'L\'empan envers est particulièrement faible, indiquant une difficulté de manipulation en mémoire de travail (composante exécutive centrale, modèle de Baddeley).' : 'Difficultés à retenir des informations temporairement.'} Cela affecte la compréhension de phrases longues, le calcul mental et la prise de notes.`,
+            risk:'MOYEN', riskClass:'risk-medium',
+            recommendations:[
+                'Fractionner les consignes en étapes courtes et numérotées',
+                'Répéter et reformuler les instructions — demander à l\'enfant de reformuler',
+                'Supports visuels systématiques (check-lists, schémas, codes couleur)',
+                'Bilan neuropsychologique si les difficultés persistent après 12 semaines',
+                'Vérifier la compréhension régulièrement'
+            ],
+            exercises: buildExoMemoire(),
+            rti: 'Protocole 8 semaines : jeux de mémoire 10 min/jour. Objectif : gagner 1 point d\'empan (endroit et/ou envers) après 8 semaines.'
+        });
+    }
+
+    // ========== Fluence faible isolée ==========
+    if(s.fluence.mclmPerMin > 0 && s.fluence.mclmPerMin < 70 && regPct >= 70) {
+        profiles.push({
+            name:'Déficit de fluence de lecture',
+            description:'La précision de lecture est correcte mais la vitesse est insuffisante. L\'automatisation de la lecture n\'est pas acquise, ce qui surcharge la mémoire de travail et gêne la compréhension des textes longs.',
+            risk:'MOYEN', riskClass:'risk-medium',
+            recommendations:[
+                'Méthode de la fluence (lecture répétée) — 15 min/jour',
+                'Lecture à deux voix (parent lit une phrase, enfant lit la suivante)',
+                'Chronomètre sans pression pour suivre la progression semaine par semaine',
+                'Textes adaptés au niveau de l\'enfant (ni trop faciles, ni trop durs — zone proximale de développement)'
+            ],
+            exercises: buildExoFluence(),
+            rti: 'Protocole 12 semaines : lecture répétée 15 min/jour. Mesurer le MCLM chaque vendredi sur un texte nouveau. Objectif : +3-5 MCLM/semaine.'
+        });
+    }
+
+    return profiles;
+}
+
+// ============================================================
+//  EXERCICE BUILDERS — précis, ludiques, evidence-based
+// ============================================================
+
+function buildExoPhono() {
+    return [
+        { title:'🎵 Chasse aux rimes (5 min/jour)', desc:'Jeu oral : « Je dis un mot, tu trouves 3 mots qui riment ». Commencer par des rimes simples (chat → rat, plat, bras), puis complexes (maison → poisson, raison, saison). Variante compétitive : qui trouve le plus de rimes en 1 minute ?', tags:['fun','evidence','daily'] },
+        { title:'🔨 Atelier des syllabes (5 min/jour)', desc:'Taper dans les mains pour chaque syllabe. Étape 1 : mots simples (ba-teau → 2 tapes). Étape 2 : supprimer une syllabe (« dis chocolat sans cho → colat »). Étape 3 : inverser les syllabes (ba-teau → teau-ba). Utiliser des cubes de couleur pour visualiser.', tags:['fun','evidence','daily'] },
+        { title:'🎮 Discrimination auditive sons proches (5 min, 3×/sem)', desc:'Préparer des paires de mots : pain/bain, font/vont, chou/joue, deux/queue. L\'enfant ferme les yeux et dit « pareil » ou « différent ». Progresser vers des pseudo-mots : bra/pra, dou/tou. Tenir un score et montrer la progression.', tags:['fun','evidence'] },
+        { title:'🧩 Fusion de phonèmes — jeu du robot (5 min/jour)', desc:'Le parent parle « comme un robot » en séparant les sons : /m/ - /a/ - /r/ - /i/. L\'enfant doit deviner le mot (mari). Commencer avec 2 sons, monter à 5. Inverser les rôles : l\'enfant fait le robot, le parent devine.', tags:['fun','evidence','daily'] },
+        { title:'📱 GraphoLearn (10 min, 4×/sem)', desc:'Application gratuite validée scientifiquement (Université de Jyväskylä). Entraînement au décodage graphème-phonème adaptatif. L\'enfant joue à son rythme, le niveau s\'ajuste automatiquement. Disponible sur tablette et téléphone.', tags:['tool','evidence'] },
+        { title:'🎨 Codage couleur des syllabes (pendant lecture)', desc:'Avec des surligneurs, colorier chaque syllabe d\'une couleur différente dans un texte court. Ex : « cho-co-lat » → rouge-bleu-vert. L\'enfant lit ensuite le texte coloré. Extension gratuite Lire Couleur pour LibreOffice fait ça automatiquement.', tags:['tool','evidence'] },
+    ];
+}
+
+function buildExoSurface() {
+    return [
+        { title:'📸 Flashcards mots irréguliers (10 min/jour)', desc:'5 nouveaux mots par semaine. Lundi : découvrir les mots, les écrire 3 fois. Mardi-jeudi : flash de 2 secondes, l\'enfant lit. Vendredi : mini-dictée des 5 mots. Garder les mots ratés pour la semaine suivante. Commencer par les 50 mots les plus fréquents : femme, monsieur, sept, fils, pays...', tags:['evidence','daily'] },
+        { title:'🎨 Orthographe illustrée (3 mots/semaine)', desc:'Méthode Valdois : dessiner la particularité du mot DANS le mot. Ex : le « o » de monsieur devient un visage, le « y » de pays devient un arbre. L\'enfant crée ses propres illustrations. Coller les dessins au mur comme galerie d\'art.', tags:['fun','evidence'] },
+        { title:'📖 Lecture répétée assistée (15 min/jour)', desc:'Choisir un texte de 100 mots au niveau de l\'enfant. Jour 1 : l\'enfant écoute le parent lire (modèle audio). Jour 2 : lecture à deux voix (ensemble). Jour 3 : l\'enfant lit seul, chronométré. Jour 4 : relecture pour battre son record. Nouveau texte tous les 4 jours.', tags:['evidence','daily'] },
+        { title:'🃏 Jeu du Memory orthographique (10 min, 3×/sem)', desc:'Créer des paires de cartes : écrire le mot en toutes lettres sur une carte, un dessin sur l\'autre. L\'enfant retourne les cartes et associe mot + image. Variante avancée : 2 cartes avec 2 orthographes (la bonne + un piège). L\'enfant garde la bonne.', tags:['fun'] },
+        { title:'⚡ Lecture flash progressive (5 min/jour)', desc:'Écrire un mot sur un carton. Le montrer 3 secondes → l\'enfant lit. Puis 2 secondes → 1 seconde → 0.5 seconde. Quand il réussit à 0.5s, le mot est « gagné ». Faire un compteur de mots gagnés visible dans la chambre.', tags:['fun','daily'] },
+        { title:'📱 Extension Lire Couleur (pendant les devoirs)', desc:'Extension gratuite pour LibreOffice. Colorie automatiquement les syllabes, marque les lettres muettes en gris, surligne les sons complexes. Idéal pour adapter n\'importe quel texte scolaire. Ne pas l\'utiliser comme béquille permanente — l\'objectif est de s\'en passer progressivement.', tags:['tool','evidence'] },
+    ];
+}
+
+function buildExoMixte() {
+    return [
+        { title:'🔑 Méthode multisensorielle VAKT (15 min/jour)', desc:'Voir-Audition-Kinesthésie-Toucher. Pour chaque nouveau mot : 1) VOIR le mot écrit en grand. 2) ENTENDRE le parent le prononcer syllabe par syllabe. 3) ÉCRIRE le mot en l\'air avec le doigt en disant les sons. 4) TOUCHER des lettres en relief (carton, sable, pâte à modeler). C\'est le protocole Orton-Gillingham adapté au français.', tags:['evidence','daily'] },
+        { title:'📱 GraphoLearn (10 min/jour)', desc:'Application gratuite d\'entraînement au décodage, validée scientifiquement. Niveau adaptatif automatique. Compléter par les exercices manuels, pas en substitut.', tags:['tool','evidence','daily'] },
+        { title:'🎧 Audio-livres + suivi du texte (20 min/jour)', desc:'L\'enfant écoute ET suit le texte avec le doigt simultanément. Cela crée le lien entre forme visuelle et forme sonore du mot. Bibliothèque gratuite : Audiocité, Littérature Audio. Commencer par des textes courts et motivants (BD lues, contes).', tags:['fun','evidence','daily'] },
+        { title:'🧩 Jeu de segmentation couleur (10 min, 3×/sem)', desc:'Imprimer un texte simple. L\'enfant colorie chaque syllabe d\'une couleur avec des surligneurs. Puis relire le texte coloré 3 fois. Semaine suivante : colorier soi-même, sans modèle.', tags:['fun','evidence'] },
+        { title:'📖 Lecture partagée quotidienne (15 min)', desc:'Le parent lit une phrase, l\'enfant lit la suivante. Quand l\'enfant bloque, le parent donne le mot sans commentaire et on continue. Objectif : maintenir le plaisir de lire malgré les difficultés. Choisir des livres que l\'enfant VEUT lire (BD, manga, magazines, livres sur ses passions).', tags:['fun','daily'] },
+        { title:'🎮 Scrabble Junior / Bananagrams (2×/sem)', desc:'Jeux de plateau avec manipulation physique des lettres. Le toucher + la vue renforcent la mémoire orthographique. Pas de compétition avec les adultes — jouer en équipe parent+enfant ou adapter les règles.', tags:['fun'] },
+    ];
+}
+
+function buildExoEVA() {
+    return [
+        { title:'⚡ Flash de lettres progressif (5 min/jour)', desc:'Écrire 3 lettres sur un carton (ex: R T M). Montrer 1 seconde, cacher. L\'enfant récite. Quand 3/3 réussi 3 fois de suite → passer à 4 lettres, puis 5, puis 6. Durée d\'exposition : 1s → 500ms → 300ms. Tenir un journal de progression.', tags:['evidence','daily'] },
+        { title:'👁️ Lecture flash de mots (5 min/jour)', desc:'Même principe mais avec des mots entiers. Flasher « chat » (facile) → « maison » → « bibliothèque » (difficile). Objectif : lire le mot ENTIER sans décomposer en syllabes. Chronomètre visible pour l\'enfant — il doit battre son record.', tags:['evidence','daily'] },
+        { title:'🎮 Jeu de Kim visuel (10 min, 3×/sem)', desc:'Placer 5 objets sur la table. L\'enfant regarde 10 secondes. Couvrir. Retirer 1 objet. L\'enfant devine lequel manque. Augmenter : 6 objets → 7 → 8. Variante lettres : idem avec des lettres magnétiques sur le frigo.', tags:['fun'] },
+        { title:'🔍 Cherche & Trouve ciblé (10 min, 3×/sem)', desc:'Dans un livre de type « Cherche et Trouve » ou dans un journal, l\'enfant doit trouver et entourer tous les « e » en 30 secondes. Puis tous les « b » et « d » (discrimination). Puis des mots entiers cachés dans un texte.', tags:['fun'] },
+        { title:'📱 Exercice maison : grilles de lettres', desc:'Créer des grilles 4×4, 5×5, 6×6 avec des lettres aléatoires. L\'enfant doit retrouver un mot caché (horizontalement). Commencer avec 1 mot facile dans une grille 4×4, progresser vers 3 mots dans une grille 6×6.', tags:['fun'] },
+    ];
+}
+
+function buildExoRAN() {
+    return [
+        { title:'🏎️ Dénomination rapide couleurs (5 min/jour)', desc:'Grille de 25 pastilles de couleur (5×5). L\'enfant nomme chaque couleur le plus vite possible, chronométré. Objectif : battre son record de la veille. Commencer à 3 couleurs, monter à 5.', tags:['evidence','daily'] },
+        { title:'🔤 Dénomination rapide lettres/chiffres (5 min/jour)', desc:'Même principe avec des grilles de lettres ou de chiffres. Alterner un jour sur deux : lundi lettres, mardi chiffres, mercredi couleurs, etc. C\'est l\'entraînement RAN/RAS classique de Wolf & Denckla.', tags:['evidence','daily'] },
+        { title:'🖼️ Dénomination rapide objets (5 min, 3×/sem)', desc:'Grille de 25 images d\'objets courants (pomme, voiture, maison, soleil, livre). L\'enfant nomme chaque objet le plus vite possible. Variante : nommer la catégorie (fruit, véhicule, bâtiment...).', tags:['fun','evidence'] },
+        { title:'🎤 Fluence verbale catégorielle (5 min/jour)', desc:'« Dis-moi le maximum d\'animaux en 1 minute ! » Puis : fruits, métiers, pays, choses qu\'on trouve dans une cuisine... Tenir un score hebdomadaire. L\'objectif est de fluidifier l\'accès au lexique mental.', tags:['fun','evidence','daily'] },
+    ];
+}
+
+function buildExoDoubleDef() {
+    return [
+        { title:'🔨 Combo phono + vitesse (15 min/jour)', desc:'Diviser la séance en 2 : 8 min de conscience phonologique (fusion, segmentation, rimes — voir exercices dyslexie phonologique) + 7 min de dénomination rapide chronométrée (voir exercices RAN). Ne JAMAIS sacrifier la partie phono pour la vitesse — les deux sont indispensables.', tags:['evidence','daily'] },
+        { title:'📖 Lecture répétée chronométrée (15 min/jour)', desc:'Texte de 80-100 mots. Lecture 1 : chronométrée (résultat noté). Lectures 2-3 : relecture. Lecture 4 : chronométrée (nouveau résultat). L\'enfant voit concrètement sa progression. Nouveau texte tous les 3 jours.', tags:['evidence','daily'] },
+        { title:'📱 GraphoLearn + Dénomination rapide', desc:'10 min de GraphoLearn (décodage) puis 5 min de dénomination rapide manuelle. L\'appli travaille la voie phonologique, l\'exercice manuel travaille la vitesse d\'accès. C\'est l\'approche combinée recommandée par la recherche.', tags:['tool','evidence','daily'] },
+        { title:'🎮 Course de mots (10 min, 3×/sem)', desc:'Écrire 20 mots sur des cartons. Mélanger. L\'enfant retourne une carte et lit le plus vite possible. S\'il met plus de 3 secondes, la carte retourne dans la pile. Quand toutes les cartes sont lues en moins de 3s chacune, ajouter 10 mots.', tags:['fun'] },
+        { title:'🎧 Écoute + suivi du doigt (15 min/jour)', desc:'Audio-livre avec le texte sous les yeux. L\'enfant suit chaque mot avec le doigt pendant qu\'il écoute. Cela synchronise vitesse de traitement + décodage. Progresser en augmentant la vitesse de lecture (×1.1, ×1.2).', tags:['fun','evidence','daily'] },
+    ];
+}
+
+function buildExoOrtho(phonoPlausible) {
+    const base = [
+        { title:'📷 Photographie de mots (10 min/jour)', desc:'5 mots par semaine. Lundi : observer le mot 10 secondes, fermer les yeux, le visualiser mentalement, l\'écrire. Mardi : même chose de mémoire. Mercredi-jeudi : dictée flash (le parent dit le mot, l\'enfant écrit en 5 secondes max). Vendredi : dictée des 5 mots.', tags:['evidence','daily'] },
+        { title:'🏠 Familles morphologiques (10 min, 3×/sem)', desc:'Un mot racine → tous ses dérivés. Ex : terre → terrasse, terrain, enterrer, souterrain, atterrir. L\'enfant découvre que connaître la racine aide à écrire toute la famille. Faire un arbre généalogique de mots à afficher.', tags:['fun','evidence'] },
+        { title:'✍️ Dictée préparée (15 min, 2×/sem)', desc:'Lundi : découvrir les 5 mots de la semaine + les étudier. Mercredi : dictée à trous (l\'enfant complète les mots manquants). Vendredi : dictée complète. Corriger AVEC l\'enfant en expliquant chaque erreur. Jamais de note — juste un score de progression.', tags:['evidence'] },
+    ];
+    if(phonoPlausible) {
+        base.push({ title:'📚 Stock orthographique — mots fréquents', desc:'L\'enfant sait encoder les sons (farmacie pour pharmacie) mais pas la bonne orthographe. Se concentrer sur les 200 mots les plus fréquents du français (liste Dubois-Buyse). 5 mots/semaine pendant 40 semaines = toute la liste.', tags:['evidence','daily'] });
+        base.push({ title:'🎨 Orthographe illustrée', desc:'Dessiner la difficulté DANS le mot : le « ph » de pharmacie devient un stéthoscope. Le « eau » de bateau devient des vagues. L\'enfant crée ses propres visuels → meilleure mémorisation que la copie répétitive.', tags:['fun','evidence'] });
+    } else {
+        base.push({ title:'🔊 Renforcement phonologique écrit', desc:'L\'enfant n\'encode pas correctement les sons à l\'écrit. Travailler les correspondances graphème-phonème en écriture : le parent dicte un son, l\'enfant écrit TOUTES les façons possibles de l\'écrire (ex : /o/ → o, au, eau). Puis : « lequel pour ce mot ? »', tags:['evidence','daily'] });
+    }
+    base.push({ title:'🎮 Scrabble / Mots croisés adaptés (15 min, 2×/sem)', desc:'Scrabble Junior : manipulation physique des lettres. Mots croisés : la définition force à chercher le bon mot ET la bonne orthographe. Mots fléchés du journal : niveau adapté CM1/CM2. Le jeu supprime la pression de la dictée.', tags:['fun'] });
+    base.push({ title:'✏️ Auto-correction guidée', desc:'Après chaque dictée, l\'enfant relit avec une grille de vérification : 1) J\'ai mis les majuscules ? 2) Les mots en -s sont au pluriel ? 3) Les verbes sont accordés avec le sujet ? 4) Les mots irréguliers sont corrects ? (les chercher dans la liste). Cette grille développe l\'autonomie.', tags:['evidence'] });
+    return base;
+}
+
+function buildExoComprehension() {
+    return [
+        { title:'🎭 Méthode Lector & Lectrix (15 min/jour)', desc:'Référence française (Goigoux & Cèbe). Avant la lecture : « De quoi va parler ce texte d\'après le titre ? » Pendant : s\'arrêter toutes les 3 phrases — « Que s\'est-il passé ? Que va-t-il se passer ? ». Après : résumer en 3 phrases. L\'enfant se fabrique un « film mental » du texte.', tags:['evidence','daily'] },
+        { title:'🔍 Chasse aux inférences (10 min, 3×/sem)', desc:'Lire une phrase et poser une question dont la réponse n\'est PAS écrite explicitement. Ex : « Marie met son parapluie dans son sac. » → « Quel temps fait-il ? ». Commencer facile, progresser vers des inférences complexes. L\'enfant justifie sa réponse : « Comment tu le sais ? »', tags:['fun','evidence'] },
+        { title:'📝 Résumé oral en 3 temps (5 min/jour)', desc:'Après chaque lecture (devoirs ou plaisir), l\'enfant raconte en 3 phrases : 1) Au début... 2) Ensuite... 3) À la fin... Si c\'est un texte informatif : 1) Le sujet est... 2) On apprend que... 3) Le plus important c\'est... Aucun écrit — juste de l\'oral.', tags:['fun','daily'] },
+        { title:'📖 Vocabulaire en contexte (5 min/jour)', desc:'À chaque lecture, l\'enfant souligne 1-2 mots qu\'il ne connaît pas. Ensemble, deviner le sens par le contexte AVANT de chercher la définition. Créer un « carnet de mots » personnel avec le mot + le contexte + le sens. Objectif : 5 mots nouveaux par semaine.', tags:['evidence','daily'] },
+        { title:'🗣️ Connecteurs logiques — jeu oral (5 min, 3×/sem)', desc:'Le parent commence une phrase avec un connecteur, l\'enfant finit : « Parce que... », « Pourtant... », « Donc... », « Même si... ». Variante : l\'enfant relie deux phrases avec le bon connecteur. Les connecteurs sont la clé des inférences.', tags:['fun','evidence'] },
+    ];
+}
+
+function buildExoMemoire() {
+    return [
+        { title:'🃏 Jeu de Kim progressif (10 min, 4×/sem)', desc:'Placer 5 objets. L\'enfant regarde 15s. Couvrir. Il nomme les objets de mémoire. Quand 5/5 réussi → 6 objets → 7 → 8. Variante auditive : dire une liste de mots (pas d\'objets visibles). Variante mixte : 3 objets + 2 mots entendus.', tags:['fun','evidence'] },
+        { title:'🧮 Empan progressif — jeu de chiffres (5 min/jour)', desc:'Le parent dit 2 chiffres, l\'enfant répète. Puis 3, puis 4... Quand l\'enfant échoue 2 fois, on reste à ce niveau pendant 3 jours. Variante envers : répéter à l\'envers. Variante saut : ne répéter qu\'un chiffre sur deux (3-7-2-5 → 3-2).', tags:['evidence','daily'] },
+        { title:'📋 Consigne en étapes (intégré aux devoirs)', desc:'Au lieu de dire « Fais tes maths puis range ton cahier et prépare ton cartable », dire : « Étape 1 : maths. Étape 2 : ranger le cahier. Étape 3 : cartable. » L\'enfant répète les 3 étapes AVANT de commencer. Augmenter le nombre d\'étapes progressivement.', tags:['daily'] },
+        { title:'🎵 Comptines et chansons à gestes (5 min, 3×/sem)', desc:'Apprendre des comptines avec des gestes associés (tête-épaules-genoux-pieds). Le double encodage verbal + moteur renforce la mémoire de travail. Progresser vers des comptines plus longues. Chansons en anglais pour bonus bilingue.', tags:['fun'] },
+        { title:'🎮 Memory / 7 Familles (15 min, 2×/sem)', desc:'Jeu de Memory classique : commence à 6 paires → 8 → 10 → 12. 7 Familles : l\'enfant doit se rappeler qui a demandé quoi. Ces jeux entraînent la boucle phonologique et le calepin visuo-spatial de Baddeley de façon ludique.', tags:['fun','evidence'] },
+    ];
+}
+
+function buildExoFluence() {
+    return [
+        { title:'📖 Lecture répétée chronométrée (15 min/jour)', desc:'Texte de 100-120 mots adapté au niveau. Lundi : 1ère lecture chronométrée (noter le MCLM). Mardi-mercredi : relecture × 2. Jeudi : lecture chronométrée finale (noter le MCLM). L\'enfant voit sa progression concrète. Nouveau texte chaque lundi.', tags:['evidence','daily'] },
+        { title:'🎭 Théâtre de lecture (15 min, 3×/sem)', desc:'Choisir un dialogue de livre (BD, pièce de théâtre pour enfants). L\'enfant joue un personnage, le parent l\'autre. Relire le même dialogue 3-4 fois pour gagner en fluidité. L\'objectif théâtral (jouer bien) masque l\'effort de lecture.', tags:['fun','evidence'] },
+        { title:'📖 Lecture alternée parent-enfant (15 min/jour)', desc:'Le parent lit une phrase, l\'enfant lit la suivante. Quand l\'enfant bloque sur un mot, le parent le dit immédiatement (pas d\'attente gênante). L\'enfant bénéficie du modèle prosodique du parent et lit dans un flux continu.', tags:['fun','daily'] },
+        { title:'⚡ Lecture flash de phrases (5 min/jour)', desc:'Écrire une phrase courte sur un carton (5-8 mots). La montrer 3 secondes. L\'enfant la lit à voix haute. Progresser : 2s → 1.5s → 1s. Les phrases doivent être amusantes ou absurdes (« Le chat porte un chapeau rouge ») pour motiver.', tags:['fun','daily'] },
+        { title:'🏆 Graphique de progression (hebdomadaire)', desc:'Chaque vendredi, mesurer le MCLM sur un texte NOUVEAU (jamais lu). Reporter sur un graphique affiché dans la chambre. L\'enfant voit sa courbe monter. Objectif CM1 : ~95 MCLM. Objectif CM2 : ~120 MCLM. Fêter chaque palier de 10 MCLM gagné.', tags:['fun','daily'] },
+    ];
+}
+
+// ============================================================
+//  RENDER EXERCISES (HTML)
+// ============================================================
+function renderExercises(exercises, rti) {
+    let h = `<div class="exo-box">
+        <h3>🎮 Programme d'exercices — protocole à la maison</h3>
+        <div class="exo-meta">
+            <span>⏱️ 15-30 min/jour</span>
+            <span>📅 5 jours/semaine</span>
+            <span>📈 Réévaluer toutes les 6 semaines</span>
+        </div>
+        <div class="exo-list">`;
+    exercises.forEach(ex => {
+        const tagMap = { fun:'🎮 Ludique', evidence:'✅ Validé', daily:'📅 Quotidien', tool:'🔧 Outil' };
+        const tagClassMap = { fun:'fun', evidence:'evidence', daily:'daily', tool:'tool' };
+        h += `<div class="exo-item">
+            <strong>${ex.title}</strong>
+            <p>${ex.desc}</p>
+            <div>${(ex.tags||[]).map(t => `<span class="exo-tag ${tagClassMap[t]||''}">${tagMap[t]||t}</span>`).join('')}</div>
+        </div>`;
+    });
+    h += '</div></div>';
+    if(rti) {
+        h += `<div class="rti-box">
+            <h4>📋 Réponse à l'Intervention (RTI) — plan d'action temporel</h4>
+            <p>${rti}</p>
+        </div>`;
+    }
+    return h;
+}
+
+// ============================================================
+//  RESULTS
+// ============================================================
+function buildResults() {
+    const s = computeScores();
+    const container = document.getElementById('resultSection');
+
+    const radarAxes = [
+        { label:'Mots réguliers', value: s.regular.pct },
+        { label:'Mots irréguliers', value: s.irregular.pct },
+        { label:'Pseudo-mots', value: s.pseudo.pct },
+        { label:'Conscience phono', value: s.phono.pct },
+        { label:'Dictée', value: (s.dictee.summary.correct / s.dictee.summary.total)*100 },
+        { label:'Compréhension', value: s.comp.pct },
+        { label:'Mémoire endroit', value: s.memory.pctFwd },
+        { label:'Mémoire envers', value: s.memory.pctBwd },
+        { label:'Empan visuel', value: s.eva.pct },
+    ];
+
+    const profiles = buildProfiles(s);
+
+    let h = '<h2 style="margin-bottom:20px">📊 Résultats détaillés</h2>';
+
+    // Radar chart
+    h += `<div class="radar-container"><h3>Profil global</h3><canvas id="radarCanvas" width="480" height="480" style="max-width:100%"></canvas></div>`;
+
+
+
+    // Score cards
+    h += buildScoreCard('1. Lecture mots réguliers — Voie d\'assemblage', s.regular);
+    h += buildScoreCard('2. Lecture mots irréguliers — Voie lexicale', s.irregular);
+    h += buildScoreCard('3. Décodage pseudo-mots — Voie phonologique pure', s.pseudo);
+
+    // RAN with age-adjusted norms
+    const ranSec = s.ran.time > 0 ? (s.ran.time/1000).toFixed(1) + 's' : 'Non chronométré';
+    const ranSeconds = s.ran.time / 1000;
+    const ranClass = ranSeconds > 0 ? (ranSeconds > 45 ? 'red' : ranSeconds > 35 ? 'orange' : 'green') : '';
+    h += `<div class="result-card ${ranClass}">
+        <h3>4. Dénomination rapide (RAN)</h3>
+        <div class="time-info">⏱ Temps : ${ranSec} · Erreurs : ${s.ran.errors}</div>
+        <p class="detail">50 items · Vitesse de traitement et accès lexical</p>
+        <p class="threshold-note">Repères 10 ans : &lt;30s normal · 30-45s limite · &gt;45s déficitaire (normes indicatives RAN couleurs)</p>
+    </div>`;
+
+    // Phono
+    h += `<div class="result-card ${scoreClass(s.phono.pct)}">
+        <h3>5. Conscience phonologique</h3>
+        <div class="score">${s.phono.correct}/${s.phono.total} (${Math.round(s.phono.pct)}%)</div>
+        <div class="detail">`;
+    Object.entries(s.phonoCats).forEach(([cat, v]) => {
+        h += `${cat}: ${v.correct}/${v.total} · `;
+    });
+    h += '</div><p class="threshold-note">Seuils indicatifs — seul un étalonnage normé (BALE, EVALEO, ODEDYS-2) permet un diagnostic</p></div>';
+
+    // Dictée with qualitative analysis
+    h += `<div class="result-card ${scoreClass((s.dictee.summary.correct/s.dictee.summary.total)*100)}">
+        <h3>6. Dictée — Analyse qualitative</h3>
+        <div class="score">${s.dictee.summary.correct}/${s.dictee.summary.total} corrects</div>`;
+    if(s.dictee.summary.phonoPlausible || s.dictee.summary.phonoImplausible || s.dictee.summary.inversions || s.dictee.summary.morpho) {
+        h += '<div class="error-analysis"><h4>Types d\'erreurs détectés</h4>';
+        if(s.dictee.summary.phonoPlausible) h += `<span class="error-tag phono-plausible">Phono plausibles : ${s.dictee.summary.phonoPlausible}</span>`;
+        if(s.dictee.summary.phonoImplausible) h += `<span class="error-tag phono-implausible">Phono implausibles : ${s.dictee.summary.phonoImplausible}</span>`;
+        if(s.dictee.summary.inversions) h += `<span class="error-tag inversion">Inversions : ${s.dictee.summary.inversions}</span>`;
+        if(s.dictee.summary.omissions) h += `<span class="error-tag omission">Omissions : ${s.dictee.summary.omissions}</span>`;
+        if(s.dictee.summary.additions) h += `<span class="error-tag addition">Additions : ${s.dictee.summary.additions}</span>`;
+        if(s.dictee.summary.morpho) h += `<span class="error-tag morpho">Morphosyntaxe (accords) : ${s.dictee.summary.morpho}</span>`;
+        h += '</div>';
+    }
+    h += '<div style="margin-top:12px">';
+    s.dictee.words.forEach(w => {
+        if(w.correct) {
+            h += `<div style="padding:4px 8px;font-size:13px">✅ <strong>${w.expected}</strong></div>`;
+        } else {
+            h += `<div style="padding:4px 8px;font-size:13px;background:#fef2f2;border-radius:4px;margin-bottom:4px">❌ <strong>${w.expected}</strong> → écrit : « ${w.given} » <span style="color:var(--text2);font-size:12px">(${w.errors.join(', ')})</span></div>`;
+        }
+    });
+    // Phrase details
+    s.dictee.phrases.forEach(p => {
+        if(p.correct) {
+            h += `<div style="padding:4px 8px;font-size:13px;margin-top:8px">✅ <strong>${p.expected}</strong></div>`;
+        } else if(p.wordErrors.length > 0) {
+            h += `<div style="padding:4px 8px;font-size:13px;background:#fef2f2;border-radius:4px;margin-bottom:4px;margin-top:8px">`;
+            h += `❌ <strong>${p.expected}</strong><br>`;
+            p.wordErrors.forEach(we => {
+                h += `<span style="font-size:12px;color:var(--text2);margin-left:16px">· ${we.expected} → ${we.given} (${we.errors.join(', ')})</span><br>`;
+            });
+            h += '</div>';
+        }
+    });
+    h += '</div></div>';
+
+    // Fluence
+    h += `<div class="result-card ${s.fluence.mclmPerMin >= 90 ? 'green' : s.fluence.mclmPerMin >= 60 ? 'orange' : 'red'}">
+        <h3>7. Fluence de lecture</h3>
+        <div class="score">${s.fluence.mclmPerMin} MCLM</div>
+        <div class="detail">Mots lus : ${s.fluence.wordsRead} · Erreurs : ${s.fluence.errors} · Temps : ${formatTime(s.fluence.time)}</div>
+        <div class="detail" style="margin-top:6px">
+            ${s.fluence.mclmPerMin > 0 ? `Repères : CM2 ~120 MCLM · CM1 ~95 MCLM · CE2 ~75 MCLM` : 'Non mesuré'}
+        </div>
+        <p class="threshold-note">Normes françaises de fluence (Lequette, Pouget & Zorman, 2008)</p>
+    </div>`;
+
+    // Compréhension
+    h += `<div class="result-card ${scoreClass(s.comp.pct)}">
+        <h3>8. Compréhension de lecture</h3>
+        <div class="score">${s.comp.correct}/${s.comp.total} (${Math.round(s.comp.pct)}%)</div>
+        <div class="detail">
+            Explicite : ${s.comp.byType.explicite.c}/${s.comp.byType.explicite.t} ·
+            Inférentielle : ${s.comp.byType['inférentielle'].c}/${s.comp.byType['inférentielle'].t} ·
+            Vocabulaire : ${s.comp.byType.vocabulaire.c}/${s.comp.byType.vocabulaire.t}
+        </div>
+    </div>`;
+
+    // Mémoire
+    h += `<div class="result-card ${scoreClass(s.memory.pctAll)}">
+        <h3>9. Mémoire de travail</h3>
+        <div class="detail">
+            <strong>Empan endroit :</strong> ${s.memory.fwd.correct}/${s.memory.fwd.total} · Plafond : ${s.memory.fwd.maxSpan} chiffres<br>
+            <strong>Empan envers :</strong> ${s.memory.bwd.correct}/${s.memory.bwd.total} · Plafond : ${s.memory.bwd.maxSpan} chiffres<br>
+            <strong>Empan de mots :</strong> ${s.memory.words.correct}/${s.memory.words.total}
+        </div>
+        <div class="detail" style="margin-top:6px">Norme 10 ans : empan endroit ≥ 5 · empan envers ≥ 3</div>
+    </div>`;
+
+    // EVA
+    h += `<div class="result-card ${scoreClass(s.eva.pct)}">
+        <h3>10. Empan visuo-attentionnel</h3>
+        <div class="score">${s.eva.correct}/${s.eva.total} · Plafond : ${s.eva.maxSpan} lettres</div>
+        <div class="detail">Norme 10 ans : ≥ 5 lettres traitées simultanément (Bosse & Valdois)</div>
+    </div>`;
+
+    // Error type summary
+    h += buildReadingErrorSummary(s);
+
+    // Profiles with exercises
+    if(profiles.length > 0) {
+        profiles.forEach(p => {
+            h += `<div class="profile-box">
+                <h2>🎯 ${p.name}</h2>
+                <p>${p.description}</p>
+                <span class="risk ${p.riskClass}">${p.risk}</span>
+            </div>
+            <div class="reco-box"><h3>💡 Recommandations</h3><ul>${p.recommendations.map(r => `<li>${r}</li>`).join('')}</ul></div>`;
+            h += renderExercises(p.exercises, p.rti);
+        });
+    } else {
+        h += `<div class="profile-box" style="background:linear-gradient(135deg,#16a34a,#22c55e)">
+            <h2>✅ Profil dans la norme</h2>
+            <p>Les résultats ne montrent pas de difficultés significatives. Si l'enfant rencontre des difficultés à l'école, elles peuvent être liées à d'autres facteurs (attention, motivation, anxiété, méthode de travail).</p>
+            <span class="risk risk-low">RISQUE FAIBLE</span>
+        </div>`;
+    }
+
+    h += `<div class="disclaimer">
+        <strong>⚠️ Important :</strong> Ce test est un outil de <strong>dépistage indicatif</strong>, pas un diagnostic. Les seuils sont indicatifs et non étalonnés sur une population de référence — seuls les outils standardisés (BALE, EVALEO, ODEDYS-2, Alouette-R) permettent un diagnostic. Ce test permet de <strong>localiser précisément les difficultés</strong> et de <strong>préparer un éventuel bilan orthophonique</strong>. Les exercices proposés peuvent être commencés immédiatement à la maison en attendant un rendez-vous.
+    </div>
+    <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-primary" onclick="window.print()">🖨 Imprimer</button>
+        <button class="btn btn-secondary" onclick="location.reload()">↺ Recommencer</button>
+    </div>`;
+
+    container.innerHTML = h;
+    setTimeout(() => drawRadar(radarAxes), 100);
+}
+
+function buildScoreCard(title, data) {
+    const timeStr = data.time > 0 ? `⏱ ${formatTime(data.time)}` : '';
+    const errCount = Object.keys(data.errors).length;
+    let errorDetail = '';
+    if(errCount > 0) {
+        const typeCounts = {};
+        Object.values(data.errors).forEach(e => {
+            (e.types||[]).forEach(t => { typeCounts[t] = (typeCounts[t]||0) + 1; });
+        });
+        if(Object.keys(typeCounts).length > 0) {
+            errorDetail = Object.entries(typeCounts).map(([k,v]) => {
+                const label = ERROR_TYPES.find(et => et.code === k);
+                return label ? `${label.label}: ${v}` : '';
+            }).filter(Boolean).join(' · ');
+        }
+    }
+    return `<div class="result-card ${scoreClass(data.pct)}">
+        <h3>${title}</h3>
+        <div class="score">${data.correct}/${data.total} (${Math.round(data.pct)}%)</div>
+        ${timeStr ? `<div class="time-info">${timeStr}</div>` : ''}
+        ${errorDetail ? `<div class="detail">Types d'erreurs : ${errorDetail}</div>` : ''}
+        <p class="threshold-note">Seuils indicatifs — un étalonnage normé est nécessaire pour un diagnostic</p>
+    </div>`;
+}
+
+function buildReadingErrorSummary(s) {
+    const allErrors = { ...s.regular.errors, ...s.irregular.errors, ...s.pseudo.errors };
+    const typeCounts = {};
+    Object.values(allErrors).forEach(e => {
+        (e.types||[]).forEach(t => { typeCounts[t] = (typeCounts[t]||0) + 1; });
+    });
+    if(Object.keys(typeCounts).length === 0) return '';
+    let h = '<div class="card"><h3 style="margin-bottom:10px">🔎 Synthèse des erreurs de lecture</h3>';
+    ERROR_TYPES.forEach(et => {
+        if(typeCounts[et.code]) {
+            const pct = Math.round((typeCounts[et.code] / Object.keys(allErrors).length) * 100);
+            h += `<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                <span style="font-weight:600;min-width:100px;font-size:14px">${et.label}</span>
+                <div style="flex:1;background:var(--soft);height:20px;border-radius:10px;overflow:hidden">
+                    <div style="width:${pct}%;background:var(--red);height:100%;border-radius:10px;transition:width 0.5s"></div>
+                </div>
+                <span style="font-size:13px;min-width:60px">${typeCounts[et.code]} (${pct}%)</span>
+            </div>`;
+        }
+    });
+    h += '</div>';
+    return h;
+}
+
+function scoreClass(pct) {
+    if(pct >= 80) return 'green';
+    if(pct >= 60) return 'orange';
+    return 'red';
+}
+
+// ============================================================
+//  RADAR CHART (Canvas)
+// ============================================================
+function drawRadar(axes){ 
+    const canvas = document.getElementById('radarCanvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W/2, cy = H/2;
+    const R = Math.min(W, H) * 0.35;
+    const n = axes.length;
+
+    ctx.clearRect(0, 0, W, H);
+
+    for(let r=1; r<=5; r++) {
+        ctx.beginPath();
+        const rr = (r/5) * R;
+        for(let i=0; i<=n; i++) {
+            const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+            const x = cx + rr * Math.cos(angle);
+            const y = cy + rr * Math.sin(angle);
+            if(i===0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = r===4 ? '#94a3b8' : '#e2e8f0';
+        ctx.lineWidth = r===4 ? 1.5 : 0.8;
+        ctx.stroke();
+        if(r%2===0) {
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '11px system-ui';
+            ctx.fillText((r*20)+'%', cx+3, cy - rr + 14);
+        }
+    }
+
+    axes.forEach((a, i) => {
+        const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+        const x = cx + R * Math.cos(angle);
+        const y = cy + R * Math.sin(angle);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        const lx = cx + (R + 28) * Math.cos(angle);
+        const ly = cy + (R + 28) * Math.sin(angle);
+        ctx.fillStyle = '#334155';
+        ctx.font = '12px system-ui';
+        ctx.textAlign = angle > Math.PI/2 || angle < -Math.PI/2 ? 'right' : angle === -Math.PI/2 || angle === Math.PI/2 ? 'center' : 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(a.label, lx, ly);
+
+    });
+
+    ctx.beginPath();
+    axes.forEach((a, i) => {
+        const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+        const val = Math.min(100, Math.max(0, a.value)) / 100;
+        const x = cx + R * val * Math.cos(angle);
+        const y = cy + R * val * Math.sin(angle);
+        if(i===0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+	
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(37, 99, 235, 0.15)';
+    ctx.fill();
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    axes.forEach((a, i) => {
+        const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+        const val = Math.min(100, Math.max(0, a.value)) / 100;
+        const x = cx + R * val * Math.cos(angle);
+        const y = cy + R * val * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI*2);
+        ctx.fillStyle = a.value >= 80 ? '#16a34a' : a.value >= 60 ? '#ea580c' : '#dc2626';
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    });
+
+    ctx.beginPath();
+    ctx.setLineDash([4,4]);
+    const rr80 = 0.8 * R;
+    for(let i=0; i<=n; i++) {
+        const angle = (Math.PI * 2 * i / n) - Math.PI/2;
+        const x = cx + rr80 * Math.cos(angle);
+        const y = cy + rr80 * Math.sin(angle);
+        if(i===0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = '#16a34a';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+init();
+</script>
+</body>
+</html>
