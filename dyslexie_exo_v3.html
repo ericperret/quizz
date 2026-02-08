@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercices Remédiation — Dyslexie v3</title>
+<style>
+:root {
+    --bg:#0f1117;--card:#1a1d27;--card2:#242836;--accent:#6366f1;--accent2:#818cf8;
+    --green:#34d399;--green2:#059669;--orange:#fb923c;--red:#f87171;--cyan:#22d3ee;
+    --pink:#f472b6;--yellow:#fbbf24;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+    --border:#2d3348;--radius:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','Helvetica Neue',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.app{max-width:900px;margin:0 auto;padding:16px}
+
+/* ===== HEADER ===== */
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4338ca 100%);padding:24px 28px;border-radius:14px;margin-bottom:16px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-30%;right:-10%;width:250px;height:250px;background:radial-gradient(circle,rgba(99,102,241,.3) 0%,transparent 70%);border-radius:50%}
+.header h1{font-size:22px;font-weight:700;position:relative}
+.header .sub{font-size:13px;opacity:.7;position:relative}
+.header .child-badge{position:absolute;top:20px;right:24px;background:rgba(255,255,255,.12);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600}
+
+/* ===== TABS ===== */
+.tabs{display:flex;gap:3px;background:var(--card);padding:3px;border-radius:10px;margin-bottom:16px;overflow-x:auto}
+.tab{flex:1;padding:8px 8px;border:none;background:transparent;color:var(--text2);font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap;min-width:0}
+.tab:hover{color:var(--text);background:var(--card2)}
+.tab.active{background:var(--accent);color:white}
+.tab .ti{display:block;font-size:18px;margin-bottom:1px}
+
+/* ===== PANELS ===== */
+.panel{display:none}.panel.active{display:block}
+
+/* ===== CARDS ===== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px}
+.card h3{font-size:16px;font-weight:700;margin-bottom:10px}
+.card h4{font-size:12px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+
+/* ===== PROFILE GRID ===== */
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.pbtn{padding:12px;background:var(--card2);border:2px solid var(--border);border-radius:8px;cursor:pointer;text-align:left;color:var(--text);font-size:13px;transition:all .2s}
+.pbtn:hover{border-color:var(--accent)}.pbtn.sel{border-color:var(--accent);background:rgba(99,102,241,.15)}
+.pbtn .pn{font-weight:700;margin-bottom:2px}.pbtn .pd{font-size:11px;color:var(--text2)}
+
+/* ===== EXO HEADER ===== */
+.exo-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.exo-top h2{font-size:18px}
+.stats-row{display:flex;gap:14px}
+.st{text-align:center}.st .v{font-size:22px;font-weight:700;display:block}.st .l{color:var(--text2);font-size:11px}
+.st.ok .v{color:var(--green)}.st.mid .v{color:var(--orange)}.st.bad .v{color:var(--red)}
+
+/* ===== PID BAR ===== */
+.pid-bar{display:flex;gap:6px;margin-bottom:12px;padding:8px 12px;background:var(--card2);border-radius:8px;font-size:12px;align-items:center;flex-wrap:wrap}
+.pid-i{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:16px;font-weight:700;font-size:11px}
+.pid-i.pp{background:rgba(52,211,153,.12);color:var(--green)}
+.pid-i.pi{background:rgba(34,211,238,.12);color:var(--cyan)}
+.pid-i.pd{background:rgba(251,146,60,.12);color:var(--orange)}
+.pid-lvl{margin-left:auto;font-weight:700;color:var(--accent2);font-size:13px}
+
+/* ===== FLASH ===== */
+.flash-zone{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.flash-word{font-size:68px;font-weight:800;text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center;transition:opacity .15s}
+.flash-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;width:100%;max-width:500px}
+.fc{padding:16px;background:var(--card2);border:2px solid var(--border);border-radius:10px;font-size:20px;font-weight:700;text-align:center;cursor:pointer;transition:all .15s;color:var(--text)}
+.fc:hover{border-color:var(--accent);transform:scale(1.02)}
+.fc.ok{border-color:var(--green);background:rgba(52,211,153,.12);color:var(--green)}
+.fc.ko{border-color:var(--red);background:rgba(248,113,113,.12);color:var(--red)}
+.flash-fb{font-size:48px;min-height:80px;display:flex;align-items:center;justify-content:center}
+.encourage{font-size:15px;color:var(--accent2);margin-top:6px;font-weight:600;min-height:24px;text-align:center}
+
+/* ===== RAN ===== */
+.ran-zone{text-align:center}
+.ran-grid{display:grid;gap:5px;max-width:420px;margin:0 auto 14px}
+.rc{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:white;border:3px solid transparent;transition:all .2s;position:relative;cursor:default}
+.rc.cur{border-color:white;box-shadow:0 0 16px rgba(255,255,255,.25);transform:scale(1.08);z-index:1}
+.rc.done{opacity:.35}
+.rc.ok-c::after{content:'✓';position:absolute;font-size:13px;bottom:1px;right:3px}
+.rc.ko-c::after{content:'✗';position:absolute;font-size:13px;bottom:1px;right:3px;color:var(--red)}
+.voice-st{padding:10px 18px;border-radius:10px;font-size:14px;font-weight:600;margin:10px auto;max-width:420px}
+.voice-st.on{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.voice-st.off{background:var(--card2);color:var(--text2)}
+.voice-st.err{background:rgba(248,113,113,.12);color:var(--red)}
+.pulse{display:inline-block;width:10px;height:10px;background:var(--green);border-radius:50%;margin-right:6px;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
+.heard{font-size:18px;font-weight:700;margin:6px 0;min-height:28px}
+
+/* ===== PHONO ===== */
+.phono-zone{min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.phono-prompt{font-size:20px;font-weight:600;margin-bottom:6px;text-align:center;color:var(--cyan)}
+.phono-question{font-size:28px;font-weight:800;margin-bottom:20px;text-align:center;letter-spacing:2px}
+.phono-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:460px}
+.pc{padding:16px;background:var(--card2);border:2px solid var(--border);border-radius:10px;font-size:22px;font-weight:700;text-align:center;cursor:pointer;transition:all .15s;color:var(--text)}
+.pc:hover{border-color:var(--cyan);transform:scale(1.02)}
+.pc.ok{border-color:var(--green);background:rgba(52,211,153,.12);color:var(--green)}
+.pc.ko{border-color:var(--red);background:rgba(248,113,113,.12);color:var(--red)}
+.phono-speaker{font-size:36px;cursor:pointer;margin-bottom:12px;transition:transform .15s}
+.phono-speaker:hover{transform:scale(1.15)}
+
+/* ===== BUTTONS ===== */
+.btn{padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:700;transition:all .2s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-go{background:var(--accent);color:white}.btn-go:hover{background:#4f46e5}
+.btn-ok{background:var(--green2);color:white}.btn-ok:hover{background:#047857}
+.btn-out{background:transparent;color:var(--accent2);border:1.5px solid var(--accent)}.btn-out:hover{background:rgba(99,102,241,.1)}
+.btn-red{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+
+/* ===== DASHBOARD ===== */
+.dg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.dc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.dc .big{font-size:28px;font-weight:800}.dc .lab{font-size:11px;color:var(--text2);margin-top:2px}
+.dc.c1 .big{color:var(--green)}.dc.c2 .big{color:var(--cyan)}.dc.c3 .big{color:var(--orange)}.dc.c4 .big{color:var(--pink)}
+.chart-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+.chart-box h4{margin-bottom:10px;font-size:13px}
+.slog{display:flex;align-items:center;gap:10px;padding:10px;background:var(--card2);border-radius:8px;margin-bottom:5px;font-size:13px}
+.slog .sd{color:var(--text2);min-width:85px}.slog .st2{color:var(--accent2);font-weight:600;min-width:70px}
+.slog .ss{font-weight:700}.slog .sl{color:var(--text2);margin-left:auto;font-size:12px}
+
+/* ===== SUMMARY ===== */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0}
+.sum-s{text-align:center;padding:14px;background:var(--card2);border-radius:8px}
+.sum-s .v{font-size:26px;font-weight:800}.sum-s .l{font-size:12px;color:var(--text2)}
+.pid-adj{padding:10px 14px;border-radius:8px;margin-top:10px;font-size:13px;display:flex;align-items:center;gap:6px}
+.pid-adj.up{background:rgba(52,211,153,.08);color:var(--green);border:1px solid rgba(52,211,153,.18)}
+.pid-adj.dn{background:rgba(248,113,113,.08);color:var(--red);border:1px solid rgba(248,113,113,.18)}
+.pid-adj.eq{background:var(--card2);color:var(--text2);border:1px solid var(--border)}
+
+/* ===== SETUP ===== */
+.setup-hero{text-align:center;padding:32px 16px}
+.setup-hero h2{font-size:22px;margin-bottom:6px}
+.setup-hero p{color:var(--text2)}
+input[type=text]{background:var(--card2);border:1.5px solid var(--border);border-radius:6px;padding:10px;color:var(--text);font-size:15px;width:100%}
+input:focus{outline:none;border-color:var(--accent)}
+
+/* ===== COLORS ===== */
+.c-rouge{background:#dc2626}.c-bleu{background:#2563eb}.c-vert{background:#16a34a}
+.c-jaune{background:#eab308;color:#1e1e1e!important}.c-noir{background:#1e1e1e;border:1px solid #555!important}
+.c-blanc{background:#f1f5f9;color:#1e1e1e!important}.c-rose{background:#ec4899}.c-orange{background:#f97316}
+.c-marron{background:#92400e}.c-violet{background:#7c3aed}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:640px){
+    .dg{grid-template-columns:1fr 1fr}
+    .sum-grid{grid-template-columns:1fr}
+    .flash-word{font-size:44px}
+    .ran-grid{max-width:100%}
+    .rc{font-size:18px}
+    .phono-question{font-size:22px}
+    .tabs{gap:2px}.tab{font-size:11px;padding:7px 4px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+    <h1>🎮 Exercices Remédiation</h1>
+    <p class="sub">Entraînement adaptatif · Progression automatique · v3</p>
+    <div class="child-badge" id="childBadge" style="display:none"></div>
+</div>
+
+<div class="tabs" id="mainTabs">
+    <button class="tab active" onclick="go('setup')"><span class="ti">⚙️</span>Profil</button>
+    <button class="tab" onclick="go('flash')"><span class="ti">⚡</span>Flash</button>
+    <button class="tab" onclick="go('phono')"><span class="ti">🔤</span>Phono</button>
+    <button class="tab" onclick="go('ran')"><span class="ti">🎤</span>RAN</button>
+    <button class="tab" onclick="go('dash')"><span class="ti">📊</span>Stats</button>
+</div>
+
+<!-- ==================== SETUP ==================== -->
+<div class="panel active" id="p-setup">
+    <div id="importBanner" style="display:none"></div>
+    <div class="setup-hero" id="setupHero">
+        <h2>Configuration</h2>
+        <p>Choisis le profil identifié par le test, puis démarre.</p>
+    </div>
+    <div class="card" id="manualProfileCard">
+        <h4>Profil dominant</h4>
+        <div class="profile-grid" id="profGrid"></div>
+    </div>
+    <div class="card" id="secondaryInfo" style="display:none">
+        <h4>📋 Profils secondaires détectés</h4>
+        <div id="secList" style="font-size:13px;color:var(--text2)"></div>
+    </div>
+    <div class="card" id="severityInfo" style="display:none">
+        <h4>📊 Scores du test</h4>
+        <div id="sevBars"></div>
+    </div>
+    <div class="card">
+        <h4>Prénom de l'enfant</h4>
+        <input type="text" id="inpName" placeholder="Prénom" />
+    </div>
+    <div style="margin-top:14px;text-align:center">
+        <button class="btn btn-go" onclick="launch()" id="btnLaunch" disabled>Commencer →</button>
+    </div>
+    <div class="card" style="margin-top:18px;border-style:dashed">
+        <h4>💾 Données sauvegardées</h4>
+        <p style="font-size:13px;color:var(--text2)" id="savedInfo">Aucune session.</p>
+        <div class="btn-row" style="margin-top:8px">
+            <button class="btn btn-out btn-sm" onclick="doLoad()">Charger progression</button>
+            <button class="btn btn-red btn-sm" onclick="doReset()">Tout effacer</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== FLASH ==================== -->
+<div class="panel" id="p-flash">
+    <div class="exo-top">
+        <h2>⚡ Lecture Flash</h2>
+        <div class="stats-row">
+            <div class="st" id="fS1"><span class="v">0</span><span class="l">Corrects</span></div>
+            <div class="st" id="fS2"><span class="v">0</span><span class="l">Total</span></div>
+            <div class="st" id="fS3"><span class="v">—</span><span class="l">Taux</span></div>
+        </div>
+    </div>
+    <div class="pid-bar"><span class="pid-i pp">P</span><span class="pid-i pi">I</span><span class="pid-i pd">D</span><span class="pid-lvl" id="fLvl">Niv. 1</span></div>
+    <div class="card">
+        <div class="flash-zone" id="fZone"><p style="color:var(--text2)">Appuie sur Démarrer</p></div>
+        <div class="encourage" id="fEnc"></div>
+    </div>
+    <div class="btn-row">
+        <button class="btn btn-go" id="fStart" onclick="flashGo()">▶ Démarrer</button>
+        <button class="btn btn-out" id="fStop" onclick="flashEnd()" style="display:none">⏹ Arrêter</button>
+    </div>
+    <div id="fSum" style="display:none"></div>
+</div>
+
+<!-- ==================== PHONO ==================== -->
+<div class="panel" id="p-phono">
+    <div class="exo-top">
+        <h2>🔤 Phonologie</h2>
+        <div class="stats-row">
+            <div class="st" id="pS1"><span class="v">0</span><span class="l">Corrects</span></div>
+            <div class="st" id="pS2"><span class="v">0</span><span class="l">Total</span></div>
+            <div class="st" id="pS3"><span class="v">—</span><span class="l">Taux</span></div>
+        </div>
+    </div>
+    <div class="pid-bar"><span class="pid-i pp">P</span><span class="pid-i pi">I</span><span class="pid-i pd">D</span><span class="pid-lvl" id="pLvl">Niv. 1</span></div>
+    <div class="card">
+        <div class="phono-zone" id="pZone"><p style="color:var(--text2)">Exercices de conscience phonologique : rimes, sons, syllabes.<br>Appuie sur Démarrer.</p></div>
+        <div class="encourage" id="pEnc"></div>
+    </div>
+    <div class="btn-row">
+        <button class="btn btn-go" id="pStart" onclick="phonoGo()">▶ Démarrer</button>
+        <button class="btn btn-out" id="pStop" onclick="phonoEnd()" style="display:none">⏹ Arrêter</button>
+    </div>
+    <div id="pSum" style="display:none"></div>
+</div>
+
+<!-- ==================== RAN ==================== -->
+<div class="panel" id="p-ran">
+    <div class="exo-top">
+        <h2>🎤 Dénomination Rapide</h2>
+        <div class="stats-row">
+            <div class="st" id="rS1"><span class="v">0</span><span class="l">Corrects</span></div>
+            <div class="st" id="rS2"><span class="v">0</span><span class="l">Total</span></div>
+            <div class="st" id="rS3"><span class="v">—</span><span class="l">Temps</span></div>
+        </div>
+    </div>
+    <div class="pid-bar"><span class="pid-i pp">P</span><span class="pid-i pi">I</span><span class="pid-i pd">D</span><span class="pid-lvl" id="rLvl">Niv. 1</span></div>
+    <div class="card">
+        <div class="ran-zone" id="rZone">
+            <p style="color:var(--text2)">Nomme chaque couleur le plus vite possible.<br>
+            <span style="font-size:12px;color:var(--text3)">🎤 Mode vocal = Chrome/Edge + micro · 🖱️ Mode clic = partout</span></p>
+        </div>
+        <div class="encourage" id="rEnc"></div>
+    </div>
+    <div class="btn-row">
+        <button class="btn btn-go" id="rStart" onclick="ranGo('voice')">🎤 Démarrer (vocal)</button>
+        <button class="btn btn-out" id="rStartM" onclick="ranGo('click')">🖱️ Mode clic</button>
+        <button class="btn btn-out" id="rStop" onclick="ranEnd()" style="display:none">⏹ Arrêter</button>
+    </div>
+    <div id="rSum" style="display:none"></div>
+</div>
+
+<!-- ==================== DASHBOARD ==================== -->
+<div class="panel" id="p-dash">
+    <h2 style="margin-bottom:14px">📊 Progression</h2>
+    <div class="dg" id="dashTop"></div>
+    <div class="chart-box"><h4>📈 Taux de réussite</h4><canvas id="cvS" height="200"></canvas></div>
+    <div class="chart-box"><h4>🎯 Niveau par session</h4><canvas id="cvL" height="150"></canvas></div>
+    <div class="card"><h4>📋 Historique</h4><div id="sesLog"></div></div>
+    <div class="btn-row" style="margin-top:14px">
+        <button class="btn btn-out btn-sm" onclick="doExport()">📤 Exporter JSON</button>
+    </div>
+</div>
+
+</div><!-- .app -->
+
+<script>
+/* ==============================================================
+   WORD DATABASE — Gradué par niveau (CM1/CM2 - Français)
+   ============================================================== */
+const WDB = {
+    // Niv 1 : CVC courts, très fréquents
+    1: {
+        words: ['ami','bal','cap','dé','fil','gaz','île','jeu','lac','mer','nid','os','pic','rue','vol',
+                'bus','col','dos','fin','gel','lit','mur','pas','riz','sel','tir','vis','art','bec','car'],
+        type: 'Mots courts courants'
+    },
+    // Niv 2 : Bisyllabiques réguliers
+    2: {
+        words: ['table','robe','livre','lampe','porte','robot','salade','valise','tortue','ballon',
+                'classe','plage','maison','fleur','chaise','tige','moule','poste','sucre','fièvre',
+                'grade','poche','tarte','souris','pirate','tigre','globe','prune','règle','brosse'],
+        type: 'Bisyllabiques réguliers'
+    },
+    // Niv 3 : Trisyllabiques, clusters consonantiques
+    3: {
+        words: ['chocolat','pantalon','cartable','mercredi','carotte','lavabo','domino','papillon',
+                'crocodile','montagne','parapluie','escalier','araignée','trompette','concombre',
+                'ambulance','libellule','casserole','artichaut','mandarine','tournesol','champignon',
+                'sauterelle','grenouille','hirondelle'],
+        type: 'Trisyllabiques complexes'
+    },
+    // Niv 4 : Longs, morphologie riche
+    4: {
+        words: ['ordinateur','trampoline','thermomètre','rhinocéros','hippopotame','anniversaire',
+                'mathématiques','réfrigérateur','bibliothèque','extraordinaire','hélicoptère',
+                'électricité','encyclopédie','accélérateur','expérimental','communication',
+                'environnement','représentation','compréhension','administration'],
+        type: 'Polysyllabiques complexes'
+    },
+    // Niv 5 : Irréguliers
+    5: {
+        words: ['femme','monsieur','sept','fils','pays','oignon','automne','orchidée','baptême',
+                'sculpteur','aquarium','orchestre','chrysanthème','écho','chorale','seconde',
+                'examen','album','parfum','estomac','tabac','broc','porc','cerf','clef'],
+        type: 'Mots irréguliers'
+    },
+    // Niv 6 : Pseudo-mots (décodage pur)
+    6: {
+        words: ['bral','toup','molu','rivo','daco','lupi','fane','tobe','grophe','flanque',
+                'broton','drapule','chromile','phrétule','spanture','glivon','tramoque','vornide',
+                'plurmaste','crebillon','fintacle','gorpusine','blampurade','strifanole','proventure'],
+        type: 'Pseudo-mots'
+    },
+};
+
+/* ==============================================================
+   PHONOLOGY DATABASE — Exercices par niveau
+   ============================================================== */
+const PHONO_DB = {
+    // Niv 1 : Rimes simples (quel mot rime avec X ?)
+    1: {
+        type: 'rime',
+        label: 'Quel mot rime avec',
+        items: [
+            { prompt:'chat', answer:'rat', wrong:['bus','fil','lac'] },
+            { prompt:'main', answer:'pain', wrong:['gare','lit','bras'] },
+            { prompt:'loup', answer:'cou', wrong:['parc','fer','main'] },
+            { prompt:'bol', answer:'sol', wrong:['nid','bec','sac'] },
+            { prompt:'mer', answer:'ver', wrong:['bus','gel','art'] },
+            { prompt:'lac', answer:'sac', wrong:['dos','jeu','nid'] },
+            { prompt:'pic', answer:'tic', wrong:['rue','vol','fin'] },
+            { prompt:'dé', answer:'thé', wrong:['cap','os','mer'] },
+            { prompt:'rue', answer:'glue', wrong:['fil','lac','nid'] },
+            { prompt:'vis', answer:'gris', wrong:['gel','pas','bec'] },
+        ]
+    },
+    // Niv 2 : Identification sons (quel son au début/fin ?)
+    2: {
+        type: 'idson',
+        label: 'Quel son au début de',
+        items: [
+            { prompt:'chat', answer:'/ʃ/', wrong:['/k/','/s/','/t/'] },
+            { prompt:'fleur', answer:'/fl/', wrong:['/f/','/fr/','/pl/'] },
+            { prompt:'brosse', answer:'/br/', wrong:['/b/','/bl/','/pr/'] },
+            { prompt:'grenouille', answer:'/gr/', wrong:['/g/','/gl/','/kr/'] },
+            { prompt:'table', answer:'/t/', wrong:['/d/','/b/','/p/'] },
+            { prompt:'robot', answer:'/r/', wrong:['/ro/','/b/','/l/'] },
+            { prompt:'salade', answer:'/s/', wrong:['/sal/','/ch/','/z/'] },
+            { prompt:'valise', answer:'/v/', wrong:['/va/','/f/','/w/'] },
+            { prompt:'tortue', answer:'/t/', wrong:['/tor/','/d/','/p/'] },
+            { prompt:'ballon', answer:'/b/', wrong:['/ba/','/p/','/d/'] },
+        ]
+    },
+    // Niv 3 : Segmentation syllabes
+    3: {
+        type: 'seg',
+        label: 'Combien de syllabes dans',
+        items: [
+            { prompt:'table', answer:'2', wrong:['1','3','4'] },
+            { prompt:'chocolat', answer:'3', wrong:['2','4','5'] },
+            { prompt:'ordinateur', answer:'4', wrong:['3','5','6'] },
+            { prompt:'papillon', answer:'3', wrong:['2','4','5'] },
+            { prompt:'mercredi', answer:'3', wrong:['2','4','5'] },
+            { prompt:'anniversaire', answer:'5', wrong:['4','6','3'] },
+            { prompt:'bibliothèque', answer:'5', wrong:['4','6','7'] },
+            { prompt:'électricité', answer:'5', wrong:['4','6','7'] },
+            { prompt:'hélicoptère', answer:'5', wrong:['4','6','7'] },
+            { prompt:'mathématiques', answer:'4', wrong:['3','5','6'] },
+        ]
+    },
+    // Niv 4 : Fusion sons
+    4: {
+        type: 'fusion',
+        label: 'Quel mot avec les sons',
+        items: [
+            { prompt:'/m/-/a/-/r/', answer:'mar', wrong:['mer','mor','mir'] },
+            { prompt:'/ch/-/a/-/t/', answer:'chat', wrong:['cha','chate','shat'] },
+            { prompt:'/f/-/l/-/eu/-/r/', answer:'fleur', wrong:['flur','fleure','flore'] },
+            { prompt:'/b/-/r/-/o/-/s/', answer:'brosse', wrong:['brose','brus','bross'] },
+            { prompt:'/g/-/r/-/e/-/n/-/ou/-/i/-/ll/', answer:'grenouille', wrong:['grenouil','grenouye','granouille'] },
+            { prompt:'/t/-/a/-/b/-/l/', answer:'table', wrong:['tabl','tabol','tabel'] },
+            { prompt:'/r/-/o/-/b/-/o/', answer:'robot', wrong:['robo','robau','rabot'] },
+            { prompt:'/s/-/a/-/l/-/a/-/d/', answer:'salade', wrong:['salad','salode','selade'] },
+            { prompt:'/v/-/a/-/l/-/i/-/z/', answer:'valise', wrong:['valiz','valisee','velise'] },
+            { prompt:'/t/-/o/-/r/-/t/-/u/', answer:'tortue', wrong:['tortu','torteu','tortoo'] },
+        ]
+    },
+    // Niv 5 : Suppression/inversion
+    5: {
+        type: 'supp',
+        label: 'Enlève le premier son de',
+        items: [
+            { prompt:'train', answer:'rain', wrong:['trin','tran','tain'] },
+            { prompt:'plat', answer:'lat', wrong:['pat','pla','alt'] },
+            { prompt:'sol', answer:'ol', wrong:['so','osl','los'] },
+            { prompt:'car', answer:'ar', wrong:['cra','rac','ka'] },
+            { prompt:'brosse', answer:'rosse', wrong:['bross','rosse','prose'] },
+            { prompt:'fleur', answer:'leur', wrong:['flur','eur','fleu'] },
+            { prompt:'grenouille', answer:'renouille', wrong:['grenouil','enouille','grenuille'] },
+            { prompt:'table', answer:'able', wrong:['tabl','ablee','tale'] },
+            { prompt:'robot', answer:'obot', wrong:['robo','obote','rabot'] },
+            { prompt:'salade', answer:'alade', wrong:['salad','aladee','selade'] },
+        ]
+    },
+    // Niv 6 : Substitution complexe
+    6: {
+        type: 'subst',
+        label: 'Remplace le premier son par /b/ dans',
+        items: [
+            { prompt:'chat', answer:'bat', wrong:['chatb','bchat','shat'] },
+            { prompt:'fleur', answer:'bleur', wrong:['fbleur','beur','flur'] },
+            { prompt:'train', answer:'brain', wrong:['btrain','brin','tran'] },
+            { prompt:'plat', answer:'blat', wrong:['bplat','blat','pat'] },
+            { prompt:'sol', answer:'bol', wrong:['bsol','bol','osl'] },
+            { prompt:'car', answer:'bar', wrong:['bcar','bar','cra'] },
+            { prompt:'mercredi', answer:'bercredi', wrong:['mbercredi','bercredi','merbcredi'] },
+            { prompt:'papillon', answer:'bapillon', wrong:['pbapillon','bapillon','papbillon'] },
+            { prompt:'ordinateur', answer:'bordinateur', wrong:['obordinateur','bordinateur','ordbinateur'] },
+            { prompt:'trampoline', answer:'brampoline', wrong:['tbrampoline','brampoline','tramboline'] },
+        ]
+    },
+};
+
+/* ==============================================================
+   RAN CONFIG — Niveaux (taille grille, couleurs)
+   ============================================================== */
+const RAN_C = [
+    {n:'rouge',c:'c-rouge'},
+    {n:'bleu',c:'c-bleu'},
+    {n:'vert',c:'c-vert'},
+    {n:'jaune',c:'c-jaune'},
+    {n:'noir',c:'c-noir'},
+    {n:'blanc',c:'c-blanc'},
+    {n:'rose',c:'c-rose'},
+    {n:'orange',c:'c-orange'},
+    {n:'marron',c:'c-marron'},
+    {n:'violet',c:'c-violet'},
+];
+const RAN_LVL = {
+    1:{sz:9,cols:3,nc:3}, // 3x3, 3 couleurs
+    2:{sz:16,cols:4,nc:4}, // 4x4, 4 couleurs
+    3:{sz:25,cols:5,nc:5}, // 5x5, 5 couleurs
+    4:{sz:36,cols:6,nc:6}, // 6x6, 6 couleurs
+    5:{sz:49,cols:7,nc:7}, // 7x7, 7 couleurs
+    6:{sz:64,cols:8,nc:8}, // 8x8, 8 couleurs
+};
+
+/* ==============================================================
+   PROFILES — Associe profils à exercices/base levels
+   ============================================================== */
+const PROFILES = [
+    {id:'phono',name:'Phonologique',desc:'Déficit décodage sons/pseudo-mots',flash:3,phono:3,ran:2},
+    {id:'surface',name:'Surface',desc:'Déficit reconnaissance mots irréguliers',flash:4,phono:2,ran:1},
+    {id:'mixte',name:'Mixte',desc:'Combinaison phonologique + surface',flash:4,phono:3,ran:2},
+    {id:'ortho',name:'Dysorthographie',desc:'Difficultés orthographe/accords',flash:5,phono:2,ran:1},
+    {id:'ran',name:'RAN lent',desc:'Déficit dénomination rapide',flash:2,phono:1,ran:4},
+    {id:'double',name:'Double déficit',desc:'Phonologique + RAN',flash:3,phono:3,ran:4},
+    {id:'comp',name:'Compréhension',desc:'Difficultés inférences/vocabulaire',flash:3,phono:2,ran:2},
+    {id:'memo',name:'Mémoire travail',desc:'Rétention/manipulation faible',flash:2,phono:3,ran:3},
+    {id:'eva',name:'Visuo-attention',desc:'Empan EVA faible',flash:4,phono:2,ran:3},
+    {id:'fluence',name:'Fluence',desc:'Lecture lente mais précise',flash:5,phono:2,ran:4},
+];
+
+/* ==============================================================
+   PID — Progression Intelligente Dynamique
+   ============================================================== */
+class PID {
+    constructor(tp,base=2){
+        this.tp=tp; this.lv=base; this.base=base;
+        this.cur={n:0,ok:0,rok:0,at:0}; // Current session
+        this.hist=[]; // History sessions {d:date,n:total,ok:correct,taux:%,at:avg time,lv:level}
+        this.t0=0;
+    }
+    start(){ this.t0=Date.now(); this.cur={n:0,ok:0,rok:0,at:0}; }
+    resp(ok,ms){
+        this.cur.n++; if(ok)this.cur.ok++;
+        if(ok)this.cur.rok++;else this.cur.rok=0;
+        this.cur.at=((this.cur.at*(this.cur.n-1))+ms)/this.cur.n;
+        const a=this.adj(); return {a:a,iA:this.iA,dA:this.dA};
+    }
+    end(){
+        const s={d:new Date().toISOString(),n:this.cur.n,ok:this.cur.ok,taux:this.cur.ok/this.cur.n,at:Math.round(this.cur.at),lv:this.lv};
+        this.hist.push(s);
+        const r={s:s,lv:this.lv,iA:this.iA,dA:this.dA,totalMs:Date.now()-this.t0};
+        return r;
+    }
+    adj(){
+        const t=this.cur.ok/this.cur.n;
+        const a=this.cur.rok>=4?'↑':this.cur.rok<=-3?'↓':'-';
+        this.lv=Math.max(1,Math.min(6,this.lv+(a==='↑'?1:a==='↓'?-1:0)));
+        this.iA=a; this.dA=this.detAnom();
+        return a;
+    }
+    detAnom(){
+        if(this.hist.length<3)return '';
+        const lh=this.hist.slice(-3).map(h=>h.taux);
+        if(lh.every(r=>r<0.5))return 'regress';
+        if(Math.max(...lh)-Math.min(...lh)<0.1)return 'plateau';
+        return '';
+    }
+    toJ(){return {lv:this.lv,base:this.base,hist:this.hist};}
+    static fromJ(j){const p=new PID();p.lv=j.lv;p.base=j.base;p.hist=j.hist;return p;}
+}
+
+/* ==============================================================
+   APP STATE
+   ============================================================== */
+let A={
+    prof:null, name:'',
+    pF:new PID('flash'), pP:new PID('phono'), pR:new PID('ran'),
+    fOn:false, fItems:[], fIdx:0, fT:0, fT0:0,
+    phOn:false, phItems:[], phIdx:0, phT:0,
+    rOn:false, rMode:'', rGrid:[], rIdx:0, rT0:0, rItemT:0, rRec:null,
+};
+
+const SKEY='dys_exo_v3';
+const E=['Bonne continuation !','Super !','Génial !','Parfait !','Bien joué !','Excellent !','Bravo !','Top !'];
+const D=['Essaie encore !','Presque !','Réessaie !','Concentre-toi !','Pas grave !','Continue !'];
+
+/* ==============================================================
+   INIT
+   ============================================================== */
+function init(){
+    renderProfs();
+    chkSaved();
+    if(location.search.includes('imp=')){
+        // Import from test
+        const p=decodeURIComponent(location.search.split('imp=')[1]);
+        try{
+            const d=JSON.parse(atob(p));
+            A.prof=PROFILES.find(pr=>pr.id===d.prof);
+            if(d.name)A.name=d.name;
+            if(d.flash)A.pF.base=d.flash; if(d.phono)A.pP.base=d.phono; if(d.ran)A.pR.base=d.ran;
+            document.getElementById('importBanner').innerHTML=`<div class="card" style="background:rgba(165,243,252,.1);border:1px solid rgba(34,211,238,.25);color:var(--cyan);margin-bottom:16px">
+                <h4>📥 Import du test</h4><p>Profil : ${A.prof.name} · Niveaux ajustés : Flash ${A.pF.base}, Phono ${A.pP.base}, RAN ${A.pR.base}</p></div>`;
+            document.getElementById('importBanner').style.display='';
+            document.getElementById('manualProfileCard').style.display='none';
+            document.getElementById('inpName').value=A.name;
+            document.getElementById('btnLaunch').disabled=false;
+            const badge=document.getElementById('childBadge');
+            badge.textContent='👤 '+A.name; badge.style.display='';
+        }catch(e){}
+    }
+    refreshDash();
+}
+
+function renderProfs(){
+    const g=document.getElementById('profGrid');
+    g.innerHTML=PROFILES.map((p,i)=>`<div class="pbtn" onclick="selProf(${i})">
+        <div class="pn">${p.name}</div><div class="pd">${p.desc}</div></div>`).join('');
+}
+
+function selProf(i){
+    A.prof=PROFILES[i];
+    A.pF.base=PROFILES[i].flash||2; A.pP.base=PROFILES[i].phono||2; A.pR.base=PROFILES[i].ran||2;
+    document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('sel'));
+    document.querySelectorAll('.pbtn')[i].classList.add('sel');
+    document.getElementById('btnLaunch').disabled=false;
+}
+
+function launch(){
+    A.name=document.getElementById('inpName').value.trim()||'Enfant';
+    const badge=document.getElementById('childBadge');
+    badge.textContent='👤 '+A.name; badge.style.display='';
+    document.getElementById('setupHero').style.display='none';
+    document.getElementById('manualProfileCard').style.display='none';
+    document.getElementById('importBanner').style.display='none';
+    document.getElementById('btnLaunch').style.display='none';
+    save();
+    go('flash');
+}
+
+function go(p){
+    document.querySelectorAll('.panel').forEach(e=>e.classList.remove('active'));
+    document.getElementById('p-'+p).classList.add('active');
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab')[['setup','flash','phono','ran','dash'].indexOf(p)].classList.add('active');
+    if(p==='dash')refreshDash();
+}
+
+function enc(ok,rok){
+    return ok?E[Math.min(rok,E.length-1)]:D[Math.floor(Math.random()*D.length)];
+}
+
+/* ==============================================================
+   FLASH
+   ============================================================== */
+function flashGo(){
+    if(!A.prof){alert('Choisis un profil');return;}
+    A.fOn=true; A.fIdx=0; A.fT0=Date.now();
+    A.pF.start();
+    // Build item list
+    buildFlashItems();
+    document.getElementById('fStart').style.display='none';
+    document.getElementById('fStop').style.display='';
+    document.getElementById('fSum').style.display='none';
+    document.getElementById('fEnc').textContent='';
+    updFLvl(); nextFlash();
+}
+
+function flashEnd(){
+    A.fOn=false; clearTimeout(A.fT);
+    const r=A.pF.end(); showFSum(r);
+    document.getElementById('fStart').style.display='';
+    document.getElementById('fStop').style.display='none';
+    save();
+}
+
+function buildFlashItems(){
+    const lv=A.pF.lv;
+    // Merge words from current level ± 1
+    const levels=[Math.max(1,lv-1),lv,Math.min(6,lv+1)];
+    let pool=[];
+    levels.forEach(l=>{ if(WDB[l]) pool=pool.concat(WDB[l].words.map(w=>({w:w,lv:l,type:WDB[l].type}))); });
+    // Shuffle and take 20
+    pool.sort(()=>Math.random()-.5);
+    A.fItems=pool.slice(0,20);
+}
+
+function nextFlash(){
+    if(!A.fOn)return;
+    if(A.fIdx>=A.fItems.length){flashEnd();return;}
+    const item=A.fItems[A.fIdx];
+    const z=document.getElementById('fZone');
+    // Generate choices: correct + 3 wrong (similar length/phonology)
+    let wrong=[...regularWords,...irregularWords,...pseudoWords].filter(w=>w!==item.w&&w.length===item.w.length).sort(()=>Math.random()-.5).slice(0,3);
+    const opts=[item.w,...wrong].sort(()=>Math.random()-.5);
+    z.innerHTML=`<div class="flash-word">${item.w}</div>
+        <div class="flash-choices">${opts.map(o=>`<button class="fc" onclick="fAns('${item.w.replace(/'/g,"\\'")}',this)">${o}</button>`).join('')}</div>`;
+    A.fT=setTimeout(()=>{ document.querySelector('.flash-word').style.opacity=0; },1200);
+    A.fIdx++; updFStats();
+}
+
+function fAns(correct,btn){
+    if(!A.fOn)return;
+    const chose=btn.textContent, ok=chose===correct;
+    document.querySelectorAll('.fc').forEach(b=>{ b.style.pointerEvents='none'; if(b.textContent===correct)b.classList.add('ok'); if(b===btn&&!ok)b.classList.add('ko'); });
+    const ms=Date.now()-A.fT0;
+    const pr=A.pF.resp(ok,ms); A.fT0=Date.now();
+    document.getElementById('fEnc').textContent=enc(ok,A.pF.cur.rok);
+    updFLvl(); updFStats();
+    clearTimeout(A.fT);
+    setTimeout(()=>{
+        if(pr.a!=='-'){
+            // Level changed — rebuild items
+            buildFlashItems();
+            A.fIdx=0;
+        }
+        nextFlash();
+    },800);
+}
+
+function updFStats(){
+    const c=A.pF.cur;
+    sv('fS1',c.ok); sv('fS2',c.n);
+    const p=c.n>0?Math.round(c.ok/c.n*100)+'%':'—'; sv('fS3',p);
+    const t=c.n>0?c.ok/c.n:null;
+    sc('fS3',t===null?'':t>=.7?'ok':t>=.5?'mid':'bad');
+}
+function updFLvl(){ document.getElementById('fLvl').textContent=`Niv. ${A.pF.lv} (base ${A.pF.base})`; }
+
+function showFSum(r){ showSum('fSum','⚡ Flash',r,'flashGo'); }
+
+/* ==============================================================
+   PHONOLOGIE
+   ============================================================== */
+function phonoGo(){
+    if(!A.prof){alert('Choisis un profil');return;}
+    A.pP.start(); A.phOn=true; A.phIdx=0;
+    // Build item list based on level
+    buildPhonoItems();
+    document.getElementById('pStart').style.display='none';
+    document.getElementById('pStop').style.display='';
+    document.getElementById('pSum').style.display='none';
+    document.getElementById('pEnc').textContent='';
+    updPLvl(); nextPhono();
+}
+
+function phonoEnd(){
+    A.phOn=false; clearTimeout(A.phT);
+    const r=A.pP.end(); showPSum(r);
+    document.getElementById('pStart').style.display='';
+    document.getElementById('pStop').style.display='none';
+    save();
+}
+
+function buildPhonoItems(){
+    const lv=A.pP.lv;
+    // Merge items from current level ± 1
+    const levels=[Math.max(1,lv-1),lv,Math.min(6,lv+1)];
+    let pool=[];
+    levels.forEach(l=>{ if(PHONO_DB[l]) pool=pool.concat(PHONO_DB[l].items.map(it=>({...it,lv:l,type:PHONO_DB[l].type,label:PHONO_DB[l].label}))); });
+    // Shuffle and take 15
+    pool.sort(()=>Math.random()-.5);
+    A.phItems=pool.slice(0,15);
+}
+
+function nextPhono(){
+    if(!A.phOn)return;
+    if(A.phIdx>=A.phItems.length){phonoEnd();return;}
+    const item=A.phItems[A.phIdx];
+    const z=document.getElementById('pZone');
+
+    // Use speech synthesis for prompt
+    const canSpeak=('speechSynthesis' in window);
+
+    let opts=[item.answer,...item.wrong.slice(0,3)].sort(()=>Math.random()-.5);
+
+    let h='';
+    if(canSpeak) h+=`<div class="phono-speaker" onclick="speak('${item.prompt.replace(/'/g,"\\'")}')">🔊</div>`;
+    h+=`<div class="phono-prompt">${item.label}</div>`;
+    h+=`<div class="phono-question">${item.prompt}</div>`;
+    h+=`<div class="phono-choices">${opts.map(o=>`<button class="pc" data-w="${o}" onclick="phAns(this,'${item.answer.replace(/'/g,"\\'")}')"> ${o}</button>`).join('')}</div>`;
+    z.innerHTML=h;
+
+    if(canSpeak) speak(item.prompt);
+
+    A.phIdx++; updPStats();
+}
+
+function phAns(btn,correct){
+    if(!A.phOn)return;
+    const chose=btn.dataset.w, ok=chose===correct;
+    document.querySelectorAll('.pc').forEach(b=>{ b.style.pointerEvents='none'; if(b.dataset.w===correct)b.classList.add('ok'); if(b===btn&&!ok)b.classList.add('ko'); });
+    const pr=A.pP.resp(ok,0);
+    document.getElementById('pEnc').textContent=enc(ok,A.pP.cur.rok);
+    updPLvl(); updPStats();
+    setTimeout(()=>{
+        if(pr.a!=='-'){
+            // Level changed — rebuild items
+            buildPhonoItems();
+            A.phIdx=0;
+        }
+        nextPhono();
+    },800);
+}
+
+function speak(text){
+    try{
+        speechSynthesis.cancel();
+        const u=new SpeechSynthesisUtterance(text);
+        u.lang='fr-FR'; u.rate=0.85; u.pitch=1;
+        speechSynthesis.speak(u);
+    }catch(e){}
+}
+
+function updPStats(){
+    const c=A.pP.cur;
+    sv('pS1',c.ok); sv('pS2',c.n);
+    const p=c.n>0?Math.round(c.ok/c.n*100)+'%':'—'; sv('pS3',p);
+    const t=c.n>0?c.ok/c.n:null;
+    sc('pS3',t===null?'':t>=.7?'ok':t>=.5?'mid':'bad');
+}
+function updPLvl(){ document.getElementById('pLvl').textContent=`Niv. ${A.pP.lv} (base ${A.pP.base})`; }
+function showPSum(r){ showSum('pSum','🔤 Phono',r,'phonoGo'); }
+
+/* ==============================================================
+   RAN VOCAL
+   ============================================================== */
+function ranGo(mode){
+    if(!A.prof){alert('Choisis un profil');return;}
+    A.rMode=mode; A.pR.start(); A.rOn=true; A.rIdx=0; A.rT0=Date.now(); A.rItemT=Date.now();
+
+    const lv=A.pR.lv;
+    const cfg=RAN_LVL[Math.min(lv,6)]||RAN_LVL[1];
+    const colors=RAN_C.slice(0,cfg.nc);
+    A.rGrid=[]; for(let i=0;i<cfg.sz;i++) A.rGrid.push({...colors[Math.floor(Math.random()*colors.length)],_r:null});
+
+    document.getElementById('rStart').style.display='none';
+    document.getElementById('rStartM').style.display='none';
+    document.getElementById('rStop').style.display='';
+    document.getElementById('rSum').style.display='none';
+    document.getElementById('rEnc').textContent='';
+    updRLvl(); renderRan();
+
+    if(mode==='voice') startVR();
+}
+
+function ranEnd(){
+    A.rOn=false;
+    if(A.rRec){try{A.rRec.stop();}catch(e){} A.rRec=null;}
+    const total=Date.now()-A.rT0;
+    const r=A.pR.end(); r.totalMs=total;
+    showRSum(r);
+    document.getElementById('rStart').style.display='';
+    document.getElementById('rStartM').style.display='';
+    document.getElementById('rStop').style.display='none';
+    save();
+}
+
+function renderRan(){
+    const z=document.getElementById('rZone');
+    const lv=A.pR.lv;
+    const cfg=RAN_LVL[Math.min(lv,6)]||RAN_LVL[1];
+    let h=`<div class="ran-grid" style="grid-template-columns:repeat(${cfg.cols},1fr)">`;
+    A.rGrid.forEach((c,i)=>{
+        const st=i<A.rIdx?'done':i===A.rIdx?'cur':'';
+        const rs=c._r===true?'ok-c':c._r===false?'ko-c':'';
+        if(A.rMode==='click'&&i===A.rIdx&&A.rOn){
+            h+=`<div class="rc ${c.c} ${st} ${rs}" onclick="rClick('${c.n}',${i})" style="cursor:pointer">●</div>`;
+        } else {
+            h+=`<div class="rc ${c.c} ${st} ${rs}">●</div>`;
+        }
+    });
+    h+='</div>';
+    if(A.rMode==='voice') h+=`<div class="voice-st on" id="vSt"><span class="pulse"></span>Écoute... dis la couleur !</div><div class="heard" id="hWord"></div>`;
+    else h+=`<div class="voice-st off">Mode clic — clique sur la couleur affichée puis sur la bonne en dessous</div>`;
+
+    // Click mode: show color buttons
+    if(A.rMode==='click'&&A.rOn&&A.rIdx<A.rGrid.length){
+        const cfg2=RAN_LVL[Math.min(lv,6)]||RAN_LVL[1];
+        const colors=RAN_C.slice(0,cfg2.nc);
+        h+=`<div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">`;
+        colors.forEach(cc=>{
+            h+=`<button class="btn btn-sm" style="min-width:70px;background:${cc.c==='c-jaune'?'#eab308':cc.c==='c-blanc'?'#f1f5f9':cc.c==='c-noir'?'#1e1e1e':''};color:${cc.c==='c-jaune'||cc.c==='c-blanc'?'#1e1e1e':'white'};border:2px solid var(--border)" onclick="rClick('${cc.n}',${A.rIdx})">${cc.n}</button>`;
+        });
+        h+=`</div>`;
+    }
+
+    z.innerHTML=h;
+    updRStats();
+}
+
+function rClick(name,idx){
+    if(!A.rOn||idx!==A.rIdx)return;
+    processRan(name);
+}
+
+function processRan(heard){
+    if(!A.rOn||A.rIdx>=A.rGrid.length)return;
+    const exp=A.rGrid[A.rIdx].n;
+    const ok=normC(heard)===exp;
+    A.rGrid[A.rIdx]._r=ok;
+    const ms=Date.now()-A.rItemT;
+    A.pR.resp(ok,ms);
+    A.rIdx++; A.rItemT=Date.now();
+    document.getElementById('rEnc').textContent=enc(ok,A.pR.cur.rok);
+
+    if(A.rIdx>=A.rGrid.length){ ranEnd(); return; }
+    updRLvl(); renderRan();
+    // Remove restartVR() to avoid restarting recognition
+    updRStats();
+}
+
+function normC(t){
+    const s=(t||'').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if(s.includes('rouge')||s.includes('ouge'))return 'rouge';
+    if(s.includes('bleu')||s.includes('bleue'))return 'bleu';
+    if(s.includes('vert')||s.includes('verre')||s.includes('vair'))return 'vert';
+    if(s.includes('jaune')||s.includes('jone'))return 'jaune';
+    if(s.includes('noir')||s.includes('noire'))return 'noir';
+    if(s.includes('rose')||s.includes('roz'))return 'rose';
+    if(s.includes('orange')||s.includes('oronge'))return 'orange';
+    if(s.includes('marron')||s.includes('maron'))return 'marron';
+    if(s.includes('violet')||s.includes('viole'))return 'violet';
+    if(s.includes('blanc')||s.includes('blan'))return 'blanc';
+    return s;
+}
+
+function updRStats(){
+    const c=A.pR.cur;
+    sv('rS1',c.ok); sv('rS2',c.n);
+    sv('rS3',((Date.now()-A.rT0)/1000).toFixed(1)+'s');
+}
+function updRLvl(){ document.getElementById('rLvl').textContent=`Niv. ${A.pR.lv} (base ${A.pR.base})`; }
+function showRSum(r){
+    const d=document.getElementById('rSum');
+    const s=r.s, pct=Math.round(s.taux*100), ts=(r.totalMs/1000).toFixed(1);
+    const pi=s.n>0?((r.totalMs/s.n)/1000).toFixed(2):'—';
+    const cl=s.taux>=.7?'up':s.taux<.5?'dn':'eq';
+    d.innerHTML=`<div class="card" style="margin-top:14px">
+        <h3>📊 Résumé RAN</h3>
+        <div class="sum-grid">
+            <div class="sum-s"><div class="v" style="color:${s.taux>=.7?'var(--green)':'var(--orange)'}">${pct}%</div><div class="l">Précision</div></div>
+            <div class="sum-s"><div class="v">${ts}s</div><div class="l">Temps total</div></div>
+            <div class="sum-s"><div class="v">${pi}s</div><div class="l">Par item</div></div>
+        </div>
+        <div class="pid-adj ${cl}"><strong>PID</strong> ${s.taux>=.7?'✓ Bon':s.taux<.5?'↓ Ajusté':'→ Stable'} · Prochain : Niv.${r.lv}</div>
+        <div class="btn-row" style="margin-top:14px">
+            <button class="btn btn-ok" onclick="ranGo('${A.rMode}')">🔄 Encore</button>
+            <button class="btn btn-out" onclick="go('dash')">📊 Stats</button>
+        </div></div>`;
+    d.style.display='block';
+}
+
+/* ==============================================================
+   VOICE RECOGNITION
+   ============================================================== */
+function startVR(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){
+        const vs=document.getElementById('vSt');
+        if(vs){vs.className='voice-st err';vs.textContent='❌ Non supporté — passez en mode clic';}
+        A.rMode='click'; renderRan(); return;
+    }
+    A.rRec=new SR(); A.rRec.lang='fr-FR'; A.rRec.continuous=true; A.rRec.interimResults=true; A.rRec.maxAlternatives=5;
+    A.rItemT=Date.now();
+
+    A.rRec.onresult=(ev)=>{
+        let best='';
+        for(let i=ev.resultIndex;i<ev.results.length;i++){
+            for(let j=0;j<ev.results[i].length;j++){
+                const tr=ev.results[i][j].transcript.toLowerCase().trim();
+                for(const c of RAN_C){
+                    if(normC(tr)===c.n){best=c.n;break;}
+                }
+                if(best)break;
+            }
+            if(best&&ev.results[i].isFinal)break;
+            if(!best&&ev.results[i].isFinal) best=ev.results[i][0].transcript;
+        }
+        if(best){
+            const hw=document.getElementById('hWord'); if(hw)hw.textContent='→ '+best;
+            if(ev.results[ev.resultIndex].isFinal) processRan(best);
+        }
+    };
+    A.rRec.onerror=(e)=>{ if(A.rOn&&(e.error==='no-speech'||e.error==='aborted'))restartVR(); };
+    A.rRec.onend=()=>{ if(A.rOn)restartVR(); };
+    try{A.rRec.start();}catch(e){}
+}
+
+function restartVR(){
+    if(!A.rOn||!A.rRec)return;
+    try{A.rRec.stop();}catch(e){}
+    setTimeout(()=>{ if(!A.rOn)return; try{A.rRec.start();}catch(e){} },80);
+}
+
+/* ==============================================================
+   SUMMARY (generic)
+   ============================================================== */
+function showSum(divId,label,r,restartFn){
+    const d=document.getElementById(divId);
+    const s=r.s, pct=Math.round(s.taux*100);
+    const iM=r.iA==='↑'?'📈 Niveau de base augmenté':r.iA==='↓'?'📉 Niveau de base diminué':'';
+    const dM=r.dA==='plateau'?'⚠️ Plateau détecté — varier les exercices':r.dA==='regress'?'🚨 Régression — vérifier fatigue/motivation':'';
+    const cl=s.taux>=.7?'up':s.taux<.5?'dn':'eq';
+    const pm=s.taux>=.7?'✓ Bonne session — niveau maintenu ou augmenté':s.taux<.5?'↓ Session difficile — ajusté à la baisse':'→ Dans la cible — stable';
+    d.innerHTML=`<div class="card" style="margin-top:14px">
+        <h3>📊 ${label}</h3>
+        <div class="sum-grid">
+            <div class="sum-s"><div class="v" style="color:${s.taux>=.7?'var(--green)':s.taux>=.5?'var(--orange)':'var(--red)'}">${pct}%</div><div class="l">Réussite</div></div>
+            <div class="sum-s"><div class="v">${s.n}</div><div class="l">Items</div></div>
+            <div class="sum-s"><div class="v">${s.at}ms</div><div class="l">Temps moyen</div></div>
+        </div>
+        <div class="pid-adj ${cl}"><strong>PID</strong> ${pm}</div>
+        ${iM?`<div class="pid-adj eq" style="margin-top:6px"><strong>I</strong> ${iM}</div>`:''}
+        ${dM?`<div class="pid-adj dn" style="margin-top:6px"><strong>D</strong> ${dM}</div>`:''}
+        <div class="btn-row" style="margin-top:14px">
+            <button class="btn btn-ok" onclick="${restartFn}()">🔄 Encore</button>
+            <button class="btn btn-out" onclick="go('dash')">📊 Stats</button>
+        </div></div>`;
+    d.style.display='block';
+}
+
+/* ==============================================================
+   PERSISTENCE
+   ============================================================== */
+function save(){
+    try{localStorage.setItem(SKEY,JSON.stringify({prof:A.prof?A.prof.id:null,name:A.name,pF:A.pF.toJ(),pP:A.pP.toJ(),pR:A.pR.toJ(),ts:new Date().toISOString()}));}catch(e){}
+}
+
+function chkSaved(){
+    try{
+        const raw=localStorage.getItem(SKEY); if(!raw)return;
+        const d=JSON.parse(raw);
+        const fc=d.pF&&d.pF.hist?d.pF.hist.length:0;
+        const pc=d.pP&&d.pP.hist?d.pP.hist.length:0;
+        const rc=d.pR&&d.pR.hist?d.pR.hist.length:0;
+        document.getElementById('savedInfo').textContent=`${d.name||'Enfant'} · ${fc} Flash · ${pc} Phono · ${rc} RAN · ${new Date(d.ts).toLocaleDateString('fr-FR')}`;
+    }catch(e){}
+}
+
+function doLoad(){
+    try{
+        const raw=localStorage.getItem(SKEY);if(!raw){alert('Rien à charger');return;}
+        const d=JSON.parse(raw);
+        A.prof=PROFILES.find(p=>p.id===d.prof);
+        A.name=d.name||'';
+        A.pF=PID.fromJ(d.pF); A.pP=PID.fromJ(d.pP); A.pR=PID.fromJ(d.pR);
+        document.getElementById('inpName').value=A.name;
+        document.querySelectorAll('.pbtn').forEach((b,i)=>{if(PROFILES[i].id===d.prof){b.classList.add('sel');document.getElementById('btnLaunch').disabled=false;}});
+        const badge=document.getElementById('childBadge');
+        badge.textContent='👤 '+A.name; badge.style.display='';
+        alert(`Chargé : ${A.pF.hist.length+A.pP.hist.length+A.pR.hist.length} sessions`);
+    }catch(e){alert('Erreur de chargement');}
+}
+
+function doReset(){
+    if(!confirm('Effacer toute la progression ?'))return;
+    localStorage.removeItem(SKEY);
+    A.pF=new PID('flash'); A.pP=new PID('phono'); A.pR=new PID('ran');
+    document.getElementById('savedInfo').textContent='Aucune session.';
+}
+
+function doExport(){
+    const d={profile:A.prof,child:A.name,flash:A.pF.toJ(),phono:A.pP.toJ(),ran:A.pR.toJ(),exported:new Date().toISOString()};
+    const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+    const u=URL.createObjectURL(b);
+    const a=document.createElement('a');a.href=u;a.download=`progression_${A.name||'enfant'}_${new Date().toISOString().slice(0,10)}.json`;a.click();
+    URL.revokeObjectURL(u);
+}
+
+/* ==============================================================
+   UTILS
+   ============================================================== */
+function sv(id,v){const e=document.getElementById(id);if(e)e.querySelector('.v').textContent=v;}
+function sc(id,c){const e=document.getElementById(id);if(e){e.className='st';if(c)e.classList.add(c);}}
+
+/* ==============================================================
+   GO
+   ============================================================== */
+init();
+</script>
+</body>
+</html>
