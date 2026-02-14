@@ -1,0 +1,2711 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen BAPD A2 — Examen + Renforcement</title>
+    <style>
+        /* ===================================================================
+           CSS EXAMEN (source originale adaptee theme sombre)
+           =================================================================== */
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0;
+            background: #0b1120;
+            color: #c8d6e5;
+        }
+        ::selection { background: #f0c040; color: #0b1120; }
+
+        /* === NAVIGATION TABS === */
+        .topbar {
+            background: #0f1a2e;
+            border-bottom: 2px solid #1a2a4a;
+            padding: 10px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .topbar .logo {
+            color: #f0c040;
+            font-weight: 800;
+            font-size: .95em;
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+        .nav-tab {
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: .82em;
+            border: 1px solid #1a2a4a;
+            background: #0b1120;
+            color: #7a8ba5;
+            transition: .2s;
+            white-space: nowrap;
+        }
+        .nav-tab:hover { border-color: #3a5a8a; color: #c8d6e5; }
+        .nav-tab.active { background: #1a2a4a; color: #f0c040; border-color: #f0c040; font-weight: 700; }
+        .nav-tab .badge {
+            display: inline-block;
+            font-size: .7em;
+            padding: 1px 6px;
+            border-radius: 10px;
+            margin-left: 4px;
+            vertical-align: middle;
+            background: #3a4a6a;
+            color: #8a9ab5;
+        }
+        .nav-tab .badge.done { background: #27ae60; color: #fff; }
+        .nav-sep { width: 1px; height: 24px; background: #1a2a4a; margin: 0 6px; }
+
+        /* === CONTAINER === */
+        .main-container { padding: 20px; }
+
+        /* === VIEWS (exam / renforcement modules) === */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* === EXAM HEADER === */
+        .exam-header {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .exam-header h1 { margin: 0 0 10px 0; font-size: 1.6em; }
+        .exam-header p { margin: 5px 0; opacity: 0.9; font-size: 0.95em; }
+        .info-box {
+            background: #111d33;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2d5a87;
+        }
+        .timer {
+            background: #1e3a5f;
+            color: #f0c040;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .timer.warning { background: #5a1515; color: #ff6b6b; }
+        .bank-info {
+            background: #0f2a15;
+            border: 1px solid #1a4a2a;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #7ac88a;
+        }
+
+        /* === QUESTIONS (shared) === */
+        .question {
+            background: #111d33;
+            border: 1px solid #1a2a4a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: border-color .3s;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .question-number {
+            background: #1a2a4a;
+            color: #5dade2;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .question-theme {
+            font-size: 0.8em;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        .theme-meteo { background: #0d253f; color: #5dade2; border: 1px solid #1a3a5a; }
+        .theme-perf { background: #2a1a08; color: #f0a030; border: 1px solid #4a3018; }
+        .theme-risque { background: #2a0818; color: #e06080; border: 1px solid #4a1828; }
+        .question-text {
+            font-size: 1.05em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            color: #dde6ef;
+        }
+        .choices { display: flex; flex-direction: column; gap: 10px; }
+        .choice {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 15px;
+            background: #0b1120;
+            border: 2px solid #1a2a4a;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .choice:hover { border-color: #3a5a8a; background: #0f1a2e; }
+        .choice.selected { border-color: #5dade2; background: #0f1a3e; }
+        .choice.correct { border-color: #27ae60 !important; background: #0f2a15 !important; }
+        .choice.incorrect { border-color: #e74c3c !important; background: #2a0f15 !important; }
+        .choice.was-correct { border-color: #27ae60 !important; background: #0f2a15 !important; }
+        .choice input { margin-right: 12px; margin-top: 3px; accent-color: #f0c040; }
+        .choice label { cursor: pointer; flex: 1; }
+        /* renfort quiz uses these too */
+        .choice.locked { pointer-events: none; }
+        .choice.show-correct { border-color: #27ae60 !important; background: #0f2a15 !important; }
+        .explanation {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #1a1a10;
+            border-left: 4px solid #f0c040;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95em;
+            color: #d4c87a;
+            line-height: 1.5;
+        }
+        .explanation.visible { display: block; }
+
+        /* === RENFORT BUTTON (on wrong exam answers) === */
+        .renfort-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 18px;
+            background: #1a2a4a;
+            color: #f0c040;
+            border: 1px solid rgba(240,192,64,0.4);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: .2s;
+        }
+        .renfort-btn:hover { background: #2a3a5a; border-color: #f0c040; }
+
+        /* === RESULTS === */
+        .results {
+            display: none;
+            background: #111d33;
+            border: 1px solid #1a2a4a;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .results.visible { display: block; }
+        .score { font-size: 4em; font-weight: bold; margin: 20px 0; }
+        .score.pass { color: #27ae60; }
+        .score.fail { color: #e74c3c; }
+        .result-details {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .result-item { text-align: center; }
+        .result-item .number { font-size: 2em; font-weight: bold; }
+        .theme-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .theme-stat {
+            background: #0b1120;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            border: 1px solid #1a2a4a;
+        }
+        .theme-stat h4 { margin: 0 0 10px 0; color: #c8d6e5; }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #1a2a4a;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-fill { height: 100%; border-radius: 5px; }
+
+        /* === BUTTONS === */
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .2s;
+        }
+        .btn-primary { background: #f0c040; color: #0b1120; }
+        .btn-primary:hover { background: #f5d060; }
+        .btn-secondary { background: #1a2a4a; color: #5dade2; border: 1px solid #3a5a8a; }
+        .btn-secondary:hover { background: #1a3a5a; }
+
+        /* ===================================================================
+           CSS RENFORCEMENT (source originale)
+           =================================================================== */
+        .cours {
+            background: #111d33;
+            border: 1px solid #1a2a4a;
+            border-radius: 12px;
+            padding: 26px 28px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        .cours h2 {
+            color: #f0c040;
+            font-size: 1.3em;
+            margin: 0 0 14px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1a2a4a;
+        }
+        .cours h3 {
+            color: #5dade2;
+            font-size: 1em;
+            margin: 16px 0 8px;
+        }
+        .cours table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 0.88em;
+        }
+        .cours th {
+            background: #162040;
+            color: #f0c040;
+            text-align: left;
+            padding: 7px 10px;
+            border: 1px solid #1a2a4a;
+        }
+        .cours td {
+            padding: 7px 10px;
+            border: 1px solid #1a2a4a;
+            vertical-align: top;
+        }
+        .cours tr:nth-child(even) td { background: #0f1828; }
+        .cours .code { color: #f0c040; font-weight: 700; font-family: Consolas, monospace; }
+        .cours .important {
+            background: #1a2510;
+            border-left: 3px solid #27ae60;
+            padding: 8px 12px;
+            border-radius: 0 6px 6px 0;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        .cours .warning {
+            background: #2a1a10;
+            border-left: 3px solid #e67e22;
+            padding: 8px 12px;
+            border-radius: 0 6px 6px 0;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        .cours ul { padding-left: 18px; margin: 5px 0; }
+        .cours li { margin: 2px 0; }
+
+        /* Renfort quiz area */
+        .quiz-area { display: none; }
+        .quiz-area.visible { display: block; }
+
+        .question-card {
+            background: #111d33;
+            border: 1px solid #1a2a4a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 14px;
+            transition: border-color .3s;
+        }
+        .question-card.answered-correct { border-color: #27ae60; }
+        .question-card.answered-wrong { border-color: #e74c3c; }
+        .q-num { color: #5dade2; font-size: .85em; font-weight: 700; margin-bottom: 10px; }
+        .q-text { font-size: 1.02em; margin-bottom: 14px; line-height: 1.5; color: #dde6ef; }
+
+        .score-bar {
+            background: #111d33;
+            border: 1px solid #1a2a4a;
+            border-radius: 10px;
+            padding: 14px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .score-bar .round { color: #5dade2; font-size: .9em; }
+        .score-bar .status { font-size: 1.05em; font-weight: 700; }
+        .score-bar .status.pass { color: #27ae60; }
+        .score-bar .status.fail { color: #e74c3c; }
+        .progress-track {
+            flex: 1;
+            min-width: 100px;
+            height: 8px;
+            background: #1a2a4a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-track .progress-fill {
+            height: 100%;
+            background: #f0c040;
+            border-radius: 4px;
+            transition: width .4s;
+        }
+
+        .victory {
+            text-align: center;
+            padding: 30px 16px;
+        }
+        .victory h2 { color: #27ae60; font-size: 1.4em; margin-bottom: 6px; }
+        .victory p { color: #7a8ba5; }
+        .victory .icon { font-size: 2em; }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .btn-validate {
+            background: #f0c040;
+            color: #0b1120;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-size: .95em;
+        }
+        .btn-validate:hover { background: #f5d060; }
+        .btn-retry {
+            background: #1a2a4a;
+            color: #5dade2;
+            border: 1px solid #3a5a8a;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: .95em;
+        }
+        .btn-retry:hover { background: #1a3a5a; }
+        .btn-cours {
+            background: #162040;
+            color: #f0c040;
+            border: 1px solid rgba(240,192,64,0.2);
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: .95em;
+        }
+        .btn-cours:hover { background: #1a2a50; }
+        .btn-back {
+            background: #0b1120;
+            color: #7a8ba5;
+            border: 1px solid #1a2a4a;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: .9em;
+        }
+        .btn-back:hover { color: #c8d6e5; border-color: #3a5a8a; }
+
+        footer {
+            text-align: center;
+            color: #3a4a6a;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        @media(max-width:600px) {
+            .main-container { padding: 10px; }
+            .cours { padding: 16px 14px; }
+            .topbar { padding: 8px 10px; }
+            .nav-tab { padding: 5px 8px; font-size: .75em; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================================================================ -->
+<!-- NAVIGATION -->
+<!-- ================================================================ -->
+<div class="topbar">
+    <span class="logo">BAPD A2</span>
+    <div class="nav-tab active" id="tabExam" onclick="showView('exam')">Examen</div>
+    <div class="nav-sep"></div>
+    <div class="nav-tab" id="tabR0" onclick="showView('r0')">Codes Q <span class="badge" id="badge0">—</span></div>
+    <div class="nav-tab" id="tabR1" onclick="showView('r1')">TEMSI <span class="badge" id="badge1">—</span></div>
+    <div class="nav-tab" id="tabR2" onclick="showView('r2')">METAR/TAF <span class="badge" id="badge2">—</span></div>
+    <div class="nav-tab" id="tabR3" onclick="showView('r3')">Espaces <span class="badge" id="badge3">—</span></div>
+</div>
+
+<div class="main-container">
+
+<!-- ================================================================ -->
+<!-- VIEW: EXAMEN -->
+<!-- ================================================================ -->
+<div class="view active" id="viewExam">
+
+    <div class="exam-header">
+        <h1>Examen Blanc BAPD A2</h1>
+        <p>Banque de 150+ questions - Syllabus EASA AMC1 UAS.OPEN.030(2)(c)</p>
+        <p>30 questions tirees aleatoirement (10 par theme) - 60 min - 75% requis</p>
+    </div>
+
+    <div class="timer" id="timer">60:00</div>
+
+    <div class="bank-info" id="bankInfo">
+        Banque: 174 questions examen + 68 renforcement | Session: 30 questions (10 Meteo equilibrees + 10 Performances + 10 Risques)
+    </div>
+
+    <div class="info-box">
+        <strong>Programme EASA officiel :</strong><br>
+        1. Meteorologie (atmosphere, pression, codes Q, METAR/TAF, nuages, fronts...)<br>
+        2. Performances UAS (enveloppe vol, masse/centrage, batteries, charges)<br>
+        3. Attenuation risques sol (mode basse vitesse, distances, regle 1:1)<br>
+        <br>
+        <span style="color:#f0c040">En cas d'erreur, un bouton <b>Renforcer →</b> apparaitra pour travailler le point faible.</span>
+    </div>
+
+    <div class="results" id="results">
+        <h2>Resultat de l'examen</h2>
+        <div class="score" id="scoreDisplay">0%</div>
+        <div id="passStatus"></div>
+        <div class="result-details">
+            <div class="result-item">
+                <div class="number" id="correctCount" style="color:#27ae60">0</div>
+                <div class="label">Bonnes reponses</div>
+            </div>
+            <div class="result-item">
+                <div class="number" id="wrongCount" style="color:#e74c3c">0</div>
+                <div class="label">Erreurs</div>
+            </div>
+            <div class="result-item">
+                <div class="number" id="timeUsed">--:--</div>
+                <div class="label">Temps utilise</div>
+            </div>
+        </div>
+        <div class="theme-stats" id="themeStats"></div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <div class="buttons">
+        <button class="btn-primary" id="submitBtn" onclick="submitExam()">Valider l'examen</button>
+        <button class="btn-secondary" onclick="resetExam()">Nouvelle session</button>
+    </div>
+
+</div><!-- /viewExam -->
+
+<!-- ================================================================ -->
+<!-- VIEW: RENFORCEMENT 0 — Codes Q -->
+<!-- ================================================================ -->
+<div class="view" id="viewR0">
+<div class="btn-row" style="justify-content:flex-start;margin-bottom:12px"><button class="btn-back" onclick="showView('exam')">&#8592; Retour a l'examen</button></div>
+<div class="cours" id="cours0">
+<h2>Rappel — Codes Q aéronautiques</h2>
+<p>Les codes Q sont un système de communication abrégé hérité de la radiotélégraphie. En aéronautique, ils sont encore très utilisés pour transmettre des informations essentielles.</p>
+
+<h3>Codes Q liés à la pression / altimétrie</h3>
+<table>
+<tr><th>Code</th><th>Signification</th><th>Usage</th></tr>
+<tr><td class="code">QNH</td><td>Pression ramenée au <b>niveau de la mer</b></td><td>Calé sur QNH → altimètre affiche l'<b>altitude AMSL</b> (Above Mean Sea Level). Utilisé en basse altitude.</td></tr>
+<tr><td class="code">QFE</td><td>Pression au niveau de l'<b>aérodrome</b></td><td>Calé sur QFE → altimètre affiche <b>0 au sol</b> de l'aérodrome. Donne la <b>hauteur AAL</b> (Above Aerodrome Level).</td></tr>
+<tr><td class="code">QNE</td><td>Calage standard <b>1013,25 hPa</b></td><td>Au-dessus de l'altitude de transition → affiche les <b>niveaux de vol (FL)</b>. Séparation entre aéronefs.</td></tr>
+</table>
+
+<h3>Codes Q liés à la navigation / orientation</h3>
+<table>
+<tr><th>Code</th><th>Signification</th><th>Moyen mnémotechnique</th></tr>
+<tr><td class="code">QDM</td><td><b>Cap magnétique</b> à suivre pour rejoindre la station (sans vent)</td><td>DM → <b>D</b>irect <b>M</b>agnétique vers la station</td></tr>
+<tr><td class="code">QDR</td><td><b>Relèvement magnétique</b> de l'aéronef VU DEPUIS la station (radial)</td><td>DR → <b>D</b>irection <b>R</b>adiale depuis la station</td></tr>
+<tr><td class="code">QTE</td><td><b>Relèvement vrai</b> (True) de l'aéronef depuis la station</td><td>TE → <b>T</b>rue = vrai (par rapport au Nord géographique)</td></tr>
+<tr><td class="code">QUJ</td><td><b>Cap vrai</b> (True) pour rejoindre la station</td><td>UJ → cap vrai pour <b>U</b>aller vers (<b>J</b>oindre) la station</td></tr>
+</table>
+<div class="important">QDM/QDR = magnétique. QTE/QUJ = vrai (True). QDM/QUJ = vers la station. QDR/QTE = depuis la station.</div>
+
+<h3>Codes Q liés à l'aérodrome</h3>
+<table>
+<tr><th>Code</th><th>Signification</th></tr>
+<tr><td class="code">QFU</td><td><b>Direction magnétique de la piste</b> en service. Ex : QFU 27 = piste orientée 270°</td></tr>
+<tr><td class="code">QNY</td><td>Qualité de la <b>liaison radio</b> (1 = mauvaise, 5 = excellente)</td></tr>
+<tr><td class="code">QFG</td><td>État de la <b>surface de la piste</b> (conditions de freinage)</td></tr>
+</table>
+
+<h3>Autres codes Q fréquents</h3>
+<table>
+<tr><th>Code</th><th>Signification</th></tr>
+<tr><td class="code">QBI</td><td>Vol en conditions <b>IMC</b> (Instrument Meteorological Conditions) obligatoire</td></tr>
+<tr><td class="code">QNH std</td><td>1013,25 hPa = pression ISA au niveau de la mer</td></tr>
+</table>
+<div class="warning">Piège fréquent : QDM ≠ QDR. Le QDM est le cap VERS la station, le QDR est le relèvement DEPUIS la station (c'est le radial, l'inverse du QDM ± 180°).</div>
+</div>
+
+<div class="quiz-area" id="quiz0"></div>
+<div class="btn-row" id="btns0">
+<button class="btn-validate" onclick="startQuiz(0)">Lancer le quiz (5 questions)</button>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- VIEW: RENFORCEMENT 1 — TEMSI -->
+<!-- ================================================================ -->
+<div class="view" id="viewR1">
+<div class="btn-row" style="justify-content:flex-start;margin-bottom:12px"><button class="btn-back" onclick="showView('exam')">&#8592; Retour a l'examen</button></div>
+<div class="cours" id="cours1">
+<h2>Rappel — Cartes TEMSI & WINTEM</h2>
+
+<h3>TEMSI (TEMps SIgnificatif)</h3>
+<p>Carte de prévision graphique des phénomènes météo significatifs. Couvre généralement une période de <b>3 à 6 heures</b>.</p>
+<table>
+<tr><th>Élément</th><th>Représentation sur la carte</th></tr>
+<tr><td><b>Front froid</b></td><td>Ligne <b>bleue</b> (ou noire) avec <b>triangles</b> pointant vers l'air chaud (direction de déplacement)</td></tr>
+<tr><td><b>Front chaud</b></td><td>Ligne <b>rouge</b> avec <b>demi-cercles</b> côté air froid</td></tr>
+<tr><td><b>Front occlus</b></td><td>Ligne <b>violette</b> avec alternance <b>triangles + demi-cercles</b> du même côté</td></tr>
+<tr><td><b>Front stationnaire</b></td><td>Alternance triangles bleus et demi-cercles rouges de <b>côtés opposés</b></td></tr>
+<tr><td><b>Turbulences</b></td><td>Symbole en <b>ligne brisée / chapeau inversé</b> (˄˅) avec niveau d'intensité</td></tr>
+<tr><td><b>Givrage</b></td><td>Symbole spécifique + intensité (léger, modéré, fort)</td></tr>
+<tr><td><b>Zones nuageuses</b></td><td>Contours festonnés, types de nuages, bases/sommets indiqués (ex: BKN SC 015/040)</td></tr>
+<tr><td><b>Précipitations</b></td><td>Symboles standards (pluie, neige, etc.) dans les zones concernées</td></tr>
+</table>
+
+<h3>TEMSI basses couches (France)</h3>
+<div class="important">Couverture : du sol au <b>FL100-FL150</b> environ. C'est la carte la plus utile pour les drones. Disponible sur <b>Aéroweb</b> (aviation.meteo.fr) et <b>OLIVIA</b>.</div>
+
+<h3>WINTEM (WINd TEMperature)</h3>
+<table>
+<tr><th>Contenu</th><th>Format</th></tr>
+<tr><td>Vents en altitude</td><td>Flèche = direction d'où vient le vent. Barbules = vitesse (longue=10kt, courte=5kt, triangle=50kt)</td></tr>
+<tr><td>Températures</td><td>Valeur en °C à chaque niveau</td></tr>
+<tr><td>Notation abrégée</td><td class="code">2520</td><td>= vent du <b>250°</b> à <b>20 kt</b> (2 premiers chiffres ×10 = direction, 2 derniers = vitesse)</td></tr>
+</table>
+
+<h3>Niveaux typiques WINTEM</h3>
+<p>FL020, FL050, FL100, FL180, FL300, FL390 — Chaque niveau montre le vent et la température.</p>
+
+<div class="warning">Sur une TEMSI, toujours vérifier : la <b>validité horaire</b> (périmée = inutile), les <b>bases/sommets des nuages</b> en FL, et la <b>position des fronts</b> par rapport à votre zone de vol.</div>
+</div>
+
+
+<div class="quiz-area" id="quiz1"></div>
+<div class="btn-row" id="btns1">
+<button class="btn-validate" onclick="startQuiz(1)">Lancer le quiz (5 questions)</button>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- VIEW: RENFORCEMENT 2 — METAR / TAF -->
+<!-- ================================================================ -->
+<div class="view" id="viewR2">
+<div class="btn-row" style="justify-content:flex-start;margin-bottom:12px"><button class="btn-back" onclick="showView('exam')">&#8592; Retour a l'examen</button></div>
+<div class="cours" id="cours2">
+<h2>Rappel — METAR / TAF / SIGMET : toutes les abréviations</h2>
+
+<h3>Structure METAR</h3>
+<p><span class="code">METAR LFPG 121230Z 15008G18KT 9999 FEW040 SCT100 18/12 Q1023 NOSIG</span></p>
+<ul>
+<li><b>LFPG</b> = indicatif OACI de l'aérodrome</li>
+<li><b>121230Z</b> = jour 12, 12h30 UTC</li>
+<li><b>15008G18KT</b> = vent du 150°, 8 kt moyen, rafales (G=Gust) 18 kt</li>
+<li><b>9999</b> = visibilité ≥ 10 km</li>
+<li><b>FEW040</b> = quelques nuages (1-2 octas) à 4000 ft AGL</li>
+<li><b>18/12</b> = température 18°C / point de rosée 12°C</li>
+<li><b>Q1023</b> = QNH 1023 hPa</li>
+<li><b>NOSIG</b> = pas de changement significatif prévu (2h)</li>
+</ul>
+
+<h3>Couverture nuageuse (octas)</h3>
+<table>
+<tr><th>Code</th><th>Signification</th><th>Octas</th></tr>
+<tr><td class="code">SKC</td><td>Sky Clear — ciel dégagé</td><td>0</td></tr>
+<tr><td class="code">FEW</td><td>Few — quelques</td><td>1-2</td></tr>
+<tr><td class="code">SCT</td><td>Scattered — épars</td><td>3-4</td></tr>
+<tr><td class="code">BKN</td><td>Broken — fragmenté</td><td>5-7</td></tr>
+<tr><td class="code">OVC</td><td>Overcast — couvert</td><td>8</td></tr>
+<tr><td class="code">NSC</td><td>No Significant Cloud</td><td>—</td></tr>
+<tr><td class="code">CAVOK</td><td>Ceiling And Visibility OK (visi ≥10km, pas de nuage <5000ft, pas de phénomène)</td><td>—</td></tr>
+</table>
+
+<h3>Phénomènes météo — Précipitations</h3>
+<table>
+<tr><th>Code</th><th>Signification</th></tr>
+<tr><td class="code">RA</td><td>Rain — Pluie</td></tr>
+<tr><td class="code">DZ</td><td>Drizzle — Bruine</td></tr>
+<tr><td class="code">SN</td><td>Snow — Neige</td></tr>
+<tr><td class="code">SG</td><td>Snow Grains — Neige en grains</td></tr>
+<tr><td class="code">GR</td><td>Grêle (≥ 5mm)</td></tr>
+<tr><td class="code">GS</td><td>Grésil / petite grêle (< 5mm)</td></tr>
+<tr><td class="code">PL</td><td>Ice Pellets — Granules de glace</td></tr>
+<tr><td class="code">IC</td><td>Ice Crystals — Cristaux de glace</td></tr>
+<tr><td class="code">UP</td><td>Unknown Precipitation — Précipitation inconnue (auto)</td></tr>
+</table>
+
+<h3>Phénomènes — Obscurcissement / Visibilité</h3>
+<table>
+<tr><th>Code</th><th>Signification</th></tr>
+<tr><td class="code">FG</td><td>Fog — Brouillard (visi < 1000m)</td></tr>
+<tr><td class="code">BR</td><td>Mist — Brume (visi 1000-5000m)</td></tr>
+<tr><td class="code">HZ</td><td>Haze — Brume sèche</td></tr>
+<tr><td class="code">FU</td><td>Smoke — Fumée</td></tr>
+<tr><td class="code">DU</td><td>Dust — Poussière étendue</td></tr>
+<tr><td class="code">SA</td><td>Sand — Sable</td></tr>
+<tr><td class="code">VA</td><td>Volcanic Ash — Cendres volcaniques</td></tr>
+</table>
+
+<h3>Phénomènes — Autres</h3>
+<table>
+<tr><th>Code</th><th>Signification</th></tr>
+<tr><td class="code">TS</td><td>Thunderstorm — Orage</td></tr>
+<tr><td class="code">SQ</td><td>Squall — Grain (rafale soudaine + pluie)</td></tr>
+<tr><td class="code">FC</td><td>Funnel Cloud — Trombe / tornade</td></tr>
+<tr><td class="code">DS</td><td>Duststorm — Tempête de poussière</td></tr>
+<tr><td class="code">SS</td><td>Sandstorm — Tempête de sable</td></tr>
+</table>
+
+<h3>Descripteurs (préfixes)</h3>
+<table>
+<tr><th>Code</th><th>Signification</th><th>Exemple</th></tr>
+<tr><td class="code">MI</td><td>Shallow — mince, bas</td><td>MIFG = brouillard mince</td></tr>
+<tr><td class="code">BC</td><td>Patches — bancs</td><td>BCFG = brouillard en bancs</td></tr>
+<tr><td class="code">PR</td><td>Partial — partiel</td><td>PRFG = brouillard partiel</td></tr>
+<tr><td class="code">DR</td><td>Drifting — chasse basse</td><td>DRSN = chasse-neige basse</td></tr>
+<tr><td class="code">BL</td><td>Blowing — chasse haute</td><td>BLSN = chasse-neige haute</td></tr>
+<tr><td class="code">SH</td><td>Showers — averses</td><td>SHRA = averses de pluie</td></tr>
+<tr><td class="code">FZ</td><td>Freezing — givrant</td><td>FZRA = pluie verglaçante, FZFG = brouillard givrant</td></tr>
+<tr><td class="code">TS</td><td>Thunderstorm — orage</td><td>TSRA = orage + pluie, TSGR = orage + grêle</td></tr>
+</table>
+
+<h3>Intensité et proximité</h3>
+<table>
+<tr><th>Symbole</th><th>Signification</th></tr>
+<tr><td class="code">-</td><td>Faible (ex: -RA = pluie faible)</td></tr>
+<tr><td class="code">(rien)</td><td>Modéré (ex: RA = pluie modérée)</td></tr>
+<tr><td class="code">+</td><td>Fort (ex: +RA = forte pluie)</td></tr>
+<tr><td class="code">VC</td><td>Vicinity — dans les environs (8-16 km), pas sur l'aérodrome</td></tr>
+</table>
+
+<h3>TAF — Indicateurs d'évolution</h3>
+<table>
+<tr><th>Code</th><th>Signification</th></tr>
+<tr><td class="code">BECMG 1618</td><td><b>Becoming</b> — Changement progressif et <b>durable</b> entre 16h et 18h UTC</td></tr>
+<tr><td class="code">TEMPO 0812</td><td><b>Temporaire</b> — Fluctuations temporaires (<1h, <50% période) entre 08h et 12h</td></tr>
+<tr><td class="code">FM141800</td><td><b>From</b> — À partir du 14 à 18h00 UTC (changement immédiat)</td></tr>
+<tr><td class="code">PROB30</td><td>Probabilité de 30%</td></tr>
+<tr><td class="code">PROB40</td><td>Probabilité de 40%</td></tr>
+<tr><td class="code">NOSIG</td><td>Pas de changement significatif prévu (dans les 2h)</td></tr>
+<tr><td class="code">NSW</td><td>No Significant Weather — fin des phénomènes significatifs</td></tr>
+</table>
+
+<h3>SIGMET</h3>
+<div class="important">Le <b>SIGMET</b> (Significant Meteorological Information) est un message d'alerte pour les phénomènes dangereux en route : orages (SIGMET convectif), turbulences sévères, givrage sévère, cendres volcaniques, ondes de montagne. Valable <b>4 à 6 heures</b>. Prioritaire sur toute autre info météo.</div>
+
+<div class="warning">Piège classique : TEMPO ≠ BECMG. TEMPO = va-et-vient temporaire (retour aux conditions de base). BECMG = changement définitif qui persiste après la période indiquée.</div>
+</div>
+
+
+<div class="quiz-area" id="quiz2"></div>
+<div class="btn-row" id="btns2">
+<button class="btn-validate" onclick="startQuiz(2)">Lancer le quiz (5 questions)</button>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- VIEW: RENFORCEMENT 3 — Espaces aeriens -->
+<!-- ================================================================ -->
+<div class="view" id="viewR3">
+<div class="btn-row" style="justify-content:flex-start;margin-bottom:12px"><button class="btn-back" onclick="showView('exam')">&#8592; Retour a l'examen</button></div>
+<div class="cours" id="cours3">
+<h2>Rappel — Espaces aériens : Classes A à G</h2>
+
+<h3>Espaces aériens contrôlés (A → E)</h3>
+<table>
+<tr><th>Classe</th><th>Type de vol</th><th>Clairance ATC</th><th>Séparation</th><th>Info trafic</th><th>En France</th></tr>
+<tr><td class="code">A</td><td>IFR uniquement</td><td>Obligatoire</td><td>Tous les vols séparés</td><td>N/A (séparation assurée)</td><td>Très rare (UIR sup.)</td></tr>
+<tr><td class="code">B</td><td>IFR + VFR</td><td>Obligatoire</td><td>Tous séparés entre eux</td><td>N/A</td><td>Non utilisé en France</td></tr>
+<tr><td class="code">C</td><td>IFR + VFR</td><td>Obligatoire</td><td>IFR/IFR et IFR/VFR séparés. VFR/VFR info trafic</td><td>VFR reçoivent info trafic</td><td>TMA de certains grands aéroports</td></tr>
+<tr><td class="code">D</td><td>IFR + VFR</td><td>Obligatoire</td><td>IFR/IFR séparés. IFR/VFR info trafic</td><td>Info trafic à tous</td><td><b>CTR, TMA, AWY</b> — très courant</td></tr>
+<tr><td class="code">E</td><td>IFR + VFR</td><td>IFR = oui, VFR = <b>non</b></td><td>IFR/IFR séparés</td><td>Info trafic dans la mesure du possible</td><td>Certaines TMA, voies aériennes basses</td></tr>
+</table>
+
+<h3>Espaces aériens non contrôlés (F, G)</h3>
+<table>
+<tr><th>Classe</th><th>Type de vol</th><th>Clairance ATC</th><th>Service rendu</th><th>En France</th></tr>
+<tr><td class="code">F</td><td>IFR + VFR</td><td>Non requise</td><td>Service consultatif IFR, info trafic si possible</td><td>Non utilisé en France</td></tr>
+<tr><td class="code">G</td><td>IFR + VFR</td><td>Non requise</td><td>Info de vol sur demande</td><td><b>Tout l'espace non classé</b> — espace par défaut sous FL115</td></tr>
+</table>
+
+<div class="important"><b>Pour les drones en catégorie Ouverte</b> : on vole majoritairement en espace <b>G</b> (non contrôlé). Tout vol dans un espace contrôlé (A-E) ou une zone réglementée nécessite une <b>autorisation préalable</b>.</div>
+
+<h3>Zones et volumes spéciaux</h3>
+<table>
+<tr><th>Sigle</th><th>Nom</th><th>Description</th></tr>
+<tr><td class="code">CTR</td><td>Control Zone</td><td>Zone de contrôle autour d'un aérodrome contrôlé. Du <b>sol</b> jusqu'à une limite supérieure. Classe D le plus souvent.</td></tr>
+<tr><td class="code">TMA</td><td>Terminal Manoeuvring Area</td><td>Région de contrôle terminale au-dessus de la CTR. Ne touche pas forcément le sol.</td></tr>
+<tr><td class="code">AWY</td><td>Airway</td><td>Voie aérienne — couloir aérien entre deux points, en général classe D ou E.</td></tr>
+<tr><td class="code">ATZ</td><td>Aerodrome Traffic Zone</td><td>Zone de trafic d'aérodrome (non contrôlé). Auto-information entre pilotes.</td></tr>
+<tr><td class="code">FIR</td><td>Flight Information Region</td><td>Région d'information de vol — tout l'espace aérien d'un pays/zone. En France : FIR Paris, Marseille, Bordeaux, Brest, Reims.</td></tr>
+<tr><td class="code">UIR</td><td>Upper Information Region</td><td>Partie supérieure de la FIR (au-dessus de FL195 en France)</td></tr>
+</table>
+
+<h3>Zones à statut particulier (France)</h3>
+<table>
+<tr><th>Préfixe</th><th>Nom</th><th>Règle</th></tr>
+<tr><td class="code">P</td><td>Prohibited — Interdite</td><td>Vol <b>interdit</b> (ex: centrales nucléaires, Élysée). Aucune dérogation standard.</td></tr>
+<tr><td class="code">R</td><td>Restricted — Réglementée</td><td>Pénétration soumise à <b>conditions</b> (horaires, autorisation). Ex: zones militaires.</td></tr>
+<tr><td class="code">D</td><td>Dangerous — Dangereuse</td><td>Activités dangereuses possibles (tir, parachutage). Vol déconseillé quand active.</td></tr>
+</table>
+
+<div class="warning"><b>Vérification obligatoire avant tout vol</b> : consulter <b>Géoportail</b> (geoportail.gouv.fr) ou <b>AlphaTango/SOFIA</b> pour identifier les zones P, R, D, CTR et restrictions locales.</div>
+
+<h3>Conditions VFR minimales par classe (rappel)</h3>
+<table>
+<tr><th>Classe</th><th>Visibilité</th><th>Distance aux nuages</th></tr>
+<tr><td class="code">A-D</td><td>5 km (8 km au-dessus FL100)</td><td>1500m horizontal, 300m (1000ft) vertical</td></tr>
+<tr><td class="code">E</td><td>5 km (8 km au-dessus FL100)</td><td>1500m horizontal, 300m vertical</td></tr>
+<tr><td class="code">F-G (≤ FL35 & ≤ 140kt)</td><td>1500m (ou vue du sol)</td><td>Hors nuages, vue du sol</td></tr>
+</table>
+</div>
+
+
+<div class="quiz-area" id="quiz3"></div>
+<div class="btn-row" id="btns3">
+<button class="btn-validate" onclick="startQuiz(3)">Lancer le quiz (5 questions)</button>
+</div>
+</div>
+
+</div><!-- /main-container -->
+
+<footer>
+    Conforme au syllabus EASA AMC1 UAS.OPEN.030(2)(c) - Preparation BAPD A2 2026
+</footer>
+
+<script>
+    // =====================================================
+    // NAVIGATION ENTRE VUES
+    // =====================================================
+    function showView(id) {
+        var views = document.querySelectorAll('.view');
+        var tabs = document.querySelectorAll('.nav-tab');
+        for (var i = 0; i < views.length; i++) views[i].classList.remove('active');
+        for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+        if (id === 'exam') {
+            document.getElementById('viewExam').classList.add('active');
+            document.getElementById('tabExam').classList.add('active');
+        } else {
+            var idx = parseInt(id.replace('r', ''));
+            document.getElementById('viewR' + idx).classList.add('active');
+            document.getElementById('tabR' + idx).classList.add('active');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // =====================================================
+    // BANQUE DE QUESTIONS EXAMEN (VERBATIM SOURCE ORIGINALE)
+    // =====================================================
+
+        var questionBank = {
+
+            // =========================================
+            // THEME 1: METEOROLOGIE (90+ questions)
+            // Organise en 10 sous-themes pour tirage equilibre
+            // =========================================
+            meteo: {
+
+                // === 1. ATMOSPHERE STANDARD (ISA) ===
+                isa: [
+                    {
+                        id: "M_ISA_01",
+                        question: "Dans l'atmosphere standard (ISA), quelle est la temperature au niveau de la mer ?",
+                        choices: ["0°C", "10°C", "15°C", "20°C"],
+                        correct: 2,
+                        explanation: "L'atmosphere standard ISA definit une temperature de 15°C au niveau de la mer, avec une pression de 1013.25 hPa."
+                    },
+                    {
+                        id: "M_ISA_02",
+                        question: "Quel est le gradient thermique standard dans la troposphere ?",
+                        choices: ["1°C / 100m", "0.65°C / 100m (6.5°C / 1000m)", "2°C / 100m", "0.5°C / 1000m"],
+                        correct: 1,
+                        explanation: "Le gradient thermique ISA est de 6.5°C par 1000m (ou 0.65°C/100m). La temperature diminue avec l'altitude jusqu'a la tropopause."
+                    },
+                    {
+                        id: "M_ISA_03",
+                        question: "Comment la densite de l'air evolue-t-elle avec l'altitude ?",
+                        choices: ["Elle augmente", "Elle reste constante", "Elle diminue", "Elle oscille"],
+                        correct: 2,
+                        explanation: "La densite de l'air diminue avec l'altitude car la pression baisse. Moins de molecules par m3 = moins de portance pour les helices."
+                    },
+                    {
+                        id: "M_ISA_04",
+                        question: "Quelle est la pression standard ISA au niveau de la mer ?",
+                        choices: ["1000 hPa", "1013.25 hPa", "1020 hPa", "1025 hPa"],
+                        correct: 1,
+                        explanation: "La pression standard ISA est de 1013.25 hPa (ou 29.92 inHg) au niveau moyen de la mer."
+                    },
+                    {
+                        id: "M_ISA_05",
+                        question: "Comment la densite de l'air affecte-t-elle un drone multirotor ?",
+                        choices: ["Aucun effet", "Air moins dense = moins de portance = moteurs plus sollicites", "Air moins dense = meilleure autonomie", "Air moins dense = meilleure stabilite"],
+                        correct: 1,
+                        explanation: "Air moins dense (altitude, chaleur) = helices generent moins de portance. Les moteurs tournent plus vite, consommation augmente, autonomie diminue."
+                    },
+                    {
+                        id: "M_ISA_06",
+                        question: "En conditions de forte chaleur (>35°C), les performances du drone :",
+                        choices: ["S'ameliorent (air plus fluide)", "Se degradent (air moins dense, batteries moins efficaces)", "Restent identiques", "Dependent uniquement du vent"],
+                        correct: 1,
+                        explanation: "Forte chaleur = air moins dense (moins de portance) + batteries LiPo moins performantes et risque de surchauffe. Double penalite sur l'autonomie."
+                    },
+                    {
+                        id: "M_ISA_07",
+                        question: "Le point de rosee correspond a :",
+                        choices: ["La temperature maximale de vol", "La temperature ou l'air devient sature (100% HR) et condensation apparait", "Le seuil de vent maximal", "La pression minimale de vol"],
+                        correct: 1,
+                        explanation: "Au point de rosee, l'air sature condense l'eau. Cela peut former brume, brouillard, ou depot sur le drone (capteurs, optiques, moteurs)."
+                    },
+                    {
+                        id: "M_ISA_08",
+                        question: "L'humidite relative de 95% indique :",
+                        choices: ["Conditions seches", "Air proche de la saturation, risque de condensation/brouillard", "Conditions ideales de vol", "Vent fort imminent"],
+                        correct: 1,
+                        explanation: "HR 95% = air presque sature. Legere baisse de temperature suffit pour atteindre le point de rosee et provoquer condensation, brume ou brouillard."
+                    },
+                    {
+                        id: "M_ISA_09",
+                        question: "L'inversion de temperature :",
+                        choices: ["Disperse les polluants", "Peut pieger brume et pollution pres du sol, reduisant la visibilite", "Ameliore toujours les conditions de vol", "N'a aucun effet sur les drones"],
+                        correct: 1,
+                        explanation: "L'inversion thermique (air chaud au-dessus de l'air froid) piege les particules et l'humidite pres du sol, creant brume ou smog."
+                    },
+                    {
+                        id: "M_ISA_10",
+                        question: "A 1000m d'altitude en ISA, quelle est la temperature theorique ?",
+                        choices: ["15°C", "8.5°C", "10°C", "5°C"],
+                        correct: 1,
+                        explanation: "ISA: 15°C au niveau mer - (6.5°C × 1) = 8.5°C a 1000m. Le gradient est de 6.5°C par 1000m."
+                    }
+                ],
+
+                // === 2. PRESSION : ANTICYCLONE / DEPRESSION / DORSALE + CODES Q ===
+                pression: [
+                    {
+                        id: "M_PRES_01",
+                        question: "Dans l'hemisphere Nord, le vent autour d'un anticyclone tourne :",
+                        choices: ["Dans le sens horaire", "Dans le sens antihoraire", "Du centre vers l'exterieur uniquement", "Il n'y a pas de rotation"],
+                        correct: 0,
+                        explanation: "Hemisphere Nord : anticyclone = sens horaire (comme les aiguilles d'une montre). Depression = sens antihoraire. C'est l'effet de Coriolis."
+                    },
+                    {
+                        id: "M_PRES_02",
+                        question: "Dans l'hemisphere Nord, le vent autour d'une depression tourne :",
+                        choices: ["Dans le sens horaire", "Dans le sens antihoraire", "Il n'y a pas de rotation", "Toujours vers le haut"],
+                        correct: 1,
+                        explanation: "Hemisphere Nord : depression = sens antihoraire. L'air converge vers le centre en spirale et monte. Anticyclone = sens horaire."
+                    },
+                    {
+                        id: "M_PRES_03",
+                        question: "Un QNH de 1013 hPa correspond a :",
+                        choices: ["Une basse pression (depression)", "La pression standard au niveau de la mer", "Une haute pression (anticyclone)", "Un vent de 13 noeuds"],
+                        correct: 1,
+                        explanation: "1013.25 hPa = pression atmospherique standard au niveau de la mer. QNH > 1013 = anticyclone. QNH < 1013 = depression."
+                    },
+                    {
+                        id: "M_PRES_04",
+                        question: "Le QNH permet d'afficher sur l'altimetre :",
+                        choices: ["L'altitude par rapport au niveau de la mer (AMSL)", "La hauteur par rapport au sol (AGL)", "Le niveau de vol (FL)", "La temperature"],
+                        correct: 0,
+                        explanation: "QNH = pression ramenee au niveau de la mer. L'altimetre cale au QNH affiche l'altitude AMSL (Above Mean Sea Level)."
+                    },
+                    {
+                        id: "M_PRES_05",
+                        question: "Le QFE permet d'afficher sur l'altimetre :",
+                        choices: ["L'altitude AMSL", "La hauteur par rapport a l'aerodrome (AAL)", "Le niveau de vol", "La pression au sommet des nuages"],
+                        correct: 1,
+                        explanation: "QFE = pression au niveau de l'aerodrome. L'altimetre cale au QFE indique 0 au sol de l'aerodrome et la hauteur AAL (Above Aerodrome Level)."
+                    },
+                    {
+                        id: "M_PRES_06",
+                        question: "Le QNE (calage standard 1013.25 hPa) est utilise pour :",
+                        choices: ["Les vols a basse altitude", "Determiner les niveaux de vol (FL) en haute altitude", "Les atterrissages", "Mesurer l'humidite"],
+                        correct: 1,
+                        explanation: "QNE = calage standard 1013.25 hPa. Utilise au-dessus de l'altitude de transition pour les niveaux de vol (FL). Garantit la separation entre aeronefs."
+                    },
+                    {
+                        id: "M_PRES_07",
+                        question: "Une dorsale barometrique est :",
+                        choices: ["Une zone de basse pression allongee", "Une avancee de hautes pressions entre deux depressions", "Un front froid", "Une zone de turbulences"],
+                        correct: 1,
+                        explanation: "La dorsale est une extension d'un anticyclone, une langue de hautes pressions. Elle apporte generalement du beau temps temporaire."
+                    },
+                    {
+                        id: "M_PRES_08",
+                        question: "Un thalweg est :",
+                        choices: ["Une zone de hautes pressions", "Une avancee de basses pressions entre deux anticyclones", "Un nuage d'orage", "Un vent local"],
+                        correct: 1,
+                        explanation: "Le thalweg (ou creux barometrique) est une extension d'une depression. Il amene souvent un temps instable, nuageux ou pluvieux."
+                    },
+                    {
+                        id: "M_PRES_09",
+                        question: "Le QDR en aeronautique represente :",
+                        choices: ["La pression atmospherique", "Le relevement magnetique de l'aeronef VU depuis la station", "La direction du vent", "La temperature"],
+                        correct: 1,
+                        explanation: "QDR = relevement magnetique de l'aeronef par rapport a la station (radial). C'est la direction dans laquelle se trouve l'aeronef vu depuis la station."
+                    },
+                    {
+                        id: "M_PRES_10",
+                        question: "Le QFU indique :",
+                        choices: ["La pression de l'aerodrome", "La direction magnetique de la piste en service", "L'altitude de transition", "Le cap a suivre"],
+                        correct: 1,
+                        explanation: "QFU = direction magnetique de la piste en service pour le decollage ou l'atterrissage. Ex: QFU 27 = piste orientee 270° magnetique."
+                    },
+                    {
+                        id: "M_PRES_11",
+                        question: "Un anticyclone est generalement associe a :",
+                        choices: ["Temps instable et pluvieux", "Temps stable, ciel degage ou peu nuageux", "Vents violents en surface", "Orages frequents"],
+                        correct: 1,
+                        explanation: "L'anticyclone (hautes pressions) provoque une subsidence (air descendant) qui inhibe la formation de nuages. Temps stable, souvent ensoleille."
+                    },
+                    {
+                        id: "M_PRES_12",
+                        question: "Une depression est generalement associee a :",
+                        choices: ["Temps stable et ensoleille", "Temps instable, nuageux, precipitations", "Absence de vent", "Temperatures elevees"],
+                        correct: 1,
+                        explanation: "La depression (basses pressions) provoque une convergence et ascendance de l'air. Formation de nuages, precipitations, vent parfois fort."
+                    }
+                ],
+
+                // === 3. EFFET VENTURI + TURBULENCES MECANIQUES ===
+                venturi: [
+                    {
+                        id: "M_VENT_01",
+                        question: "Quel phenomene meteorologique est le plus dangereux pour un drone multirotor evoluant pres d'un batiment ?",
+                        choices: ["La pluie fine", "Les turbulences mecaniques", "Les nuages eleves", "L'humidite relative elevee"],
+                        correct: 1,
+                        explanation: "Les turbulences mecaniques sont creees par le vent contournant les obstacles. Elles provoquent des variations brutales de vitesse et direction."
+                    },
+                    {
+                        id: "M_VENT_02",
+                        question: "Ou se situent les turbulences les plus dangereuses quand le vent souffle perpendiculairement a un immeuble ?",
+                        choices: ["Face au vent, devant l'immeuble", "Sous le vent, derriere l'immeuble", "Au-dessus de l'immeuble uniquement", "Uniformement reparties"],
+                        correct: 1,
+                        explanation: "Sous le vent (cote abrite), il se forme des tourbillons et zones de recirculation. La zone dangereuse s'etend jusqu'a 10-15 fois la hauteur de l'obstacle."
+                    },
+                    {
+                        id: "M_VENT_03",
+                        question: "L'effet Venturi en milieu urbain provoque :",
+                        choices: ["Une reduction du vent entre les batiments", "Une acceleration du vent dans les passages etroits", "Une stabilisation des conditions", "Une augmentation de l'humidite"],
+                        correct: 1,
+                        explanation: "L'effet Venturi accelere le flux d'air dans les passages etroits (entre batiments, sous porches). Le vent peut y etre 2 a 3 fois plus fort."
+                    },
+                    {
+                        id: "M_VENT_04",
+                        question: "Le cisaillement de vent (wind shear) est particulierement dangereux car :",
+                        choices: ["Il augmente l'autonomie", "Il provoque des variations brutales de vitesse/direction sur courte distance", "Il ameliore la stabilite", "Il reduit les turbulences"],
+                        correct: 1,
+                        explanation: "Le cisaillement provoque des changements brusques de vent sur de courtes distances verticales ou horizontales. Peut destabiliser brutalement le drone."
+                    },
+                    {
+                        id: "M_VENT_05",
+                        question: "Les rotors sous le vent d'une colline :",
+                        choices: ["Sont des zones calmes", "Sont des zones de turbulences rotatives dangereuses", "Ameliorent la portance", "N'existent qu'au-dessus de 500m"],
+                        correct: 1,
+                        explanation: "Les rotors sont des tourbillons violents qui se forment sous le vent des reliefs. Turbulences severes, tres dangereuses pour les drones."
+                    },
+                    {
+                        id: "M_VENT_06",
+                        question: "Un vent de 25 km/h mesure au sol sera generalement a 50m d'altitude :",
+                        choices: ["Plus faible (friction diminuee)", "Identique", "Plus fort (gradient de vent)", "Impossible a predire"],
+                        correct: 2,
+                        explanation: "Le vent augmente avec l'altitude car le frottement au sol diminue (gradient de vent). A 50m, le vent peut etre 20 a 50% plus fort qu'au sol."
+                    },
+                    {
+                        id: "M_VENT_07",
+                        question: "En montagne, le vent peut etre significativement different de la prevision en plaine car :",
+                        choices: ["Les previsions sont toujours fausses en montagne", "Le relief canalise, accelere ou cree des vents locaux", "Le vent est toujours plus faible en montagne", "L'altitude n'a aucune influence"],
+                        correct: 1,
+                        explanation: "Le relief cree des effets locaux : acceleration dans les cols, effet de foehn, catabatiques, rotors. Previsions locales indispensables."
+                    },
+                    {
+                        id: "M_VENT_08",
+                        question: "Une rafale se caracterise par :",
+                        choices: ["Un vent constant", "Une augmentation brutale et temporaire de la vitesse du vent", "Un changement lent de direction", "Une baisse de pression"],
+                        correct: 1,
+                        explanation: "Une rafale est une augmentation soudaine et breve pouvant depasser 50% de la vitesse moyenne. Amplifiees par effet Venturi en milieu urbain."
+                    },
+                    {
+                        id: "M_VENT_09",
+                        question: "La zone de turbulences derriere un obstacle s'etend environ sur :",
+                        choices: ["1 a 2 fois la hauteur de l'obstacle", "5 a 15 fois la hauteur de l'obstacle", "Exactement la hauteur de l'obstacle", "Elle n'existe pas"],
+                        correct: 1,
+                        explanation: "La zone perturbee sous le vent s'etend sur 10-15 fois la hauteur de l'obstacle. Pour un immeuble de 20m, turbulences jusqu'a 200-300m en aval."
+                    },
+                    {
+                        id: "M_VENT_10",
+                        question: "L'effet de sol (ground effect) sur un drone multirotor :",
+                        choices: ["N'existe pas", "Augmente la portance pres du sol", "Diminue la portance pres du sol", "Ne se produit qu'au-dessus de l'eau"],
+                        correct: 1,
+                        explanation: "L'effet de sol augmente la portance quand le drone est proche du sol (moins d'1 envergure). Le coussin d'air sous les helices ameliore l'efficacite."
+                    }
+                ],
+
+                // === 4. RADIATION / CONVECTION / THERMIQUES ===
+                radiation: [
+                    {
+                        id: "M_RAD_01",
+                        question: "Les ascendances thermiques sont maximales :",
+                        choices: ["Au lever du soleil", "Entre 11h et 16h par temps ensoleille", "En fin de journee", "La nuit par ciel degage"],
+                        correct: 1,
+                        explanation: "Les thermiques se forment quand le soleil chauffe le sol de maniere differentielle. Maximum en milieu de journee par beau temps."
+                    },
+                    {
+                        id: "M_RAD_02",
+                        question: "Le vent catabatique est :",
+                        choices: ["Un vent ascendant chaud", "Un vent descendant froid le long des pentes", "Un vent constant toute la journee", "Un vent de mer"],
+                        correct: 1,
+                        explanation: "Le vent catabatique est un ecoulement d'air froid descendant les pentes (montagnes, collines) surtout la nuit. Peut etre violent et soudain."
+                    },
+                    {
+                        id: "M_RAD_03",
+                        question: "Pour un vol prevu a 15h en ete, le risque de thermiques est :",
+                        choices: ["Nul", "Faible", "Eleve", "Maximal uniquement apres 18h"],
+                        correct: 2,
+                        explanation: "15h en ete = pic d'ensoleillement, sol bien chauffe. Thermiques a leur maximum. Turbulences possibles surtout au-dessus des surfaces sombres."
+                    },
+                    {
+                        id: "M_RAD_04",
+                        question: "La brise de mer se developpe :",
+                        choices: ["La nuit", "En journee, le vent soufflant de la mer vers la terre", "Uniquement en hiver", "Pendant les tempetes"],
+                        correct: 1,
+                        explanation: "En journee, la terre chauffe plus vite que la mer. L'air chaud terrestre monte, l'air marin plus frais le remplace. Brise de mer typique l'apres-midi."
+                    },
+                    {
+                        id: "M_RAD_05",
+                        question: "La meilleure periode pour eviter les turbulences thermiques en ete est :",
+                        choices: ["Entre 12h et 15h", "Le matin tot ou en fin de journee", "A midi pile", "Aucune difference dans la journee"],
+                        correct: 1,
+                        explanation: "Tot le matin (avant 9h) ou en soiree (apres 18h), le sol est moins chauffe. Thermiques faibles ou absents. Conditions plus stables."
+                    },
+                    {
+                        id: "M_RAD_06",
+                        question: "La convection est le transfert de chaleur par :",
+                        choices: ["Rayonnement electromagnetique", "Mouvement de masses d'air (ascendances/subsidences)", "Conduction directe", "Les precipitations"],
+                        correct: 1,
+                        explanation: "La convection = transfert de chaleur par mouvement de fluide. L'air chaud (moins dense) monte, l'air froid descend. Cree les thermiques."
+                    },
+                    {
+                        id: "M_RAD_07",
+                        question: "La radiation solaire chauffe principalement :",
+                        choices: ["L'atmosphere directement", "Le sol, qui rechauffe ensuite l'air par contact", "Les nuages en priorite", "L'air en altitude"],
+                        correct: 1,
+                        explanation: "Le rayonnement solaire traverse l'atmosphere et chauffe le sol. Le sol rechauffe ensuite l'air par conduction et rayonnement infrarouge."
+                    },
+                    {
+                        id: "M_RAD_08",
+                        question: "Les surfaces qui generent les thermiques les plus forts sont :",
+                        choices: ["Les forets denses", "Les surfaces sombres (parking, rochers, sol nu)", "Les plans d'eau", "Les prairies humides"],
+                        correct: 1,
+                        explanation: "Les surfaces sombres absorbent plus de rayonnement et chauffent davantage. Parking goudron, rochers = thermiques puissants. Eau = effet stabilisant."
+                    },
+                    {
+                        id: "M_RAD_09",
+                        question: "La brise de terre souffle :",
+                        choices: ["De la mer vers la terre en journee", "De la terre vers la mer la nuit", "Toujours dans la meme direction", "Uniquement en ete"],
+                        correct: 1,
+                        explanation: "La nuit, la terre refroidit plus vite que la mer. L'air descend sur terre et s'ecoule vers la mer plus chaude. Inverse de la brise de mer."
+                    },
+                    {
+                        id: "M_RAD_10",
+                        question: "Le vent anabatique est :",
+                        choices: ["Un vent descendant nocturne", "Un vent ascendant le long des pentes chauffees en journee", "Un vent de mer", "Un vent d'orage"],
+                        correct: 1,
+                        explanation: "Le vent anabatique monte le long des pentes chauffees par le soleil. Il se developpe en journee sur les versants ensoleilles. Oppose du catabatique."
+                    }
+                ],
+
+                // === 5. FRONTS (CHAUD/FROID) + MASSES D'AIR ===
+                fronts: [
+                    {
+                        id: "M_FRONT_01",
+                        question: "Un front froid qui approche est generalement associe a :",
+                        choices: ["Amelioration immediate des conditions", "Rafales, averses, changement brusque de direction du vent", "Vent stable et visibilite excellente", "Rechauffement progressif"],
+                        correct: 1,
+                        explanation: "Un front froid apporte : rotation du vent, rafales, averses, baisse de temperature. Passage souvent marque par une ligne de grains."
+                    },
+                    {
+                        id: "M_FRONT_02",
+                        question: "Lors du passage d'un front froid, la masse d'air froid :",
+                        choices: ["Glisse au-dessus de l'air chaud", "S'enfonce sous l'air chaud en le soulevant brutalement", "Se melange progressivement a l'air chaud", "Reste stationnaire"],
+                        correct: 1,
+                        explanation: "L'air froid (plus dense) s'enfonce sous l'air chaud comme un coin. Le soulevement brutal provoque des nuages a developpement vertical (Cb) et averses."
+                    },
+                    {
+                        id: "M_FRONT_03",
+                        question: "Un front chaud est caracterise par :",
+                        choices: ["Des averses breves et intenses", "Des precipitations continues et progressives, plafond bas", "Un ciel totalement degage", "Des orages violents"],
+                        correct: 1,
+                        explanation: "Le front chaud glisse sur l'air froid. Le soulevement lent produit des nuages stratiformes etendus, precipitations continues, visibilite qui se degrade progressivement."
+                    },
+                    {
+                        id: "M_FRONT_04",
+                        question: "Apres le passage d'un front froid, on observe generalement :",
+                        choices: ["Temperature en hausse, ciel couvert", "Temperature en baisse, amelioration de la visibilite, eclaircies", "Brouillard persistant", "Pas de changement notable"],
+                        correct: 1,
+                        explanation: "Apres un front froid : air froid et sec, visibilite excellente, ciel se degageant, parfois averses residuelles. Amelioration franche."
+                    },
+                    {
+                        id: "M_FRONT_05",
+                        question: "Une masse d'air maritime tropicale (mT) est :",
+                        choices: ["Froide et seche", "Chaude et humide", "Froide et humide", "Chaude et seche"],
+                        correct: 1,
+                        explanation: "Masse d'air maritime tropicale (mT) : origine ocean tropical. Chaude et tres humide. Apporte nuages, brume, precipitations en France."
+                    },
+                    {
+                        id: "M_FRONT_06",
+                        question: "Une masse d'air continentale polaire (cP) est :",
+                        choices: ["Chaude et humide", "Froide et seche", "Chaude et seche", "Froide et humide"],
+                        correct: 1,
+                        explanation: "Masse d'air continentale polaire (cP) : origine continents froids (Siberie). Froide et seche. Apporte temps froid et clair en hiver."
+                    },
+                    {
+                        id: "M_FRONT_07",
+                        question: "La sequence nuageuse typique a l'approche d'un front chaud est :",
+                        choices: ["Cb, Cu, Sc", "Ci, Cs, As, Ns (nuages de plus en plus bas)", "St, Sc, Cu", "Aucun nuage puis soudain Cb"],
+                        correct: 1,
+                        explanation: "Front chaud : d'abord Cirrus (Ci), puis Cirrostratus (Cs), Altostratus (As), enfin Nimbostratus (Ns). Les nuages descendent progressivement, la pluie arrive."
+                    },
+                    {
+                        id: "M_FRONT_08",
+                        question: "Un front occlus se forme quand :",
+                        choices: ["Deux anticyclones se rencontrent", "Le front froid rattrape le front chaud", "Une depression se comble", "L'air chaud atteint le sol"],
+                        correct: 1,
+                        explanation: "L'occlusion se forme quand le front froid (plus rapide) rattrape le front chaud. L'air chaud est souleve du sol. Temps perturbe, precipitations."
+                    },
+                    {
+                        id: "M_FRONT_09",
+                        question: "Une masse d'air instable favorise :",
+                        choices: ["Le brouillard", "Les nuages a developpement vertical (Cu, Cb) et les averses", "Les stratus bas", "L'absence de nuages"],
+                        correct: 1,
+                        explanation: "Air instable = gradient thermique fort, l'air chaud monte facilement. Forme des cumulus et cumulonimbus. Averses, orages possibles."
+                    },
+                    {
+                        id: "M_FRONT_10",
+                        question: "Une masse d'air stable favorise :",
+                        choices: ["Les orages", "Les nuages stratiformes, brouillard, brume", "Les averses de grele", "Les thermiques puissants"],
+                        correct: 1,
+                        explanation: "Air stable = mouvements verticaux inhibes. Nuages en couches (stratus, stratocumulus), brouillard possible. Pas de developpement vertical."
+                    }
+                ],
+
+                // === 6. METAR (DECODAGE COMPLET) ===
+                metar: [
+                    {
+                        id: "M_METAR_01",
+                        question: "Un METAR indique '15008G18KT'. Cela signifie :",
+                        choices: ["Vent de 150° a 8 km/h", "Vent de 150° a 8 noeuds avec rafales a 18 noeuds", "Temperature 15°C, pression 1008 hPa", "Visibilite 15 km"],
+                        correct: 1,
+                        explanation: "15008G18KT = vent du 150° (direction), 8 noeuds moyen, rafales (G=gust) a 18 noeuds. 18 kt ≈ 33 km/h en rafales."
+                    },
+                    {
+                        id: "M_METAR_02",
+                        question: "Dans un METAR, 'FEW020' signifie :",
+                        choices: ["Brouillard a 2000ft", "Quelques nuages (1-2 octas) a 2000ft", "Peu de visibilite, 20m", "Vent faible de 20kt"],
+                        correct: 1,
+                        explanation: "FEW = Few = 1-2 octas. 020 = 2000ft AGL. Donc quelques nuages epars a 2000 pieds au-dessus du sol."
+                    },
+                    {
+                        id: "M_METAR_03",
+                        question: "Dans un METAR, 'SCT040' signifie :",
+                        choices: ["Nuages epars (3-4 octas) a 4000ft", "Ciel couvert a 400ft", "Averses a 40km", "Visibilite 4000m avec brume"],
+                        correct: 0,
+                        explanation: "SCT = Scattered = epars = 3-4 octas. 040 = 4000ft AGL. Ciel partiellement couvert a 4000 pieds."
+                    },
+                    {
+                        id: "M_METAR_04",
+                        question: "Dans un METAR, 'BKN015' signifie :",
+                        choices: ["Peu de nuages a 1500ft", "Nuages fragmentes (5-7 octas) a 1500ft", "Brouillard dense", "Bruine a 15h"],
+                        correct: 1,
+                        explanation: "BKN = Broken = fragmente = 5-7 octas. 015 = 1500ft AGL. Ciel tres nuageux, plafond bas a 1500 pieds."
+                    },
+                    {
+                        id: "M_METAR_05",
+                        question: "Dans un METAR, 'OVC008' signifie :",
+                        choices: ["Orage violent a 800ft", "Ciel couvert (8 octas) a 800ft", "Visibilite 8km", "Oscillation du vent"],
+                        correct: 1,
+                        explanation: "OVC = Overcast = couvert = 8 octas. 008 = 800ft AGL. Ciel totalement couvert, plafond tres bas a 800 pieds."
+                    },
+                    {
+                        id: "M_METAR_06",
+                        question: "'BR' dans un METAR signifie :",
+                        choices: ["Brouillard", "Brume (visibilite 1-5km)", "Bruine", "Brise de mer"],
+                        correct: 1,
+                        explanation: "BR = Brume (mist en anglais). Visibilite reduite entre 1000m et 5000m due a des gouttelettes en suspension. FG = brouillard (< 1000m)."
+                    },
+                    {
+                        id: "M_METAR_07",
+                        question: "'FG' dans un METAR signifie :",
+                        choices: ["Brume", "Brouillard (visibilite < 1000m)", "Grele fine", "Fumee"],
+                        correct: 1,
+                        explanation: "FG = Fog = Brouillard. Visibilite inferieure a 1000m. Plus dense que la brume (BR). Conditions dangereuses pour le VLOS."
+                    },
+                    {
+                        id: "M_METAR_08",
+                        question: "'DZ' dans un METAR signifie :",
+                        choices: ["Zone dangereuse", "Bruine (fines gouttelettes)", "Brume dense", "Vent de travers"],
+                        correct: 1,
+                        explanation: "DZ = Drizzle = Bruine. Precipitations de tres fines gouttelettes. Moins intense que la pluie (RA) mais peut affecter la visibilite."
+                    },
+                    {
+                        id: "M_METAR_09",
+                        question: "'GR' dans un METAR signifie :",
+                        choices: ["Grain (pluie soudaine)", "Grele (diametre >= 5mm)", "Gresil", "Brume givree"],
+                        correct: 1,
+                        explanation: "GR = Grele. Precipitations de glace de diametre >= 5mm. Associee aux orages (Cb). Dangereuse pour les drones."
+                    },
+                    {
+                        id: "M_METAR_10",
+                        question: "'GS' dans un METAR signifie :",
+                        choices: ["Grele severe", "Gresil ou petite grele (< 5mm)", "Grain soudain", "Glace au sol"],
+                        correct: 1,
+                        explanation: "GS = Small hail / Gresil. Petits grains de glace < 5mm. Moins dangereux que la grele (GR) mais indique instabilite."
+                    },
+                    {
+                        id: "M_METAR_11",
+                        question: "'SG' dans un METAR signifie :",
+                        choices: ["Severe gust (rafale severe)", "Neige en grains", "Brouillard givrant", "Sol gele"],
+                        correct: 1,
+                        explanation: "SG = Snow Grains = Neige en grains. Petits grains de glace blancs et plats, equivalent hivernal de la bruine."
+                    },
+                    {
+                        id: "M_METAR_12",
+                        question: "'NSC' dans un METAR signifie :",
+                        choices: ["Nuages stratocumulus", "Pas de nuages significatifs sous 5000ft ou MSA", "Neige sur les cumulus", "Nuit sans clair de lune"],
+                        correct: 1,
+                        explanation: "NSC = No Significant Cloud. Pas de nuages significatifs en dessous de 5000ft (ou altitude minimale de secteur). Bon pour le vol."
+                    },
+                    {
+                        id: "M_METAR_13",
+                        question: "'CAVOK' dans un METAR signifie :",
+                        choices: ["Cave d'observation", "Visibilite >= 10km, pas de nuages < 5000ft, pas de phenomene significatif", "Calme absolu", "Conditions variables"],
+                        correct: 1,
+                        explanation: "CAVOK = Ceiling And Visibility OK. Visibilite >= 10km, pas de nuages sous 5000ft (ou MSA), pas de Cb/TCU, pas de temps significatif."
+                    },
+                    {
+                        id: "M_METAR_14",
+                        question: "Dans 'METAR LFPG 121230Z', que signifie '121230Z' ?",
+                        choices: ["Piste 12, 1230m de long", "Le 12 du mois a 12h30 UTC", "Visibilite 12km a 30°", "Frequence 121.30 MHz"],
+                        correct: 1,
+                        explanation: "121230Z = jour 12 du mois, 12h30 UTC (Z = Zulu = UTC). Le METAR donne l'heure d'observation en temps universel."
+                    },
+                    {
+                        id: "M_METAR_15",
+                        question: "Dans un METAR, '9999' pour la visibilite signifie :",
+                        choices: ["Visibilite nulle", "Visibilite >= 10km", "Erreur de codage", "9999 metres exactement"],
+                        correct: 1,
+                        explanation: "9999 = visibilite de 10km ou plus. C'est le code utilise quand la visibilite depasse 10 kilometres."
+                    },
+                    {
+                        id: "M_METAR_16",
+                        question: "'TS' dans un METAR signifie :",
+                        choices: ["Temperature stable", "Orage (Thunderstorm)", "Turbulence severe", "Temps sec"],
+                        correct: 1,
+                        explanation: "TS = Thunderstorm = Orage. Indique la presence d'un orage avec eclairs et tonnerre. Souvent accompagne de pluie (TSRA) ou grele (TSGR)."
+                    },
+                    {
+                        id: "M_METAR_17",
+                        question: "Dans 'Q1023' a la fin d'un METAR, le 1023 represente :",
+                        choices: ["La temperature en dixiemes", "Le QNH en hectopascals", "La visibilite en metres", "L'heure en format 24h"],
+                        correct: 1,
+                        explanation: "Q1023 = QNH de 1023 hPa. C'est la pression atmospherique ramenee au niveau de la mer pour le calage altimetrique."
+                    },
+                    {
+                        id: "M_METAR_18",
+                        question: "'VRB03KT' dans un METAR signifie :",
+                        choices: ["Visibilite variable, 3km", "Vent variable en direction, 3 noeuds", "Tres bonne visibilite", "Vortex a 3 noeuds"],
+                        correct: 1,
+                        explanation: "VRB = Variable. Le vent est trop faible ou instable pour determiner une direction constante. 03KT = 3 noeuds de vitesse moyenne."
+                    }
+                ],
+
+                // === 7. TAF (DECODAGE COMPLET) ===
+                taf: [
+                    {
+                        id: "M_TAF_01",
+                        question: "Un TAF est une prevision meteorologique valable pour :",
+                        choices: ["1 heure", "6 heures", "9 a 30 heures selon le type", "1 semaine"],
+                        correct: 2,
+                        explanation: "Le TAF (Terminal Aerodrome Forecast) est une prevision pour les aerodromes, valable 9h (TAF court) a 30h (TAF long)."
+                    },
+                    {
+                        id: "M_TAF_02",
+                        question: "Dans un TAF, 'TEMPO 1215' signifie :",
+                        choices: ["Temperature de 12 a 15°C", "Fluctuations temporaires entre 12h et 15h UTC", "Tendance a la baisse", "Temps stable de 12h a 15h"],
+                        correct: 1,
+                        explanation: "TEMPO = fluctuations temporaires (< 1h chacune, < 50% de la periode). 1215 = entre 12h et 15h UTC. Les conditions peuvent temporairement changer."
+                    },
+                    {
+                        id: "M_TAF_03",
+                        question: "Dans un TAF, 'BECMG 1618' signifie :",
+                        choices: ["Bonnes conditions de 16h a 18h", "Changement progressif s'etablissant entre 16h et 18h UTC", "Brouillard de 16h a 18h", "Conditions stables"],
+                        correct: 1,
+                        explanation: "BECMG = Becoming = changement progressif et durable qui s'etablit pendant la periode indiquee (16h-18h). Les nouvelles conditions persistent ensuite."
+                    },
+                    {
+                        id: "M_TAF_04",
+                        question: "Dans un TAF, 'PROB40' signifie :",
+                        choices: ["Probabilite de 40% des conditions indiquees", "Vent de 40 noeuds probable", "Plafond a 4000ft probable", "Precipitation de 40mm"],
+                        correct: 0,
+                        explanation: "PROB40 = probabilite de 40% que les conditions decrites se produisent. Utilise pour les phenomenes incertains (30 a 40% de chance)."
+                    },
+                    {
+                        id: "M_TAF_05",
+                        question: "Dans un TAF, 'FM141800' signifie :",
+                        choices: ["Frequence 141.800 MHz", "A partir du 14 a 18h00 UTC, nouvelles conditions", "Fin du TAF a 18h", "Formation de nuages a 1800ft"],
+                        correct: 1,
+                        explanation: "FM = From = A partir de. FM141800 = a partir du jour 14 a 18h00 UTC, les conditions changent pour celles indiquees ensuite."
+                    },
+                    {
+                        id: "M_TAF_06",
+                        question: "Quelle est la difference entre TEMPO et BECMG dans un TAF ?",
+                        choices: ["Aucune difference", "TEMPO = fluctuations temporaires, BECMG = changement durable", "TEMPO = nuit, BECMG = jour", "TEMPO concerne le vent, BECMG la visibilite"],
+                        correct: 1,
+                        explanation: "TEMPO = conditions temporaires qui reviennent a la normale. BECMG = evolution vers de nouvelles conditions qui persistent."
+                    },
+                    {
+                        id: "M_TAF_07",
+                        question: "Un TAF commence par 'TAF LFPG 121100Z 1212/1312'. La validite est :",
+                        choices: ["12 heures", "24 heures, du 12 a 12h au 13 a 12h UTC", "30 heures", "Du 12h12 au 13h12"],
+                        correct: 1,
+                        explanation: "1212/1312 = du jour 12 a 12h UTC jusqu'au jour 13 a 12h UTC. Soit 24 heures de validite (TAF long)."
+                    },
+                    {
+                        id: "M_TAF_08",
+                        question: "'NSW' dans un TAF signifie :",
+                        choices: ["Neige legere", "Pas de temps significatif prevu (No Significant Weather)", "Nord-Sud-West (vent)", "Nouvelle alerte meteo"],
+                        correct: 1,
+                        explanation: "NSW = No Significant Weather. Indique la fin des phenomenes meteorologiques significatifs precedemment prevus."
+                    },
+                    {
+                        id: "M_TAF_09",
+                        question: "Dans un TAF, 'PROB30 TEMPO 0206 TSRA' signifie :",
+                        choices: ["Orage certain de 02h a 06h", "30% de probabilite d'orages avec pluie temporaires entre 02h et 06h UTC", "Temperature de 30°C avec orage", "Turbulences severes a 30%"],
+                        correct: 1,
+                        explanation: "PROB30 TEMPO = 30% de probabilite de fluctuations temporaires. TSRA = orage avec pluie. Entre 02h et 06h UTC."
+                    },
+                    {
+                        id: "M_TAF_10",
+                        question: "Les TAF sont emis pour :",
+                        choices: ["Toutes les villes", "Les aerodromes equipes d'un service meteorologique", "Uniquement les aeroports internationaux", "Les zones maritimes"],
+                        correct: 1,
+                        explanation: "Les TAF sont emis pour les aerodromes disposant d'un service meteo. Utiles pour les drones car donnent les previsions locales detaillees."
+                    }
+                ],
+
+                // === 8. TEMSI / WINTEM ===
+                temsi: [
+                    {
+                        id: "M_TEMSI_01",
+                        question: "Une carte TEMSI (TEMps SIgnificatif) presente :",
+                        choices: ["Uniquement les temperatures", "Les phenomenes meteorologiques significatifs prevus (fronts, nuages, precipitations, turbulences...)", "Les vents en altitude uniquement", "Les horaires de lever/coucher du soleil"],
+                        correct: 1,
+                        explanation: "La carte TEMSI represente graphiquement les phenomenes meteo significatifs : fronts, zones nuageuses, precipitations, orages, turbulences, givrage..."
+                    },
+                    {
+                        id: "M_TEMSI_02",
+                        question: "Une carte WINTEM presente :",
+                        choices: ["Les precipitations prevues", "Les vents et temperatures en altitude", "Les zones de turbulences uniquement", "La couverture nuageuse au sol"],
+                        correct: 1,
+                        explanation: "WINTEM = WINd and TEMperature. Carte des vents (direction, vitesse) et temperatures a differentes altitudes (FL050, FL100, FL180...)."
+                    },
+                    {
+                        id: "M_TEMSI_03",
+                        question: "Sur une carte TEMSI, un front froid est represente par :",
+                        choices: ["Une ligne rouge avec demi-cercles", "Une ligne bleue avec triangles pointes vers l'air chaud", "Une ligne verte", "Des cercles concentriques"],
+                        correct: 1,
+                        explanation: "Front froid = ligne bleue (ou noire) avec triangles pointant vers l'air chaud (direction de deplacement). Front chaud = ligne rouge avec demi-cercles."
+                    },
+                    {
+                        id: "M_TEMSI_04",
+                        question: "Sur une carte TEMSI, un front chaud est represente par :",
+                        choices: ["Une ligne bleue avec triangles", "Une ligne rouge avec demi-cercles cote air froid", "Une ligne pointillee verte", "Aucun symbole particulier"],
+                        correct: 1,
+                        explanation: "Front chaud = ligne rouge avec demi-cercles pointant vers l'air froid (direction de deplacement du front)."
+                    },
+                    {
+                        id: "M_TEMSI_05",
+                        question: "Sur une carte TEMSI, un front occlus est represente par :",
+                        choices: ["Une ligne avec alternance de triangles et demi-cercles", "Une ligne rouge simple", "Une ligne pointillee", "Un cercle"],
+                        correct: 0,
+                        explanation: "Front occlus = ligne violette (ou alternance bleu/rouge) avec triangles ET demi-cercles du meme cote. Combine caracteristiques des deux fronts."
+                    },
+                    {
+                        id: "M_TEMSI_06",
+                        question: "Sur une carte WINTEM, le vent est note '2520'. Cela signifie :",
+                        choices: ["25°C et 20% d'humidite", "Vent du 250° a 20 noeuds", "25 noeuds rafales 20", "Visibilite 2520m"],
+                        correct: 1,
+                        explanation: "Format WINTEM : 2 premiers chiffres = direction/10 (25 = 250°), 2 derniers = vitesse en noeuds. Donc vent du 250° a 20 kt."
+                    },
+                    {
+                        id: "M_TEMSI_07",
+                        question: "Les cartes TEMSI basses couches couvrent generalement :",
+                        choices: ["Du sol au FL450", "Du sol au FL100-FL150 environ", "Uniquement au-dessus du FL200", "Les zones maritimes uniquement"],
+                        correct: 1,
+                        explanation: "TEMSI basses couches = du sol jusqu'au FL100 ou FL150 selon les pays. C'est la zone la plus utile pour les drones."
+                    },
+                    {
+                        id: "M_TEMSI_08",
+                        question: "La validite d'une carte TEMSI est generalement de :",
+                        choices: ["1 heure", "3 a 6 heures", "24 heures", "1 semaine"],
+                        correct: 1,
+                        explanation: "Les cartes TEMSI sont valides pour une periode de 3 a 6 heures. Elles sont renouvelees plusieurs fois par jour."
+                    },
+                    {
+                        id: "M_TEMSI_09",
+                        question: "Sur une carte TEMSI, les zones de turbulences sont indiquees par :",
+                        choices: ["Des fleches", "Des symboles specifiques (ex: ligne brisee) avec intensite", "La couleur verte", "Aucun symbole, seulement dans le texte"],
+                        correct: 1,
+                        explanation: "Les turbulences sont representees par des symboles (ligne brisee ou chapeau) avec indication de l'intensite (legere, moderee, severe) et de l'altitude."
+                    },
+                    {
+                        id: "M_TEMSI_10",
+                        question: "Ou trouver les cartes TEMSI et WINTEM pour la France ?",
+                        choices: ["Uniquement en aeroclubs", "Sur le site Aeroweb de Meteo France ou Olivia", "Seulement aupres des controleurs aeriens", "Elles n'existent pas en France"],
+                        correct: 1,
+                        explanation: "Aeroweb (aviation.meteo.fr) et Olivia sont les portails officiels de Meteo France pour l'aeronautique. Cartes TEMSI, WINTEM, METAR, TAF disponibles."
+                    }
+                ],
+
+                // === 9. NUAGES (TYPES, FORMATION, ALTITUDE, PRECIPITATIONS) ===
+                nuages: [
+                    {
+                        id: "M_NUAGE_01",
+                        question: "Les nuages de type cumulonimbus (Cb) indiquent :",
+                        choices: ["Conditions calmes", "Risque d'orages, turbulences severes, rafales descendantes", "Bonne visibilite garantie", "Vent faible assure"],
+                        correct: 1,
+                        explanation: "Les Cb sont associes aux orages : turbulences severes, rafales descendantes (microbursts), foudre, grele. Vol interdit a proximite."
+                    },
+                    {
+                        id: "M_NUAGE_02",
+                        question: "Les cumulus (Cu) se forment principalement par :",
+                        choices: ["Refroidissement nocturne", "Convection (air chaud qui s'eleve)", "Advection d'air froid", "Compression adiabatique"],
+                        correct: 1,
+                        explanation: "Les cumulus sont des nuages convectifs. L'air chaud monte, se refroidit, la vapeur d'eau condense. Ils ont une base plate et un sommet bourgeonnant."
+                    },
+                    {
+                        id: "M_NUAGE_03",
+                        question: "Les stratus (St) sont des nuages :",
+                        choices: ["A fort developpement vertical", "En couche uniforme, souvent bas, pouvant donner de la bruine", "Toujours au-dessus de 6000m", "Toujours associes aux orages"],
+                        correct: 1,
+                        explanation: "Les stratus sont des nuages bas (0-2000m), en nappe uniforme grise. Ils peuvent donner de la bruine et reduire fortement la visibilite."
+                    },
+                    {
+                        id: "M_NUAGE_04",
+                        question: "Les cirrus (Ci) se situent a quelle altitude ?",
+                        choices: ["0 a 2000m", "2000 a 6000m", "Au-dessus de 6000m (etage superieur)", "Au niveau du sol"],
+                        correct: 2,
+                        explanation: "Les cirrus sont des nuages de l'etage superieur (> 6000m). Composes de cristaux de glace, fins et filamenteux. Indiquent souvent l'approche d'un front chaud."
+                    },
+                    {
+                        id: "M_NUAGE_05",
+                        question: "Le nimbostratus (Ns) est caracterise par :",
+                        choices: ["Un ciel degage", "Une couche epaisse et sombre donnant des precipitations continues", "Des developpements verticaux intenses", "Une altitude tres elevee"],
+                        correct: 1,
+                        explanation: "Le nimbostratus est un nuage epais, gris fonce, qui masque le soleil et donne des precipitations continues (pluie ou neige). Base souvent basse."
+                    },
+                    {
+                        id: "M_NUAGE_06",
+                        question: "Les altocumulus (Ac) appartiennent a l'etage :",
+                        choices: ["Inferieur (0-2000m)", "Moyen (2000-6000m)", "Superieur (> 6000m)", "Tous les etages"],
+                        correct: 1,
+                        explanation: "Les altocumulus sont des nuages de l'etage moyen (2000-6000m). Ils forment des nappes ou bancs de petits elements blancs ou gris ('ciel moutonne')."
+                    },
+                    {
+                        id: "M_NUAGE_07",
+                        question: "Les stratocumulus (Sc) peuvent produire :",
+                        choices: ["De violents orages", "De la bruine ou de faibles precipitations", "De la grele systematiquement", "Aucune precipitation"],
+                        correct: 1,
+                        explanation: "Les stratocumulus sont des nuages bas en rouleaux ou dalles. Ils peuvent donner de faibles precipitations (bruine, faible pluie). Pas d'orages."
+                    },
+                    {
+                        id: "M_NUAGE_08",
+                        question: "Un nuage qui se developpe verticalement du sol jusqu'a 10000m ou plus est probablement un :",
+                        choices: ["Stratus", "Cirrus", "Cumulonimbus", "Altostratus"],
+                        correct: 2,
+                        explanation: "Le cumulonimbus (Cb) est le seul nuage a fort developpement vertical pouvant atteindre la tropopause (10-15km). Nuage d'orage par excellence."
+                    },
+                    {
+                        id: "M_NUAGE_09",
+                        question: "Les cirrostratus (Cs) provoquent souvent :",
+                        choices: ["Des orages violents", "Un halo autour du soleil ou de la lune", "Des precipitations intenses", "Du brouillard au sol"],
+                        correct: 1,
+                        explanation: "Les cirrostratus sont des voiles de cristaux de glace en altitude. Ils provoquent souvent un halo (cercle lumineux) autour du soleil ou de la lune."
+                    },
+                    {
+                        id: "M_NUAGE_10",
+                        question: "Quel type de nuage est typiquement associe au passage d'un front froid ?",
+                        choices: ["Cirrus eleves et fins", "Cumulonimbus et cumulus a developpement vertical", "Stratus bas et uniformes", "Cirrostratus uniquement"],
+                        correct: 1,
+                        explanation: "Le front froid souleve brutalement l'air chaud, creant des nuages a developpement vertical (Cumulus, Cumulonimbus). Averses, orages possibles."
+                    },
+                    {
+                        id: "M_NUAGE_11",
+                        question: "Le plafond nuageux (ceiling) est :",
+                        choices: ["L'altitude maximale des nuages", "La hauteur de la base de la couche la plus basse couvrant plus de la moitie du ciel (BKN/OVC)", "L'epaisseur totale des nuages", "La distance entre deux couches"],
+                        correct: 1,
+                        explanation: "Le plafond (ceiling) = altitude de la base de la couche la plus basse avec BKN (5-7 octas) ou OVC (8 octas). Important pour l'aviation et les drones."
+                    },
+                    {
+                        id: "M_NUAGE_12",
+                        question: "Un octa represente :",
+                        choices: ["1/10 du ciel", "1/8 du ciel", "1/4 du ciel", "La totalite du ciel"],
+                        correct: 1,
+                        explanation: "Un octa = 1/8 du ciel. FEW = 1-2 octas, SCT = 3-4 octas, BKN = 5-7 octas, OVC = 8 octas (ciel totalement couvert)."
+                    }
+                ],
+
+                // === 10. PHENOMENES METEO (BR, FG, DZ, GR, GS, SG, TS...) ===
+                phenomenes: [
+                    {
+                        id: "M_PHEN_01",
+                        question: "Quelle condition degrade le plus la capacite du telepilote a maintenir le VLOS ?",
+                        choices: ["Vent fort", "Temperature elevee", "Brume ou brouillard", "Pression atmospherique basse"],
+                        correct: 2,
+                        explanation: "La brume et le brouillard reduisent la visibilite. En categorie Ouverte, le vol VLOS est obligatoire. Visibilite reduite = impossible de voir le drone."
+                    },
+                    {
+                        id: "M_PHEN_02",
+                        question: "Le brouillard de rayonnement se forme principalement :",
+                        choices: ["En milieu de journee", "La nuit et tot le matin par ciel clair et vent faible", "Pendant les orages", "Uniquement en montagne"],
+                        correct: 1,
+                        explanation: "Le brouillard de rayonnement se forme quand le sol se refroidit la nuit (ciel clair, vent faible). L'air atteint le point de rosee. Se dissipe apres le lever du soleil."
+                    },
+                    {
+                        id: "M_PHEN_03",
+                        question: "Le risque de givrage sur un drone existe principalement :",
+                        choices: ["Uniquement en hiver au sol", "En vol dans les nuages ou brouillard givrant, temperature proche de 0°C", "Uniquement au-dessus de 3000m", "Jamais sur les petits drones"],
+                        correct: 1,
+                        explanation: "Givrage possible quand le drone traverse de l'air humide (nuages, brouillard) pres de 0°C. Glace sur helices = desequilibre, perte de portance."
+                    },
+                    {
+                        id: "M_PHEN_04",
+                        question: "La visibilite meteorologique minimale recommandee pour un vol A2 est :",
+                        choices: ["500m", "1 km", "5 km idealement, 1 km minimum selon conditions", "Aucune limite reglementaire"],
+                        correct: 2,
+                        explanation: "Bien qu'il n'y ait pas de minimum reglementaire strict en Open, une visibilite de 5 km est recommandee. En dessous de 1 km, le VLOS devient difficile."
+                    },
+                    {
+                        id: "M_PHEN_05",
+                        question: "L'echelle Beaufort mesure :",
+                        choices: ["La temperature", "La force du vent", "L'humidite", "La pression"],
+                        correct: 1,
+                        explanation: "L'echelle Beaufort (0-12) mesure la force du vent. Force 4 (20-28 km/h) = brise moderee. Force 6 (39-49 km/h) = vent frais, vol drone deconseille."
+                    },
+                    {
+                        id: "M_PHEN_06",
+                        question: "A quelle temperature les batteries LiPo commencent-elles a perdre significativement en capacite ?",
+                        choices: ["En dessous de 25°C", "En dessous de 15°C", "En dessous de 10°C", "En dessous de 0°C uniquement"],
+                        correct: 2,
+                        explanation: "En dessous de 10°C, les LiPo perdent 20-30% de capacite et leur resistance interne augmente. En dessous de 0°C, risque de coupure brutale."
+                    },
+                    {
+                        id: "M_PHEN_07",
+                        question: "Avant un vol A2, quelle source meteo est la plus fiable ?",
+                        choices: ["Meteo de la veille", "Previsions Meteo France ou METAR/TAF local", "Observation visuelle seule", "Application smartphone grand public"],
+                        correct: 1,
+                        explanation: "Les previsions officielles (Meteo France, METAR/TAF) donnent des informations completes et fiables : vent moyen/rafales, visibilite, precipitations, evolution."
+                    },
+                    {
+                        id: "M_PHEN_08",
+                        question: "'VCSH' dans un METAR signifie :",
+                        choices: ["Cisaillement de vent severe", "Averses dans les environs (Vicinity SHowers)", "Visibilite en chute", "Vent calme et stable"],
+                        correct: 1,
+                        explanation: "VC = Vicinity (environs, dans un rayon de 8-16km). SH = Showers (averses). VCSH = averses observees dans les environs mais pas sur l'aerodrome."
+                    },
+                    {
+                        id: "M_PHEN_09",
+                        question: "'RA' dans un METAR signifie :",
+                        choices: ["Rafales", "Pluie (Rain)", "Radiation", "Route aerienne"],
+                        correct: 1,
+                        explanation: "RA = Rain = Pluie. Peut etre accompagne d'intensite : -RA (faible), RA (moderee), +RA (forte)."
+                    },
+                    {
+                        id: "M_PHEN_10",
+                        question: "'SN' dans un METAR signifie :",
+                        choices: ["Sud-Nord", "Neige (Snow)", "Soleil nocturne", "Signal normal"],
+                        correct: 1,
+                        explanation: "SN = Snow = Neige. Comme pour la pluie : -SN (faible), SN (moderee), +SN (forte neige)."
+                    },
+                    {
+                        id: "M_PHEN_11",
+                        question: "'FZRA' dans un METAR signifie :",
+                        choices: ["Brouillard givrant", "Pluie verglacante (Freezing Rain)", "Rafale de gel", "Front de froid"],
+                        correct: 1,
+                        explanation: "FZRA = Freezing Rain = Pluie verglacante. Gouttes de pluie qui gelent au contact de surfaces froides. Tres dangereux pour les aeronefs."
+                    },
+                    {
+                        id: "M_PHEN_12",
+                        question: "'FZFG' dans un METAR signifie :",
+                        choices: ["Brouillard givrant (Freezing Fog)", "Front de brouillard", "Brouillard fugace", "Fumee glacee"],
+                        correct: 0,
+                        explanation: "FZFG = Freezing Fog = Brouillard givrant. Gouttelettes de brouillard qui gelent au contact. Cause du givre sur les surfaces et helices."
+                    }
+                ]
+            },
+
+            // =========================================
+            // THEME 2: PERFORMANCES UAS (30 questions)
+            // (Inchange - garde le format tableau simple)
+            // =========================================
+            perf: [
+                {
+                    id: "P01",
+                    question: "Quelle est la MTOM maximale d'un drone classe C2 ?",
+                    choices: ["250g", "900g", "4 kg", "25 kg"],
+                    correct: 2,
+                    explanation: "Les drones C2 ont une MTOM < 4 kg. Autorises en A2 pour voler a proximite des personnes (30m, ou 5m en mode basse vitesse)."
+                },
+                {
+                    id: "P02",
+                    question: "Le mode 'basse vitesse' d'un drone C2 limite la vitesse a :",
+                    choices: ["5 m/s", "3 m/s (environ 11 km/h)", "10 m/s", "15 km/h"],
+                    correct: 1,
+                    explanation: "Mode basse vitesse C2 = max 3 m/s (environ 11 km/h). Obligatoire pour reduire la distance aux personnes de 30m a 5m."
+                },
+                {
+                    id: "P03",
+                    question: "Une batterie LiPo 2200mAh 10C peut delivrer un courant maximal de :",
+                    choices: ["2.2A", "10A", "22A", "220A"],
+                    correct: 2,
+                    explanation: "Courant max = Capacite x C-rate. 2.2Ah x 10C = 22A. C'est le courant de decharge maximal continu."
+                },
+                {
+                    id: "P04",
+                    question: "Une batterie 6S LiPo a une tension nominale de :",
+                    choices: ["3.7V", "11.1V", "22.2V", "25.2V"],
+                    correct: 2,
+                    explanation: "6S = 6 cellules en serie. Tension nominale par cellule = 3.7V. Total = 6 x 3.7V = 22.2V nominal."
+                },
+                {
+                    id: "P05",
+                    question: "Batterie 2200mAh en configuration 2P. Quelle est la capacite totale ?",
+                    choices: ["2200mAh", "4400mAh", "1100mAh", "2200mAh mais tension doublee"],
+                    correct: 1,
+                    explanation: "En parallele (P), les capacites s'additionnent. 2P x 2200mAh = 4400mAh. La tension reste identique."
+                },
+                {
+                    id: "P06",
+                    question: "Batterie 3S2P avec cellules 2200mAh. Tension et capacite totales ?",
+                    choices: ["11.1V / 2200mAh", "11.1V / 4400mAh", "22.2V / 4400mAh", "7.4V / 4400mAh"],
+                    correct: 1,
+                    explanation: "3S = 3 x 3.7V = 11.1V. 2P = 2 x 2200mAh = 4400mAh. Configuration finale : 11.1V nominal, 4400mAh capacite."
+                },
+                {
+                    id: "P07",
+                    question: "Batterie 6S2P, cellules 2200mAh 10C. Puissance maximale (tension nominale) ?",
+                    choices: ["244W", "488W", "977W", "1955W"],
+                    correct: 2,
+                    explanation: "6S = 22.2V nominal. 2P avec 10C : courant max = 2.2A x 10 x 2 = 44A. Puissance = 22.2V x 44A = 976.8W environ 977W."
+                },
+                {
+                    id: "P08",
+                    question: "Une cellule LiPo ne doit jamais etre dechargee en dessous de :",
+                    choices: ["4.2V", "3.7V", "3.0V", "2.5V"],
+                    correct: 2,
+                    explanation: "Tension minimale LiPo = 3.0V par cellule. En dessous, dommages irreversibles (capacite reduite, gonflement, risque incendie)."
+                },
+                {
+                    id: "P09",
+                    question: "L'autonomie annoncee '25 minutes' par le constructeur correspond a :",
+                    choices: ["Vol avec vent modere et charge utile", "Stationnaire, sans vent, batterie neuve, sans charge", "Conditions reelles moyennes", "Temps jusqu'a extinction complete"],
+                    correct: 1,
+                    explanation: "L'autonomie constructeur = conditions ideales (stationnaire, sans vent, batterie neuve 100%, temperature moderee). Reel = 30-50% de moins."
+                },
+                {
+                    id: "P10",
+                    question: "Pour maintenir 10 m/s au sol avec 5 m/s de vent de face, la vitesse-air doit etre :",
+                    choices: ["5 m/s", "10 m/s", "15 m/s", "20 m/s"],
+                    correct: 2,
+                    explanation: "Vitesse-sol = Vitesse-air - Vent de face. Pour 10 m/s sol avec 5 m/s de face : 10 + 5 = 15 m/s vitesse-air. Consommation accrue."
+                },
+                {
+                    id: "P11",
+                    question: "La fonction RTH (Return To Home) peut etre declenchee par :",
+                    choices: ["Uniquement manuellement", "Perte de liaison, batterie critique, ou action manuelle", "Uniquement en cas de crash", "Le geofencing exclusivement"],
+                    correct: 1,
+                    explanation: "RTH activable : manuellement (bouton), automatiquement en failsafe (perte liaison), ou a batterie critique. L'altitude RTH doit etre > obstacles."
+                },
+                {
+                    id: "P12",
+                    question: "Le geofencing sur un drone C2 :",
+                    choices: ["Est optionnel", "Utilise le GPS pour limiter les zones de vol", "Ne fonctionne qu'en interieur", "Desactive le mode basse vitesse"],
+                    correct: 1,
+                    explanation: "Le geofencing utilise le GPS pour definir des zones interdites (aeroports, zones sensibles) ou de confinement. Obligatoire sur C1, C2, C3."
+                },
+                {
+                    id: "P13",
+                    question: "Le Remote ID d'un drone C2 transmet :",
+                    choices: ["Uniquement le numero de serie", "Position, altitude, vitesse, identifiant, position telepilote", "Les images de la camera", "Rien en vol stationnaire"],
+                    correct: 1,
+                    explanation: "Remote ID transmet en continu : ID enregistrement, position/altitude drone, vitesse/direction, position decollage ou telepilote, horodatage."
+                },
+                {
+                    id: "P14",
+                    question: "Le geo-awareness alerte le telepilote :",
+                    choices: ["Jamais", "Quand il approche d'une zone reglementee", "Uniquement apres avoir franchi une zone interdite", "Seulement si le GPS est defaillant"],
+                    correct: 1,
+                    explanation: "Le geo-awareness alerte (sans bloquer) quand on approche d'une zone sensible. La base doit etre mise a jour regulierement. Exigence C2."
+                },
+                {
+                    id: "P15",
+                    question: "En failsafe (perte de liaison), un drone C2 bien configure doit :",
+                    choices: ["Couper les moteurs immediatement", "Accelerer pour retrouver le signal", "Executer une procedure preprogrammee (RTH, atterrissage, hover)", "Continuer indefiniment tout droit"],
+                    correct: 2,
+                    explanation: "En failsafe, le drone execute une procedure predefinie : RTH, atterrissage sur place, ou hover pendant un delai. A configurer et tester avant vol."
+                },
+                {
+                    id: "P16",
+                    question: "Le centrage (CG) d'un drone est critique car :",
+                    choices: ["Il n'a aucune importance sur un multirotor", "Un mauvais CG degrade la stabilite et augmente la consommation", "Il affecte uniquement l'esthetique", "Seul le poids total compte"],
+                    correct: 1,
+                    explanation: "Un CG decentre force le controleur a compenser en permanence. Resultat : instabilite, vibrations, consommation accrue, usure prematuree des moteurs."
+                },
+                {
+                    id: "P17",
+                    question: "L'ajout d'une charge utile de 500g sur un drone :",
+                    choices: ["N'a aucun effet si la MTOM n'est pas depassee", "Modifie le CG, reduit l'autonomie, peut affecter la stabilite", "Ameliore toujours la stabilite", "Augmente l'autonomie"],
+                    correct: 1,
+                    explanation: "Toute charge supplementaire : deplace le CG (a verifier), augmente le poids (autonomie reduite), peut modifier le comportement en vol."
+                },
+                {
+                    id: "P18",
+                    question: "L'energie stockee dans une batterie 4S 5000mAh est d'environ :",
+                    choices: ["20 Wh", "50 Wh", "74 Wh", "100 Wh"],
+                    correct: 2,
+                    explanation: "Energie (Wh) = Tension x Capacite. 4S = 14.8V nominal. 14.8V x 5Ah = 74 Wh."
+                },
+                {
+                    id: "P19",
+                    question: "Une batterie LiPo 'gonflee' :",
+                    choices: ["Est normale apres utilisation", "Indique un dommage interne, ne plus utiliser", "A juste besoin d'etre dechargee", "Offre plus de capacite"],
+                    correct: 1,
+                    explanation: "Gonflement = production de gaz due a une degradation interne. Risque d'incendie/explosion. A mettre hors service immediatement et recycler."
+                },
+                {
+                    id: "P20",
+                    question: "Pour un stockage longue duree, une LiPo doit etre chargee a :",
+                    choices: ["100% (4.2V/cellule)", "Environ 50-60% (3.8V/cellule)", "Completement dechargee (3.0V/cellule)", "Le niveau n'a pas d'importance"],
+                    correct: 1,
+                    explanation: "Stockage ideal : 3.7-3.85V par cellule (50-60%). Ni pleine (stress chimique) ni vide (sulfatation). Prolonge la duree de vie."
+                },
+                {
+                    id: "P21",
+                    question: "L'altitude densite affecte un drone car :",
+                    choices: ["Le GPS est moins precis en altitude", "L'air moins dense reduit la portance et l'efficacite des helices", "Les batteries fonctionnent mieux", "Elle n'a aucun effet sous 1000m"],
+                    correct: 1,
+                    explanation: "Altitude densite = altitude corrigee pour temperature/pression. Air moins dense = moins de portance, moteurs plus sollicites, autonomie reduite."
+                },
+                {
+                    id: "P22",
+                    question: "Un drone C2 doit avoir un systeme de terminaison de vol qui :",
+                    choices: ["N'est pas obligatoire", "Permet d'arreter le vol en cas d'urgence de maniere previsible", "Accelere le drone vers le sol", "Desactive le GPS"],
+                    correct: 1,
+                    explanation: "Le systeme de terminaison de vol (FTS ou equivalent) permet de mettre fin au vol de maniere previsible en urgence (coupure moteurs, parachute, etc.)."
+                },
+                {
+                    id: "P23",
+                    question: "Le 'C-rate' de charge typique recommande pour une LiPo est de :",
+                    choices: ["0.5C a 1C", "2C a 3C", "5C minimum", "10C pour une charge rapide"],
+                    correct: 0,
+                    explanation: "Charge recommandee : 0.5C a 1C pour preserver la batterie. Une 2200mAh se charge idealement a 2.2A max (1C). Charge rapide = usure acceleree."
+                },
+                {
+                    id: "P24",
+                    question: "En cas de temperature ambiante de -5°C, avant le vol il faut :",
+                    choices: ["Voler immediatement pour rechauffer la batterie", "Prechauffer les batteries au-dessus de 15°C", "Utiliser des batteries plus petites", "Augmenter le C-rate"],
+                    correct: 1,
+                    explanation: "Batteries froides = capacite reduite, resistance interne elevee, risque de coupure. Prechauffer au-dessus de 15-20°C avant vol."
+                },
+                {
+                    id: "P25",
+                    question: "La plage de CG acceptable pour un drone est definie par :",
+                    choices: ["Le telepilote selon son experience", "Le constructeur dans le manuel", "La reglementation EASA", "Elle n'existe pas pour les multirotors"],
+                    correct: 1,
+                    explanation: "Le constructeur specifie la plage de CG acceptable dans le manuel. A respecter imperativement pour garantir la stabilite et la securite."
+                },
+                {
+                    id: "P26",
+                    question: "Batterie 4S 3000mAh 25C. Courant de decharge max et puissance max ?",
+                    choices: ["25A / 370W", "75A / 1110W", "30A / 444W", "75A / 925W"],
+                    correct: 1,
+                    explanation: "Courant max = 3Ah x 25C = 75A. Puissance = 14.8V x 75A = 1110W. C'est la puissance instantanee maximale."
+                },
+                {
+                    id: "P27",
+                    question: "Le BEC (Battery Eliminator Circuit) sur un drone sert a :",
+                    choices: ["Eliminer la batterie", "Fournir une tension regulee pour l'electronique de bord", "Augmenter la puissance des moteurs", "Gerer le GPS"],
+                    correct: 1,
+                    explanation: "Le BEC convertit la tension batterie principale en tension stable (5V, 12V) pour alimenter recepteur, controleur de vol, servos, etc."
+                },
+                {
+                    id: "P28",
+                    question: "L'enveloppe de vol d'un drone definit :",
+                    choices: ["Le volume de la housse de transport", "Les limites operationnelles (vitesse, altitude, vent max, temperature)", "Uniquement la zone geographique autorisee", "Le nombre de batteries emportees"],
+                    correct: 1,
+                    explanation: "L'enveloppe de vol = ensemble des conditions dans lesquelles le drone peut operer en securite : vitesses min/max, vent max, plage de temperature, altitude max."
+                },
+                {
+                    id: "P29",
+                    question: "Un vol avec une charge utile mal arrimee peut provoquer :",
+                    choices: ["Rien si elle est legere", "Deplacement du CG en vol, vibrations, perte de controle", "Amelioration de la stabilite", "Augmentation de l'autonomie"],
+                    correct: 1,
+                    explanation: "Charge mal fixee = risque de deplacement en vol, modifiant le CG dynamiquement. Peut causer vibrations, instabilite, voire crash."
+                },
+                {
+                    id: "P30",
+                    question: "Un drone perd la liaison C2 (command & control). Selon la programmation, il :",
+                    choices: ["Tombe immediatement", "Execute la procedure failsafe (RTH, atterrissage, hover)", "Accelere pour retrouver le signal", "Continue sa mission indefiniment"],
+                    correct: 1,
+                    explanation: "En cas de perte de liaison C2, le failsafe s'active selon la configuration : RTH, atterrissage immediat, hover sur place pendant X secondes puis RTH, etc."
+                }
+            ],
+
+            // =========================================
+            // THEME 3: ATTENUATION RISQUES SOL (30 questions)
+            // (Inchange - garde le format tableau simple)
+            // =========================================
+            risque: [
+                {
+                    id: "R01",
+                    question: "En A2 avec drone C2, quelle est la distance horizontale minimale des personnes non impliquees ?",
+                    choices: ["5m toujours", "30m (ou 5m en mode basse vitesse)", "50m sans exception", "150m"],
+                    correct: 1,
+                    explanation: "A2 + C2 : 30m minimum. Reductible a 5m SI mode basse vitesse (3 m/s max) actif ET evaluation de la situation favorable."
+                },
+                {
+                    id: "R02",
+                    question: "Une 'personne non impliquee' est :",
+                    choices: ["Toute personne sans gilet jaune", "Toute personne ne participant pas a l'operation et non informee des consignes", "Uniquement les mineurs", "Toute personne a plus de 100m"],
+                    correct: 1,
+                    explanation: "Personne non impliquee = ne participe pas a l'operation UAS et n'a pas ete informee des consignes de securite par l'exploitant."
+                },
+                {
+                    id: "R03",
+                    question: "La regle du 1:1 en A2 signifie :",
+                    choices: ["1 drone pour 1 telepilote", "Distance horizontale >= hauteur de vol", "1 vol par jour", "1 batterie pour 1 heure de vol"],
+                    correct: 1,
+                    explanation: "Regle 1:1 : la distance horizontale minimale des personnes doit etre au moins egale a la hauteur de vol. Vol a 30m = distance min 30m."
+                },
+                {
+                    id: "R04",
+                    question: "Le survol de rassemblements de personnes en categorie Ouverte est :",
+                    choices: ["Autorise en A2 avec C2", "Autorise si drone < 250g", "Toujours interdit quelle que soit la classe", "Autorise avec autorisation prefectorale"],
+                    correct: 2,
+                    explanation: "En categorie Ouverte (A1, A2, A3), le survol de rassemblements est TOUJOURS INTERDIT. Necessite la categorie Specifique avec autorisation."
+                },
+                {
+                    id: "R05",
+                    question: "Avant chaque vol A2, le telepilote doit :",
+                    choices: ["Deposer un plan de vol en prefecture", "Evaluer l'environnement et identifier les risques", "Obtenir l'accord ecrit des riverains", "Faire inspecter le drone par la DGAC"],
+                    correct: 1,
+                    explanation: "Avant chaque vol : evaluer meteo, espace aerien, presence de personnes/obstacles, etat du drone/batteries, definir procedures d'urgence."
+                },
+                {
+                    id: "R06",
+                    question: "En cas de survol involontaire de personnes avec un C2, la premiere action est de :",
+                    choices: ["Continuer le vol", "Couper les moteurs immediatement", "S'eloigner de maniere securisee des personnes", "Prendre des photos pour preuve"],
+                    correct: 2,
+                    explanation: "Survol non autorise en Open/C2. S'eloigner des personnes de maniere securisee, sans mouvements brusques qui augmenteraient le risque."
+                },
+                {
+                    id: "R07",
+                    question: "Les protege-helices reduisent les risques car :",
+                    choices: ["Ils augmentent la vitesse", "Ils empechent le contact direct des pales avec les personnes", "Ils ameliorent l'autonomie", "Ils sont juste esthetiques"],
+                    correct: 1,
+                    explanation: "Les protege-helices evitent les lacerations en cas de contact. Combines a une vitesse reduite, ils diminuent significativement la gravite des blessures."
+                },
+                {
+                    id: "R08",
+                    question: "Des enfants s'approchent de votre zone de vol A2. Vous devez :",
+                    choices: ["Continuer en les surveillant", "Monter en altitude pour passer au-dessus", "Interrompre ou vous eloigner pour maintenir les distances", "Leur demander de partir et continuer"],
+                    correct: 2,
+                    explanation: "Le telepilote est responsable du maintien des distances. Adapter le vol (eloignement) ou interrompre. On ne peut pas compter sur le comportement des tiers."
+                },
+                {
+                    id: "R09",
+                    question: "Le vol de nuit en categorie Ouverte A2 est :",
+                    choices: ["Toujours interdit", "Autorise si drone equipe de feux et VLOS maintenu", "Autorise sans condition", "Interdit sauf au-dessus de la mer"],
+                    correct: 1,
+                    explanation: "Vol de nuit possible en Open si : drone equipe de feux (position et direction), telepilote maintient VLOS, conditions permettent un vol sur. Restrictions nationales possibles."
+                },
+                {
+                    id: "R10",
+                    question: "Une 'zone tampon' en exploitation drone est :",
+                    choices: ["La zone de stockage batteries", "Une marge de securite supplementaire autour de la zone de vol", "Le rayon d'action de la telecommande", "L'espace au-dessus de 120m"],
+                    correct: 1,
+                    explanation: "Zone tampon = marge prenant en compte imprecisions GPS, rafales, temps de reaction, erreurs de pilotage. Augmente la securite reelle."
+                },
+                {
+                    id: "R11",
+                    question: "La hauteur maximale en categorie Ouverte A2 est de :",
+                    choices: ["50m AGL", "120m AGL", "150m AGL", "Illimitee"],
+                    correct: 1,
+                    explanation: "En categorie Ouverte (A1/A2/A3), hauteur max = 120m AGL (Above Ground Level). Restrictions locales possibles (aerodromes, etc.)."
+                },
+                {
+                    id: "R12",
+                    question: "L'evaluation pre-vol de l'environnement operationnel inclut :",
+                    choices: ["Uniquement la meteo", "Meteo, espace aerien, personnes, obstacles, infrastructures critiques", "Seulement l'etat du drone", "Uniquement la zone de decollage"],
+                    correct: 1,
+                    explanation: "Evaluation pre-vol complete : conditions meteo, espace aerien (zones, restrictions), presence de personnes, obstacles, infrastructures sensibles, etat du drone."
+                },
+                {
+                    id: "R13",
+                    question: "En A2, peut-on survoler des routes ouvertes a la circulation ?",
+                    choices: ["Oui sans restriction", "Oui si distance aux vehicules respectee, brievement, sans stationnement au-dessus", "Non, jamais", "Uniquement la nuit"],
+                    correct: 1,
+                    explanation: "Survol de routes possible en A2 si : distances respectees, traversee breve, pas de vol stationnaire au-dessus, evaluation du risque favorable."
+                },
+                {
+                    id: "R14",
+                    question: "L'energie cinetique d'un drone en cas de chute depend de :",
+                    choices: ["Uniquement la hauteur", "La masse et le carre de la vitesse (Ec = 1/2 mv2)", "La couleur du drone", "Uniquement de la vitesse"],
+                    correct: 1,
+                    explanation: "Energie cinetique = 1/2 x masse x vitesse au carre. Doubler la vitesse = quadrupler l'energie d'impact. D'ou l'importance du mode basse vitesse."
+                },
+                {
+                    id: "R15",
+                    question: "Une personne est consideree comme 'impliquee' dans l'operation si :",
+                    choices: ["Elle regarde le drone", "Elle participe a l'operation et a ete informee des consignes et risques", "Elle porte un gilet jaune", "Elle est a moins de 30m"],
+                    correct: 1,
+                    explanation: "Personne impliquee : participe a l'operation, a recu les instructions de securite, comprend les risques, peut surveiller la position du drone."
+                },
+                {
+                    id: "R16",
+                    question: "Le telepilote constate un dysfonctionnement en vol (vibrations anormales). Il doit :",
+                    choices: ["Continuer pour terminer la mission", "Atterrir des que possible de maniere securisee", "Ignorer si le drone vole encore", "Augmenter l'altitude"],
+                    correct: 1,
+                    explanation: "Tout comportement anormal = atterrissage immediat et securise. Les vibrations peuvent indiquer une helice endommagee, risque de defaillance imminente."
+                },
+                {
+                    id: "R17",
+                    question: "L'utilisation du mode basse vitesse est obligatoire pour :",
+                    choices: ["Tous les vols A2", "Reduire la distance aux personnes de 30m a 5m", "Le decollage uniquement", "Les vols de nuit"],
+                    correct: 1,
+                    explanation: "Mode basse vitesse (3 m/s max) obligatoire pour passer de 30m a 5m des personnes non impliquees. Reduit l'energie cinetique en cas de collision."
+                },
+                {
+                    id: "R18",
+                    question: "Un drone C2 doit afficher :",
+                    choices: ["Uniquement le nom du fabricant", "Le marquage CE et l'etiquette de classe C2", "La puissance en watts", "Le nom du proprietaire"],
+                    correct: 1,
+                    explanation: "Drone C2 doit porter le marquage CE et l'etiquette de classe (C2). Garantit la conformite aux exigences techniques europeennes."
+                },
+                {
+                    id: "R19",
+                    question: "En cas d'urgence aerienne (helicoptere SAMU), le telepilote doit :",
+                    choices: ["Continuer son vol en surveillant", "Atterrir immediatement et ne pas interferer", "Monter pour laisser passer l'helicoptere", "Signaler sa position par radio"],
+                    correct: 1,
+                    explanation: "Priorite absolue aux services d'urgence. Atterrir immediatement, ne pas interferer avec les operations de secours. Reprendre uniquement apres leur depart."
+                },
+                {
+                    id: "R20",
+                    question: "Un vol en A2 dans un parc public est :",
+                    choices: ["Toujours interdit", "Possible si distances aux non-impliques respectees et pas de rassemblement", "Autorise sans restriction", "Reserve aux professionnels"],
+                    correct: 1,
+                    explanation: "Vol en parc possible si : distances respectees (30m ou 5m avec basse vitesse), pas de survol de rassemblement, conditions meteo OK, reglementation locale respectee."
+                },
+                {
+                    id: "R21",
+                    question: "Le telepilote doit pouvoir intervenir sur le drone :",
+                    choices: ["Uniquement au decollage", "A tout moment du vol", "Seulement en cas de crash", "Uniquement a l'atterrissage"],
+                    correct: 1,
+                    explanation: "Le telepilote doit garder le controle et pouvoir intervenir a tout moment. Pas de vol autonome en categorie Ouverte."
+                },
+                {
+                    id: "R22",
+                    question: "La preparation d'un vol A2 inclut la verification :",
+                    choices: ["Uniquement du niveau de batterie", "De l'etat complet du drone, batteries, mise a jour geo-awareness, conditions", "Seulement de la meteo", "Du numero de telephone des secours"],
+                    correct: 1,
+                    explanation: "Verification complete : etat mecanique, batteries (charge, etat), firmware a jour, geo-awareness a jour, meteo, espace aerien, obstacles, personnes."
+                },
+                {
+                    id: "R23",
+                    question: "Un observateur UA peut etre utilise pour :",
+                    choices: ["Piloter le drone a la place du telepilote", "Aider le telepilote a maintenir le VLOS et surveiller l'environnement", "Filmer la mission", "Rien, c'est interdit en A2"],
+                    correct: 1,
+                    explanation: "L'observateur UA aide le telepilote : maintien du VLOS, surveillance de l'environnement (personnes, obstacles, trafic aerien). Communication directe obligatoire."
+                },
+                {
+                    id: "R24",
+                    question: "En A2, le survol d'infrastructures critiques (centrales, prisons) est :",
+                    choices: ["Autorise avec un drone C2", "Interdit ou soumis a autorisation speciale", "Autorise si altitude < 50m", "Autorise de nuit uniquement"],
+                    correct: 1,
+                    explanation: "Le survol d'infrastructures sensibles est interdit ou soumis a autorisation specifique selon la reglementation nationale. En France, verifier sur Geoportail."
+                },
+                {
+                    id: "R25",
+                    question: "Le declenchement du RTH automatique a 30% de batterie :",
+                    choices: ["Est excessif, 10% suffit", "Est une mesure de securite recommandee", "Est interdit par la reglementation", "Reduit les performances"],
+                    correct: 1,
+                    explanation: "RTH a 30% = marge de securite pour le retour. Prend en compte : distance, vent de face, altitude RTH, marge pour imprevus. 10% = trop juste."
+                },
+                {
+                    id: "R26",
+                    question: "Voler a 5m d'une personne non impliquee sans mode basse vitesse actif :",
+                    choices: ["Est autorise avec un C2", "Constitue une infraction a la reglementation A2", "Est possible si le telepilote est experimente", "Ne pose aucun probleme"],
+                    correct: 1,
+                    explanation: "5m des personnes = mode basse vitesse OBLIGATOIRE. Sans ce mode, distance minimale = 30m. Infraction = sanctions possibles."
+                },
+                {
+                    id: "R27",
+                    question: "L'enregistrement de l'exploitant UAS est obligatoire pour :",
+                    choices: ["Aucun drone en A2", "Tout drone de 250g+ ou equipe d'une camera", "Uniquement les drones professionnels", "Les drones de plus de 4 kg"],
+                    correct: 1,
+                    explanation: "Enregistrement obligatoire si : MTOM >= 250g OU capteur capable de collecter des donnees personnelles (camera). Numero operateur sur le drone."
+                },
+                {
+                    id: "R28",
+                    question: "Un accident de drone causant des blessures doit etre :",
+                    choices: ["Garde secret", "Declare a l'autorite competente selon le reglement 376/2014", "Signale uniquement si demande par la victime", "Declare seulement si mortel"],
+                    correct: 1,
+                    explanation: "Les accidents et incidents graves doivent etre declares a l'autorite competente (BEA en France). Obligation legale pour ameliorer la securite."
+                },
+                {
+                    id: "R29",
+                    question: "Pour voler en A2 a proximite d'un aerodrome, il faut :",
+                    choices: ["Rien de special, la categorie Ouverte suffit", "Verifier les zones et restrictions, obtenir les autorisations necessaires", "Juste rester sous 50m", "Attendre qu'il n'y ait pas de trafic"],
+                    correct: 1,
+                    explanation: "Proximite aerodrome : verifier les zones (CTR, ATZ, etc.) sur Geoportail/AlphaTango. Autorisation souvent necessaire. Certaines zones interdites."
+                },
+                {
+                    id: "R30",
+                    question: "La responsabilite en cas de dommage cause par un drone incombe a :",
+                    choices: ["Uniquement au fabricant", "L'exploitant UAS et/ou le telepilote", "Personne, c'est un accident", "L'Etat"],
+                    correct: 1,
+                    explanation: "L'exploitant UAS et le telepilote sont responsables des dommages causes. Assurance RC obligatoire. Le fabricant peut etre engage en cas de defaut produit."
+                }
+            ]
+        };
+
+
+        // Mapping question ID -> module renforcement (0=Codes Q, 1=TEMSI, 2=METAR/TAF, 3=Espaces)
+        var renfortMap = {
+            // Codes Q (QNH, QFE, QNE, QDR, QFU, Q dans METAR)
+            "M_ISA_01": 0, "M_ISA_04": 0,
+            "M_PRES_03": 0, "M_PRES_04": 0, "M_PRES_05": 0, "M_PRES_06": 0,
+            "M_PRES_09": 0, "M_PRES_10": 0,
+            "M_METAR_14": 0,
+            // TEMSI / WINTEM / Fronts sur carte
+            "M_TEMSI_01": 1, "M_TEMSI_02": 1, "M_TEMSI_03": 1, "M_TEMSI_04": 1,
+            "M_TEMSI_05": 1, "M_TEMSI_06": 1, "M_TEMSI_07": 1, "M_TEMSI_08": 1,
+            "M_TEMSI_09": 1, "M_TEMSI_10": 1,
+            "M_FRONT_01": 1, "M_FRONT_02": 1, "M_FRONT_03": 1, "M_FRONT_04": 1,
+            "M_FRONT_07": 1, "M_FRONT_08": 1,
+            "M_NUAGE_10": 1,
+            // METAR / TAF / abreviations meteo
+            "M_METAR_01": 2, "M_METAR_02": 2, "M_METAR_03": 2, "M_METAR_04": 2,
+            "M_METAR_05": 2, "M_METAR_06": 2, "M_METAR_07": 2, "M_METAR_08": 2,
+            "M_METAR_09": 2, "M_METAR_10": 2, "M_METAR_11": 2, "M_METAR_12": 2,
+            "M_METAR_13": 2, "M_METAR_15": 2, "M_METAR_16": 2, "M_METAR_17": 2,
+            "M_METAR_18": 2,
+            "M_TAF_01": 2, "M_TAF_02": 2, "M_TAF_03": 2, "M_TAF_04": 2,
+            "M_TAF_05": 2, "M_TAF_06": 2, "M_TAF_07": 2, "M_TAF_08": 2,
+            "M_TAF_09": 2, "M_TAF_10": 2,
+            "M_NUAGE_01": 2, "M_NUAGE_03": 2, "M_NUAGE_05": 2, "M_NUAGE_11": 2, "M_NUAGE_12": 2,
+            "M_PHEN_01": 2, "M_PHEN_02": 2, "M_PHEN_03": 2, "M_PHEN_07": 2,
+            "M_PHEN_08": 2, "M_PHEN_09": 2, "M_PHEN_10": 2, "M_PHEN_11": 2, "M_PHEN_12": 2,
+            "M_ISA_07": 2, "M_ISA_08": 2,
+            // Espaces aeriens
+            "P14": 3, "R05": 3, "R11": 3, "R12": 3, "R22": 3, "R24": 3, "R29": 3
+        };
+        var renfortNames = ["Codes Q", "TEMSI / Cartes", "METAR / TAF", "Espaces aeriens"];
+
+    // =====================================================
+    // MOTEUR EXAMEN (VERBATIM SOURCE ORIGINALE + boutons renfort)
+    // =====================================================
+
+        // Variables globales
+        var currentQuestions = [];
+        var timerInterval = null;
+        var startTime = null;
+        var timeRemaining = 3600;
+        var examSubmitted = false;
+        var userAnswers = {};
+
+        // Liste des sous-themes meteo pour le tirage equilibre
+        var meteoSubthemes = ['isa', 'pression', 'venturi', 'radiation', 'fronts', 'metar', 'taf', 'temsi', 'nuages', 'phenomenes'];
+
+        function shuffleArray(array) {
+            var shuffled = array.slice();
+            for (var i = shuffled.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = shuffled[i];
+                shuffled[i] = shuffled[j];
+                shuffled[j] = temp;
+            }
+            return shuffled;
+        }
+
+        function selectQuestions() {
+            // === METEO : Tirage equilibre (1 question par sous-theme) ===
+            var meteoQuestions = [];
+            for (var st = 0; st < meteoSubthemes.length; st++) {
+                var subthemeName = meteoSubthemes[st];
+                var subthemeQuestions = questionBank.meteo[subthemeName];
+                if (subthemeQuestions && subthemeQuestions.length > 0) {
+                    var shuffled = shuffleArray(subthemeQuestions);
+                    var selected = shuffled[0]; // 1 question par sous-theme
+                    selected.theme = "Meteo";
+                    selected.themeClass = "theme-meteo";
+                    meteoQuestions.push(selected);
+                }
+            }
+
+            // === PERFORMANCES : 10 questions aleatoires ===
+            var perfQuestions = shuffleArray(questionBank.perf).slice(0, 10);
+            for (var i = 0; i < perfQuestions.length; i++) {
+                perfQuestions[i].theme = "Performances";
+                perfQuestions[i].themeClass = "theme-perf";
+            }
+
+            // === RISQUES : 10 questions aleatoires ===
+            var risqueQuestions = shuffleArray(questionBank.risque).slice(0, 10);
+            for (var i = 0; i < risqueQuestions.length; i++) {
+                risqueQuestions[i].theme = "Risques";
+                risqueQuestions[i].themeClass = "theme-risque";
+            }
+
+            // Combiner et melanger l'ordre final
+            currentQuestions = shuffleArray(meteoQuestions.concat(perfQuestions, risqueQuestions));
+        }
+
+        function initExam() {
+            var container = document.getElementById('questionsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            selectQuestions();
+
+            for (var idx = 0; idx < currentQuestions.length; idx++) {
+                var q = currentQuestions[idx];
+                var questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.id = 'question-' + q.id;
+
+                // Melanger les choix
+                var choicesWithIndex = [];
+                for (var ci = 0; ci < q.choices.length; ci++) {
+                    choicesWithIndex.push({ text: q.choices[ci], originalIndex: ci });
+                }
+                var shuffledChoices = shuffleArray(choicesWithIndex);
+
+                var newCorrectIndex = -1;
+                for (var sci = 0; sci < shuffledChoices.length; sci++) {
+                    if (shuffledChoices[sci].originalIndex === q.correct) {
+                        newCorrectIndex = sci;
+                        break;
+                    }
+                }
+                q.shuffledCorrect = newCorrectIndex;
+                q.shuffledChoices = shuffledChoices;
+
+                var choicesHtml = '';
+                for (var chi = 0; chi < shuffledChoices.length; chi++) {
+                    choicesHtml += '<div class="choice" onclick="selectAnswer(\'' + q.id + '\', ' + chi + ')">' +
+                        '<input type="radio" name="q' + q.id + '" id="q' + q.id + '_' + chi + '" value="' + chi + '">' +
+                        '<label for="q' + q.id + '_' + chi + '">' + shuffledChoices[chi].text + '</label>' +
+                        '</div>';
+                }
+
+                questionDiv.innerHTML =
+                    '<div class="question-header">' +
+                        '<span class="question-number">Question ' + (idx + 1) + '/30</span>' +
+                        '<span class="question-theme ' + q.themeClass + '">' + q.theme + '</span>' +
+                    '</div>' +
+                    '<div class="question-text">' + q.question + '</div>' +
+                    '<div class="choices">' + choicesHtml + '</div>' +
+                    '<div class="explanation" id="explanation-' + q.id + '">' +
+                        '<strong>Explication :</strong> ' + q.explanation +
+                    '</div>';
+
+                container.appendChild(questionDiv);
+            }
+
+            startTimer();
+            startTime = Date.now();
+        }
+
+        function selectAnswer(questionId, choiceIndex) {
+            if (examSubmitted) return;
+
+            var questionDiv = document.getElementById('question-' + questionId);
+            var choices = questionDiv.querySelectorAll('.choice');
+
+            for (var i = 0; i < choices.length; i++) {
+                choices[i].classList.remove('selected');
+                if (i === choiceIndex) {
+                    choices[i].classList.add('selected');
+                    choices[i].querySelector('input').checked = true;
+                }
+            }
+
+            userAnswers[questionId] = choiceIndex;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(function() {
+                timeRemaining--;
+                var minutes = Math.floor(timeRemaining / 60);
+                var seconds = timeRemaining % 60;
+                var timerEl = document.getElementById('timer');
+                timerEl.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+                if (timeRemaining <= 300) {
+                    timerEl.classList.add('warning');
+                }
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function submitExam() {
+            if (examSubmitted) return;
+
+            var unansweredCount = 0;
+            for (var i = 0; i < currentQuestions.length; i++) {
+                if (userAnswers[currentQuestions[i].id] === undefined) {
+                    unansweredCount++;
+                }
+            }
+
+            if (unansweredCount > 0 && timeRemaining > 0) {
+                if (!confirm('Attention : ' + unansweredCount + ' question(s) sans reponse.\n\nVoulez-vous vraiment valider ?')) {
+                    return;
+                }
+            }
+
+            examSubmitted = true;
+            clearInterval(timerInterval);
+
+            var endTime = Date.now();
+            var timeUsed = Math.floor((endTime - startTime) / 1000);
+            var minutesUsed = Math.floor(timeUsed / 60);
+            var secondsUsed = timeUsed % 60;
+
+            var correct = 0;
+            var themeScores = {
+                'Meteo': { correct: 0, total: 0 },
+                'Performances': { correct: 0, total: 0 },
+                'Risques': { correct: 0, total: 0 }
+            };
+
+            for (var qi = 0; qi < currentQuestions.length; qi++) {
+                var q = currentQuestions[qi];
+                var questionDiv = document.getElementById('question-' + q.id);
+                var choices = questionDiv.querySelectorAll('.choice');
+                var userAnswer = userAnswers[q.id];
+                var correctAnswer = q.shuffledCorrect;
+
+                themeScores[q.theme].total++;
+
+                for (var ci = 0; ci < choices.length; ci++) {
+                    choices[ci].style.cursor = 'default';
+                    if (ci === correctAnswer) {
+                        choices[ci].classList.add('was-correct');
+                    }
+                    if (userAnswer === ci && ci !== correctAnswer) {
+                        choices[ci].classList.add('incorrect');
+                    }
+                    if (userAnswer === ci && ci === correctAnswer) {
+                        choices[ci].classList.remove('was-correct');
+                        choices[ci].classList.add('correct');
+                    }
+                }
+
+                if (userAnswer === correctAnswer) {
+                    correct++;
+                    themeScores[q.theme].correct++;
+                }
+
+                document.getElementById('explanation-' + q.id).classList.add('visible');
+
+                // Bouton renforcement si erreur et module disponible
+                if (userAnswer !== correctAnswer && renfortMap[q.id] !== undefined) {
+                    var rIdx = renfortMap[q.id];
+                    var rb = document.createElement('div');
+                    rb.className = 'renfort-btn';
+                    rb.setAttribute('onclick', 'showView("r' + rIdx + '")');
+                    rb.textContent = 'Renforcer \u2192 ' + renfortNames[rIdx];
+                    var explEl = document.getElementById('explanation-' + q.id);
+                    explEl.parentNode.insertBefore(rb, explEl.nextSibling);
+                }
+            }
+
+            var percentage = Math.round((correct / 30) * 100);
+            var passed = percentage >= 75;
+
+            document.getElementById('scoreDisplay').textContent = percentage + '%';
+            document.getElementById('scoreDisplay').className = 'score ' + (passed ? 'pass' : 'fail');
+            document.getElementById('passStatus').innerHTML = passed
+                ? '<span style="color:#27ae60;font-size:1.5em">ADMIS (75%+)</span>'
+                : '<span style="color:#e74c3c;font-size:1.5em">AJOURNE (' + (75 - percentage) + '% manquants)</span>';
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('wrongCount').textContent = 30 - correct;
+            document.getElementById('timeUsed').textContent = minutesUsed + ':' + (secondsUsed < 10 ? '0' : '') + secondsUsed;
+
+            var themeStatsDiv = document.getElementById('themeStats');
+            themeStatsDiv.innerHTML = '';
+            var themeNames = ['Meteo', 'Performances', 'Risques'];
+            var themeLabels = {'Meteo': 'Meteorologie', 'Performances': 'Performances UAS', 'Risques': 'Attenuation risques'};
+            for (var ti = 0; ti < themeNames.length; ti++) {
+                var theme = themeNames[ti];
+                var scores = themeScores[theme];
+                var pct = Math.round((scores.correct / scores.total) * 100);
+                var statDiv = document.createElement('div');
+                statDiv.className = 'theme-stat';
+                statDiv.innerHTML = '<h4>' + themeLabels[theme] + '</h4>' +
+                    '<div>' + scores.correct + '/' + scores.total + ' (' + pct + '%)</div>' +
+                    '<div class="progress-bar">' +
+                    '<div class="progress-fill" style="width:' + pct + '%;background:' + (pct >= 75 ? '#27ae60' : '#e74c3c') + '"></div>' +
+                    '</div>';
+                themeStatsDiv.appendChild(statDiv);
+            }
+
+            document.getElementById('results').classList.add('visible');
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetExam() {
+            if (!confirm('Nouvelle session avec 30 nouvelles questions aleatoires ?')) return;
+
+            examSubmitted = false;
+            userAnswers = {};
+            timeRemaining = 3600;
+
+            document.getElementById('results').classList.remove('visible');
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('timer').style.display = 'block';
+            document.getElementById('timer').classList.remove('warning');
+
+            clearInterval(timerInterval);
+            initExam();
+        }
+
+        // Initialisation
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initExam);
+        } else {
+            initExam();
+        }
+
+    // =====================================================
+    // BANQUES RENFORCEMENT (VERBATIM SOURCE ORIGINALE)
+    // =====================================================
+
+var banks = [
+
+// ========== MODULE 0 : CODES Q ==========
+[
+    {q:"Le QNH calé sur un altimètre affiche :",c:["La hauteur par rapport au sol (AGL)","L'altitude par rapport au niveau de la mer (AMSL)","Le niveau de vol (FL)","La pression au sol de l'aérodrome"],a:1,e:"QNH = pression ramenée au niveau de la mer. Altimètre calé au QNH → altitude AMSL (Above Mean Sea Level)."},
+    {q:"Le QFE calé sur l'altimètre affiche :",c:["L'altitude AMSL","La hauteur par rapport à l'aérodrome (AAL) — 0 au sol","Le niveau de vol","La température au sol"],a:1,e:"QFE = pression à l'aérodrome. Calé au QFE → altimètre à 0 au sol. Affiche la hauteur AAL (Above Aerodrome Level)."},
+    {q:"Le calage QNE (1013,25 hPa) est utilisé pour déterminer :",c:["L'altitude AMSL","La hauteur AAL","Les niveaux de vol (FL)","La direction du vent"],a:2,e:"QNE = calage standard 1013,25 hPa. Au-dessus de l'altitude de transition, on affiche les FL. Assure la séparation entre aéronefs."},
+    {q:"Le QDM représente :",c:["Le relèvement de l'aéronef depuis la station","Le cap magnétique pour rejoindre la station","Le cap vrai pour rejoindre la station","La distance à la station"],a:1,e:"QDM = cap magnétique à prendre pour rejoindre la station (sans vent). Mnémo : DM → Direct Magnétique vers la station."},
+    {q:"Le QDR représente :",c:["Le cap pour rejoindre la station","Le relèvement magnétique de l'aéronef VU DEPUIS la station","Le relèvement vrai de l'aéronef","La qualité de la liaison radio"],a:1,e:"QDR = relèvement magnétique de l'aéronef vu depuis la station (radial). C'est l'inverse du QDM ±180°."},
+    {q:"Le QTE est un relèvement :",c:["Magnétique de l'aéronef depuis la station","Vrai (True) de l'aéronef depuis la station","Magnétique vers la station","Vrai vers la station"],a:1,e:"QTE = relèvement vrai (True) de l'aéronef vu depuis la station. TE → True. Par rapport au Nord géographique."},
+    {q:"Le QFU indique :",c:["La pression de l'aérodrome","La direction magnétique de la piste en service","Le cap vrai pour rejoindre la station","La qualité de freinage de la piste"],a:1,e:"QFU = direction magnétique de la piste en service. Ex : QFU 09 = piste orientée 090° magnétique."},
+    {q:"QDM et QDR sont tous les deux :",c:["En référence au Nord vrai","En référence au Nord magnétique","L'un magnétique, l'autre vrai","Des mesures de pression"],a:1,e:"QDM et QDR sont tous deux en référence magnétique. QTE et QUJ utilisent le Nord vrai (True)."},
+    {q:"La pression standard ISA au niveau de la mer est :",c:["1000 hPa","1013,25 hPa","1020 hPa","1025 hPa"],a:1,e:"1013,25 hPa = pression ISA standard. C'est la valeur du calage QNE."},
+    {q:"Un QNH de 1025 hPa indique :",c:["Une dépression","La pression standard","Un anticyclone (hautes pressions)","Un vent fort"],a:2,e:"QNH > 1013 hPa → haute pression → anticyclone. Généralement associé à un temps stable."},
+    {q:"Le QUJ représente :",c:["Le cap vrai (True) pour rejoindre la station","Le relèvement magnétique depuis la station","La pression au niveau de la mer","Le niveau de transition"],a:0,e:"QUJ = cap vrai pour rejoindre la station. Mnémo : UJ = joindre la station en vrai."},
+    {q:"Quelle différence entre QDM et QUJ ?",c:["QDM = magnétique vers station, QUJ = vrai vers station","Aucune","QDM = depuis station, QUJ = vers station","QDM = vrai, QUJ = magnétique"],a:0,e:"QDM = cap MAGNÉTIQUE vers la station. QUJ = cap VRAI (True) vers la station. Même sens, mais référence Nord différente."},
+    {q:"Le QNY concerne :",c:["La pression au sol","La qualité de la liaison radio (1=mauvaise, 5=excellente)","La direction de la piste","L'altitude de transition"],a:1,e:"QNY = qualité de la liaison radio. Échelle de 1 (illisible) à 5 (parfaitement lisible)."},
+    {q:"Pour un drone en catégorie Ouverte, le calage altimétrique le plus pertinent est :",c:["Le QNE","Le QFE","Le QNH","Aucun calage n'est nécessaire"],a:2,e:"Le QNH est le plus utilisé en basse altitude. Il donne l'altitude AMSL, utile pour respecter la hauteur max 120m AGL."},
+    {q:"Le QDR d'un aéronef situé au nord magnétique de la station est :",c:["QDR 180","QDR 360 (ou 000)","QDR 090","QDR 270"],a:1,e:"Si l'aéronef est au nord de la station, vu depuis la station il est au 360° (ou 000°). QDR = 360."}
+],
+
+// ========== MODULE 1 : TEMSI ==========
+[
+    {q:"Une carte TEMSI présente :",c:["Uniquement les vents en altitude","Les phénomènes météo significatifs prévus (fronts, nuages, turbulences, givrage, précipitations)","Seulement les températures","Les horaires de lever/coucher du soleil"],a:1,e:"TEMSI = TEMps SIgnificatif. Carte graphique de prévision montrant fronts, zones nuageuses, précipitations, turbulences, givrage."},
+    {q:"Sur une carte TEMSI, un front froid est représenté par :",c:["Une ligne rouge avec demi-cercles","Une ligne bleue avec triangles pointant vers l'air chaud","Une ligne verte ondulée","Des cercles concentriques"],a:1,e:"Front froid = ligne bleue (ou noire) + triangles pointant vers l'air chaud (sens du déplacement)."},
+    {q:"Sur une carte TEMSI, un front chaud est représenté par :",c:["Une ligne bleue avec triangles","Une ligne rouge avec demi-cercles côté air froid","Une ligne verte","Aucun symbole"],a:1,e:"Front chaud = ligne rouge + demi-cercles pointant côté air froid (direction de déplacement du front)."},
+    {q:"Un front occlus sur une carte TEMSI est identifiable par :",c:["Une alternance de triangles et demi-cercles du même côté","Une ligne bleue simple","Une ligne rouge pointillée","Des flèches vertes"],a:0,e:"Front occlus = ligne violette (ou alternance bleu/rouge) + triangles ET demi-cercles du même côté."},
+    {q:"La carte WINTEM montre :",c:["Les précipitations prévues au sol","Les vents et températures en altitude","Les zones de turbulences uniquement","La couverture nuageuse au sol"],a:1,e:"WINTEM = WINd + TEMperature. Direction et vitesse du vent + température à différents niveaux de vol."},
+    {q:"Sur une carte WINTEM, la notation '3215' signifie :",c:["Vent du 320° à 15 kt","32°C et 15% d'humidité","3215 mètres d'altitude","Visibilité 3215m"],a:0,e:"Format WINTEM : 2 premiers chiffres ×10 = direction (32→320°), 2 derniers = vitesse en kt (15). Vent du 320° à 15 kt."},
+    {q:"La validité d'une carte TEMSI est généralement de :",c:["1 heure","3 à 6 heures","24 heures","1 semaine"],a:1,e:"Les cartes TEMSI sont valides 3 à 6 heures et renouvelées plusieurs fois par jour."},
+    {q:"Les cartes TEMSI basses couches couvrent :",c:["Du sol au FL450","Du sol au FL100-FL150 environ","Au-dessus du FL200 uniquement","Les zones maritimes uniquement"],a:1,e:"TEMSI basses couches = du sol au FL100/FL150. Zone la plus utile pour les opérations drone."},
+    {q:"Sur une carte TEMSI, les turbulences sont représentées par :",c:["Des flèches de couleur","Des symboles en ligne brisée (chapeau) avec intensité","La couleur verte","Des pointillés rouges"],a:1,e:"Turbulences = symbole ligne brisée / chapeau inversé avec indication d'intensité (légère, modérée, sévère) et altitude."},
+    {q:"Où trouve-t-on les cartes TEMSI et WINTEM pour la France ?",c:["Uniquement en aéroclub","Sur Aéroweb (aviation.meteo.fr) et OLIVIA","Auprès des contrôleurs uniquement","Elles n'existent plus"],a:1,e:"Aéroweb et OLIVIA sont les portails officiels de Météo France pour l'aéronautique."},
+    {q:"Sur une carte TEMSI, un front stationnaire est représenté par :",c:["Des triangles et demi-cercles de côtés opposés de la ligne","Une ligne bleue simple","Une ligne pointillée","Un cercle rouge"],a:0,e:"Front stationnaire = triangles bleus d'un côté et demi-cercles rouges de l'autre côté (alternés, opposés)."},
+    {q:"Sur une carte WINTEM, une barbule longue sur une flèche de vent représente :",c:["5 kt","10 kt","25 kt","50 kt"],a:1,e:"Barbule longue = 10 kt, barbule courte = 5 kt, fanion triangulaire = 50 kt."},
+    {q:"La notation 'BKN SC 015/040' sur une TEMSI signifie :",c:["Stratocumulus fragmentés entre FL015 et FL040","Brouillard de 15h à 40h","Cumulonimbus à 1500ft","Vent de 15 à 40 kt"],a:0,e:"BKN SC 015/040 = stratocumulus fragmentés (5-7 octas) avec base au FL015 et sommet au FL040."},
+    {q:"Un fanion triangulaire sur une flèche de vent WINTEM représente :",c:["5 kt","10 kt","25 kt","50 kt"],a:3,e:"Fanion triangulaire (drapeau) = 50 kt. Barbule longue = 10 kt, courte = 5 kt."}
+],
+
+// ========== MODULE 2 : METAR/TAF/SIGMET ==========
+[
+    {q:"Dans un METAR, 'TEMPO 1215' signifie :",c:["Température de 12 à 15°C","Fluctuations temporaires entre 12h et 15h UTC","Tendance durable","Temps stable"],a:1,e:"TEMPO = fluctuations temporaires (<1h chacune, <50% de la période). Conditions reviennent à la base entre les fluctuations."},
+    {q:"Dans un TAF, 'BECMG 1618' signifie :",c:["Bonnes conditions de 16h à 18h","Changement progressif et durable s'établissant entre 16h et 18h UTC","Brouillard de 16h à 18h","Pas de changement"],a:1,e:"BECMG = Becoming = changement progressif et DURABLE. Les nouvelles conditions persistent après la période indiquée."},
+    {q:"'FM141800' dans un TAF signifie :",c:["Fréquence 141.800 MHz","À partir du 14 à 18h00 UTC, nouvelles conditions","Formation de nuages à 1800ft","Fin du message"],a:1,e:"FM = From = à partir de. FM141800 = à partir du jour 14 à 18h00 UTC, changement immédiat."},
+    {q:"La différence fondamentale entre TEMPO et BECMG est :",c:["Aucune","TEMPO = temporaire (retour à la base), BECMG = durable (persiste)","TEMPO = nuit, BECMG = jour","TEMPO = vent, BECMG = nuages"],a:1,e:"TEMPO = va-et-vient, retour aux conditions de base. BECMG = évolution vers de nouvelles conditions qui persistent."},
+    {q:"'PROB40 TEMPO 0206 TSRA' dans un TAF signifie :",c:["Orage certain de 02h à 06h","40% de probabilité d'orages avec pluie temporaires entre 02h et 06h","Température 40°C avec pluie","Turbulences à 40 kt"],a:1,e:"PROB40 = 40% de probabilité. TEMPO = fluctuations temporaires. TSRA = orage (TS) avec pluie (RA). Entre 02h et 06h UTC."},
+    {q:"'NOSIG' à la fin d'un METAR signifie :",c:["Pas de signal GPS","Pas de changement significatif prévu dans les 2h","Pas de SIGMET actif","Normal situation"],a:1,e:"NOSIG = No Significant change. Pas de changement significatif attendu dans les 2 heures suivant l'observation."},
+    {q:"'NSW' dans un TAF signifie :",c:["Neige légère","No Significant Weather — pas de temps significatif","Nord-Sud-Ouest","Nouvelle alerte"],a:1,e:"NSW = No Significant Weather. Indique la fin des phénomènes météo significatifs précédemment mentionnés."},
+    {q:"Le code 'FZRA' signifie :",c:["Brouillard givrant","Pluie verglaçante (Freezing Rain)","Rafales de gel","Front froid"],a:1,e:"FZ = Freezing (givrant). RA = Rain (pluie). FZRA = pluie verglaçante qui gèle au contact des surfaces froides."},
+    {q:"Le code 'VCSH' signifie :",c:["Cisaillement sévère","Averses dans les environs (Vicinity Showers)","Visibilité en chute","Vent calme"],a:1,e:"VC = Vicinity (environs, 8-16 km de l'aérodrome). SH = Showers (averses). VCSH = averses vues à proximité."},
+    {q:"Le préfixe 'MI' dans 'MIFG' signifie :",c:["Minimum","Shallow — mince, bas (brouillard peu épais)","Mixte","Mineur"],a:1,e:"MI = Shallow = mince, bas. MIFG = brouillard mince (couche peu épaisse au sol). Hauteur généralement < 2m."},
+    {q:"Le préfixe 'BL' dans 'BLSN' signifie :",c:["Blizzard","Blowing — chasse haute (au-dessus de l'œil)","Blocking","Blanc"],a:1,e:"BL = Blowing = chasse haute. Particules soulevées au-dessus du niveau de l'œil. BLSN = chasse-neige haute. DR = chasse basse."},
+    {q:"'GR' dans un METAR signifie :",c:["Grain (pluie soudaine)","Grêle (diamètre ≥ 5mm)","Grésil","Brume givrée"],a:1,e:"GR = Grêle (hail) avec diamètre ≥ 5mm. GS = grésil / petite grêle < 5mm."},
+    {q:"Un SIGMET est valable pour :",c:["30 minutes","2 heures","4 à 6 heures","24 heures"],a:2,e:"Le SIGMET est valable 4 à 6 heures. Il signale des phénomènes dangereux : orages sévères, turbulences fortes, givrage sévère, cendres volcaniques."},
+    {q:"'+TSRA' signifie :",c:["Orage faible avec pluie","Orage fort avec forte pluie","Température en hausse avec pluie","Turbulence sévère"],a:1,e:"+ = fort. TS = orage. RA = pluie. +TSRA = orage avec forte pluie. Très dangereux pour tous les aéronefs."},
+    {q:"Le code 'SQ' signifie :",c:["Séquence","Squall — Grain (rafale soudaine violente)","Signal qualité","Station au sol"],a:1,e:"SQ = Squall = Grain. Augmentation soudaine et violente du vent, souvent avec pluie. Dangereux."},
+    {q:"'BC' dans 'BCFG' signifie :",c:["Brouillard complet","Patches — bancs (brouillard en bancs)","Bas cumulus","Brume continue"],a:1,e:"BC = Patches = bancs. BCFG = brouillard en bancs (répartition irrégulière, zones de bonne visibilité entre les bancs)."},
+    {q:"Le préfixe 'FZ' signifie :",c:["Fréquence zone","Freezing — givrant","Front zénal","Fumée au zénith"],a:1,e:"FZ = Freezing = givrant. FZFG = brouillard givrant, FZRA = pluie verglaçante, FZDZ = bruine verglaçante."},
+    {q:"'PR' dans 'PRFG' signifie :",c:["Pression","Partial — partiel (brouillard partiel)","Probabilité","Principal"],a:1,e:"PR = Partial = partiel. PRFG = brouillard couvrant une partie de l'aérodrome (pas la totalité)."},
+    {q:"Le code 'HZ' signifie :",c:["Horizon zéro","Haze — brume sèche","Haute zone","Humidité zéro"],a:1,e:"HZ = Haze = brume sèche. Réduction de visibilité due à des particules sèches (poussière, pollution). Distinct de BR (brume humide)."},
+    {q:"'VRB03KT' dans un METAR signifie :",c:["Visibilité variable 3 km","Vent variable en direction, 3 nœuds","Variations de 0 à 3 kt","Vortex à 3 nœuds"],a:1,e:"VRB = Variable. Le vent est trop faible ou instable pour une direction constante. 03KT = 3 nœuds."}
+],
+
+// ========== MODULE 3 : ESPACES AERIENS ==========
+[
+    {q:"L'espace aérien de classe G est :",c:["Contrôlé, clairance obligatoire","Non contrôlé — espace par défaut","Interdit aux drones","Réservé aux militaires"],a:1,e:"Classe G = espace non contrôlé. Pas de clairance ATC requise. C'est l'espace par défaut en France sous FL115 (hors CTR/TMA)."},
+    {q:"Une CTR (Control Zone) s'étend :",c:["Du FL100 au FL200","Du SOL jusqu'à une limite supérieure définie","Au-dessus du FL195 uniquement","De 1000ft AGL au FL100"],a:1,e:"CTR = zone de contrôle autour d'un aérodrome contrôlé. Part du SOL. Classe D le plus souvent en France."},
+    {q:"En France, les CTR sont le plus souvent classées en :",c:["Classe A","Classe B","Classe D","Classe G"],a:2,e:"Les CTR françaises sont généralement en classe D. Clairance ATC obligatoire pour y pénétrer, y compris pour les drones."},
+    {q:"L'espace de classe A autorise :",c:["Uniquement les vols IFR","Tous les types de vol","Uniquement les VFR","Les drones sans autorisation"],a:0,e:"Classe A = IFR uniquement. Pas de VFR autorisé. Tous les vols sont séparés par l'ATC. Très rare en France (UIR supérieur)."},
+    {q:"En classe E, les vols VFR ont besoin d'une clairance ATC :",c:["Oui, obligatoire","Non, pas de clairance requise pour le VFR","Uniquement la nuit","Uniquement au-dessus du FL100"],a:1,e:"Classe E : clairance obligatoire pour l'IFR, mais PAS pour le VFR. Les VFR reçoivent de l'info trafic si possible."},
+    {q:"Une zone P (Prohibited) signifie :",c:["Vol possible sous conditions","Vol interdit — aucune dérogation standard","Zone dangereuse, vol déconseillé","Zone de parachutage"],a:1,e:"P = Prohibited = Interdit. Ex : centrales nucléaires, Élysée, installations militaires sensibles. Aucune pénétration autorisée."},
+    {q:"Une zone R (Restricted) signifie :",c:["Vol totalement interdit","Vol soumis à conditions (horaires, autorisation)","Vol libre","Zone de repos aérien"],a:1,e:"R = Restricted = Réglementée. Pénétration possible sous conditions : horaires d'activation, autorisation préalable."},
+    {q:"Une zone D (Dangerous) signifie :",c:["Vol interdit en permanence","Activités dangereuses possibles — vol déconseillé quand active","Zone de classe D","Zone drone autorisée"],a:1,e:"D = Dangerous = Dangereuse. Activités potentiellement dangereuses (tir, parachutage). Pénétration déconseillée quand active."},
+    {q:"La TMA (Terminal Manoeuvring Area) est :",c:["Une zone au sol","Une région de contrôle terminale au-dessus de la CTR","Un espace non contrôlé","La zone de parking des avions"],a:1,e:"TMA = espace de contrôle terminal. Se situe au-dessus de la CTR, ne touche pas forcément le sol. Classe C ou D en France."},
+    {q:"L'ATZ (Aerodrome Traffic Zone) concerne :",c:["Les aérodromes contrôlés uniquement","Les aérodromes non contrôlés — auto-information entre pilotes","L'espace de classe A","Les zones militaires"],a:1,e:"ATZ = zone de trafic d'aérodrome non contrôlé. Les pilotes s'annoncent entre eux sur la fréquence. Pas de contrôle ATC."},
+    {q:"En classe D, la clairance ATC est :",c:["Non requise","Obligatoire pour tous les vols (IFR et VFR)","Uniquement pour les IFR","Uniquement pour les drones"],a:1,e:"Classe D = clairance obligatoire pour TOUS les vols. C'est la classe la plus courante pour CTR, TMA et AWY en France."},
+    {q:"Pour un drone en catégorie Ouverte, voler dans une CTR :",c:["Est toujours autorisé","Nécessite une autorisation préalable","Est interdit sans exception","Ne nécessite rien de spécial"],a:1,e:"Toute pénétration d'espace contrôlé (CTR = classe D) nécessite une autorisation préalable pour les drones."},
+    {q:"En France, l'espace non classé sous FL115 est par défaut en classe :",c:["A","D","E","G"],a:3,e:"L'espace par défaut en France sous FL115 (hors zones spéciales) est la classe G — non contrôlé."},
+    {q:"La classe B est-elle utilisée en France ?",c:["Oui, autour de Paris","Oui, au-dessus du FL195","Non, elle n'est pas utilisée en France","Oui, pour les CTR militaires"],a:2,e:"La classe B n'est pas utilisée en France. Les grandes TMA utilisent la classe C ou D."},
+    {q:"L'AWY (Airway) est :",c:["Une zone interdite","Un couloir aérien (voie aérienne) entre deux points","Une zone de parachutage","L'espace au-dessus de FL450"],a:1,e:"AWY = Airway = voie aérienne. Couloir aérien reliant des points de navigation. Généralement classe D ou E."},
+    {q:"Avant un vol drone, les zones P/R/D se vérifient sur :",c:["Google Maps","Géoportail et AlphaTango/SOFIA","Wikipedia","L'application météo"],a:1,e:"Géoportail (geoportail.gouv.fr) et AlphaTango/SOFIA sont les outils officiels pour vérifier l'espace aérien en France."},
+    {q:"En classe C, les VFR :",c:["N'ont pas besoin de clairance","Doivent obtenir une clairance et reçoivent de l'info trafic","Sont interdits","Volent sans radio"],a:1,e:"Classe C : clairance obligatoire pour tous. IFR/VFR sont séparés de l'IFR. VFR/VFR reçoivent info trafic."},
+    {q:"La FIR (Flight Information Region) est :",c:["Un petit espace autour d'un aérodrome","L'ensemble de l'espace aérien d'une région — France découpée en 5 FIR","Un espace militaire","L'espace au-dessus du FL660"],a:1,e:"FIR = Région d'information de vol couvrant tout l'espace aérien. France = 5 FIR : Paris, Marseille, Bordeaux, Brest, Reims."},
+    {q:"L'UIR (Upper Information Region) couvre en France :",c:["L'espace sous FL115","L'espace au-dessus du FL195","Les CTR uniquement","Les zones de parachutage"],a:1,e:"UIR = partie supérieure de la FIR, au-dessus de FL195 en France. Généralement en classe A (IFR uniquement)."}
+]
+
+];
+
+    // =====================================================
+    // MOTEUR RENFORCEMENT (VERBATIM SOURCE ORIGINALE)
+    // =====================================================
+
+var NB_QUESTIONS = 5;
+var moduleStates = [
+    {round:0, bestScore:0, currentQs:[], answered:{}, validated:false},
+    {round:0, bestScore:0, currentQs:[], answered:{}, validated:false},
+    {round:0, bestScore:0, currentQs:[], answered:{}, validated:false},
+    {round:0, bestScore:0, currentQs:[], answered:{}, validated:false}
+];
+var activeModule = 0;
+
+function switchModule(idx){
+    activeModule = idx;
+    var mods = document.querySelectorAll('.module');
+    var tabs = document.querySelectorAll('.tab');
+    for(var i=0;i<mods.length;i++){
+        mods[i].classList.remove('active');
+        tabs[i].classList.remove('active');
+    }
+    mods[idx].classList.add('active');
+    tabs[idx].classList.add('active');
+}
+
+function shuffle(arr){
+    var a=arr.slice();
+    for(var i=a.length-1;i>0;i--){
+        var j=Math.floor(Math.random()*(i+1));
+        var t=a[i];a[i]=a[j];a[j]=t;
+    }
+    return a;
+}
+
+function pickQuestions(modIdx){
+    var bank = banks[modIdx];
+    var shuffled = shuffle(bank);
+    return shuffled.slice(0, NB_QUESTIONS);
+}
+
+function startQuiz(modIdx){
+    var st = moduleStates[modIdx];
+    st.round++;
+    st.validated = false;
+    st.answered = {};
+    st.currentQs = pickQuestions(modIdx);
+
+    // Hide cours
+    document.getElementById('cours'+modIdx).style.display='none';
+
+    var area = document.getElementById('quiz'+modIdx);
+    area.classList.add('visible');
+    area.innerHTML = '';
+
+    // Score bar
+    var bar = document.createElement('div');
+    bar.className='score-bar';
+    bar.id='scorebar'+modIdx;
+    bar.innerHTML='<span class="round">Série #'+st.round+'</span><span class="status" id="status'+modIdx+'">En cours…</span><div class="progress-track"><div class="progress-fill" id="progress'+modIdx+'" style="width:0%"></div></div>';
+    area.appendChild(bar);
+
+    // Questions
+    for(var i=0;i<st.currentQs.length;i++){
+        var q = st.currentQs[i];
+        // Shuffle choices
+        var cIdx = [];
+        for(var ci=0;ci<q.c.length;ci++) cIdx.push(ci);
+        var shuffC = shuffle(cIdx);
+
+        q._shuffMap = shuffC; // shuffC[displayIdx] = originalIdx
+        q._correctDisplay = -1;
+        for(var si=0;si<shuffC.length;si++){
+            if(shuffC[si]===q.a) q._correctDisplay = si;
+        }
+
+        var card = document.createElement('div');
+        card.className='question-card';
+        card.id='qcard'+modIdx+'_'+i;
+
+        var choicesHtml='';
+        for(var ci=0;ci<shuffC.length;ci++){
+            choicesHtml+='<div class="choice" id="choice'+modIdx+'_'+i+'_'+ci+'" onclick="pickAnswer('+modIdx+','+i+','+ci+')"><input type="radio" name="mq'+modIdx+'_'+i+'"><label>'+q.c[shuffC[ci]]+'</label></div>';
+        }
+
+        card.innerHTML='<div class="q-num">Question '+(i+1)+'/'+NB_QUESTIONS+'</div><div class="q-text">'+q.q+'</div><div class="choices">'+choicesHtml+'</div><div class="explanation" id="expl'+modIdx+'_'+i+'"><b>Explication :</b> '+q.e+'</div>';
+        area.appendChild(card);
+    }
+
+    // Buttons
+    var btns = document.getElementById('btns'+modIdx);
+    btns.innerHTML='<button class="btn-validate" id="validateBtn'+modIdx+'" onclick="validateQuiz('+modIdx+')">Valider les réponses</button><button class="btn-cours" onclick="showCours('+modIdx+')">Revoir le cours</button>';
+}
+
+function pickAnswer(modIdx,qIdx,cIdx){
+    var st = moduleStates[modIdx];
+    if(st.validated) return;
+    st.answered[qIdx]=cIdx;
+    // Visual
+    for(var i=0;i<4;i++){
+        var el=document.getElementById('choice'+modIdx+'_'+qIdx+'_'+i);
+        if(el) el.classList.remove('selected');
+    }
+    var sel=document.getElementById('choice'+modIdx+'_'+qIdx+'_'+cIdx);
+    if(sel){sel.classList.add('selected');sel.querySelector('input').checked=true;}
+}
+
+function validateQuiz(modIdx){
+    var st=moduleStates[modIdx];
+    if(st.validated) return;
+
+    // Check all answered
+    var unanswered=0;
+    for(var i=0;i<NB_QUESTIONS;i++){
+        if(st.answered[i]===undefined) unanswered++;
+    }
+    if(unanswered>0){
+        if(!confirm(unanswered+' question(s) sans réponse. Valider quand même ?')) return;
+    }
+
+    st.validated=true;
+    var correct=0;
+
+    for(var i=0;i<st.currentQs.length;i++){
+        var q=st.currentQs[i];
+        var userAns=st.answered[i];
+        var correctAns=q._correctDisplay;
+        var card=document.getElementById('qcard'+modIdx+'_'+i);
+
+        // Lock choices
+        for(var ci=0;ci<4;ci++){
+            var ch=document.getElementById('choice'+modIdx+'_'+i+'_'+ci);
+            if(!ch) continue;
+            ch.classList.add('locked');
+            if(ci===correctAns) ch.classList.add('show-correct');
+            if(userAns===ci && ci!==correctAns) ch.classList.add('incorrect');
+            if(userAns===ci && ci===correctAns) {ch.classList.remove('show-correct');ch.classList.add('correct');}
+        }
+
+        if(userAns===correctAns){
+            correct++;
+            card.classList.add('answered-correct');
+        } else {
+            card.classList.add('answered-wrong');
+        }
+
+        document.getElementById('expl'+modIdx+'_'+i).classList.add('visible');
+    }
+
+    var pct=Math.round((correct/NB_QUESTIONS)*100);
+    if(pct>st.bestScore) st.bestScore=pct;
+
+    // Update score bar
+    var statusEl=document.getElementById('status'+modIdx);
+    statusEl.textContent=correct+'/'+NB_QUESTIONS+' — '+pct+'%';
+    statusEl.className='status '+(pct>=100?'pass':'fail');
+    document.getElementById('progress'+modIdx).style.width=pct+'%';
+    document.getElementById('progress'+modIdx).style.background=pct>=100?'#27ae60':'#e74c3c';
+
+    // Update badge
+    updateBadge(modIdx, pct);
+
+    // Buttons
+    var btns=document.getElementById('btns'+modIdx);
+    if(pct>=100){
+        btns.innerHTML='<div class="victory"><div class="icon">✓</div><h2>100% — Module validé !</h2><p>Série #'+st.round+' réussie. Bravo !</p></div><div class="btn-row"><button class="btn-validate" onclick="startQuiz('+modIdx+')">Refaire une série</button><button class="btn-cours" onclick="showCours('+modIdx+')">Revoir le cours</button></div>';
+    } else {
+        btns.innerHTML='<div style="text-align:center;margin:12px 0"><span style="color:#e74c3c;font-size:1.1em;font-weight:700">'+correct+'/'+NB_QUESTIONS+' — Objectif : 5/5. On recommence !</span></div><div class="btn-row"><button class="btn-retry" onclick="startQuiz('+modIdx+')">Nouvelle série de 5 questions</button><button class="btn-cours" onclick="showCours('+modIdx+')">Revoir le cours</button></div>';
+    }
+
+    window.scrollTo({top:document.getElementById('scorebar'+modIdx).offsetTop-60,behavior:'smooth'});
+}
+
+function showCours(modIdx){
+    document.getElementById('cours'+modIdx).style.display='block';
+    document.getElementById('cours'+modIdx).scrollIntoView({behavior:'smooth'});
+}
+
+function updateBadge(modIdx, pct){
+    var badge=document.getElementById('badge'+modIdx);
+    badge.textContent=pct+'%';
+    if(pct>=100) badge.className='badge done';
+    else badge.className='badge';
+}
+
+</script>
+</body>
+</html>
