@@ -51,6 +51,7 @@
             white-space: nowrap;
         }
         .nav-tab:hover { border-color: #3a5a8a; color: #c8d6e5; }
+        .nav-tab#tabCours:hover { border-color: #d94f30; color: #f0c040; background: rgba(217,79,48,0.15); }
         .nav-tab.active { background: #1a2a4a; color: #f0c040; border-color: #f0c040; font-weight: 700; }
         .nav-tab .badge {
             display: inline-block;
@@ -465,6 +466,8 @@
     <div class="nav-tab" id="tabR1" onclick="showView('r1')">TEMSI <span class="badge" id="badge1">—</span></div>
     <div class="nav-tab" id="tabR2" onclick="showView('r2')">METAR/TAF <span class="badge" id="badge2">—</span></div>
     <div class="nav-tab" id="tabR3" onclick="showView('r3')">Espaces <span class="badge" id="badge3">—</span></div>
+    <div class="nav-sep"></div>
+    <div class="nav-tab" id="tabCours" onclick="openCoursMeteo()" style="border-color:#d94f30;color:#f4a261;" title="Ouvre le cours Fronts & Nuages dans un nouvel onglet">☁ Fronts &amp; Nuages</div>
 </div>
 
 <div class="main-container">
@@ -492,7 +495,8 @@
         2. Performances UAS (enveloppe vol, masse/centrage, batteries, charges)<br>
         3. Attenuation risques sol (mode basse vitesse, distances, regle 1:1)<br>
         <br>
-        <span style="color:#f0c040">En cas d'erreur, un bouton <b>Renforcer →</b> apparaitra pour travailler le point faible.</span>
+        <span style="color:#f0c040">En cas d'erreur, un bouton <b>Renforcer →</b> apparaitra pour travailler le point faible.</span><br>
+        <span style="color:#f4a261">Le bouton <b>☁ Fronts &amp; Nuages</b> (barre de nav) ouvre le cours illustré sur les nuages et fronts.</span>
     </div>
 
     <div class="results" id="results">
@@ -811,6 +815,14 @@
     // =====================================================
     // NAVIGATION ENTRE VUES
     // =====================================================
+    function openCoursMeteo() {
+        var w = window.open('cours_meteo_fronts.html', 'coursMeteo', 'width=1100,height=800,scrollbars=yes,resizable=yes');
+        if (!w || w.closed) {
+            // Popup bloqué → ouvrir dans un nouvel onglet
+            window.open('cours_meteo_fronts.html', '_blank');
+        }
+    }
+
     function showView(id) {
         var views = document.querySelectorAll('.view');
         var tabs = document.querySelectorAll('.nav-tab');
@@ -2367,6 +2379,22 @@
                     rb.textContent = 'Renforcer \u2192 ' + renfortNames[rIdx];
                     var explEl = document.getElementById('explanation-' + q.id);
                     explEl.parentNode.insertBefore(rb, explEl.nextSibling);
+                }
+                // Bouton cours Fronts & Nuages pour questions météo en erreur
+                if (userAnswer !== correctAnswer && q.theme === 'Meteo') {
+                    var cb = document.createElement('div');
+                    cb.className = 'renfort-btn';
+                    cb.style.borderColor = 'rgba(217,79,48,0.5)';
+                    cb.style.color = '#f4a261';
+                    cb.setAttribute('onclick', 'openCoursMeteo()');
+                    cb.textContent = '\u2601 Cours Fronts & Nuages';
+                    var explEl2 = document.getElementById('explanation-' + q.id);
+                    // Insert after the last button already added
+                    var lastBtn = explEl2.nextSibling;
+                    while (lastBtn && lastBtn.classList && lastBtn.classList.contains('renfort-btn')) {
+                        lastBtn = lastBtn.nextSibling;
+                    }
+                    explEl2.parentNode.insertBefore(cb, lastBtn);
                 }
             }
 

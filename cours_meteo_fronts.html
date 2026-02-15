@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cours Météo — Nuages et Fronts</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+
+  :root {
+    --sky-dark: #0b1a2e;
+    --sky-mid: #1a3a5c;
+    --sky-light: #4a8db7;
+    --warm-front: #d94f30;
+    --warm-light: #f4a261;
+    --warm-bg: #2e1a12;
+    --cold-front: #2e6fff;
+    --cold-light: #7fb3ff;
+    --cold-bg: #0e1a30;
+    --occluded: #8b5cf6;
+    --text: #e8e0d6;
+    --text-dim: #9aa8b8;
+    --card-bg: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--sky-dark);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(180deg, #040d1a 0%, var(--sky-dark) 40%, var(--sky-mid) 100%);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(74,141,183,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(217,79,48,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .stars {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(135deg, var(--text) 0%, var(--cold-light) 50%, var(--warm-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero .subtitle {
+    font-size: 1.25rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    max-width: 600px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 3rem;
+  }
+
+  .nav-cards {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav-card {
+    padding: 1.2rem 2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 2px solid;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .nav-card.warm {
+    border-color: var(--warm-front);
+    background: rgba(217,79,48,0.1);
+  }
+  .nav-card.warm:hover {
+    background: rgba(217,79,48,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(217,79,48,0.2);
+  }
+
+  .nav-card.cold {
+    border-color: var(--cold-front);
+    background: rgba(46,111,255,0.1);
+  }
+  .nav-card.cold:hover {
+    background: rgba(46,111,255,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(46,111,255,0.2);
+  }
+
+  .nav-card.occluded {
+    border-color: var(--occluded);
+    background: rgba(139,92,246,0.1);
+  }
+  .nav-card.occluded:hover {
+    background: rgba(139,92,246,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(139,92,246,0.2);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    z-index: 1;
+    animation: bounce 2s ease-in-out infinite;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+  .scroll-hint svg { display: block; margin: 0.5rem auto 0; }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    margin-bottom: 3rem;
+    font-weight: 300;
+  }
+
+  /* ── INTRO / PRINCIPES ── */
+  .principles {
+    background: linear-gradient(180deg, var(--sky-mid) 0%, var(--sky-dark) 100%);
+    border-top: 1px solid var(--card-border);
+  }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .principle-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: transform 0.3s ease;
+  }
+  .principle-card:hover { transform: translateY(-4px); }
+
+  .principle-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .principle-card p {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+  }
+
+  /* ── FRONT SECTIONS ── */
+  .front-section {
+    padding: 4rem 0;
+  }
+
+  .front-warm { border-top: 3px solid var(--warm-front); }
+  .front-cold { border-top: 3px solid var(--cold-front); }
+  .front-occluded { border-top: 3px solid var(--occluded); }
+
+  .front-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .front-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .front-icon.warm { background: var(--warm-front); }
+  .front-icon.cold { background: var(--cold-front); }
+  .front-icon.occl { background: var(--occluded); }
+
+  .front-description {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    max-width: 800px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+
+  /* ── CROSS SECTION DIAGRAM ── */
+  .cross-section {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+    overflow-x: auto;
+  }
+
+  .cross-section svg {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ── CLOUD SEQUENCE ── */
+  .cloud-sequence {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .cloud-sequence::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    border-radius: 1px;
+  }
+
+  .warm .cloud-sequence::before { background: linear-gradient(180deg, var(--warm-front), var(--warm-light)); }
+  .cold .cloud-sequence::before { background: linear-gradient(180deg, var(--cold-front), var(--cold-light)); }
+  .occluded .cloud-sequence::before { background: linear-gradient(180deg, var(--occluded), #c4b5fd); }
+
+  .cloud-item {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    align-items: start;
+    animation: fadeSlideIn 0.6s ease both;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .cloud-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .cloud-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 3px solid;
+    background: var(--sky-dark);
+    z-index: 1;
+  }
+
+  .warm .cloud-dot { border-color: var(--warm-front); }
+  .cold .cloud-dot { border-color: var(--cold-front); }
+  .occluded .cloud-dot { border-color: var(--occluded); }
+
+  .cloud-alt {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .cloud-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .cloud-card:hover {
+    background: rgba(255,255,255,0.07);
+    transform: translateX(4px);
+  }
+
+  .cloud-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .cloud-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  .cloud-badge {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .badge-high { background: rgba(74,141,183,0.2); color: var(--sky-light); }
+  .badge-mid { background: rgba(244,162,97,0.2); color: var(--warm-light); }
+  .badge-low { background: rgba(217,79,48,0.2); color: #f08060; }
+
+  .cloud-latin {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .cloud-desc {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 0.8rem;
+  }
+
+  .cloud-details {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--card-border);
+  }
+
+  .cloud-card.open .cloud-details { display: block; }
+
+  .detail-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .detail-label {
+    color: var(--text-dim);
+    min-width: 120px;
+    font-weight: 600;
+  }
+
+  .cloud-precip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(100,180,255,0.15);
+    color: var(--cold-light);
+  }
+
+  .cloud-visual {
+    margin-top: 1rem;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .timeline-bar h4 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .timeline-visual {
+    position: relative;
+    height: 60px;
+    background: linear-gradient(90deg, rgba(74,141,183,0.1), rgba(217,79,48,0.1));
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .timeline-segment {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 0 0.5rem;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+    cursor: default;
+    line-height: 1.3;
+  }
+
+  .timeline-segment:hover {
+    filter: brightness(1.3);
+  }
+
+  .timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  /* ── COMPARISON TABLE ── */
+  .comparison {
+    background: linear-gradient(180deg, var(--sky-dark) 0%, #0a1520 100%);
+    border-top: 1px solid var(--card-border);
+  }
+
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .comp-table th, .comp-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .comp-table th {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    position: sticky;
+    top: 0;
+    background: var(--sky-dark);
+  }
+
+  .comp-table th:nth-child(2) { color: var(--warm-front); }
+  .comp-table th:nth-child(3) { color: var(--cold-front); }
+
+  .comp-table td:first-child {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .comp-table td {
+    color: var(--text-dim);
+  }
+
+  .comp-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* ── TABS ── */
+  .tab-container {
+    margin-top: 2rem;
+  }
+
+  .tab-buttons {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  .tab-btn {
+    padding: 0.8rem 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-bottom: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .tab-btn.active {
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+  }
+
+  .tab-btn.active.warm { border-top: 2px solid var(--warm-front); }
+  .tab-btn.active.cold { border-top: 2px solid var(--cold-front); }
+  .tab-btn.active.occl { border-top: 2px solid var(--occluded); }
+
+  .tab-content {
+    display: none;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 0 12px 12px 12px;
+    padding: 2rem;
+  }
+
+  .tab-content.active { display: block; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--card-border);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .cloud-item { grid-template-columns: 40px 1fr; gap: 1rem; }
+    .cloud-sequence::before { left: 19px; }
+    .comp-table { font-size: 0.8rem; }
+    .comp-table th, .comp-table td { padding: 0.6rem; }
+    .nav-cards { flex-direction: column; align-items: center; }
+    section { padding: 3rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════ HERO ═══════ -->
+<div class="hero" id="top">
+  <div class="stars" id="stars"></div>
+  <h1>Nuages &amp; Fronts</h1>
+  <p class="subtitle">Comprendre la séquence nuageuse associée au passage des fronts chauds, froids et occlus — de l'approche au passage.</p>
+  <div class="nav-cards">
+    <a class="nav-card warm" href="#warm">☀ Front Chaud</a>
+    <a class="nav-card cold" href="#cold">❄ Front Froid</a>
+    <a class="nav-card occluded" href="#occluded">⚡ Front Occlus</a>
+  </div>
+  <div class="scroll-hint">
+    Défiler pour commencer
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══════ PRINCIPES ═══════ -->
+<div class="principles">
+  <section>
+    <h2 class="section-title">Principes fondamentaux</h2>
+    <p class="section-subtitle">Avant d'aborder les séquences nuageuses, rappelons les mécanismes en jeu.</p>
+    <div class="principle-grid">
+      <div class="principle-card">
+        <h3>🌡 Masse d'air chaud</h3>
+        <p>Plus légère, elle s'élève <strong>au-dessus</strong> de l'air froid. Cette ascension est lente et douce, produisant des nuages stratiformes (en couches), étalés, souvent sur plusieurs centaines de kilomètres.</p>
+      </div>
+      <div class="principle-card">
+        <h3>🧊 Masse d'air froid</h3>
+        <p>Plus dense, elle s'enfonce <strong>sous</strong> l'air chaud comme un coin, le forçant à monter brutalement. L'ascension est rapide et verticale, produisant des nuages cumuliformes (en tours) et des phénomènes convectifs.</p>
+      </div>
+      <div class="principle-card">
+        <h3>📏 Étages nuageux</h3>
+        <p><strong>Haut</strong> (Ci, Cs, Cc) : 6 000 – 12 000 m, cristaux de glace. <strong>Moyen</strong> (As, Ac) : 2 000 – 6 000 m, gouttelettes/cristaux. <strong>Bas</strong> (St, Sc, Ns) : sol – 2 000 m, gouttelettes.</p>
+      </div>
+      <div class="principle-card">
+        <h3>🔄 Succession temporelle</h3>
+        <p>Les nuages apparaissent dans un ordre prévisible lié à la pente du front. Le front chaud a une pente faible (~1/150) ; les nuages hauts arrivent longtemps avant le front au sol. Le front froid a une pente raide (~1/50) ; tout se passe beaucoup plus vite.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════ FRONT CHAUD ═══════ -->
+<section id="warm" class="front-section front-warm">
+  <div class="front-header">
+    <div class="front-icon warm">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="white" stroke-width="1.5" fill="none"/></svg>
+    </div>
+    <h2 class="section-title" style="color: var(--warm-front)">Front Chaud</h2>
+  </div>
+  <p class="front-description">
+    L'air chaud monte <strong>en douceur</strong> le long d'un plan incliné au-dessus de l'air froid qui recule. La pente est faible (~1/150), ce qui signifie que les premiers signes nuageux apparaissent <strong>800 à 1000 km en avance</strong> du passage au sol — soit 12 à 24 heures avant. Les précipitations sont continues, étendues et généralement modérées.
+  </p>
+
+  <!-- Cross section SVG -->
+  <div class="cross-section">
+    <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Sky gradient -->
+      <defs>
+        <linearGradient id="skyW" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a3a5c"/>
+          <stop offset="100%" stop-color="#0b1a2e"/>
+        </linearGradient>
+        <linearGradient id="groundW" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#2a4a2a"/>
+          <stop offset="100%" stop-color="#3a5a3a"/>
+        </linearGradient>
+      </defs>
+      <rect width="900" height="280" fill="url(#skyW)"/>
+      <!-- Ground -->
+      <rect y="240" width="900" height="40" fill="url(#groundW)" rx="0"/>
+      <!-- Front surface -->
+      <path d="M 850 240 Q 600 230, 400 180 Q 200 130, 50 40" stroke="var(--warm-front)" stroke-width="3" fill="none" stroke-dasharray="8,4" opacity="0.7"/>
+      <text x="410" y="165" fill="var(--warm-front)" font-size="11" font-weight="600" transform="rotate(-14,410,165)">Surface frontale</text>
+      <!-- Air labels -->
+      <text x="750" y="215" fill="var(--warm-light)" font-size="14" font-weight="700">AIR CHAUD ☀</text>
+      <text x="120" y="265" fill="var(--cold-light)" font-size="14" font-weight="700">AIR FROID ❄</text>
+      <!-- Direction arrow -->
+      <path d="M 800 255 L 720 255" stroke="var(--warm-front)" stroke-width="2" fill="none" marker-end="url(#arrowW)"/>
+      <defs><marker id="arrowW" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--warm-front)"/></marker></defs>
+      <text x="730" y="270" fill="var(--warm-front)" font-size="10">Direction</text>
+      <!-- Clouds - from right (near) to left (far) -->
+      <!-- Ci -->
+      <ellipse cx="130" cy="45" rx="60" ry="10" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+      <text x="130" y="32" text-anchor="middle" fill="white" font-size="10" font-weight="600">Ci</text>
+      <!-- Cs -->
+      <ellipse cx="270" cy="65" rx="80" ry="14" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+      <text x="270" y="48" text-anchor="middle" fill="white" font-size="10" font-weight="600">Cs</text>
+      <!-- As -->
+      <ellipse cx="440" cy="110" rx="90" ry="18" fill="rgba(180,180,200,0.25)" stroke="rgba(200,200,220,0.3)" stroke-width="0.5"/>
+      <text x="440" y="90" text-anchor="middle" fill="white" font-size="10" font-weight="600">As</text>
+      <!-- Ns -->
+      <ellipse cx="620" cy="160" rx="110" ry="28" fill="rgba(120,120,140,0.35)" stroke="rgba(150,150,170,0.3)" stroke-width="0.5"/>
+      <text x="620" y="138" text-anchor="middle" fill="white" font-size="10" font-weight="600">Ns</text>
+      <!-- St/Fs -->
+      <ellipse cx="780" cy="210" rx="80" ry="16" fill="rgba(100,100,120,0.3)" stroke="rgba(130,130,150,0.3)" stroke-width="0.5"/>
+      <text x="780" y="195" text-anchor="middle" fill="white" font-size="10" font-weight="600">St / Fs</text>
+      <!-- Rain -->
+      <g opacity="0.4">
+        <line x1="560" y1="188" x2="555" y2="238" stroke="#7fb3ff" stroke-width="1"/>
+        <line x1="590" y1="188" x2="585" y2="238" stroke="#7fb3ff" stroke-width="1"/>
+        <line x1="620" y1="188" x2="615" y2="238" stroke="#7fb3ff" stroke-width="1"/>
+        <line x1="650" y1="188" x2="645" y2="238" stroke="#7fb3ff" stroke-width="1"/>
+        <line x1="680" y1="188" x2="675" y2="238" stroke="#7fb3ff" stroke-width="1"/>
+        <line x1="710" y1="195" x2="705" y2="238" stroke="#7fb3ff" stroke-width="0.8"/>
+        <line x1="740" y1="200" x2="735" y2="238" stroke="#7fb3ff" stroke-width="0.6"/>
+      </g>
+      <!-- Distance scale -->
+      <line x1="100" y1="240" x2="850" y2="240" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <text x="100" y="255" fill="var(--text-dim)" font-size="9">~1000 km</text>
+      <text x="350" y="255" fill="var(--text-dim)" font-size="9">~500 km</text>
+      <text x="600" y="255" fill="var(--text-dim)" font-size="9">~200 km</text>
+      <text x="800" y="255" fill="var(--text-dim)" font-size="9">Front ☁</text>
+    </svg>
+  </div>
+
+  <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:1.5rem;">Séquence nuageuse — de l'approche au passage</h3>
+
+  <div class="cloud-sequence warm" id="warm-clouds">
+    <!-- Ci -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">~10 km</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Cirrus (Ci)</span>
+          <span class="cloud-badge badge-high">ÉTAGE SUPÉRIEUR</span>
+        </div>
+        <div class="cloud-latin">Du latin « boucle de cheveux »</div>
+        <div class="cloud-desc">Premiers signes visibles, 12–24h avant le front. Filaments blancs et délicats, en forme de virgules ou de cheveux d'ange. Composés entièrement de cristaux de glace. Leur apparition progressive par l'ouest est le premier avertissement fiable.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Altitude</span><span>6 000 – 12 000 m</span></div>
+          <div class="detail-row"><span class="detail-label">Composition</span><span>Cristaux de glace</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span>Aucune au sol (virga de cristaux de glace)</span></div>
+          <div class="detail-row"><span class="detail-label">Indice météo</span><span>Si les traînées s'épaississent et envahissent le ciel → dégradation probable</span></div>
+          <div class="cloud-visual" style="background: linear-gradient(180deg, #1a3a5c 0%, #4a8db7 100%);">
+            <svg viewBox="0 0 400 80" style="width:100%;height:100%">
+              <path d="M40,30 Q80,20 120,35 Q140,28 180,32" stroke="rgba(255,255,255,0.5)" fill="none" stroke-width="1.5"/>
+              <path d="M200,25 Q240,18 280,28 Q310,22 350,30" stroke="rgba(255,255,255,0.4)" fill="none" stroke-width="1.2"/>
+              <path d="M100,50 Q150,42 200,50 Q230,44 270,48" stroke="rgba(255,255,255,0.3)" fill="none" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cs -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">~8 km</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Cirrostratus (Cs)</span>
+          <span class="cloud-badge badge-high">ÉTAGE SUPÉRIEUR</span>
+        </div>
+        <div class="cloud-latin">Du latin « boucle » + « étendu »</div>
+        <div class="cloud-desc">Voile laiteux et translucide couvrant progressivement le ciel. Provoque un <strong>halo</strong> (cercle lumineux de 22° autour du soleil ou de la lune). Le ciel bleu reste visible au travers mais devient blanchâtre. Arrivée 8–12h avant le front.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Altitude</span><span>6 000 – 10 000 m</span></div>
+          <div class="detail-row"><span class="detail-label">Composition</span><span>Cristaux de glace</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span>Aucune</span></div>
+          <div class="detail-row"><span class="detail-label">Signe clé</span><span>Halo solaire ou lunaire = confirmation de l'approche frontale</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- As -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">~4 km</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Altostratus (As)</span>
+          <span class="cloud-badge badge-mid">ÉTAGE MOYEN</span>
+        </div>
+        <div class="cloud-latin">Du latin « élevé » + « étendu »</div>
+        <div class="cloud-desc">Nappe grisâtre ou bleuâtre couvrant tout le ciel. Le soleil est visible « comme à travers un verre dépoli » — pas de halo, pas d'ombres au sol. Le plafond s'abaisse. Précipitations légères possibles (pluie fine ou neige). Arrivée 4–8h avant.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Altitude</span><span>2 000 – 6 000 m</span></div>
+          <div class="detail-row"><span class="detail-label">Composition</span><span>Gouttelettes d'eau + cristaux de glace (mixte)</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span class="cloud-precip">💧 Pluie fine ou bruine possible</span></div>
+          <div class="detail-row"><span class="detail-label">Signe clé</span><span>Disparition des ombres au sol = plafond opaque</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ns -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">~2 km</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Nimbostratus (Ns)</span>
+          <span class="cloud-badge badge-low">ÉTAGE INFÉRIEUR</span>
+        </div>
+        <div class="cloud-latin">Du latin « nuage de pluie » + « étendu »</div>
+        <div class="cloud-desc">Nuage épais, sombre, informe, couvrant tout le ciel. C'est <strong>le nuage de la pluie continue</strong>. Masque totalement le soleil. Précipitations modérées à fortes, continues, sur une large zone. Base souvent très basse, avec des « pannus » (lambeaux) en dessous. Arrivée 2–4h avant le front.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Altitude base</span><span>600 – 2 000 m (peut descendre à 200 m)</span></div>
+          <div class="detail-row"><span class="detail-label">Épaisseur</span><span>Jusqu'à 4 000 – 5 000 m</span></div>
+          <div class="detail-row"><span class="detail-label">Composition</span><span>Gouttelettes + cristaux + flocons</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span class="cloud-precip">🌧 Pluie continue et régulière (ou neige)</span></div>
+          <div class="detail-row"><span class="detail-label">Visibilité</span><span>Très réduite, souvent < 3 km</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- St / Fs -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">~500 m</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Stratus / Fractus (St / Fs)</span>
+          <span class="cloud-badge badge-low">ÉTAGE INFÉRIEUR</span>
+        </div>
+        <div class="cloud-latin">Du latin « étendu » / « brisé »</div>
+        <div class="cloud-desc">Lambeaux de nuages bas et déchiquetés se formant sous le nimbostratus, dans l'air saturé par la pluie. Brouillard possible au sol. Plafond très bas. Visibilité quasi nulle. Ces pannus signalent que le front est <strong>imminent ou en train de passer</strong>.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Altitude</span><span>0 – 500 m</span></div>
+          <div class="detail-row"><span class="detail-label">Composition</span><span>Gouttelettes d'eau</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span class="cloud-precip">🌫 Bruine, brouillard</span></div>
+          <div class="detail-row"><span class="detail-label">Après passage</span><span>Éclaircie progressive, vent tournant (SW→W), T° en hausse</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-bar">
+    <h4>⏱ Chronologie d'approche type</h4>
+    <div class="timeline-visual">
+      <div class="timeline-segment" style="flex:3; background:rgba(74,141,183,0.15);">Ci<br><small>-24h à -12h</small></div>
+      <div class="timeline-segment" style="flex:2; background:rgba(74,141,183,0.2);">Cs<br><small>-12h à -8h</small></div>
+      <div class="timeline-segment" style="flex:2; background:rgba(180,150,100,0.2);">As<br><small>-8h à -4h</small></div>
+      <div class="timeline-segment" style="flex:2; background:rgba(217,79,48,0.15);">Ns<br><small>-4h à -1h</small></div>
+      <div class="timeline-segment" style="flex:1; background:rgba(217,79,48,0.25); border:none;">St/Fs<br><small>passage</small></div>
+    </div>
+    <div class="timeline-labels">
+      <span>≈ 1000 km avant</span>
+      <span>Front au sol ▶</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FRONT FROID ═══════ -->
+<section id="cold" class="front-section front-cold">
+  <div class="front-header">
+    <div class="front-icon cold">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07" stroke="white" stroke-width="1.8" fill="none"/></svg>
+    </div>
+    <h2 class="section-title" style="color: var(--cold-front)">Front Froid</h2>
+  </div>
+  <p class="front-description">
+    L'air froid, plus dense, s'enfonce violemment sous l'air chaud comme un <strong>coin</strong>. La pente est raide (~1/50), provoquant une ascension brutale. Tout se passe en <strong>100 à 300 km</strong> et quelques heures. Les phénomènes sont intenses mais brefs : averses fortes, orages, rafales, grêle possible. Le ciel se dégage rapidement après le passage — « ciel de traîne ».
+  </p>
+
+  <!-- Cross section SVG -->
+  <div class="cross-section">
+    <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyC" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a3a5c"/>
+          <stop offset="100%" stop-color="#0b1a2e"/>
+        </linearGradient>
+      </defs>
+      <rect width="900" height="280" fill="url(#skyC)"/>
+      <rect y="240" width="900" height="40" fill="url(#groundW)" rx="0"/>
+      <!-- Front surface - steep -->
+      <path d="M 450 240 Q 420 200, 350 120 Q 300 60, 250 30" stroke="var(--cold-front)" stroke-width="3" fill="none" stroke-dasharray="8,4" opacity="0.7"/>
+      <text x="290" y="95" fill="var(--cold-front)" font-size="11" font-weight="600" transform="rotate(-55,290,95)">Surface frontale</text>
+      <!-- Air labels -->
+      <text x="100" y="215" fill="var(--cold-light)" font-size="14" font-weight="700">AIR FROID ❄</text>
+      <text x="650" y="215" fill="var(--warm-light)" font-size="14" font-weight="700">AIR CHAUD ☀</text>
+      <!-- Direction arrow -->
+      <path d="M 100 255 L 200 255" stroke="var(--cold-front)" stroke-width="2" fill="none" marker-end="url(#arrowC)"/>
+      <defs><marker id="arrowC" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--cold-front)"/></marker></defs>
+      <text x="115" y="270" fill="var(--cold-front)" font-size="10">Direction</text>
+      <!-- Cb - tall tower -->
+      <ellipse cx="420" cy="60" rx="70" ry="20" fill="rgba(255,255,255,0.2)"/>
+      <rect x="370" y="60" width="100" height="170" rx="20" fill="rgba(140,140,160,0.3)" stroke="rgba(160,160,180,0.2)" stroke-width="0.5"/>
+      <ellipse cx="420" cy="230" rx="70" ry="20" fill="rgba(100,100,120,0.35)"/>
+      <text x="420" y="150" text-anchor="middle" fill="white" font-size="12" font-weight="700">Cb</text>
+      <text x="420" y="45" text-anchor="middle" fill="white" font-size="9">⚡ Enclume</text>
+      <!-- Cu congestus -->
+      <ellipse cx="550" cy="130" rx="50" ry="35" fill="rgba(180,180,200,0.25)"/>
+      <text x="550" y="100" text-anchor="middle" fill="white" font-size="10" font-weight="600">Cu con.</text>
+      <!-- Cu -->
+      <ellipse cx="670" cy="180" rx="45" ry="20" fill="rgba(220,220,240,0.2)"/>
+      <text x="670" y="168" text-anchor="middle" fill="white" font-size="10" font-weight="600">Cu</text>
+      <!-- Sc traîne -->
+      <ellipse cx="200" cy="185" rx="60" ry="12" fill="rgba(200,200,220,0.2)"/>
+      <text x="200" y="175" text-anchor="middle" fill="white" font-size="10" font-weight="600">Sc traîne</text>
+      <!-- Rain -->
+      <g opacity="0.5">
+        <line x1="390" y1="230" x2="385" y2="240" stroke="#7fb3ff" stroke-width="1.5"/>
+        <line x1="405" y1="230" x2="400" y2="240" stroke="#7fb3ff" stroke-width="1.5"/>
+        <line x1="420" y1="230" x2="415" y2="240" stroke="#7fb3ff" stroke-width="1.5"/>
+        <line x1="435" y1="230" x2="430" y2="240" stroke="#7fb3ff" stroke-width="1.5"/>
+        <line x1="450" y1="230" x2="445" y2="240" stroke="#7fb3ff" stroke-width="1.5"/>
+      </g>
+      <!-- Lightning -->
+      <path d="M 400 130 L 395 160 L 405 158 L 398 195" stroke="#ffdd44" stroke-width="2" fill="none"/>
+      <!-- Scale -->
+      <text x="370" y="255" fill="var(--text-dim)" font-size="9">~100–300 km</text>
+    </svg>
+  </div>
+
+  <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:1.5rem;">Séquence nuageuse — de l'approche au passage</h3>
+
+  <div class="cloud-sequence cold" id="cold-clouds">
+    <!-- Ac / Acc -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">~4 km</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Altocumulus castellanus (Acc)</span>
+          <span class="cloud-badge badge-mid">ÉTAGE MOYEN</span>
+        </div>
+        <div class="cloud-latin">Du latin « élevé » + « amas » + « château »</div>
+        <div class="cloud-desc">Petites tours ou tourelles s'élevant depuis une base commune. Signe précurseur d'<strong>instabilité en altitude</strong>. Si visibles le matin, risque d'orages l'après-midi. Seul avertissement possible quelques heures avant un front froid actif.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Altitude</span><span>2 000 – 6 000 m</span></div>
+          <div class="detail-row"><span class="detail-label">Composition</span><span>Gouttelettes d'eau</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span>Aucune (mais annoncent orages)</span></div>
+          <div class="detail-row"><span class="detail-label">Signe clé</span><span>Tourelles le matin = orages probables dans les heures suivantes</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cu congestus -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">2–8 km</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Cumulus congestus (Cu con.)</span>
+          <span class="cloud-badge badge-mid">DÉVELOPPEMENT VERTICAL</span>
+        </div>
+        <div class="cloud-latin">Du latin « amas » + « entassé »</div>
+        <div class="cloud-desc">Cumulus à fort développement vertical, en forme de chou-fleur bourgeonnant. Sommets en dômes, contours nets. Stade intermédiaire entre cumulus beau temps et cumulonimbus. L'instabilité est en cours, l'air chaud monte vigoureusement.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Extension</span><span>Base ~1 500 m, sommet 6 000 – 8 000 m</span></div>
+          <div class="detail-row"><span class="detail-label">Composition</span><span>Gouttelettes (sommet en cours de glaciation)</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span class="cloud-precip">🌧 Averses possibles</span></div>
+          <div class="detail-row"><span class="detail-label">Évolution</span><span>Se transforme en Cb si l'instabilité persiste</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cb -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">1–15 km</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Cumulonimbus (Cb)</span>
+          <span class="cloud-badge badge-low">TOUTE LA TROPOSPHÈRE</span>
+        </div>
+        <div class="cloud-latin">Du latin « amas » + « nuage de pluie »</div>
+        <div class="cloud-desc"><strong>Le roi des nuages.</strong> Tour colossale atteignant la tropopause (12–15 km). Sommet en forme d'enclume (Cb capillatus incus) composé de cristaux de glace étalés par les vents d'altitude. Produit averses violentes, orages, éclairs, grêle, rafales descendantes, et parfois tornades. C'est LE nuage du passage du front froid.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Extension</span><span>Base 800–2 000 m → Sommet 10 000–15 000 m</span></div>
+          <div class="detail-row"><span class="detail-label">Composition</span><span>Eau liquide en bas, glace au sommet, mixte au milieu</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span class="cloud-precip">⛈ Averses violentes, grêle, foudre, rafales</span></div>
+          <div class="detail-row"><span class="detail-label">Durée</span><span>30 min à 2h pour un Cb isolé, mais peut se régénérer</span></div>
+          <div class="detail-row"><span class="detail-label">Dangers</span><span>Foudre, grêle, cisaillement de vent, microrafales, turbulences sévères</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ciel de traîne -->
+    <div class="cloud-item">
+      <div class="cloud-marker">
+        <div class="cloud-dot"></div>
+        <span class="cloud-alt">~1.5 km</span>
+      </div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Ciel de traîne (Cu / Sc / Cb résiduels)</span>
+          <span class="cloud-badge badge-low">APRÈS LE FRONT</span>
+        </div>
+        <div class="cloud-desc">Après le passage, l'air froid instable donne un ciel chaotique caractéristique : alternance rapide de <strong>cumulus, éclaircies, averses</strong>. Les Cu bourgeonnent dans l'air froid maritime. Des Cb résiduels donnent des giboulées. Le vent a tourné au NW/N, la température a chuté, la visibilité est excellente entre les averses — « air lavé ».</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Types</span><span>Cu humilis → Cu mediocris → éventuellement Cu congestus / Cb</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span class="cloud-precip">🌦 Averses intermittentes (giboulées)</span></div>
+          <div class="detail-row"><span class="detail-label">Vent</span><span>Rotation NW à N, rafales</span></div>
+          <div class="detail-row"><span class="detail-label">Température</span><span>Chute nette (5 à 10°C possible)</span></div>
+          <div class="detail-row"><span class="detail-label">Durée</span><span>12h à 48h selon l'instabilité de la masse d'air</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-bar">
+    <h4>⏱ Chronologie — beaucoup plus rapide</h4>
+    <div class="timeline-visual">
+      <div class="timeline-segment" style="flex:2; background:rgba(244,162,97,0.15);">Acc / Cu<br><small>-6h à -2h</small></div>
+      <div class="timeline-segment" style="flex:1.5; background:rgba(46,111,255,0.15);">Cu con.<br><small>-2h à -1h</small></div>
+      <div class="timeline-segment" style="flex:1; background:rgba(46,111,255,0.3);">Cb ⚡<br><small>passage</small></div>
+      <div class="timeline-segment" style="flex:3; background:rgba(74,141,183,0.15); border:none;">Traîne Cu/Sc<br><small>+1h à +48h</small></div>
+    </div>
+    <div class="timeline-labels">
+      <span>≈ 300 km avant</span>
+      <span>▶ Post-frontal</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FRONT OCCLUS ═══════ -->
+<section id="occluded" class="front-section front-occluded">
+  <div class="front-header">
+    <div class="front-icon occl">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3C7 3 3 7 3 12"/><path d="M12 3c5 0 9 4 9 9"/></svg>
+    </div>
+    <h2 class="section-title" style="color: var(--occluded)">Front Occlus</h2>
+  </div>
+  <p class="front-description">
+    Le front froid, plus rapide, rattrape le front chaud et soulève l'air chaud en altitude. L'air chaud n'est plus au sol — il est « occlus » (enfermé en hauteur). On obtient une <strong>combinaison</strong> des deux séquences nuageuses : nuages stratiformes du front chaud + nuages convectifs du front froid, souvent avec les précipitations les plus durables et abondantes du système.
+  </p>
+
+  <div class="cloud-sequence occluded">
+    <div class="cloud-item">
+      <div class="cloud-marker"><div class="cloud-dot"></div><span class="cloud-alt">haute</span></div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Mélange stratiforme + convectif</span>
+          <span class="cloud-badge" style="background:rgba(139,92,246,0.2);color:#c4b5fd;">COMPOSITE</span>
+        </div>
+        <div class="cloud-desc">Le front occlus combine des éléments des deux fronts : nappe continue de nimbostratus (hérité du front chaud) <strong>avec des Cb encastrés</strong> (hérités du front froid). Cela rend le front occlus particulièrement vicieux car on a à la fois la pluie continue ET les phénomènes convectifs violents masqués dans la couverture nuageuse.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Nuages typiques</span><span>Ns + Cb encastrés + As + Sc</span></div>
+          <div class="detail-row"><span class="detail-label">Précipitations</span><span class="cloud-precip">⛈🌧 Continues + averses/orages encastrés</span></div>
+          <div class="detail-row"><span class="detail-label">Danger aéro</span><span>Cb masqués dans le Ns → turbulences, givrage, cisaillement non visibles</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="cloud-item">
+      <div class="cloud-marker"><div class="cloud-dot"></div><span class="cloud-alt">sol</span></div>
+      <div class="cloud-card" onclick="this.classList.toggle('open')">
+        <div class="cloud-card-header">
+          <span class="cloud-name">Occlusion chaude vs froide</span>
+          <span class="cloud-badge" style="background:rgba(139,92,246,0.2);color:#c4b5fd;">VARIANTES</span>
+        </div>
+        <div class="cloud-desc"><strong>Occlusion chaude</strong> (l'air derrière le front froid est plus chaud que l'air devant le front chaud) : comportement plutôt type front chaud, prédominance stratiforme. <strong>Occlusion froide</strong> (l'air derrière le front froid est plus froid que l'air devant le front chaud) : comportement plutôt type front froid, prédominance convective.</div>
+        <div class="cloud-details">
+          <div class="detail-row"><span class="detail-label">Occlusion chaude</span><span>Fréquente en Europe → Ns + St + pluie longue durée</span></div>
+          <div class="detail-row"><span class="detail-label">Occlusion froide</span><span>Plus instable → Cb + averses fortes + orages</span></div>
+          <div class="detail-row"><span class="detail-label">Point triple</span><span>Le point où front chaud, front froid et occlusion se rejoignent → zone la plus active</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ COMPARAISON ═══════ -->
+<div class="comparison">
+  <section>
+    <h2 class="section-title">Comparaison synthétique</h2>
+    <p class="section-subtitle">Les différences clés entre front chaud et front froid, en un coup d'œil.</p>
+
+    <div style="overflow-x:auto">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Caractéristique</th>
+            <th>Front Chaud ☀</th>
+            <th>Front Froid ❄</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pente du front</td>
+            <td>Faible (~1/150)</td>
+            <td>Raide (~1/50)</td>
+          </tr>
+          <tr>
+            <td>Zone d'influence</td>
+            <td>800 – 1 000 km</td>
+            <td>100 – 300 km</td>
+          </tr>
+          <tr>
+            <td>Délai d'avertissement</td>
+            <td>12 – 24 h (Ci → Cs → As → Ns)</td>
+            <td>2 – 6 h (Acc → Cu con. → Cb)</td>
+          </tr>
+          <tr>
+            <td>Type de nuages dominant</td>
+            <td>Stratiformes (en couches)</td>
+            <td>Cumuliformes (en tours)</td>
+          </tr>
+          <tr>
+            <td>Nuage principal</td>
+            <td>Nimbostratus (Ns)</td>
+            <td>Cumulonimbus (Cb)</td>
+          </tr>
+          <tr>
+            <td>Précipitations</td>
+            <td>Continues, modérées, étalées</td>
+            <td>Brèves, intenses, localisées</td>
+          </tr>
+          <tr>
+            <td>Type de pluie</td>
+            <td>Pluie régulière ou bruine</td>
+            <td>Averses, grêle, orages</td>
+          </tr>
+          <tr>
+            <td>Vent</td>
+            <td>Rotation progressive S→SW</td>
+            <td>Saute brutalement W→NW, rafales</td>
+          </tr>
+          <tr>
+            <td>Température après</td>
+            <td>Hausse (air chaud s'installe)</td>
+            <td>Chute nette (air froid s'installe)</td>
+          </tr>
+          <tr>
+            <td>Pression</td>
+            <td>Baisse lente puis stabilisation</td>
+            <td>Chute rapide puis remontée vive</td>
+          </tr>
+          <tr>
+            <td>Visibilité après</td>
+            <td>Moyenne à faible (brume, humidité)</td>
+            <td>Excellente (« air lavé »)</td>
+          </tr>
+          <tr>
+            <td>Ciel après passage</td>
+            <td>Couvert ou voilé, doux</td>
+            <td>Traîne : Cu + éclaircies + averses</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mnémotechnique -->
+    <div style="margin-top:2.5rem; background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; padding:2rem;">
+      <h4 style="font-family:'Playfair Display',serif; margin-bottom:1rem; font-size:1.2rem;">🧠 Moyens mnémotechniques</h4>
+      <p style="color:var(--text-dim); margin-bottom:1rem; line-height:1.8;">
+        <strong style="color:var(--warm-front);">Front chaud</strong> → pente douce → « <em>glisse</em> » → stratiforme → <strong>strates</strong> (couches) → pluie continue douce → « Ça <span style="color:var(--warm-light);">coule</span> doucement »
+      </p>
+      <p style="color:var(--text-dim); line-height:1.8;">
+        <strong style="color:var(--cold-front);">Front froid</strong> → pente raide → « <em>pousse</em> » → cumuliforme → <strong>cumuls</strong> (tours) → averse violente brève → « Ça <span style="color:var(--cold-light);">claque</span> fort et vite »
+      </p>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <p>Cours Météorologie — Nuages et Fronts — Cliquer sur chaque nuage pour voir les détails</p>
+  <p style="margin-top:0.5rem;"><a href="#top" style="color:var(--sky-light); text-decoration:none;">↑ Retour en haut</a></p>
+</footer>
+
+<script>
+// Stars
+(function() {
+  var container = document.getElementById('stars');
+  for (var i = 0; i < 80; i++) {
+    var star = document.createElement('div');
+    star.className = 'star';
+    var size = Math.random() * 2 + 1;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = (Math.random() * 3) + 's';
+    star.style.animationDuration = (2 + Math.random() * 3) + 's';
+    container.appendChild(star);
+  }
+})();
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// Animate cloud items on scroll
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
+      entry.target.style.opacity = '1';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.cloud-item').forEach(function(item, i) {
+  item.style.animationDelay = (i * 0.1) + 's';
+  observer.observe(item);
+});
+</script>
+</body>
+</html>
