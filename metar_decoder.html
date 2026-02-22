@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Décodeur METAR / TAF — Télépilote UAS</title>
+<style>
+:root {
+  --bg: #0a0e14;
+  --panel: #111820;
+  --border: #1e2a36;
+  --text: #c8d6e0;
+  --dim: #5a7080;
+  --green: #00e676;
+  --amber: #ffab00;
+  --red: #ff5252;
+  --cyan: #00e5ff;
+  --blue: #448aff;
+  --mono: 'SF Mono','Cascadia Mono','Consolas',ui-monospace,monospace;
+  --sans: system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--sans); background:var(--bg); color:var(--text); min-height:100vh; }
+
+header {
+  background: linear-gradient(180deg, #0f1922 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 20px 18px; text-align: center;
+}
+header h1 {
+  font-family: var(--mono); font-size: 1.3rem; font-weight: 700;
+  color: var(--cyan); letter-spacing: 2px; text-transform: uppercase;
+}
+header p { font-size: .78rem; color: var(--dim); margin-top: 4px; }
+
+.search-bar {
+  display: flex; justify-content: center; align-items: center;
+  gap: 10px; padding: 20px; flex-wrap: wrap;
+}
+.search-bar input {
+  font-family: var(--mono); font-size: 1.2rem; text-transform: uppercase;
+  text-align: center; letter-spacing: 4px; width: 160px; padding: 10px 14px;
+  background: var(--panel); border: 2px solid var(--border); border-radius: 8px;
+  color: var(--cyan); outline: none; transition: border-color .2s;
+}
+.search-bar input:focus { border-color: var(--cyan); }
+.search-bar input::placeholder { color: var(--dim); letter-spacing: 2px; font-size: .9rem; }
+.btn {
+  font-family: var(--sans); font-size: .88rem; font-weight: 600;
+  padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; transition: all .2s;
+}
+.btn-fetch { background: var(--cyan); color: var(--bg); }
+.btn-fetch:hover { background: #00b8d4; transform: translateY(-1px); }
+.btn-fetch:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+.search-info { font-size:.72rem; color:var(--dim); width:100%; text-align:center; margin-top:4px; }
+
+#status {
+  text-align:center; padding:6px; font-size:.82rem;
+  font-family:var(--mono); min-height:24px;
+}
+.status-loading { color:var(--amber); }
+.status-ok { color:var(--green); }
+.status-err { color:var(--red); }
+
+.container { max-width:960px; margin:0 auto; padding:0 16px 40px; }
+
+.raw-block {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 18px; margin: 16px 0; font-family: var(--mono); font-size: .82rem;
+  line-height: 1.6; color: var(--green); word-break: break-all; white-space: pre-wrap;
+  position: relative;
+}
+.raw-block .label {
+  position: absolute; top: -9px; left: 14px; background: var(--panel);
+  padding: 0 8px; font-size: .68rem; color: var(--dim); letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.section {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; margin: 16px 0; overflow: hidden;
+}
+.section-head {
+  display: flex; align-items: center; gap: 10px; padding: 14px 18px;
+  border-bottom: 1px solid var(--border); cursor: pointer; user-select: none;
+}
+.section-head:hover { background: rgba(255,255,255,.02); }
+.section-head h2 {
+  font-family: var(--mono); font-size: .88rem; font-weight: 600;
+  color: var(--cyan); letter-spacing: 1px;
+}
+.section-head .arrow { color:var(--dim); font-size:.7rem; transition:transform .2s; }
+.section-head.open .arrow { transform:rotate(90deg); }
+.section-body { padding: 16px 18px; display:none; }
+.section-body.open { display:block; }
+
+.decode-grid {
+  display: grid; grid-template-columns: 140px 1fr; gap: 6px 16px; font-size: .84rem;
+}
+.decode-grid .lbl {
+  font-family: var(--mono); font-size: .75rem; color: var(--dim);
+  text-transform: uppercase; letter-spacing: .5px; padding-top: 2px;
+}
+.decode-grid .val { color: var(--text); line-height: 1.5; }
+.decode-grid .val strong { color: var(--green); font-weight:600; }
+.decode-grid .val .warn { color: var(--amber); }
+.decode-grid .val .danger { color: var(--red); font-weight:700; }
+
+.taf-period {
+  border: 1px solid var(--border); border-radius: 8px; margin: 10px 0; overflow: hidden;
+}
+.taf-period-head {
+  padding: 10px 14px; font-family: var(--mono); font-size: .78rem;
+  font-weight: 600; border-bottom: 1px solid var(--border);
+}
+.taf-period-head.base { background: rgba(0,230,118,.06); color: var(--green); }
+.taf-period-head.tempo { background: rgba(255,171,0,.06); color: var(--amber); }
+.taf-period-head.becmg { background: rgba(68,138,255,.06); color: var(--blue); }
+.taf-period-body { padding: 12px 14px; }
+
+/* ── SKY CHART ──────────────────────────────────── */
+.sky-chart {
+  background: linear-gradient(180deg, #060d18 0%, #0b1628 30%, #152238 60%, #1a2e4a 85%, #1e3a52 100%);
+  border: 1px solid var(--border); border-radius: 10px;
+  margin: 16px 0; position: relative; overflow: hidden;
+  height: 400px;
+}
+.sky-chart .ground {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 20px;
+  background: linear-gradient(180deg, #2a4a2a 0%, #1a3a1a 100%);
+  border-top: 2px solid #3a6a3a;
+}
+.sky-chart .ground-label {
+  position: absolute; bottom: 3px; left: 10px;
+  font-family: var(--mono); font-size: .62rem; color: #5a8a5a; letter-spacing:1px;
+}
+.sky-chart .scale-tick {
+  position: absolute; left: 0; width: 56px; text-align: right;
+  font-family: var(--mono); font-size: .58rem; color: var(--dim);
+  padding-right: 6px; transform: translateY(-50%);
+}
+.sky-chart .scale-line {
+  position: absolute; left: 60px; right: 0; height: 0;
+  border-top: 1px dotted rgba(90,112,128,.15);
+}
+.cloud-layer {
+  position: absolute; height: 30px;
+  border-radius: 15px; display: flex; align-items: center;
+  padding: 0 14px; font-family: var(--mono); font-size: .72rem;
+  transition: all .3s; gap: 8px;
+}
+.cloud-layer .cl-label { white-space: nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cloud-layer .cl-okta {
+  display: flex; gap: 2px;
+}
+.cloud-layer .cl-okta span {
+  width: 7px; height: 7px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3);
+}
+.cloud-layer .cl-okta span.f { background: rgba(255,255,255,.7); }
+.cloud-layer.few  { background:rgba(200,220,240,.07); border:1px solid rgba(200,220,240,.15); color:#80aac8; }
+.cloud-layer.sct  { background:rgba(200,220,240,.13); border:1px solid rgba(200,220,240,.22); color:#90b8d4; }
+.cloud-layer.bkn  { background:rgba(180,200,220,.22); border:1px solid rgba(180,200,220,.32); color:#a8c8dc; }
+.cloud-layer.ovc  { background:rgba(160,180,200,.35); border:1px solid rgba(160,180,200,.45); color:#c0d8e8; }
+.cloud-layer.cb   { background:rgba(255,82,82,.15); border:1px solid rgba(255,82,82,.35); color:var(--red); }
+.cloud-layer.tcu  { background:rgba(255,171,0,.12); border:1px solid rgba(255,171,0,.30); color:var(--amber); }
+.sky-chart .sky-title {
+  position: absolute; top: 8px; right: 12px;
+  font-family: var(--mono); font-size: .65rem; color: var(--dim);
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.sky-chart .drone-icon { position: absolute; font-size: 1.1rem; }
+.sky-chart .limit-line {
+  position: absolute; left: 60px; right: 0; height: 0;
+  border-top: 1.5px dashed rgba(255,82,82,.5);
+}
+.sky-chart .limit-label {
+  position: absolute; right: 12px; transform: translateY(-110%);
+  font-family: var(--mono); font-size: .58rem; color: var(--red); opacity:.7;
+}
+
+.okta-bar { display: inline-flex; gap: 2px; margin-left: 6px; vertical-align: middle; }
+.okta-bar .okta {
+  width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(200,220,240,.3);
+}
+.okta-bar .okta.filled { background: var(--text); }
+
+.verdict {
+  border-radius: 10px; padding: 18px 20px; margin: 20px 0; font-size: .88rem;
+}
+.verdict h3 {
+  font-family: var(--mono); font-size: .82rem; letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.verdict-go { background: rgba(0,230,118,.08); border: 1px solid rgba(0,230,118,.3); }
+.verdict-go h3 { color: var(--green); }
+.verdict-caution { background: rgba(255,171,0,.08); border: 1px solid rgba(255,171,0,.3); }
+.verdict-caution h3 { color: var(--amber); }
+.verdict-nogo { background: rgba(255,82,82,.08); border: 1px solid rgba(255,82,82,.3); }
+.verdict-nogo h3 { color: var(--red); }
+.verdict ul { list-style: none; padding: 0; }
+.verdict li { padding: 3px 0; font-size: .82rem; }
+.verdict li::before { content: '▸ '; color: var(--dim); }
+
+.manual-toggle { text-align:center; margin:10px 0; }
+.manual-toggle button {
+  background:none; border:none; color:var(--dim); font-size:.75rem;
+  cursor:pointer; text-decoration:underline;
+}
+.manual-toggle button:hover { color:var(--text); }
+.manual-area { display:none; margin:10px auto; max-width:700px; }
+.manual-area textarea {
+  width:100%; min-height:70px; padding:12px;
+  font-family:var(--mono); font-size:.82rem;
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:8px; color:var(--green); resize:vertical;
+}
+.manual-area .btn { margin-top:8px; }
+
+@media(max-width:600px) {
+  .decode-grid { grid-template-columns:1fr; gap:2px 0; }
+  header h1 { font-size:1rem; }
+  .sky-chart { height: 280px; }
+  .cloud-layer { font-size:.62rem; padding:0 8px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>✈ Décodeur METAR / TAF</h1>
+  <p>Outil d'aide à l'interprétation météo — Télépilote UAS catégorie Spécifique</p>
+</header>
+
+<div class="search-bar">
+  <input type="text" id="icao-input" maxlength="4" placeholder="OACI" spellcheck="false">
+  <button class="btn btn-fetch" id="fetch-btn" onclick="fetchData()">Récupérer</button>
+  <div class="search-info">Code OACI de l'aérodrome (ex : LFPG, SOCA, LFBO…)</div>
+</div>
+
+<div class="manual-toggle">
+  <button onclick="toggleManual()">Saisie manuelle (copier-coller)</button>
+</div>
+<div class="manual-area" id="manual-area">
+  <textarea id="manual-metar" placeholder="Coller le METAR brut ici…"></textarea>
+  <textarea id="manual-taf" placeholder="Coller le TAF brut ici (optionnel)…" style="margin-top:8px"></textarea>
+  <button class="btn btn-fetch" onclick="decodeManual()">Décoder</button>
+</div>
+
+<div id="status"></div>
+
+<div class="container" id="results" style="display:none">
+  <div class="raw-block" id="raw-metar-block">
+    <span class="label">METAR brut</span><span id="raw-metar"></span>
+  </div>
+  <div class="raw-block" id="raw-taf-block" style="display:none">
+    <span class="label">TAF brut</span><span id="raw-taf"></span>
+  </div>
+  <div id="sky-chart-wrap"></div>
+  <div class="section" id="metar-section">
+    <div class="section-head open" onclick="toggleSection(this)">
+      <span class="arrow">▶</span><h2>METAR — Décodage</h2>
+    </div>
+    <div class="section-body open" id="metar-decode"></div>
+  </div>
+  <div class="section" id="taf-section" style="display:none">
+    <div class="section-head open" onclick="toggleSection(this)">
+      <span class="arrow">▶</span><h2>TAF — Décodage</h2>
+    </div>
+    <div class="section-body open" id="taf-decode"></div>
+  </div>
+  <div id="verdict"></div>
+</div>
+
+<script>
+const API_BASE = 'https://aviationweather.gov/api/data';
+const PROXY = 'https://corsproxy.io/?';
+const SM_TO_M = 1609.34;
+const KT_TO_KMH = 1.852;
+
+const WX_CODES = {
+  '+':'Fort','-':'Faible','VC':'Au voisinage',
+  'MI':'Mince','BC':'Bancs','PR':'Partiel','DR':'Chasse basse',
+  'BL':'Chasse élevée','SH':'Averses','TS':'Orage','FZ':'Se congelant','RE':'Récent',
+  'DZ':'Bruine','RA':'Pluie','SN':'Neige','SG':'Neige en grains',
+  'IC':'Cristaux de glace','PL':'Granules de glace','GR':'Grêle',
+  'GS':'Grésil','UP':'Précipitation inconnue',
+  'BR':'Brume (1-5 km)','FG':'Brouillard (<1 km)','FU':'Fumée',
+  'VA':'Cendres volcaniques','DU':'Poussière','SA':'Sable',
+  'HZ':'Brume sèche (haze)','PY':'Embruns',
+  'PO':'Tourbillon sable/poussière','SQ':'Grain','FC':'Trombe',
+  'SS':'Tempête de sable','DS':'Tempête de poussière',
+  'NSW':'Pas de temps significatif','CAVOK':'CAVOK (visi ≥10 km, pas de CB, pas de nuages <1500m)'
+};
+const CLOUD_COVER = {
+  'FEW':'Quelques (1-2/8)','SCT':'Épars (3-4/8)','BKN':'Fragmenté (5-7/8)','OVC':'Couvert (8/8)',
+  'SKC':'Ciel clair','CLR':'Ciel clair','NSC':'Pas de nuages significatifs','NCD':'Aucun nuage détecté','VV':'Visi verticale'
+};
+const COVER_OKTAS = {'FEW':2,'SCT':4,'BKN':6,'OVC':8};
+const CLOUD_TYPE = {'CB':'Cumulonimbus ⚠','TCU':'Cumulus bourgeonnant ⚠'};
+
+// ── UI ──
+function toggleSection(el) { el.classList.toggle('open'); el.nextElementSibling.classList.toggle('open'); }
+function toggleManual() { const m=document.getElementById('manual-area'); m.style.display=m.style.display==='none'?'block':'none'; }
+function setStatus(msg,cls) { const el=document.getElementById('status'); el.textContent=msg; el.className=cls||''; }
+function row(l,v) { return `<div class="lbl">${l}</div><div class="val">${v}</div>`; }
+
+// ── FETCH ──
+async function fetchData() {
+  const icao=document.getElementById('icao-input').value.trim().toUpperCase();
+  if (!/^[A-Z]{4}$/.test(icao)) { setStatus('Code OACI invalide (4 lettres)','status-err'); return; }
+  const btn=document.getElementById('fetch-btn'); btn.disabled=true;
+  setStatus('Récupération en cours…','status-loading');
+  try {
+    const [mR,tR]=await Promise.all([
+      fetch(`${PROXY}${encodeURIComponent(API_BASE+'/metar?ids='+icao+'&format=json')}`),
+      fetch(`${PROXY}${encodeURIComponent(API_BASE+'/taf?ids='+icao+'&format=json')}`)
+    ]);
+    if (!mR.ok) throw new Error('Erreur serveur API');
+    const mD=await mR.json(), tD=tR.ok?await tR.json():[];
+    if (!mD||mD.length===0) { setStatus(`Aucun METAR pour ${icao}`,'status-err'); btn.disabled=false; return; }
+    renderAll(mD[0], tD&&tD.length>0?tD[0]:null);
+    try { localStorage.setItem('metar_icao',icao); } catch(e) {}
+    setStatus(`${icao} — ${mD[0].name||''} — données reçues`,'status-ok');
+  } catch(e) { setStatus('Erreur : '+e.message,'status-err'); }
+  btn.disabled=false;
+}
+
+function decodeManual() {
+  const rawM=document.getElementById('manual-metar').value.trim();
+  if (!rawM) { setStatus('Coller au moins un METAR','status-err'); return; }
+  const rawT=document.getElementById('manual-taf').value.trim();
+  renderAll({rawOb:rawM,_manual:true}, rawT?{rawTAF:rawT,_manual:true}:null);
+  setStatus('Décodage depuis saisie manuelle','status-ok');
+}
+
+// ── RENDER ALL ──
+function renderAll(metar,taf) {
+  document.getElementById('results').style.display='block';
+  document.getElementById('raw-metar').textContent=metar.rawOb||'';
+  if (taf&&taf.rawTAF) {
+    document.getElementById('raw-taf').textContent=taf.rawTAF;
+    document.getElementById('raw-taf-block').style.display='block';
+    document.getElementById('taf-section').style.display='block';
+  } else {
+    document.getElementById('raw-taf-block').style.display='none';
+    document.getElementById('taf-section').style.display='none';
+  }
+  if (metar._manual) renderMetarFromRaw(metar.rawOb); else renderMetarFromJson(metar);
+  if (taf) { if (taf._manual) renderTafFromRaw(taf.rawTAF); else renderTafFromJson(taf); }
+  if (!metar._manual&&metar.clouds) renderSkyChart(metar.clouds,metar._condensFt||null,taf&&!taf._manual?taf:null); else document.getElementById('sky-chart-wrap').innerHTML='';
+  renderVerdict(metar,taf);
+}
+
+// ── FORMAT ──
+function fmtWind(dir,spd,gust) {
+  if (dir==null&&spd==null) return '—';
+  if (dir===0&&spd===0) return 'Calme';
+  const d=dir==='VRB'?'Variable':`${String(dir).padStart(3,'0')}°`;
+  let s=` à <strong>${spd} kt</strong> (${Math.round(spd*KT_TO_KMH)} km/h)`;
+  if (gust) {
+    const gc=gust>=25?'danger':gust>=15?'warn':'';
+    s+=` — rafales <span class="${gc}"><strong>${gust} kt</strong> (${Math.round(gust*KT_TO_KMH)} km/h)</span>`;
+  }
+  return d+s;
+}
+function parseVisiSm(sm) {
+  if (sm==null||sm==='') return null;
+  if (typeof sm==='string') {
+    if (/[P>+]/.test(sm)||sm==='9999') return 99;
+    const n=parseFloat(sm); return isNaN(n)?null:n;
+  }
+  return typeof sm==='number'&&!isNaN(sm)?sm:null;
+}
+function fmtVisiSm(sm) {
+  const v=parseVisiSm(sm); if (v==null) return '—';
+  if (v>=7) return '≥ 10 km';
+  const m=Math.round(v*SM_TO_M);
+  return m>=9999?'≥ 10 km':m>=1000?`${(m/1000).toFixed(1)} km (${m} m)`:`${m} m`;
+}
+function fmtVisiM(m) {
+  if (m==null) return '—';
+  return m>=9999?'≥ 10 km':m>=1000?`${(m/1000).toFixed(1)} km (${m} m)`:`${m} m`;
+}
+function fmtClouds(clouds) {
+  if (!clouds||clouds.length===0) return 'Pas de nuages significatifs';
+  const sorted=[...clouds].sort((a,b)=>(b.base||0)-(a.base||0));
+  return sorted.map(c => {
+    const cover=CLOUD_COVER[c.cover]||c.cover;
+    const oktas=COVER_OKTAS[c.cover];
+    const oktaHtml=oktas!=null?' '+makeOktaBar(oktas):'';
+    const base=c.base!=null?` à ${c.base} ft (${Math.round(c.base*0.3048)} m)`:'';
+    const type=c.type?' — <span class="'+(c.type==='CB'?'danger':'warn')+'">'+(CLOUD_TYPE[c.type]||c.type)+'</span>':'';
+    return `${cover}${oktaHtml}${base}${type}`;
+  }).join('<br>');
+}
+function makeOktaBar(n) {
+  let h='<span class="okta-bar">';
+  for (let i=0;i<8;i++) h+=`<span class="okta${i<n?' filled':''}"></span>`;
+  return h+'</span>';
+}
+function fmtWx(wx) {
+  if (!wx) return 'Néant';
+  if (wx==='NSW') return WX_CODES.NSW;
+  const codes=Object.keys(WX_CODES).sort((a,b)=>b.length-a.length);
+  const parts=[]; let rem=wx;
+  while (rem.length>0) { let m=false; for (const c of codes) { if (rem.startsWith(c)) { parts.push(WX_CODES[c]); rem=rem.substring(c.length); m=true; break; } } if (!m) rem=rem.substring(1); }
+  return parts.length>0?`${wx} → ${parts.join(' / ')}`:wx;
+}
+function fmtTime(ts) {
+  if (!ts) return '—';
+  const d=new Date(typeof ts==='number'?ts*1000:ts);
+  const day=String(d.getUTCDate()).padStart(2,'0');
+  const hU=String(d.getUTCHours()).padStart(2,'0');
+  const mU=String(d.getUTCMinutes()).padStart(2,'0');
+  const hL=String(d.getHours()).padStart(2,'0');
+  const mL=String(d.getMinutes()).padStart(2,'0');
+  const utcStr=`${day}/${hU}:${mU}Z`;
+  const offset=d.getTimezoneOffset();
+  const sign=offset<=0?'+':'−';
+  const offH=Math.abs(Math.floor(offset/60));
+  const tzLabel=`UTC${sign}${offH}`;
+  if (offset===0) return utcStr;
+  return `${utcStr} <span style="color:var(--amber);font-size:.78em">(${hL}:${mL} locale ${tzLabel})</span>`;
+}
+function fmtPeriod(f,t) { return `${fmtTime(f)} → ${fmtTime(t)}`; }
+function windClass(s,g) { const v=g||s||0; return v>=25?'danger':v>=15?'warn':''; }
+function visiClass(sm) { const v=parseVisiSm(sm); if (v==null) return ''; const m=v*SM_TO_M; return m<3000?'danger':m<5000?'warn':''; }
+
+// ── SKY CHART ──
+function renderSkyChart(clouds,condensFt,taf) {
+  if (!clouds||clouds.length===0) { document.getElementById('sky-chart-wrap').innerHTML=''; return; }
+  const sorted=[...clouds].sort((a,b)=>(b.base||0)-(a.base||0));
+  const hasTaf=taf&&taf.fcsts&&taf.fcsts.length>0;
+
+  // Collect TAF cloud layers with probability
+  const tafLayers=[];
+  if (hasTaf) {
+    taf.fcsts.forEach(f=>{
+      if (!f.clouds||f.clouds.length===0) return;
+      const change=f.fcstChange||'BASE';
+      let opacity=1.0;
+      if (f.probability) opacity=f.probability/100; // PROB30→0.3, PROB40→0.4
+      else if (change==='TEMPO') opacity=0.6;
+      else if (change==='BECMG') opacity=0.8;
+      // Label
+      const prob=f.probability?`P${f.probability} `:'';
+      const label=change==='BASE'?'BASE':`${prob}${change}`;
+      f.clouds.forEach(c=>{
+        tafLayers.push({...c, opacity, label, change,
+          timeFrom:f.timeFrom, timeTo:f.timeTo});
+      });
+    });
+  }
+
+  // Scale
+  const allBases=[...sorted.map(c=>c.base||0),...tafLayers.map(c=>c.base||0)];
+  const BREAK_FT=3281;
+  const maxHighFt=Math.max(...allBases,condensFt||0,BREAK_FT);
+  const scaleHighMax=Math.ceil(maxHighFt/1000)*1000+1000;
+  const H=400, topP=32, botP=24, useH=H-topP-botP;
+  const halfH=useH*0.5;
+  const MID='50%'; // center divider position
+
+  function ftToY(ft) {
+    if (ft<=BREAK_FT) { return topP+useH-(ft/BREAK_FT)*halfH; }
+    else { return topP+halfH-((ft-BREAK_FT)/(scaleHighMax-BREAK_FT))*halfH; }
+  }
+
+  let html=`<div class="sky-chart" style="height:${H}px">`;
+
+  // Column headers
+  html+=`<div style="position:absolute;top:6px;left:62px;font-family:var(--mono);font-size:.62rem;color:var(--green);letter-spacing:1px;text-transform:uppercase">METAR — Observé</div>`;
+  if (hasTaf) {
+    html+=`<div style="position:absolute;top:6px;right:12px;font-family:var(--mono);font-size:.62rem;color:var(--amber);letter-spacing:1px;text-transform:uppercase">TAF — Prévu (axe → temps UTC)</div>`;
+  }
+
+  // Center divider
+  html+=`<div style="position:absolute;left:${MID};top:${topP}px;bottom:${botP}px;width:1px;background:rgba(90,112,128,.3)"></div>`;
+
+  // Scale ticks (left edge)
+  const lowTicks=[0,250,500,1000,1500,2000,2500,3000,3281];
+  lowTicks.forEach(ft=>{
+    const y=ftToY(ft); if (y<topP-5||y>H-botP+5) return;
+    const label=ft===3281?'1000m':ft>=1000?`${ft}ft`:`${ft}ft`;
+    html+=`<div class="scale-tick" style="top:${y}px">${label}</div>`;
+    html+=`<div class="scale-line" style="top:${y}px"></div>`;
+  });
+  const highStep=scaleHighMax<=6000?1000:scaleHighMax<=12000?2000:5000;
+  for (let ft=4000;ft<=scaleHighMax;ft+=highStep) {
+    const y=ftToY(ft); if (y<topP-5||y>H-botP+5) continue;
+    html+=`<div class="scale-tick" style="top:${y}px">${ft}ft</div>`;
+    html+=`<div class="scale-line" style="top:${y}px"></div>`;
+  }
+
+  // Zone break
+  const yBreak=ftToY(BREAK_FT);
+  html+=`<div style="position:absolute;left:58px;right:0;top:${yBreak}px;height:0;border-top:1px solid rgba(90,112,128,.25)"></div>`;
+
+  // 120m limit — full width
+  const y120=ftToY(394);
+  html+=`<div class="limit-line" style="top:${y120}px"></div>`;
+  html+=`<div class="limit-label" style="top:${y120-2}px">▲ 120 m max UAS</div>`;
+
+  // Drone
+  const yD=ftToY(262);
+  html+=`<div class="drone-icon" style="top:${yD-12}px;left:66px">🛸</div>`;
+
+  // Condensation — full width
+  if (condensFt&&condensFt>0&&condensFt<scaleHighMax) {
+    const yC=ftToY(condensFt);
+    html+=`<div style="position:absolute;left:60px;right:0;top:${yC}px;height:0;border-top:1.5px dashed rgba(0,229,255,.4)"></div>`;
+    html+=`<div style="position:absolute;left:64px;top:${yC+2}px;font-family:var(--mono);font-size:.58rem;color:var(--cyan);opacity:.8">💧 ${condensFt} ft (${Math.round(condensFt*0.3048)} m)</div>`;
+  }
+
+  // ── LEFT: METAR clouds ──
+  sorted.forEach(c => {
+    const base=c.base||0, y=ftToY(base);
+    const coverKey=c.cover||'';
+    const oktas=COVER_OKTAS[coverKey]||0;
+    // Width relative to left half (60px scale + to 50%)
+    const layerW=10+(oktas/8)*35; // % of total width, max ~45% (stays in left half)
+    let cls=coverKey.toLowerCase();
+    if (c.type==='CB') cls='cb'; else if (c.type==='TCU') cls='tcu';
+    const typeStr=c.type?` ${c.type}`:'';
+    let oktaDots='<span class="cl-okta">';
+    for (let i=0;i<8;i++) oktaDots+=`<span${i<oktas?' class="f"':''}></span>`;
+    oktaDots+='</span>';
+    html+=`<div class="cloud-layer ${cls}" style="top:${y-15}px;left:62px;width:${layerW}%;right:auto">`;
+    html+=`<span class="cl-label">${coverKey}${typeStr} ${base}ft</span>`;
+    html+=oktaDots;
+    html+=`</div>`;
+  });
+
+  // ── RIGHT: TAF clouds — X=time, Y=altitude ──
+  if (hasTaf&&tafLayers.length>0) {
+    const tafFrom=taf.validTimeFrom;
+    const tafTo=taf.validTimeTo;
+    const tafDur=tafTo-tafFrom;
+    // Right half: 51% to 99% of chart width
+    const RIGHT_L=51, RIGHT_R=99;
+    function timeToXpct(ts) {
+      const ratio=(ts-tafFrom)/tafDur;
+      return RIGHT_L+ratio*(RIGHT_R-RIGHT_L);
+    }
+
+    // Time axis ticks at bottom of right half
+    const tafStartH=new Date(tafFrom*1000).getUTCHours();
+    for (let ts=tafFrom;ts<=tafTo;ts+=3600) {
+      const h=new Date(ts*1000).getUTCHours();
+      const xPct=timeToXpct(ts);
+      if (xPct<RIGHT_L+1||xPct>RIGHT_R-1) continue;
+      // Vertical tick line
+      html+=`<div style="position:absolute;left:${xPct}%;top:${topP}px;bottom:${botP}px;width:0;border-left:1px dotted rgba(90,112,128,.12)"></div>`;
+      // Hour label at bottom
+      html+=`<div style="position:absolute;left:${xPct}%;bottom:${botP+2}px;transform:translateX(-50%);font-family:var(--mono);font-size:.5rem;color:var(--dim)">${String(h).padStart(2,'0')}Z</div>`;
+    }
+
+    tafLayers.forEach(c => {
+      const base=c.base||0, y=ftToY(base);
+      const coverKey=c.cover||'';
+      const oktas=COVER_OKTAS[coverKey]||0;
+      let cls=coverKey.toLowerCase();
+      if (c.type==='CB') cls='cb'; else if (c.type==='TCU') cls='tcu';
+      const typeStr=c.type?` ${c.type}`:'';
+
+      // X position from time
+      const xLeft=timeToXpct(c.timeFrom);
+      const xRight=timeToXpct(c.timeTo);
+      const widthPct=Math.max(xRight-xLeft,3); // min width 3%
+
+      // Okta dots
+      let oktaDots='<span class="cl-okta">';
+      for (let i=0;i<8;i++) oktaDots+=`<span${i<oktas?' class="f"':''}></span>`;
+      oktaDots+='</span>';
+
+      // Short label
+      const shortLabel=c.label==='BASE'?'':c.label+' ';
+
+      html+=`<div class="cloud-layer ${cls}" style="top:${y-15}px;left:${xLeft}%;width:${widthPct}%;right:auto;opacity:${c.opacity};padding:0 6px">`;
+      html+=`<span class="cl-label">${shortLabel}${coverKey}${typeStr}</span>`;
+      html+=oktaDots;
+      html+=`</div>`;
+    });
+  }
+
+  html+=`<div class="ground"><span class="ground-label">SOL — GND</span></div>`;
+  html+=`</div>`;
+  // Legend
+  if (hasTaf) {
+    html+=`<div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin:6px 0 0;font-family:var(--mono);font-size:.6rem;color:var(--dim)">`;
+    html+=`<span>TAF : opacité = probabilité</span>`;
+    html+=`<span style="opacity:1">■ BASE/BECMG 80-100%</span>`;
+    html+=`<span style="opacity:.6">■ TEMPO 60%</span>`;
+    html+=`<span style="opacity:.4">■ PROB40 40%</span>`;
+    html+=`<span style="opacity:.3">■ PROB30 30%</span>`;
+    html+=`</div>`;
+  }
+  document.getElementById('sky-chart-wrap').innerHTML=html;
+}
+
+// ── METAR JSON ──
+function renderMetarFromJson(m) {
+  const wc=windClass(m.wspd,m.wgst), vc=visiClass(m.visib);
+  let html='<div class="decode-grid">';
+  html+=row('Station',`<strong>${m.icaoId}</strong> — ${m.name||''} (alt. ${m.elev||'?'} m)`);
+  html+=row('Observation',fmtTime(m.reportTime||m.obsTime)+(m.metarType==='SPECI'?' <span class="warn">(SPECI)</span>':'')+(m.rawOb&&m.rawOb.includes('AUTO')?' (AUTO)':''));
+  html+=row('Vent',`<span class="${wc}">${fmtWind(m.wdir,m.wspd,m.wgst)}</span>`);
+  html+=row('Visibilité',`<span class="${vc}">${fmtVisiSm(m.visib)}</span>`+(m.fltCat?` — cat. <strong>${m.fltCat}</strong>`:''));
+  html+=row('Temps présent',fmtWx(m.wxString));
+  html+=row('Nuages',fmtClouds(m.clouds));
+  html+=row('Température',m.temp!=null?`${m.temp}°C`:'—');
+  html+=row('Point de rosée',m.dewp!=null?`${m.dewp}°C`:'—');
+  if (m.temp!=null&&m.dewp!=null) {
+    const sp=m.temp-m.dewp;
+    html+=row('Écart T°/Td',`${sp}°C${sp<=3?' <span class="warn">⚠ risque brouillard/condensation</span>':''}`);
+    const condensFt=Math.round(sp*400);
+    const condensM=Math.round(condensFt*0.3048);
+    html+=row('Base nuages est.',`<strong>≈ ${condensFt} ft (${condensM} m)</strong> <span style="font-size:.75rem;color:var(--dim)">— formule d'Espy : (T−Td) × 400 ft/°C</span>`);
+    html+=row('',`<span style="font-size:.72rem;color:var(--dim)">L'air se refroidit de ~2°C/1000 ft en montant, le point de rosée de ~0,5°C/1000 ft → l'écart se referme à ~1°C / 400 ft. Quand T = Td, la vapeur condense et les nuages se forment.</span>`);
+    m._condensFt = condensFt; // store for sky chart
+  }
+  html+=row('QNH',m.altim?`${m.altim} hPa`:'—');
+  html+='</div>';
+  // TEMPO inline
+  if (m.rawOb&&m.rawOb.includes('TEMPO')) {
+    const tm=m.rawOb.match(/TEMPO\s+(.+?)(?:=|$)/);
+    if (tm) {
+      html+=`<div style="margin-top:14px;padding:10px 12px;background:rgba(255,171,0,.06);border:1px solid rgba(255,171,0,.2);border-radius:8px">`;
+      html+=`<span style="font-family:var(--mono);font-size:.75rem;color:var(--amber);font-weight:600">TEMPO</span>`;
+      html+=`<span style="font-family:var(--mono);font-size:.78rem;color:var(--text);margin-left:10px">${tm[1].trim()}</span></div>`;
+    }
+  }
+  document.getElementById('metar-decode').innerHTML=html;
+}
+
+// ── METAR RAW ──
+function renderMetarFromRaw(raw) {
+  const parts=raw.replace(/=\s*$/,'').split(/\s+/);
+  let html='<div class="decode-grid">',i=0,rawCondenseFt=null;
+  if (parts[i]==='METAR'||parts[i]==='SPECI') { html+=row('Type',parts[i]); i++; }
+  if (/^[A-Z]{4}$/.test(parts[i])) { html+=row('Station',`<strong>${parts[i]}</strong>`); i++; }
+  if (/^\d{6}Z$/.test(parts[i])) {
+    const dd=parts[i].substring(0,2),hh=parseInt(parts[i].substring(2,4)),mm=parts[i].substring(4,6);
+    const offsetMin=new Date().getTimezoneOffset();
+    const localH=((hh*60+parseInt(mm))-offsetMin+1440)%1440;
+    const lh=String(Math.floor(localH/60)).padStart(2,'0'),lm=String(localH%60).padStart(2,'0');
+    const sign=offsetMin<=0?'+':'−',offH=Math.abs(Math.floor(offsetMin/60));
+    const localStr=offsetMin===0?'':`<span style="color:var(--amber);font-size:.85em"> (${lh}:${lm} locale UTC${sign}${offH})</span>`;
+    html+=row('Date/heure',`Jour ${dd} à ${String(hh).padStart(2,'0')}:${mm} UTC${localStr}`); i++;
+  }
+  if (parts[i]==='AUTO') { html+=row('Auto','Station automatique'); i++; }
+  const wRe=/^(\d{3}|VRB)(\d{2,3})(G(\d{2,3}))?KT$/;
+  if (parts[i]&&wRe.test(parts[i])) {
+    const wm=parts[i].match(wRe);
+    html+=row('Vent',fmtWind(wm[1]==='VRB'?'VRB':parseInt(wm[1]),parseInt(wm[2]),wm[4]?parseInt(wm[4]):null)); i++;
+  }
+  if (parts[i]&&/^\d{3}V\d{3}$/.test(parts[i])) { html+=row('Vent variable',`entre ${parts[i].substring(0,3)}° et ${parts[i].substring(4)}°`); i++; }
+  if (parts[i]&&/^\d{4}$/.test(parts[i])) { html+=row('Visibilité',fmtVisiM(parseInt(parts[i]))); i++; }
+  else if (parts[i]==='CAVOK') { html+=row('Visibilité',WX_CODES.CAVOK); i++; }
+  const wxRe=/^[-+]?(VC)?(MI|BC|PR|DR|BL|SH|TS|FZ|RE)?(DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+$/;
+  while (parts[i]&&wxRe.test(parts[i])) { html+=row('Temps',fmtWx(parts[i])); i++; }
+  const cRe=/^(FEW|SCT|BKN|OVC|VV)(\d{3})(CB|TCU)?$/;
+  const cLayers=[];
+  while (parts[i]&&(cRe.test(parts[i])||/^(SKC|CLR|NSC|NCD)$/.test(parts[i]))) {
+    if (/^(SKC|CLR|NSC|NCD)$/.test(parts[i])) { html+=row('Nuages',CLOUD_COVER[parts[i]]); i++; continue; }
+    const cm=parts[i].match(cRe); cLayers.push({cover:cm[1],base:parseInt(cm[2])*100,type:cm[3]||null}); i++;
+  }
+  if (cLayers.length>0) html+=row('Nuages',fmtClouds(cLayers));
+  const tRe=/^(M?\d{2})\/(M?\d{2})$/;
+  if (parts[i]&&tRe.test(parts[i])) {
+    const tm=parts[i].match(tRe);
+    const t=tm[1].replace('M','-'),d=tm[2].replace('M','-');
+    html+=row('Température',`${t}°C`);
+    html+=row('Point de rosée',`${d}°C`);
+    const sp=parseInt(t)-parseInt(d);
+    html+=row('Écart T°/Td',`${sp}°C${sp<=3?' <span class="warn">⚠ risque brouillard</span>':''}`);
+    const condensFt=Math.round(sp*400);
+    const condensM=Math.round(condensFt*0.3048);
+    html+=row('Base nuages est.',`<strong>≈ ${condensFt} ft (${condensM} m)</strong> <span style="font-size:.75rem;color:var(--dim)">— formule d'Espy : (T−Td) × 400 ft/°C</span>`);
+    html+=row('',`<span style="font-size:.72rem;color:var(--dim)">L'air se refroidit de ~2°C/1000 ft en montant, le point de rosée de ~0,5°C/1000 ft → l'écart se referme à ~1°C / 400 ft. Quand T = Td, la vapeur condense et les nuages se forment.</span>`);
+    rawCondenseFt=condensFt;
+    i++;
+  }
+  if (parts[i]&&/^Q\d{4}$/.test(parts[i])) { html+=row('QNH',`${parseInt(parts[i].substring(1))} hPa`); i++; }
+  const rem=parts.slice(i).join(' ');
+  if (rem&&rem!=='=') html+=row('Tendance',rem.replace('=',''));
+  html+='</div>';
+  if (cLayers.length>0) renderSkyChart(cLayers,rawCondenseFt);
+  document.getElementById('metar-decode').innerHTML=html;
+}
+
+// ── TAF JSON ──
+function renderTafFromJson(taf) {
+  let html=`<div class="decode-grid" style="margin-bottom:14px">`;
+  html+=row('Station',`<strong>${taf.icaoId}</strong> — ${taf.name||''}`);
+  html+=row('Émission',fmtTime(taf.issueTime));
+  html+=row('Validité',fmtPeriod(taf.validTimeFrom,taf.validTimeTo));
+  html+='</div>';
+  if (taf.fcsts) taf.fcsts.forEach(f => {
+    const ch=f.fcstChange||'BASE', prob=f.probability?`PROB${f.probability} `:'';
+    const cls=ch==='TEMPO'?'tempo':ch==='BECMG'?'becmg':'base';
+    const per=ch==='BECMG'&&f.timeBec?`${fmtTime(f.timeBec)} → ${fmtTime(f.timeTo)} (transition depuis ${fmtTime(f.timeFrom)})`:fmtPeriod(f.timeFrom,f.timeTo);
+    html+=`<div class="taf-period"><div class="taf-period-head ${cls}">${prob}${ch==='BASE'?'PRÉVISION DE BASE':ch} — ${per}</div>`;
+    html+=`<div class="taf-period-body"><div class="decode-grid">`;
+    if (f.wdir!=null||f.wspd!=null) html+=row('Vent',`<span class="${windClass(f.wspd,f.wgst)}">${fmtWind(f.wdir,f.wspd,f.wgst)}</span>`);
+    if (f.visib!=null&&f.visib!=='') html+=row('Visibilité',`<span class="${visiClass(f.visib)}">${fmtVisiSm(f.visib)}</span>`);
+    if (f.wxString) html+=row('Temps',fmtWx(f.wxString));
+    if (f.clouds&&f.clouds.length>0) html+=row('Nuages',fmtClouds(f.clouds));
+    html+='</div></div></div>';
+  });
+  document.getElementById('taf-decode').innerHTML=html;
+}
+
+function renderTafFromRaw(raw) {
+  let html='<div class="decode-grid">';
+  html+=row('Brut',`<span style="color:var(--green)">${raw}</span>`);
+  html+='</div><p style="font-size:.72rem;color:var(--dim);margin-top:10px">ℹ Utiliser la récupération par code OACI pour le décodage complet du TAF.</p>';
+  document.getElementById('taf-decode').innerHTML=html;
+}
+
+// ── VERDICT ──
+function renderVerdict(metar,taf) {
+  const issues=[]; let level='go';
+  if (!metar._manual&&metar.visib!=null) {
+    const vp=parseVisiSm(metar.visib);
+    if (vp!=null) {
+      const vm=vp*SM_TO_M;
+      if (vm<3000) { issues.push(`Visibilité ${Math.round(vm)} m — insuffisante STS-01 et STS-02`); level='nogo'; }
+      else if (vm<5000) { issues.push(`Visibilité ${Math.round(vm)} m — insuffisante STS-02 (min 5 km)`); if (level!=='nogo') level='caution'; }
+    }
+  }
+  if (!metar._manual&&metar.wspd!=null) {
+    const mx=Math.max(metar.wspd,metar.wgst||0);
+    if (mx>=25) { issues.push(`Vent/rafales ${mx} kt (${Math.round(mx*KT_TO_KMH)} km/h) — hors limites UAS en STS`); level='nogo'; }
+    else if (mx>=15) { issues.push(`Vent/rafales ${mx} kt (${Math.round(mx*KT_TO_KMH)} km/h) — vérifier les limites de votre UAS`); if (level!=='nogo') level='caution'; }
+  }
+  if (!metar._manual&&metar.wxString) {
+    if (metar.wxString.includes('TS')) { issues.push('Orage signalé (TS) — vol interdit'); level='nogo'; }
+    if (metar.wxString.includes('FG')) { issues.push('Brouillard (FG) — visibilité < 1 km'); level='nogo'; }
+    if (/SH|RA|DZ/.test(metar.wxString)) { issues.push('Précipitations — risque pour l\'électronique et capteurs'); if (level!=='nogo') level='caution'; }
+  }
+  if (!metar._manual&&metar.clouds) metar.clouds.forEach(c => {
+    if (c.type==='CB') { issues.push('Cumulonimbus (CB) — risque orageux, vol interdit'); level='nogo'; }
+    if (c.type==='TCU') { issues.push('Cumulus bourgeonnant (TCU) — surveiller évolution'); if (level!=='nogo') level='caution'; }
+  });
+  if (!metar._manual&&metar.temp!=null&&metar.dewp!=null) {
+    const sp=metar.temp-metar.dewp;
+    if (sp<=2) { issues.push(`Écart T°/Td = ${sp}°C — risque élevé brouillard`); if (level!=='nogo') level='caution'; }
+  }
+  if (taf&&!taf._manual&&taf.fcsts) taf.fcsts.forEach(f => {
+    const mg=Math.max(f.wspd||0,f.wgst||0);
+    if (mg>=25) { issues.push(`TAF : rafales ${mg} kt (${Math.round(mg*KT_TO_KMH)} km/h) prévues (${fmtPeriod(f.timeFrom,f.timeTo)}) — hors limites UAS`); if (level!=='nogo') level='caution'; }
+    if (f.wxString&&f.wxString.includes('TS')) { issues.push(`TAF : orage prévu (${fmtPeriod(f.timeFrom,f.timeTo)})`); level='nogo'; }
+    if (f.clouds) f.clouds.forEach(c => { if (c.type==='CB') { issues.push(`TAF : CB prévu (${fmtPeriod(f.timeFrom,f.timeTo)})`); level='nogo'; } });
+  });
+
+  const vc=level==='go'?'verdict-go':level==='caution'?'verdict-caution':'verdict-nogo';
+  const vi=level==='go'?'✅':level==='caution'?'⚠️':'🛑';
+  const vl=level==='go'?'CONDITIONS FAVORABLES':level==='caution'?'VIGILANCE REQUISE':'VOL DÉCONSEILLÉ';
+  let html=`<div class="verdict ${vc}"><h3>${vi} ${vl}</h3>`;
+  if (issues.length===0) html+='<p style="font-size:.84rem">Aucun critère défavorable détecté. Vérifier les limites de votre UAS et les NOTAM.</p>';
+  else html+='<ul>'+issues.map(i=>`<li>${i}</li>`).join('')+'</ul>';
+  html+='<p style="font-size:.7rem;color:var(--dim);margin-top:12px">⚠ Aide à l\'interprétation. Ne remplace pas l\'analyse du télépilote, les NOTAM ni les limites spécifiques de votre UAS.</p></div>';
+  document.getElementById('verdict').innerHTML=html;
+}
+
+document.getElementById('icao-input').addEventListener('keydown',e=>{ if (e.key==='Enter') fetchData(); });
+
+// Restore last used airport
+try { const saved=localStorage.getItem('metar_icao'); if (saved) document.getElementById('icao-input').value=saved; else document.getElementById('icao-input').value='SOCA'; } catch(e) { document.getElementById('icao-input').value='SOCA'; }
+</script>
+</body>
+</html>
