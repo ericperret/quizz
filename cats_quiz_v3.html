@@ -349,14 +349,14 @@
   <h1>CATS <span>Drone</span></h1>
   <p>Entraînement à l'examen théorique européen<br>
      Catégorie Spécifique · STS-01 &amp; STS-02 · SORA / PDRA / MANEX<br>
-     <small style="color:var(--dim);font-size:.8rem">300 questions · Programme officiel DGAC v31/05/2024</small>
+     <small style="color:var(--dim);font-size:.8rem">341 questions · CATS + MANEX / SORA / PDRA · DGAC v2.0 déc. 2024</small>
   </p>
   <div class="meta-grid">
-    <div class="meta-card"><span class="big">296</span><span class="lbl">Questions banque</span></div>
+    <div class="meta-card"><span class="big">341</span><span class="lbl">Questions banque</span></div>
     <div class="meta-card"><span class="big">75%</span><span class="lbl">Seuil requis</span></div>
-    <div class="meta-card"><span class="big">8</span><span class="lbl">Matières</span></div>
+    <div class="meta-card"><span class="big">11</span><span class="lbl">Matières</span></div>
   </div>
-  <p style="font-size:.78rem;color:var(--dim);margin:-16px 0 20px">Guide Spécifique DGAC v2.0 déc. 2024 intégré</p>
+  <p style="font-size:.78rem;color:var(--dim);margin:-16px 0 20px">Guide Spécifique DGAC v2.0 déc. 2024 + AMC/GM 2019/947 intégré</p>
 
   <div class="options-row">
     <button class="option-toggle active" id="opt-shuffle" onclick="toggleOpt(this,'shuffle')">🔀 Mélanger</button>
@@ -1115,9 +1115,9 @@ c:0,expl:"GRC = Ground Risk Class. Combinaison de la taille de l'UA, de sa vites
 a:["La classe de risque de collision aérienne, tenant compte du type d'espace aérien et de la densité du trafic","La classe de certification aéronautique du drone","Le niveau de risque au sol résiduel","Le niveau d'assurance requis pour l'UAS"],
 c:0,expl:"ARC = Air Risk Class. Elle évalue le risque de collision avec d'autres aéronefs en fonction de la densité du trafic aérien et du type d'espace aérien utilisé."},
 
-{cat:"Réglementation",q:"Un PDRA-G01 couvre principalement quel type d'opération ?",
-a:["Vol VLOS au-dessus de zones à faible densité de population avec un UAS de masse limitée","Vol BVLOS au-dessus de zones peuplées","Vol nocturne avec éclairage embarqué","Vol en espace aérien contrôlé de classe C"],
-c:0,expl:"PDRA-G01 couvre des opérations VLOS en zone à faible densité de population — c'est le PDRA le moins contraignant, correspondant à un risque modéré."},
+{cat:"Réglementation",q:"Quelle est la durée de validité d'une autorisation d'exploitation en catégorie Spécifique délivrée par la DSAC ?",
+a:["1 an, renouvelable tacitement si aucun incident n'a été signalé","2 ans maximum, avec renouvellement annuel de la déclaration MANEX","3 ans maximum, avec révision obligatoire du MANEX tous les ans","5 ans maximum, avec renouvellement possible sur demande motivée"],
+c:0,expl:"Une autorisation d'exploitation en catégorie Spécifique est délivrée pour une durée maximale d'un an (renouvelable). L'article 12 du règlement (UE) 2019/947 précise que l'autorisation peut couvrir plusieurs opérations de même type pendant sa durée de validité. Le renouvellement nécessite une nouvelle instruction — il n'est pas tacite. À ne pas confondre avec les déclarations STS (catégorie Spécifique via scénario standard) qui sont valables 2 ans. Source : règlement (UE) 2019/947, article 12."},
 
 // ─── EXTRA — ASPECTS PRATIQUES STS ─────────────────────────────────────────
 
@@ -1390,12 +1390,12 @@ c:0,expl:"METAR = photographie de la météo actuelle. TAF = prévision pouvant 
 // ─── BONUS — ISSUES DU GUIDE CATÉGORIE SPÉCIFIQUE DGAC v2.0 déc. 2024 ──────
 
 {cat:"Réglementation",q:"Combien de PDRA ont été publiés à la date du Guide catégorie Spécifique (v2.0, décembre 2024) ?",
-a:["Cinq PDRA : G01, G02, G03 et deux variantes supplémentaires","Trois PDRA : G01, G02, G03","Deux PDRA alignés sur STS-01 et STS-02","Un seul PDRA générique pour les opérations BVLOS"],
-c:0,expl:"Au moment de la publication du Guide (déc. 2024), cinq PDRA avaient été publiés dont G01 (BVLOS zone faiblement peuplée, horizon de 50 m), G02 (BVLOS zone faiblement peuplée, altitude), G03 (routes prédéfinies) et d'autres. La liste évolue — vérifier sur le site EASA."},
+a:["Cinq PDRA : PDRA-S01, PDRA-S02 (miroirs des STS) et PDRA-G01, PDRA-G02, PDRA-G03 (opérations BVLOS)","Trois PDRA : G01, G02, G03","Deux PDRA alignés sur STS-01 et STS-02","Un seul PDRA générique pour les opérations BVLOS"],
+c:0,expl:"Au moment de la publication du Guide DSAC v2.0 (décembre 2024), cinq PDRA ont été adoptés : PDRA-S01 et PDRA-S02 (miroirs des STS-01/02 pour UAS sans marquage CE), PDRA-G01 (BVLOS zone faiblement peuplée, 150 m max, 1 km max du télépilote/observateur — EVLOS), PDRA-G02 (BVLOS zone faiblement peuplée en espace aérien réservé) et PDRA-G03 (BVLOS sur routes préprogrammées, 50 m max hors espace ségrégué). Ces PDRA figurent dans les AMC du règlement (UE) 2019/947 et sont publiés sur le site EASA et le MTE."},
 
 {cat:"Réglementation",q:"Le PDRA-G01 permet de voler en…",
 a:["Hors vue (BVLOS) en zone faiblement peuplée avec UAS de masse limitée","Vue directe (VLOS) au-dessus de zones peuplées","Hors vue au-dessus de zones peuplées avec C6","Vue directe la nuit avec dispositif lumineux"],
-c:0,expl:"PDRA-G01 : vol BVLOS en zone faiblement peuplée avec un UAS de masse et de hauteur limitées (moins de 50 m ou dans un espace ségrégué). C'est l'un des PDRA de niveau de risque le plus bas."},
+c:0,expl:"PDRA-G01 couvre les vols BVLOS en zone faiblement peuplée, autorisés jusqu'à 150 m de hauteur (supérieur aux 120 m des STS). La mesure clé : le drone doit rester à moins de 1 km du télépilote OU à moins de 1 km d'un observateur visuel (EVLOS). Ce n'est donc pas un BVLOS classique long-distance, mais un BVLOS dit 'de proximité'. Ne pas confondre avec PDRA-G03 qui limite à 50 m hors espace ségrégué, ou PDRA-G02 qui utilise la ségrégation de l'espace aérien comme mesure d'atténuation principale. Source : Guide DSAC v2.0, §5.1.b."},
 
 {cat:"Réglementation",q:"Un télépilote peut-il assurer lui-même sa propre formation pratique STS ?",
 a:["Non — le télépilote ne peut pas se former lui-même ; la formation doit être dispensée par un organisme agréé","Oui — si le MANEX de son entreprise le prévoit","Oui — pour le STS-01 uniquement, pas pour le STS-02","Non — sauf s'il est lui-même instructeur certifié DGAC"],
@@ -1741,6 +1741,361 @@ c:0,expl:"Les zones D, P et R sont publiées dans la section ENR 5.1 de l'AIP, d
 {cat:"Performances humaines",q:"Le programme CATS mentionne que le vol doit être effectué 'pendant les heures de travail'. Que signifie cette exigence ?",
 a:["Le télépilote doit respecter des durées de travail raisonnables pour éviter que la fatigue n'altère ses performances","Le vol n'est autorisé que les jours ouvrables entre 8h et 18h","Le télépilote doit être employé par une entreprise déclarée","Le vol de nuit est totalement interdit en catégorie Spécifique"],
 c:0,expl:"Cette exigence signifie que le télépilote ne doit pas voler dans un état de fatigue incompatible avec la sécurité. Les heures de travail doivent être compatibles avec le maintien de ses capacités physiques et cognitives."},
+
+
+// ─── 9. MANEX — Manuel d'exploitation ───────────────────────────────────────
+
+{cat:"MANEX",q:"Qu'est-ce que le MANEX dans le cadre de la réglementation européenne des drones ?",
+a:[
+"Le Manuel d'EXamen : recueil officiel des questions pour la certification théorique des télépilotes en catégorie Spécifique",
+"Le Manuel d'EXercice : document rédigé par le télépilote retraçant ses heures de vol et ses qualifications pratiques obtenues",
+"Le Manuel d'EXploitation : document rédigé par l'exploitant décrivant ses modalités de mise en œuvre des obligations réglementaires",
+"Le Manuel d'EXigences : document publié par l'EASA définissant les exigences techniques applicables à chaque classe d'UAS certifiée"
+],c:2,expl:"Le MANEX (Manuel d'EXploitation) est le document central de l'exploitant d'UAS en catégorie Spécifique. Il décrit concrètement comment l'exploitant met en œuvre ses obligations réglementaires (UAS.SPEC.050) : procédures opérationnelles, gestion des aéronefs, liste des télépilotes et de leurs qualifications, procédures d'urgence, gestion des événements de sécurité, conformité RGPD, réduction des nuisances. L'exploitant doit aussi maintenir la traçabilité des formations, des opérations, de la maintenance et des incidents en service pendant 3 ans. Le contenu du MANEX est défini par l'Appendice 5 de l'Annexe du règlement (UE) 2019/947. Pour les STS européens, il doit être conforme à l'AMC1 UAS.SPEC.030(3)(e) — un canevas-type en anglais est disponible, une version française est annoncée. Source : règlement (UE) 2019/947, UAS.SPEC.050 ; Guide DSAC v2.0, §17.3."},
+
+{cat:"MANEX",q:"Quels exploitants sont tenus de rédiger un MANEX ?",
+a:[
+"Les exploitants professionnels dont l'activité dépasse 10 heures de vol annuelles en catégorie Spécifique avec au moins un télépilote salarié",
+"Tous les exploitants de la catégorie Spécifique hors scénarios standard, uniquement pour les opérations BVLOS au-delà de 1 km",
+"Tous les exploitants de scénarios standard (nationaux et européens), sauf exception pour les aérostats captifs non autonomes < 25 kg",
+"Tous les exploitants enregistrés sur AlphaTango, quelle que soit leur catégorie d'opération (Ouverte, Spécifique ou Certifiée)"
+],c:2,expl:"Le MANEX est obligatoire pour tous les exploitants de scénarios standard, nationaux (S1/S2/S3) ou européens (STS-01/STS-02). L'exploitant ne peut effectuer sa déclaration sur AlphaTango qu'après s'être mis en complète conformité (MANEX rédigé, télépilotes formés, attestations de conception obtenues…). L'exception : si l'exploitation se limite aux aérostats captifs NON AUTONOMES de moins de 25 kg, aucun MANEX n'est requis. Cas particulier des aérostats captifs AUTONOMES : le MANEX peut se limiter aux mesures de protection des tiers au sol. Attention : le MANEX n'est pas un document qu'on rédige une fois — il doit être maintenu à jour, et tous ses amendements archivés à disposition des autorités. Source : Guide DSAC v2.0, §17.3 et §16.2."},
+
+{cat:"MANEX",q:"Quelle est l'exception à l'obligation de rédiger un MANEX ?",
+a:[
+"Les UAS de moins de 250 g opérant en catégorie Ouverte sous-catégorie A1",
+"Les opérations ponctuelles de moins de 5 vols par an en zone non peuplée selon scénario national S-1",
+"Les aérostats captifs non autonomes de moins de 25 kg",
+"Les exploitants réalisant uniquement des vols de formation initiale sous supervision directe d'un instructeur certifié"
+],c:2,expl:"La seule exception explicite à l'obligation de MANEX concerne les aérostats captifs NON AUTONOMES de moins de 25 kg. Pour ces engins, l'absence de système automatisé de contrôle justifie l'allègement. À ne pas confondre avec les aérostats captifs AUTONOMES : ceux-ci nécessitent bien un MANEX, mais il peut se limiter aux mesures de protection des tiers au sol — avec obligation pour l'exploitant de mettre en place des moyens pour éviter l'intrusion de tiers dans le périmètre (surveillance, aménagement au sol…). Tous les autres exploitants de scénarios standard doivent disposer d'un MANEX complet. Source : Guide DSAC v2.0, §17.3."},
+
+{cat:"MANEX",q:"Le MANEX doit-il être joint à la déclaration d'activité STS sur AlphaTango ?",
+a:[
+"Non — mais une attestation sur l'honneur de son existence doit être jointe à la déclaration initiale",
+"Non — il doit être archivé et tenu à la disposition des autorités en cas de contrôle",
+"Oui — uniquement lors de la première déclaration ; les déclarations de renouvellement en sont dispensées",
+"Oui — il doit être joint lors de la déclaration initiale, puis notifié à chaque mise à jour annuelle sur AlphaTango"
+],c:1,expl:"Le MANEX n'est PAS joint à la déclaration d'activité STS sur AlphaTango. Aucun document n'est à joindre à la déclaration — tous les documents requis (MANEX, certificats d'aptitude théorique, attestations de conception…) doivent être conservés et tenus à la disposition des autorités. La DSAC exerce une surveillance continue des exploitants en catégorie Spécifique : vérification des documents obligatoires, inspections au siège et/ou sur site. En début d'année, les exploitants sont informés des actions de surveillance prévues dans l'année. Ces contrôles peuvent aboutir à des demandes de mise en conformité. Source : Guide DSAC v2.0, §17.3.b et §17.5."},
+
+{cat:"MANEX",q:"Dans quel délai un exploitant doit-il mettre à jour son MANEX après une évolution réglementaire ?",
+a:[
+"1 mois après l'entrée en vigueur de la nouvelle réglementation",
+"3 mois après la publication officielle de la nouvelle réglementation au Journal Officiel de l'UE",
+"Immédiatement à la date d'entrée en vigueur, sous peine de suspension automatique de la déclaration d'activité",
+"6 mois après notification officielle par la DSAC, avec possibilité de prorogation sur demande motivée"
+],c:0,expl:"Le MANEX doit être amendé dans deux cas : 1) évolution de la réglementation — délai d'un mois après l'entrée en vigueur de la nouvelle réglementation ; 2) toute modification de l'activité ayant une incidence sur le manuel (nouveau type d'UAS, nouveau scénario, changement de procédure…). Point important : dans l'intervalle de ce mois, les nouvelles dispositions réglementaires s'appliquent déjà — le délai d'un mois concerne uniquement la mise à jour formelle du document. La traçabilité de toutes les mises à jour doit être maintenue (archivage de tous les amendements). Source : Guide DSAC v2.0, §17.3.a."},
+
+{cat:"MANEX",q:"Qui est responsable de s'assurer que le MANEX est connu et appliqué par le personnel ?",
+a:[
+"Le télépilote désigné comme responsable de vol pour chaque opération",
+"La DSAC lors de ses contrôles périodiques sur site",
+"L'exploitant d'UAS",
+"L'organisme de formation ayant délivré les attestations pratiques aux télépilotes"
+],c:2,expl:"Le règlement (UE) 2019/947 (UAS.SPEC.050) et le Guide DSAC sont explicites : l'exploitant doit s'assurer que le MANEX est connu et mis en application STRICTE par le personnel concerné. Cela inclut les télépilotes (qui doivent connaître leur MANEX pour exercer — c'est une exigence de compétence), mais aussi les observateurs, le personnel de maintenance, et tout autre intervenant listés dans le MANEX. Le télépilote STS ne peut pas voler dans un scénario s'il ne connaît pas le MANEX de l'exploitant — ce n'est pas optionnel. En cas de contrôle DSAC, l'exploitant doit être en mesure de démontrer que le MANEX est effectivement connu et respecté. Source : règlement (UE) 2019/947, UAS.SPEC.050 ; Guide DSAC v2.0, §17.3."},
+
+{cat:"MANEX",q:"Quel référentiel définit le contenu du MANEX pour les scénarios standard européens ?",
+a:[
+"L'Article 11 du règlement (UE) 2019/947 et l'AMC1 de la Décision 2019/021/R de l'EASA",
+"L'Appendice A de l'Annexe 1 du règlement (UE) 2019/945 et les GM1 UAS.OPEN.060(1)(a)",
+"L'Appendice 3 de l'Annexe du règlement (UE) 2019/947 et l'AMC1 UAS.SPEC.050(2)(f)",
+"L'Appendice 5 de l'Annexe du règlement (UE) 2019/947 et l'AMC1 UAS.SPEC.030(3)(e)"
+],c:3,expl:"Deux textes structurent le contenu du MANEX : 1) L'Appendice 5 de l'Annexe du règlement (UE) 2019/947 définit le contenu minimal obligatoire pour tous les exploitants de scénarios standard ; 2) L'AMC1 et le GM1 du point UAS.SPEC.030(3)(e) précisent le format et le contenu pour les STS européens. Un canevas-type conforme à ce format est disponible en anglais dans l'AMC1 UAS.SPEC.030(3)(e) — une version française est annoncée par la DSAC. Ce canevas est recommandé mais doit être adapté aux spécificités de l'exploitant : il ne suffit pas de remplir un modèle, il faut que le MANEX reflète réellement les procédures appliquées. Source : règlement (UE) 2019/947, Appendice 5 de l'Annexe ; Guide DSAC v2.0, §17.3."},
+
+{cat:"MANEX",q:"Quelles sont les procédures que l'exploitant de scénarios standard doit obligatoirement inclure dans son MANEX ?",
+a:[
+"Procédures d'urgence, formation du personnel, maintenance des UAS, assurance responsabilité civile et notification des vols aux autorités locales",
+"Procédures de certification CE des drones, vérification des zones de vol, coordination avec les services ATC et archivage des autorisations obtenues",
+"Procédures opérationnelles, sécurité de la zone, protection contre accès illicites, RGPD, réduction des nuisances et gestion des événements de sécurité",
+"Procédures d'enregistrement des drones, liste des télépilotes qualifiés, comptes-rendus d'activités annuels et bilan météorologique des missions"
+],c:2,expl:"L'Appendice 5 de l'Annexe du règlement (UE) 2019/947 liste 6 grandes familles de procédures obligatoires dans le MANEX : 1) Procédures opérationnelles (garantir la sécurité des exploitations) ; 2) Sécurité de la zone d'exploitation (respecter les exigences de la zone) ; 3) Protection contre les interventions illicites et accès non autorisé ; 4) Conformité RGPD — règlement (UE) 2016/679 — y compris analyse d'impact si l'autorité nationale de protection des données l'exige (art. 35) ; 5) Lignes directrices pour réduire les nuisances (sonores et autres) pour les personnes et les animaux ; 6) Méthodes et moyens pour identifier, notifier et analyser les événements de sécurité. L'exploitant adapte ces procédures à son type d'exploitation et au niveau de risque. Source : règlement (UE) 2019/947, Appendice 5 de l'Annexe ; Guide DSAC v2.0, §17.3."},
+
+{cat:"MANEX",q:"Un exploitant utilise un MANEX au format national (scénarios S1/S2/S3). Que doit-il faire pour passer aux STS européens ?",
+a:[
+"Adopter le format MANEX européen dès la publication du règlement (UE) 2019/947, indépendamment de la date de sa déclaration STS",
+"Adopter le format MANEX européen (AMC1 UAS.SPEC.030(3)(e)) au plus tard à la date de sa déclaration selon l'un des STS européens",
+"Soumettre une demande de dérogation à la DSAC pour maintenir son format national au-delà de la date de sa première déclaration STS européen",
+"Conserver son MANEX national jusqu'à l'expiration de son autorisation, puis adopter le format européen lors du renouvellement quinquennal"
+],c:1,expl:"L'exploitant disposant d'un MANEX au format national (scénarios S1/S2/S3) doit adopter le format européen (AMC1 UAS.SPEC.030(3)(e)) AU PLUS TARD à la date de sa première déclaration selon un STS européen. Il peut anticiper cette conversion pour les scénarios nationaux, à condition de faire figurer dans le MANEX les scénarios nationaux utilisés. Important : il n'y a pas de dérogation possible pour maintenir le format national au-delà de la première déclaration STS européenne. Concrètement, cela signifie qu'un exploitant qui souhaite passer au STS-01 ou STS-02 doit préparer son nouveau MANEX européen AVANT de déposer sa déclaration sur AlphaTango. Source : Guide DSAC v2.0, §17.3."},
+
+{cat:"MANEX",q:"Qu'est-ce que l'exploitant doit archiver concernant le MANEX ?",
+a:[
+"Le MANEX en vigueur et les comptes-rendus d'événements de sécurité associés aux opérations des douze derniers mois",
+"Le MANEX et tous ses amendements successifs, tenus à la disposition des autorités en cas de contrôle",
+"Les attestations de formation des télépilotes et la version initiale du MANEX, les amendements intermédiaires n'étant pas requis",
+"Uniquement la version en vigueur du MANEX, les versions obsolètes pouvant être détruites après deux ans"
+],c:1,expl:"L'exploitant doit archiver le MANEX ET tous ses amendements successifs, et les tenir à disposition des autorités en cas de contrôle DSAC. Cet historique complet a deux utilités pratiques : 1) prouver que les mises à jour ont été faites dans les délais réglementaires ; 2) reconstituer les procédures exactes applicables à la date d'un incident pour l'instruction du dossier. À noter : l'exploitant doit plus largement maintenir la traçabilité des formations du personnel, des opérations de maintenance, des opérations effectuées, des incidents en service, des carnets de vol et des formulaires CRESUS — pendant 3 ans. Ce n'est donc pas seulement le MANEX lui-même, mais toute la documentation opérationnelle qui doit être conservée. Source : Guide DSAC v2.0, §17.3.b et UAS.SPEC.050."},
+
+{cat:"MANEX",q:"Qu'est-ce qu'un CONOPS dans le contexte d'une demande d'autorisation hors STS ?",
+a:[
+"Le CONcept of OPerationS : document décrivant précisément les conditions et paramètres de l'opération envisagée (zone, hauteur, type de vol, UAS)",
+"Le CONtrat d'OPérations Standards : accord bilatéral entre l'exploitant et la DSAC définissant le périmètre d'exploitation annuel autorisé",
+"Le CONtrôle des OPérations de Sécurité : système de surveillance en temps réel des opérations drones mis en place par l'autorité compétente",
+"Le CertifiCat d'OPérationS : document délivré par la DSAC attestant de la conformité de l'exploitant à l'issue d'un audit catégorie Spécifique"
+],c:0,expl:"Le CONOPS (CONcept of OPerationS) est un document synthétique décrivant la nature et la finalité de l'opération, ainsi que les principaux moyens d'atténuation du risque (équipements de sécurité, présence d'observateurs visuels…). Il constitue le point d'entrée de toute demande d'autorisation d'exploitation hors STS. Le dossier de demande comprend a minima : le formulaire de demande, le CONOPS, le MANEX, une description du lieu d'opération (fichier .kml pour les zones spécifiques), et un extrait de carte OACI-VFR. Astuce pratique : si l'organisation de l'exploitant s'y prête (notamment pour les opérations d'un seul type), le CONOPS et le MANEX peuvent être fusionnés au sein d'un même document. Le CONOPS est souvent itératif — la SORA peut conduire à le modifier. Avant de déposer un dossier complet, un contact initial avec la DSAC (dsac-autorisations-drones-bf@aviation-civile.gouv.fr) est possible pour recueillir un avis informel. Source : Guide DSAC v2.0, §5.1.a ; Guide SORA DSAC §3.1 et §3.2."},
+
+{cat:"MANEX",q:"Via quelle plateforme un exploitant soumet-il une demande d'autorisation d'exploitation hors STS en France ?",
+a:[
+"AlphaTango — portail national gérant l'ensemble des démarches pour les catégories Ouverte et Spécifique",
+"METEOR — plateforme de la DSAC dédiée aux demandes d'autorisation en catégorie Spécifique",
+"NOTAM — système de gestion de l'espace aérien permettant de déclarer et réserver les zones de vol spécifiques",
+"SESAR — plateforme européenne U-Space gérant les autorisations de vol dans les zones densément peuplées"
+],c:1,expl:"METEOR est la plateforme de la DSAC dédiée à l'instruction des demandes d'autorisation d'exploitation en catégorie Spécifique hors STS (procédure article 12 du règlement (UE) 2019/947). Pour y accéder, l'exploitant doit initialiser un compte auprès de la DSAC centrale via la boîte fonctionnelle dsac-autorisations-drones-bf@aviation-civile.gouv.fr. À ne pas confondre avec AlphaTango, qui gère les déclarations STS et l'enregistrement des exploitants/aéronefs. Les deux plateformes ont des rôles distincts et complémentaires : AlphaTango pour la catégorie Ouverte et les STS ; METEOR pour les autorisations hors STS nécessitant une SORA. L'autorisation délivrée via METEOR est valable 1 an (renouvelable) et peut couvrir plusieurs opérations de même type. Source : règlement (UE) 2019/947, article 12 ; Guide DSAC v2.0, §5.1.a."},
+
+{cat:"MANEX",q:"Quel est le délai minimum à prévoir pour une première demande d'autorisation d'exploitation hors STS via METEOR ?",
+a:[
+"6 semaines minimum — délai indicatif pouvant être réduit si le dossier SORA est préalablement validé par un tiers accrédité",
+"2 mois minimum — délai standard applicable aux opérations BVLOS dont la zone est déjà identifiée dans la demande initiale",
+"1 mois minimum — délai applicable uniquement pour les premières demandes hors zone contrôlée à faible densité de trafic aérien",
+"3 mois minimum — délai incompressible pour l'instruction complète du dossier SORA, CONOPS et MANEX"
+],c:3,expl:"Le Guide DSAC v2.0 mentionne un délai de 3 mois de préavis avant l'opération pour les exploitants d'un autre État membre de l'UE souhaitant exercer en France (§17.9). Ce délai sert de référence pratique pour toute première demande via METEOR — le temps d'instruire un dossier SORA complet (CONOPS, étude de risques, MANEX, attestations techniques de l'UAS). Avant même de déposer le dossier complet, un contact initial avec la DSAC est recommandé pour recueillir un avis informel sur la préanalyse SORA. Ce premier échange ne constitue pas une pré-validation mais permet d'identifier les points de vigilance. Pour les exploitants avec des dossiers déjà connus de la DSAC ou des opérations simples, le délai effectif peut être plus court. Source : Guide DSAC v2.0, §5.1.a et §17.9 ; Guide SORA DSAC §3.1."},
+
+{cat:"MANEX",q:"Un exploitant qui effectue de la formation pratique doit inclure quoi dans son MANEX ?",
+a:[
+"Les qualifications de chaque élève, les résultats des évaluations pratiques et le détail des heures de vol effectuées sous supervision pour chaque session",
+"Le programme pédagogique détaillé, les critères d'évaluation pratique et la liste des organismes de formation partenaires agréés par la DSAC",
+"Les dispositions spécifiques pour la sécurité des vols de formation, avec la précision que l'instructeur doit être un télépilote déjà autorisé pour les scénarios considérés",
+"Le nombre maximal d'élèves par session, les critères d'aptitude médicale requis et les conditions d'utilisation des simulateurs de vol homologués"
+],c:2,expl:"Un exploitant organisme de formation pratique STS doit intégrer dans son MANEX : 1) La mention explicite que la formation fait partie de ses activités ; 2) Les dispositions spécifiques de sécurité pour les vols de formation ; 3) Les méthodes et moyens utilisés (programme de formation, livret de progression, liste des instructeurs). L'instructeur doit être un télépilote déjà autorisé pour les scénarios enseignés, ET doit à tout moment pouvoir accéder au système de commande pour maintenir la sécurité. Au-delà du MANEX, l'organisme de formation est soumis à des obligations supplémentaires : désignation d'un dirigeant responsable, indépendance entre activités opérationnelles et formation, indépendance entre formateur et évaluateur, environnement d'entraînement représentatif du STS pratiqué. Source : Guide DSAC v2.0, §13.3 et §17.3."},
+
+{cat:"MANEX",q:"Comment l'exploitant doit-il gérer les événements de sécurité (incidents/accidents) survenus lors de ses opérations ?",
+a:[
+"Les signaler en temps réel via le portail AlphaTango, avec suspension obligatoire d'activité jusqu'à validation de la reprise par la DSAC/IR",
+"Les consigner dans un registre interne, les transmettre mensuellement à la DSAC centrale et proposer des mesures préventives lors du bilan annuel",
+"Les déclarer immédiatement à la préfecture du lieu d'occurrence, en parallèle d'une notification au BEA pour tout accident avec dommages corporels",
+"Les identifier, les notifier à la DSAC/IR territorialement compétente via le formulaire REX, les analyser et en tirer des mesures correctives documentées"
+],c:3,expl:"La gestion des événements de sécurité repose sur le formulaire CRESUS (Compte-Rendu d'Événement de Sécurité UAS, formulaire R5-UAS-CRESUS_v1), adressé à la DSAC/IR territorialement compétente. Le processus : 1) IDENTIFIER (incident, accident, quasi-accident) ; 2) NOTIFIER via le formulaire CRESUS ; 3) ANALYSER les causes ; 4) METTRE EN ŒUVRE des mesures correctives documentées. Les données transmises sont traitées de façon confidentielle conformément au règlement (UE) 376/2014. La notification peut être obligatoire (accidents avec dommages) ou volontaire — les exploitants sont encouragés à notifier même les événements sans obligation légale pour améliorer la sécurité collective. Pour les scénarios nationaux, un bilan annuel de sécurité est transmis à la DSAC chaque janvier (§17.6). La traçabilité des incidents doit être maintenue 3 ans. Source : Guide DSAC v2.0, §17.4 ; formulaire R5-UAS-CRESUS_v1."},
+
+// ─── 10. SORA — Méthode d'évaluation des risques ────────────────────────────
+
+{cat:"SORA",q:"Quel organisme a développé la méthode SORA ?",
+a:[
+"JARUS (Joint Authorities for Rulemaking on Unmanned Systems), groupe d'experts internationaux sur les systèmes sans pilote",
+"EUROCAE (European Organisation for Civil Aviation Equipment), organisme européen de normalisation aéronautique",
+"ICAO/OACI (International Civil Aviation Organization), organisation onusienne définissant les standards mondiaux de l'aviation",
+"EASA (European Union Aviation Safety Agency), agence européenne responsable de la sécurité de l'aviation civile de l'UE"
+],c:0,expl:"La SORA (Specific Operations Risk Assessment) a été développée par JARUS (Joint Authorities for Rulemaking on Unmanned Systems), groupe ad hoc réunissant des experts et autorités de l'aviation civile de nombreux pays. Son secrétariat est assuré par l'EASA. La version intégrée dans la réglementation européenne est la v2.0, adaptée par l'EASA et publiée en AMC1 de l'Article 11 du règlement (UE) 2019/947. À ne pas confondre : JARUS développe la méthode, l'EASA la réglemente, la DSAC l'instruit. Une version SORA v3.0 est en cours de développement au niveau international. Source : Guide DSAC v2.0, §5.1.a ; AMC1 Article 11 du règlement (UE) 2019/947."},
+
+{cat:"SORA",q:"Où est publiée officiellement la méthode SORA dans la réglementation européenne ?",
+a:[
+"Dans le Règlement (UE) 2021/664 relatif au cadre réglementaire U-Space",
+"En AMC1 de l'article 11 du règlement (UE) 2019/947",
+"Dans l'Annexe III du règlement délégué (UE) 2019/945 relatif à la mise sur le marché des UAS",
+"En Annexe 1 du règlement (UE) 2019/945 relatif à la mise sur le marché des UAS"
+],c:1,expl:"La méthode SORA est publiée en AMC1 de l'Article 11 du règlement (UE) 2019/947 (Décision EASA ED 2019/021/R). L'Article 11 traite des autorisations d'exploitation en catégorie Spécifique ; l'AMC1 (Acceptable Means of Compliance) en constitue le moyen de conformité principal. Concrètement, l'AMC1 Article 11 définit les 10 étapes SORA, les tables GRC/ARC/SAIL, les OSO et leurs niveaux de robustesse. À ne pas confondre avec le règlement (UE) 2019/945 qui concerne la mise sur le marché des UAS (classes C0 à C6), pas les opérations. Source : règlement (UE) 2019/947, Art. 11 ; Guide DSAC v2.0, §5.1.a."},
+
+{cat:"SORA",q:"Quelles sont les deux grandes catégories de risques évaluées dans la méthode SORA ?",
+a:[
+"Le risque au sol (Ground Risk) et le risque aérien (Air Risk)",
+"Le risque technique (défaillance de l'UAS) et le risque humain (erreur du télépilote)",
+"Le risque lié à l'UAS (masse, énergie) et le risque lié à l'environnement (météo, relief)",
+"Le risque intrinsèque (sans atténuation) et le risque résiduel (après atténuation)"
+],c:0,expl:"La SORA évalue deux risques indépendants. Le risque AU SOL (Ground Risk) : probabilité et conséquences d'une collision entre le drone et des personnes au sol en cas de perte de contrôle — quantifié par le GRC (Ground Risk Class), calculé à partir de la taille de l'UAS et du scénario opérationnel. Le risque AÉRIEN (Air Risk) : probabilité de collision avec d'autres aéronefs dans l'espace aérien — quantifié par l'ARC (Air Risk Class), déterminée par le type d'espace aérien et la densité du trafic. Ces deux évaluations sont menées séparément (Steps 2-3 pour le sol, Steps 4-6 pour l'air) puis combinées à l'Étape 7 pour déterminer le SAIL. La démarche est itérative : on peut modifier le CONOPS pour faire baisser l'un ou l'autre des risques. Source : AMC1 Article 11, §2.3 et §2.4 ; Guide SORA DSAC, §7 et §8."},
+
+{cat:"SORA",q:"Qu'est-ce que le GRC (Ground Risk Class) ?",
+a:[
+"L'indice quantifiant le risque de dommages aux personnes au sol, basé sur la densité de population et les caractéristiques de l'opération",
+"L'indice évaluant la résistance structurelle de l'UAS lors d'un impact au sol, calculé à partir de sa masse et de sa vitesse de chute",
+"La probabilité de panne technique entraînant une perte de contrôle, calculée à partir des données de fiabilité du constructeur de l'UAS",
+"Le niveau de certification requis pour l'espace aérien utilisé, classé de G-1 (non contrôlé) à G-5 (espace ségrégué exclusif)"
+],c:0,expl:"Le GRC (Ground Risk Class) quantifie le risque de collision avec des personnes au sol. Le GRC INTRINSÈQUE (iGRC) se lit dans la Table 2 de l'AMC1 Article 11 en croisant deux paramètres : 1) La dimension caractéristique de l'UAS (sa plus grande dimension : <1 m / <3 m / <8 m / >8 m) — liée à l'énergie cinétique à l'impact ; 2) Le scénario opérationnel (zone contrôlée au sol, zone peu peuplée VLOS/BVLOS, zone peuplée, rassemblement de personnes) — lié à la densité de personnes exposées. Le iGRC va de 1 (très faible) à 7+ (très élevé). Des atténuations (M1 : contrôle de zone ; M2 : réduction létalité ; M3 : FTS) permettent de réduire le iGRC vers un GRC final plus bas. Un GRC final >7 sort du cadre Spécifique. Source : AMC1 Article 11, §2.3.1, Table 2 ; Guide SORA DSAC, §7."},
+
+{cat:"SORA",q:"Comment le GRC intrinsèque peut-il être réduit pour obtenir un GRC résiduel plus bas ?",
+a:[
+"En augmentant la redondance des systèmes critiques (moteurs, contrôleurs de vol) pour réduire la probabilité de défaillance en vol",
+"En effectuant l'opération uniquement dans des zones industrielles ou agricoles certifiées exemptes de présence humaine permanente",
+"En limitant la hauteur maximale de vol à 30 m pour réduire l'énergie cinétique à l'impact et la surface de risque projetée au sol",
+"En appliquant des mesures d'atténuation au sol : sécurisation de la zone, parachute, FTS, réduction du nombre de personnes exposées"
+],c:3,expl:"L'Étape 3 de la SORA permet de réduire le GRC intrinsèque en appliquant des mitigations sol, classées en 3 catégories : M1 (atténuation stratégique) — réduire le nombre de personnes exposées par contrôle de la zone (balisage, évacuation, autorisation d'accès restreint) ; M2 (réduction des effets de l'impact) — réduire la létalité via parachute, structure absorbante, UAS à faible énergie cinétique ; M3 (Plan d'Intervention d'Urgence, ERP) — confiner l'UA dans une zone définie en cas d'anomalie via FTS. Chaque mitigation est évaluée selon un niveau de robustesse (Low / Medium / High) qui détermine le crédit accordé (réduction du GRC). Ces mitigations doivent être justifiées et documentées dans le CONOPS et le dossier de sécurité. Source : AMC1 Article 11, §2.3.2 ; Guide SORA DSAC, §7.1.2, §7.1.3, §7.1.4."},
+
+{cat:"SORA",q:"Qu'est-ce que l'ARC (Air Risk Class) ?",
+a:[
+"Le niveau d'autorisation requis auprès du contrôle aérien, déterminé selon la proximité des aérodromes et des couloirs de transit",
+"L'indicateur du risque résiduel global de l'opération, calculé après application de toutes les mesures d'atténuation aériennes et au sol",
+"La classe de risque aérien quantifiant la probabilité de collision avec d'autres aéronefs dans l'espace aérien envisagé",
+"La classe de certification aéronautique déterminant les équipements de navigation obligatoires selon la hauteur et la zone de vol"
+],c:2,expl:"L'ARC (Air Risk Class) mesure le risque de collision entre l'UAS et un aéronef piloté dans l'espace aérien de l'opération (Étape 4). Elle est déterminée en consultant les tables de l'Annexe C de l'AMC1 Article 11, qui classifient les espaces aériens selon leur densité de trafic. L'ARC initiale va de a (risque très faible — espace rural isolé) à d (risque très élevé — espace aérien dense). L'Étape 5 (optionnelle) applique des mitigations stratégiques pour réduire l'ARC initiale vers une ARC résiduelle : réservation d'espace, NOTAM, coordination ATC. L'Étape 6 (TMPR) traite la mitigation tactique en temps réel. C'est l'ARC RÉSIDUELLE (et non initiale) qui entre dans le calcul du SAIL à l'Étape 7. Source : AMC1 Article 11, §2.4 ; Guide SORA DSAC, §8 et §9."},
+
+{cat:"SORA",q:"Qu'est-ce que le SAIL (Specific Assurance and Integrity Level) ?",
+a:[
+"Le niveau d'assurance et d'intégrité global de l'opération, déterminé à partir du GRC et de l'ARC résiduels, de I (le plus bas) à VI (le plus élevé)",
+"Le niveau de fiabilité requis pour les systèmes de commande et de navigation, exprimé en probabilité de panne par heure de vol",
+"La classification de sécurité de l'espace aérien utilisé, déterminée conjointement par l'EASA et les autorités nationales pour chaque zone",
+"Le seuil minimal d'intégrité des données de navigation que l'UAS doit maintenir tout au long de l'opération pour rester conforme"
+],c:0,expl:"Le SAIL (Specific Assurance and Integrity Level) est obtenu à l'Étape 7 en croisant le GRC final et l'ARC résiduelle dans la Table 5 de l'AMC1 Article 11. Table complète : GRC≤2 → I/II/IV/VI ; GRC3 → II/II/IV/VI ; GRC4 → III/III/IV/VI ; GRC5 → IV/IV/IV/VI ; GRC6 → V/V/V/VI ; GRC7 → VI/VI/VI/VI (selon ARC a/b/c/d). GRC>7 → catégorie Certifiée. Le SAIL (I à VI) détermine ensuite le niveau de robustesse requis pour chacun des 24 OSO à l'Étape 8 : plus le SAIL est élevé, plus les niveaux requis sont élevés (O → L → M → H). Remarque : la table montre que l'ARC-d impose toujours SAIL VI quel que soit le GRC — l'espace aérien très dense est le facteur bloquant. Source : AMC1 Article 11, §2.5.1, Table 5 ; Webinaire SORA DSAC nov. 2022."},
+
+{cat:"SORA",q:"Que sont les OSO (Operational Safety Objectives) dans la SORA ?",
+a:[
+"Les organes de supervision désignés par l'exploitant pour vérifier la conformité de chaque vol aux conditions de son autorisation d'exploitation",
+"Les objectifs de sécurité opérationnels que l'exploitant doit satisfaire pour démontrer l'acceptabilité de l'opération, dont le niveau dépend du SAIL",
+"Les obligations de signalement des opérations spécifiques à l'autorité compétente, comprenant les notifications préalables et les comptes-rendus post-vol",
+"Les ordres de service émis par la DSAC à la suite d'un contrôle, définissant les actions correctives à mettre en place dans un délai imposé"
+],c:1,expl:"Les OSO (Operational Safety Objectives) sont 24 objectifs de sécurité (OSO#01 à OSO#24) définis dans l'AMC1 Article 11 (Step 8). Pour chaque SAIL, chaque OSO a un niveau de robustesse requis : O (optionnel), L (Low), M (Medium), H (High). Les OSO portent sur des domaines variés : compétences et formation de l'exploitant, maintenance et fiabilité de l'UAS, procédures opérationnelles, gestion des risques humains, conditions d'utilisation de l'espace aérien, etc. Exemple : à SAIL I, OSO#01 (compétence de l'exploitant) est optionnel ; à SAIL VI il est requis au niveau H (High). L'exploitant doit démontrer dans son dossier qu'il satisfait chaque OSO au niveau requis. Source : AMC1 Article 11, §2.5.2, Table 6."},
+
+{cat:"SORA",q:"Quel est l'ordre logique des grandes étapes de la méthode SORA ?",
+a:[
+"1. Définir le CONOPS → 2. Calculer le GRC intrinsèque → 3. Appliquer atténuations sol → 4. Déterminer l'ARC → 5. Calculer le SAIL résiduel → 6. Identifier les OSO",
+"1. Calculer le GRC intrinsèque → 2. Déterminer l'ARC → 3. Calculer le SAIL → 4. Définir le CONOPS → 5. Appliquer atténuations → 6. Identifier les OSO",
+"1. Identifier les OSO requis → 2. Définir le CONOPS en conséquence → 3. Calculer le GRC → 4. Déterminer l'ARC → 5. Calculer le SAIL résiduel",
+"1. Déterminer l'ARC de la zone → 2. Calculer le GRC intrinsèque → 3. Calculer le SAIL → 4. Définir le CONOPS → 5. Appliquer les OSO correspondants"
+],c:0,expl:"La SORA suit 10 étapes dans un ordre strict : Étape 1 (CONOPS — décrire précisément l'opération) → Étape 2 (iGRC — risque sol intrinsèque) → Étape 3 optionnelle (atténuations sol M1/M2/M3 → GRC final) → Étape 4 (iARC — risque aérien initial) → Étape 5 optionnelle (mitigations stratégiques → ARC résiduelle) → Étape 6 (TMPR — mitigation tactique air) → Étape 7 (SAIL = GRC final × ARC résiduelle) → Étape 8 (OSO — 24 objectifs de sécurité à satisfaire selon le SAIL) → Étape 9 (espaces adjacents — risques des zones proches) → Étape 10 (portefeuille exhaustif des risques — dossier complet). La démarche est intentionnellement itérative : si le SAIL obtenu est trop élevé, on peut revenir modifier le CONOPS (changer de zone, réduire la hauteur…) pour faire baisser GRC ou ARC. Source : AMC1 Article 11, §2.2.1 ; Webinaire SORA DSAC nov. 2022."},
+
+{cat:"SORA",q:"La SORA distingue le risque 'intrinsèque' et le risque 'résiduel'. Quelle est la différence ?",
+a:[
+"Le risque intrinsèque est calculé pour le risque au sol uniquement ; le résiduel intègre également le risque aérien après pondération des deux composantes",
+"Le risque intrinsèque est le risque brut de l'opération sans mesures d'atténuation ; le résiduel est le risque restant après application des atténuations",
+"Le risque intrinsèque s'applique à la phase de vol en croisière ; le résiduel couvre les phases de décollage et d'atterrissage jugées plus accidentogènes",
+"Le risque intrinsèque dépend de l'UAS et de son environnement ; le résiduel est la part de risque contractuellement transférée à l'assureur de l'exploitant"
+],c:1,expl:"La distinction intrinsèque/résiduel est le cœur de la logique SORA. Le risque INTRINSÈQUE est évalué aux Étapes 2 et 4 : c'est le risque brut de l'opération telle que décrite dans le CONOPS, sans aucune mesure de sécurité. Il dépend uniquement des caractéristiques de l'UAS (taille, énergie) et de l'environnement (densité population, espace aérien). Le risque RÉSIDUEL est obtenu après application des atténuations (Étapes 3, 5, 6). C'est lui qui détermine le SAIL. Point clé : une mitigation n'est créditée que si elle est justifiée et documentée — affirmer qu'on va sécuriser la zone sans le démontrer ne réduit pas le GRC. L'approche est intentionnellement conservatrice : les mitigations doivent être prouvables, pas juste déclarées. Source : AMC1 Article 11, §2.3 et §2.4 ; Guide SORA DSAC."},
+
+{cat:"SORA",q:"Pourquoi les PDRA ont-ils été créés par l'EASA par rapport à la SORA complète ?",
+a:[
+"Pour permettre aux exploitants non professionnels d'accéder à la catégorie Spécifique sans formation approfondie à la méthode d'analyse de risque SORA",
+"Pour simplifier la démarche sur les opérations courantes dont le risque est déjà connu et bien appréhendé, évitant à l'exploitant de produire une SORA complète",
+"Pour remplacer progressivement la SORA, jugée trop complexe, par un système d'évaluation standardisé applicable à toutes les opérations Spécifiques",
+"Pour accélérer le déploiement commercial des drones dans l'UE en supprimant l'obligation de démonstration individuelle de sécurité pour chaque exploitant"
+],c:1,expl:"La SORA complète est puissante mais complexe : elle requiert une expertise avancée, plusieurs semaines de travail, et un dossier détaillé. Pour les types d'opérations courantes dont le niveau de risque est bien connu (BVLOS en zone peu peuplée, EVLOS à courte distance…), l'EASA a pré-établi les analyses sous forme de PDRA. L'exploitant éligible à un PDRA évite de conduire sa propre SORA : il démontre simplement que son opération remplit toutes les conditions du PDRA concerné. L'instruction DSAC est aussi allégée. 5 PDRA ont été adoptés : PDRA-S01/S02 (miroirs des STS) et PDRA-G01/G02/G03 (BVLOS zone faiblement peuplée). Dans tous les cas, une autorisation d'exploitation de la DSAC reste obligatoire. Source : Guide DSAC v2.0, §5.1.b."},
+
+{cat:"SORA",q:"L'ARC est classée de a à d. Qu'indique un ARC-a ?",
+a:[
+"Le risque aérien est négligeable — espace aérien où le taux de rencontre avec des aéronefs pilotés est si faible que la collision est jugée acceptable sans aucune mesure d'atténuation tactique supplémentaire",
+"Le risque aérien est maximal — espace aérien dense nécessitant l'emport d'un équipement ACAS certifié sur l'UAS",
+"L'espace aérien utilisé est de classe A, le plus restrictif, nécessitant une clairance IFR préalable auprès de l'ATC",
+"L'opération est automatiquement autorisée sans instruction DSAC supplémentaire, le risque aérien résiduel étant nul"
+],c:0,expl:"ARC-a (Air Risk Class a) est le niveau de risque aérien le plus bas : il définit un espace aérien où le taux de rencontre avec des aéronefs pilotés est si faible que la collision est acceptable SANS mesure tactique (voir-et-éviter, DAA). Exemple typique : espaces à très faible densité de trafic comme certaines zones rurales isolées. ATTENTION : ce n'est pas la ségrégation de l'espace qui définit ARC-a — la ségrégation est une 'mitigation stratégique' qui permet de RÉDUIRE un ARC initial plus élevé vers ARC-a ou ARC-b. ARC-d = risque le plus élevé (espace aérien très dense, trafic commercial). Source : AMC1 Article 11 du règlement (UE) 2019/947, §2.4.2."},
+
+{cat:"SORA",q:"Qu'est-ce que la 'Strategic Mitigation' dans la SORA pour le risque aérien ?",
+a:[
+"Des mesures techniques embarquées sur l'UAS permettant de détecter et d'éviter automatiquement les autres aéronefs pendant le vol (DAA)",
+"Des procédures de briefing obligatoire du télépilote sur les risques aériens de la zone, documentées dans le MANEX avant chaque mission",
+"Des restrictions de hauteur imposées à l'opération pour maintenir le vol en dessous des corridors aériens de l'aviation commerciale",
+"Des mesures de réduction du risque aérien appliquées avant l'opération : réservation d'espace aérien, NOTAM, coordination préalable avec l'ATC"
+],c:3,expl:"La SORA distingue deux niveaux de mitigation du risque aérien. La MITIGATION STRATÉGIQUE (Étape 5 — optionnelle) réduit la probabilité de rencontre AVANT le vol : ségrégation de l'espace aérien (interdiction temporaire aux autres aéronefs), NOTAM, coordination avec l'ATC, restriction de la zone de vol. Ces mesures peuvent réduire l'ARC initiale vers une ARC résiduelle plus basse (ex : ARC-c → ARC-b). La MITIGATION TACTIQUE (Étape 6 — TMPR : Tactical Mitigation Performance Requirement) gère le risque résiduel EN TEMPS RÉEL pendant le vol : voir-et-éviter (VLOS), système DAA embarqué (Detect and Avoid), contact radio avec l'ATC. Plus l'ARC résiduelle est élevée, plus les exigences TMPR sont strictes. ARC-a = aucune exigence tactique ; ARC-d = exigences très élevées. Source : AMC1 Article 11, §2.4.3 et §2.4.4 ; Guide SORA DSAC, §9 et §10."},
+
+{cat:"SORA",q:"Combien de niveaux SAIL existe-t-il dans la méthode SORA ?",
+a:[
+"4 niveaux — de SAIL I à SAIL IV, correspondant aux 4 combinaisons GRC × ARC définies dans le tableau de la méthode",
+"8 niveaux — de SAIL 0 à SAIL 7, alignés sur les niveaux DAL (Design Assurance Level) de l'aviation traditionnelle",
+"5 niveaux — de SAIL A (minimal) à SAIL E (maximal), par analogie avec les classes d'espace aérien européen A à E",
+"6 niveaux — de SAIL I (risque le plus faible) à SAIL VI (risque le plus élevé)"
+],c:3,expl:"Le SAIL comprend 6 niveaux en chiffres romains (I à VI). SAIL I = risque résiduel le plus faible, la plupart des OSO sont optionnels ou à niveau L ; SAIL VI = risque résiduel maximal dans la catégorie Spécifique, quasiment tous les OSO sont requis au niveau H. La progression suit la table de croisement GRC × ARC : un GRC faible et un ARC-a donnent SAIL I ; un GRC élevé ou un ARC-d mènent inévitablement à SAIL VI. Remarque importante : ARC-d impose toujours SAIL VI quel que soit le GRC — la présence d'espace aérien très dense est un facteur bloquant absolu. Au-delà de GRC 7, on quitte la catégorie Spécifique pour la catégorie Certifiée (processus de certification complet, comparable à l'aviation habitée). Source : AMC1 Article 11, §2.5.1, Table 5 ; Webinaire SORA DSAC nov. 2022."},
+
+{cat:"SORA",q:"Quelle est la différence entre la SORA et une autorisation sous PDRA pour l'exploitant ?",
+a:[
+"Sous PDRA, l'évaluation est simplifiée à un questionnaire de conformité ; dans une SORA complète, l'exploitant produit une analyse quantitative et qualitative de chaque risque identifié",
+"La SORA complète nécessite une approbation conjointe EASA/DSAC ; un PDRA est instruit par la seule autorité nationale sans consultation européenne préalable",
+"La SORA est applicable uniquement aux opérations BVLOS à haute altitude ; les PDRA couvrent exclusivement les vols VLOS ou en vue étendue jusqu'à 150 m",
+"Sous PDRA, l'exploitant n'a pas à produire d'évaluation des risques — il démontre sa conformité aux conditions prédéfinies par l'EASA. La SORA complète est produite par l'exploitant lui-même."
+],c:3,expl:"Sous PDRA : l'EASA a déjà conduit l'analyse de sécurité — l'exploitant ne produit pas de SORA. Il démontre uniquement sa conformité aux conditions prédéfinies du PDRA (caractéristiques UAS, compétences télépilote, procédures). Dossier plus léger mais non trivial. Sous SORA complète : l'exploitant conduit lui-même l'intégralité de l'analyse en 10 étapes (GRC, ARC, SAIL, OSO), produit tous les justificatifs, et soumet le dossier à la DSAC via METEOR. Cela requiert une expertise avancée. Conseil pratique du Guide SORA DSAC : avant de déposer un dossier SORA, contacter la DSAC pour un premier échange informel (préanalyse GRC/ARC, identification des points de vigilance). Dans les deux cas, une autorisation de la DSAC est obligatoire — seule la complexité du dossier diffère. Source : Guide DSAC v2.0, §5.1 ; Guide SORA DSAC, §3.1 et §3.2."},
+
+// ─── 11. PDRA — Pre-Defined Risk Assessments ────────────────────────────────
+
+{cat:"PDRA",q:"Qu'est-ce qu'un PDRA (Pre-Defined Risk Assessment) ?",
+a:[
+"Une procédure réglementaire alternative à la déclaration STS, permettant des vols spécifiques sous conditions simplifiées sans formation CATS obligatoire",
+"Un protocole de démarrage prédéfini établi par l'exploitant pour ses opérations répétitives, validé une fois par la DSAC puis applicable sans nouvelle autorisation",
+"Une étude de sécurité prédéfinie publiée par l'EASA pour des opérations types courantes, dispensant l'exploitant de produire une SORA complète",
+"Un plan de réponse aux accidents prédéfini que l'exploitant doit adopter dans son MANEX pour les opérations dépassant les limites des scénarios standard"
+],c:2,expl:"Un PDRA (Pre-Defined Risk Assessment) est une étude de sécurité pré-établie par l'EASA pour des types d'opérations courants dont le niveau de risque est connu. L'exploitant n'a pas à produire sa propre SORA : il doit uniquement démontrer que son opération remplit les conditions du PDRA. Les PDRA sont publiés en AMC du règlement (UE) 2019/947. Cinq PDRA ont été adoptés à date : PDRA-S01 et S02 (miroirs des STS) et PDRA-G01, G02, G03 (opérations BVLOS en zone faiblement peuplée). L'utilisation d'un PDRA ne dispense pas de l'autorisation d'exploitation — elle simplifie l'instruction. Source : Guide DSAC v2.0, §5.1.b ; AMC2 à AMC6 de l'Article 11 du règlement (UE) 2019/947.ent démontrer sa conformité aux conditions du PDRA et obtenir une autorisation de l'autorité compétente."},
+
+{cat:"PDRA",q:"Une opération sous PDRA nécessite-t-elle une autorisation de l'autorité compétente ?",
+a:[
+"Oui — une autorisation d'exploitation doit obligatoirement être délivrée par l'autorité compétente",
+"Non — la conformité aux conditions du PDRA suffit ; l'exploitant déclare son activité sur AlphaTango comme pour un scénario standard",
+"Oui — mais cette autorisation est accordée tacitement si aucune réponse de la DSAC n'est reçue dans les 30 jours suivant la soumission",
+"Non — une notification préalable de 48h à la DSAC/IR suffit pour les PDRA-G dont le GRC résiduel est inférieur au seuil SAIL II"
+],c:0,expl:"Point souvent mal compris : un PDRA n'est pas une autorisation en lui-même — c'est un cadre d'évaluation des risques. L'exploitant qui souhaite opérer sous PDRA doit IMPÉRATIVEMENT obtenir une autorisation d'exploitation délivrée par l'autorité compétente (en France : la DSAC). Cette autorisation est accordée après vérification que le dossier déposé remplit bien toutes les conditions du PDRA. Les scénarios STS (01 et 02), en revanche, ne nécessitent qu'une déclaration opérationnelle — c'est là une différence fondamentale entre STS et PDRA : même si PDRA-S01/S02 sont des 'miroirs' des STS, ils exigent une autorisation individuelle. Source : Guide DSAC v2.0, §5.1.b.un cadre pré-évalué qui simplifie l'instruction du dossier."},
+
+{cat:"PDRA",q:"Combien de PDRA avaient été officiellement adoptés à la date de publication du Guide DSAC v2.0 (décembre 2024) ?",
+a:[
+"5 PDRA : PDRA-S01, PDRA-S02, PDRA-G01, PDRA-G02, PDRA-G03",
+"3 PDRA : PDRA-G01, PDRA-G02 et PDRA-G03 — les PDRA-S étant encore en phase de consultation publique",
+"7 PDRA incluant PDRA-G04 (zone urbaine avec FTS) et PDRA-G05 (corridor logistique longue distance)",
+"2 PDRA : PDRA-S01 et PDRA-S02 uniquement — les PDRA-G étant réservés aux États membres volontaires"
+],c:0,expl:"À la date du Guide DSAC v2.0 (décembre 2024), cinq PDRA sont officiellement adoptés et publiés dans les AMC du règlement (UE) 2019/947. PDRA-S01 et S02 sont des 'miroirs' des STS-01 et STS-02, permettant les mêmes opérations avec des UAS sans marquage CE de classe C5/C6. PDRA-G01 : BVLOS zone faiblement peuplée, 150 m max, 1 km max (EVLOS). PDRA-G02 : BVLOS zone faiblement peuplée en espace aérien réservé. PDRA-G03 : BVLOS sur routes préprogrammées, 50 m max hors espace ségrégué. La liste des PDRA publiés évolue — pour la version à jour, consulter le site EASA section 'UAS regulations'. Source : Guide DSAC v2.0, §5.1.b."},
+
+{cat:"PDRA",q:"Qu'est-ce que le PDRA-S01 ?",
+a:[
+"Un PDRA autorisant les vols VLOS en zone peuplée avec un UAS de classe C3, à condition de disposer d'une assurance couvrant les dommages aux tiers",
+"Un PDRA applicable aux vols VLOS au-dessus d'une zone contrôlée au sol, réservé aux UAS de moins de 10 kg sans marquage CE de classe C4",
+"Un PDRA 'miroir' du STS-01 permettant de voler selon les conditions de ce scénario avec un UAS sans marquage CE classe C5, sous réserve de démontrer des caractéristiques similaires",
+"Un PDRA équivalent au scénario national S-1, permettant de poursuivre des opérations existantes après la suppression des scénarios nationaux"
+],c:2,expl:"PDRA-S01 est un 'PDRA miroir' du STS-01 : il permet des opérations VLOS en zone peuplée (conditions équivalentes au STS-01) avec un UAS sans marquage CE de classe C5, à condition que l'exploitant démontre que son UAS présente des caractéristiques techniques SIMILAIRES à celles d'un C5 (sécurité en cas de défaillance, identification directe, etc.). Le dossier PDRA-S01 doit donc inclure cette démonstration de conformité de substitution. Cette disposition permet aux opérateurs disposant d'UAS professionnels non certifiés CE de continuer à opérer en zone peuplée sans attendre que leurs appareils obtiennent le marquage C5. Source : Guide DSAC v2.0, §5.1.b.AS présente des caractéristiques similaires à la classe C5."},
+
+{cat:"PDRA",q:"Qu'est-ce que le PDRA-S02 ?",
+a:[
+"Un PDRA applicable aux vols BVLOS jusqu'à 200 m de hauteur en zone industrielle ségrégée, réservé aux UAS munis d'un système FTS certifié",
+"Un PDRA autorisant les opérations BVLOS en zone densément peuplée avec un observateur de l'espace aérien positionné tous les 500 m sur la trajectoire",
+"Un PDRA équivalent au scénario national S-2 permettant les vols BVLOS hors agglomération avec des UAS non marqués CE dont la MTOM dépasse 25 kg",
+"Un PDRA 'miroir' du STS-02 permettant de voler selon les conditions de ce scénario avec un UAS sans marquage CE classe C6, sous réserve de démontrer des caractéristiques similaires"
+],c:3,expl:"PDRA-S02 est le 'miroir' du STS-02 : opérations BVLOS en zone à faible densité de population avec observateur de l'espace aérien, mais avec un UAS sans marquage CE de classe C6. L'exploitant doit démontrer que son UAS présente des caractéristiques équivalentes à celles d'un C6 (geocaging, liaisons C2 redondantes, FTS, etc.). PDRA-S02 est donc particulièrement adapté aux drones professionnels ou militaires qui effectuent des missions BVLOS mais ne portent pas (et ne peuvent pas porter) le marquage CE C6. Comme tout PDRA, PDRA-S02 nécessite une autorisation d'exploitation individuelle. Source : Guide DSAC v2.0, §5.1.b. classe C6 pour son appareil."},
+
+{cat:"PDRA",q:"Qu'est-ce que le PDRA-G01 et dans quel type de zone s'applique-t-il ?",
+a:[
+"Vol hors vue (BVLOS) en zone faiblement peuplée dans un espace aérien réservé pour l'opération, sans contrainte de distance ni de hauteur maximale",
+"Vol hors vue (BVLOS) en zone faiblement peuplée, à moins de 150 m de hauteur et à moins de 1 km du télépilote ou d'un observateur visuel (EVLOS)",
+"Vol en vue étendue (EVLOS) en zone péri-urbaine, à moins de 120 m de hauteur, avec un système de détection et d'évitement (DAA) certifié EASA",
+"Vol hors vue (BVLOS) selon des routes préprogrammées en zone faiblement peuplée, à moins de 50 m de hauteur, limité par la portée de la liaison C2"
+],c:1,expl:"PDRA-G01 couvre les vols hors vue (BVLOS) en zone faiblement peuplée, à moins de 150 m de hauteur et à moins de 1 km du télépilote OU d'un observateur visuel du drone. Ce type de vol est aussi appelé EVLOS (Extended Visual Line of Sight)."},
+
+{cat:"PDRA",q:"Qu'est-ce que l'EVLOS mentionné dans le cadre du PDRA-G01 ?",
+a:[
+"Extended VLOS with Observer : vol en vue directe du télépilote avec un observateur couvrant les angles morts dans un rayon de 500 m autour de l'appareil",
+"Enhanced VLOS : vol en vue directe du télépilote assisté par des jumelles homologuées augmentant la portée visuelle jusqu'à 2 km",
+"Extended Visual Line Of Sight : vol hors vue directe du télépilote mais où un observateur maintient la vue sur le drone à moins de 1 km",
+"Electronic Visual Line Of Sight : pilotage du drone via une caméra FPV embarquée sans contrainte de distance ni de présence d'observateur"
+],c:2,expl:"EVLOS (Extended Visual Line Of Sight) est un mode de vol intermédiaire entre VLOS et BVLOS. Le télépilote n'a pas lui-même la vue directe sur le drone, mais un ou plusieurs observateurs maintiennent la vue directe à moins de 1 km et communiquent en temps réel avec le télépilote. Ceci est fondamentalement différent de l''observateur de l'espace aérien' du STS-02 qui, lui, surveille uniquement le ciel (et peut ne pas voir le drone lui-même). En EVLOS (PDRA-G01), le lien entre l'observateur et le drone est DIRECT et CONTINU. L'AMC1 Article 11 précise que pour les opérations EVLOS la latence de communication entre le télépilote et les observateurs doit être inférieure à 15 secondes. Source : AMC1 Article 11, §2.4.4.1 ; Guide DSAC v2.0, §5.1.b. communique avec le télépilote. C'est le cadre défini par PDRA-G01."},
+
+{cat:"PDRA",q:"Qu'est-ce que le PDRA-G02 ?",
+a:[
+"Vol hors vue (BVLOS) en zone faiblement peuplée dans un espace aérien réservé pour l'opération, sans contrainte de distance maximale au télépilote",
+"Vol hors vue (BVLOS) en zone faiblement peuplée avec un observateur visuel positionné à moins de 1 km, autorisé jusqu'à 150 m de hauteur",
+"Vol hors vue (BVLOS) selon des routes précalculées en zone faiblement peuplée, avec un plafond de 50 m en dehors d'un espace ségrégué",
+"Vol hors vue (BVLOS) en zone faiblement peuplée avec liaison C2 redondante et système FTS certifié, sans obligation d'espace aérien ségrégué"
+],c:0,expl:"PDRA-G02 permet les vols BVLOS en zone faiblement peuplée dans un espace aérien SPÉCIFIQUEMENT RÉSERVÉ pour l'opération (ségrégation de l'espace aérien). Contrairement à PDRA-G01 (EVLOS, 1 km max), PDRA-G02 n'a pas de contrainte de distance maximale entre le drone et le télépilote — ce qui en fait la solution pour les opérations longues distances. La ségrégation de l'espace aérien est la mesure d'atténuation du risque aérien : en interdisant temporairement d'autres aéronefs dans la zone, on réduit l'ARC vers ARC-a ou ARC-b. Cette réservation se fait via des procédures réglementaires (RST/ZRT en France, NOTAM). Applications typiques : inspection linéaire d'infrastructure, cartographie, levés topographiques étendus. Source : Guide DSAC v2.0, §5.1.b.risque aérien par rapport à PDRA-G01."},
+
+{cat:"PDRA",q:"Qu'est-ce que le PDRA-G03 et quelle est sa particularité ?",
+a:[
+"Vol hors vue en zone faiblement peuplée à moins de 120 m de hauteur, avec un système DAA actif et une liaison C2 redondante à double fréquence",
+"Vol hors vue en zone faiblement peuplée dans un espace aérien réservé, avec observateur visuel positionné à intervalles réguliers sur toute la trajectoire",
+"Vol hors vue en zone faiblement peuplée à moins de 150 m de hauteur, avec un observateur maintenant la vue directe du drone à moins de 1 km du télépilote",
+"Vol hors vue selon des routes préprogrammées en zone faiblement peuplée, à moins de 50 m hors espace ségrégué (ou sans limite de hauteur en espace ségrégué), limité par la portée C2"
+],c:3,expl:"PDRA-G03 est le PDRA dédié aux opérations autonomes ou semi-autonomes sur routes précalculées, en zone faiblement peuplée. Ses deux régimes : 1) HORS espace aérien ségrégué : hauteur limitée à 50 m AGL (très basse altitude) — ce qui réduit intrinsèquement le risque de collision aérienne ; 2) DANS un espace aérien ségrégué : pas de limite de hauteur. La distance est limitée par la portée de la liaison C2 (télécommande). Applications typiques : drones de surveillance automatique d'un site industriel, livraison logistique sur un campus ou une zone portuaire, inspection de pylônes sur une ligne électrique en zone rurale. À noter : 'préprogrammées' signifie que les waypoints sont définis avant le vol, mais un télépilote reste disponible à distance. Source : Guide DSAC v2.0, §5.1.b.rveillance automatisée par drone, livraison logistique au-dessus d'un site industriel."},
+
+{cat:"PDRA",q:"Quelle est la hauteur maximale autorisée pour un vol PDRA-G01 ?",
+a:["120 m","50 m","150 m","200 m"],
+c:2,expl:"PDRA-G01 autorise les vols jusqu'à 150 m de hauteur AGL (au-dessus du sol ou de l'obstacle le plus proche), soit 30 m de plus que les scénarios standard STS qui plafonnent à 120 m. Cette hauteur supérieure est rendue possible par la présence d'un observateur visuel à moins de 1 km (EVLOS) qui maintient la vue directe sur le drone et le contexte aérien immédiat. La hauteur de 150 m correspond à la limite utilisée pour l'AMC original de la PDRA-01, qui était le premier PDRA publié (correspondant essentiellement à ce qui est maintenant PDRA-G01). Source : Guide DSAC v2.0, §5.1.b ; AMC2 Article 11 du règlement (UE) 2019/947. aux STS."},
+
+{cat:"PDRA",q:"Quelle est la distance maximale entre le drone et le télépilote (ou l'observateur) dans le cadre du PDRA-G01 ?",
+a:["500 m","3 km","2 km","1 km"],
+c:3,expl:"La contrainte de distance de 1 km dans PDRA-G01 est la mesure d'atténuation centrale du risque au sol : l'observateur positionné à moins de 1 km doit maintenir LA VUE DIRECTE sur le drone. Ce n'est pas une distance maximale entre l'observateur et le télépilote, mais entre l'OBSERVATEUR et le DRONE. Si le télépilote est à une distance supérieure, un observateur doit prendre le relais. Cela distingue PDRA-G01 (EVLOS — observateur voit le drone) de PDRA-G02 (BVLOS long-range — pas de contrainte de distance, espace réservé) et de STS-02 (BVLOS — observateur surveille l'espace aérien mais ne voit pas nécessairement le drone). Source : Guide DSAC v2.0, §5.1.b.leinement autonome comme PDRA-G02 ou G03."},
+
+{cat:"PDRA",q:"Dans quel type de zone géographique les PDRA-G01, G02 et G03 s'appliquent-ils exclusivement ?",
+a:["Zone péri-urbaine à densité intermédiaire","Zone faiblement peuplée","Zone industrielle ou agricole délimitée","Toute zone dès lors que les mesures d'atténuation au sol sont suffisantes"],
+c:1,expl:"Tous les PDRA de série G (G01, G02, G03) imposent une zone faiblement peuplée — c'est leur dénominateur commun. Cette exigence correspond à une réduction significative du GRC (Ground Risk Class) intrinsèque : en vol BVLOS au-dessus d'une zone faiblement peuplée, le nombre de personnes potentiellement exposées à l'impact est réduit, ce qui améliore le ratio risque/bénéfice. La définition de 'zone faiblement peuplée' n'est pas explicitée en nombre de personnes par km² dans les textes EASA, mais en pratique elle correspond à des zones agricoles, forestières, industrielles ou désertiques, clairement distinctes des zones urbaines et péri-urbaines. Source : Guide DSAC v2.0, §5.1.b ; AMC1 Article 11, §2.3.1.ase de leur pré-évaluation par l'EASA."},
+
+{cat:"PDRA",q:"Quelle est la principale différence entre le PDRA-G01 et le STS-02 ?",
+a:[
+"PDRA-G01 s'applique uniquement en zone faiblement peuplée ; STS-02 peut être réalisé en zone peuplée sous réserve d'une zone contrôlée au sol adaptée",
+"PDRA-G01 autorise jusqu'à 150 m avec un observateur maintenant la vue directe du drone (EVLOS) ; STS-02 est limité à 120 m avec un observateur de l'espace aérien qui ne voit pas nécessairement le drone",
+"PDRA-G01 est limité à 1 km de distance et à 150 m de hauteur ; STS-02 n'a pas de contrainte de distance mais exige un espace aérien réservé",
+"PDRA-G01 nécessite un espace aérien réservé et un système DAA certifié ; STS-02 requiert uniquement la présence d'un observateur sans contrainte de ségrégation"
+],c:1,expl:"PDRA-G01 et STS-02 sont souvent comparés car tous deux sont BVLOS — mais leurs logiques d'atténuation diffèrent fondamentalement. STS-02 : 120 m max, observateur de l'ESPACE AÉRIEN (il surveille les aéronefs entrant dans la zone mais ne voit pas nécessairement le drone), exige un drone de classe C6 (avec geocaging). PDRA-G01 : 150 m max, observateur du DRONE (il maintient la vue directe sur le drone et communique avec le télépilote), sans exigence de marquage CE C5/C6. Autres différences : STS-02 exige une zone à faible densité de population ET un observateur espace aérien, PDRA-G01 exige zone faiblement peuplée ET observateur vue directe drone (EVLOS). Source : Guide DSAC v2.0, §4 (STS-02) et §5.1.b (PDRA-G01).e directe du drone (EVLOS) à moins de 1 km."},
+
+{cat:"PDRA",q:"Où trouver les canevas officiels pour remplir les dossiers PDRA en France ?",
+a:[
+"Sur le portail AlphaTango de la DGAC, espace exploitant dans la section documents réglementaires catégorie Spécifique",
+"Sur le site du Ministère de la Transition Écologique (MTE), section exploitation drones catégorie spécifique",
+"Sur le site de l'EASA, section UAS regulations dans les AMC du règlement (UE) 2019/947, en anglais et en français",
+"Sur le site du BEA (Bureau d'Enquêtes et d'Analyses), section drones dans l'espace dédié aux opérations catégorie Spécifique"
+],c:1,expl:"Le Ministère de la Transition Écologique (MTE) met à disposition sur son site des canevas officiels pour chaque PDRA (G01, G02, G03, S01, S02). Ces modèles de documents guident l'exploitant dans la structuration de son dossier de conformité. L'URL de référence fournie dans le Guide DSAC v2.0 est : https://www.ecologie.gouv.fr/exploitation-drones-en-categorie-specifique. Ces canevas ne remplacent pas une analyse sérieuse de l'opération — ils en structurent la présentation. Une fois le dossier constitué, il est soumis à la DSAC via la plateforme METEOR pour instruction et délivrance de l'autorisation. Source : Guide DSAC v2.0, §5.1.b.re à la DSAC pour obtenir l'autorisation d'exploitation."},
+
+{cat:"PDRA",q:"Quelle est l'utilité principale des PDRA par rapport à une démarche SORA complète ?",
+a:[
+"Remplacer progressivement les scénarios standard STS en offrant un cadre plus flexible adapté aux opérations commerciales récurrentes des professionnels",
+"Permettre les opérations BVLOS longue distance en zone densément peuplée sans passer par la procédure d'autorisation METEOR applicable à la SORA complète",
+"Définir des exigences de navigabilité allégées pour les UAS sans marquage CE, en substitution aux conditions de classe C5 et C6 des STS européens",
+"Simplifier et accélérer l'instruction pour des opérations courantes dont le risque est connu — l'exploitant n'a pas à produire sa propre analyse de risque"
+],c:3,expl:"La valeur ajoutée principale des PDRA est double. Pour l'EXPLOITANT : il n'a pas à maîtriser la méthode SORA complète ni à engager un consultant spécialisé pour produire une évaluation de risque — il vérifie simplement la conformité de son opération aux conditions du PDRA. Pour la DSAC : l'instruction est plus rapide et plus homogène car le cadre de référence est pré-défini. Important : les PDRA ne dispensent pas de l'autorisation d'exploitation individuelle (contrairement aux STS qui n'exigent qu'une déclaration). La démarche PDRA reste donc une 'voie médiane' entre la déclaration STS (simple mais périmètre limité) et la SORA complète (flexible mais complexe). Source : Guide DSAC v2.0, §5.1 ; AMC1 Article 11, §2.1. DSAC ni du respect des conditions (navigabilité, formation, opérations) définies dans le PDRA."},
 
 ];
 
