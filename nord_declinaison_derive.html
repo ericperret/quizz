@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Nord · Déclinaison · Déviation · Dérive</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; font-size: 12px; background: #eef1f5; padding: 16px; color: #1a1a1a; }
+
+h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
+.subtitle { text-align: center; color: #666; font-size: 11px; margin-bottom: 14px; }
+
+.section-label {
+  font-size: 11px; font-weight: bold; text-transform: uppercase;
+  letter-spacing: 0.8px; color: #fff; background: #1a3a5c;
+  padding: 4px 10px; border-radius: 4px; margin: 14px 0 8px;
+  display: inline-block;
+}
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+.card { background: white; border-radius: 7px; box-shadow: 0 2px 5px rgba(0,0,0,0.11); padding: 12px 14px; }
+.card h3 { font-size: 13px; color: #1a3a5c; margin-bottom: 8px; border-bottom: 2px solid #e0e7f0; padding-bottom: 4px; }
+
+/* ─── SCHÉMA BOUSSOLE ─── */
+.compass-row { display: flex; gap: 20px; align-items: flex-start; }
+
+.compass-box {
+  flex-shrink: 0;
+  width: 160px; height: 160px; position: relative;
+}
+.compass-circle {
+  width: 150px; height: 150px; border-radius: 50%;
+  border: 3px solid #90a4ae; background: #f8fafc;
+  position: absolute; top: 5px; left: 5px;
+}
+/* aiguilles */
+.needle {
+  position: absolute;
+  width: 3px;
+  transform-origin: bottom center;
+  bottom: 50%; left: calc(50% - 1.5px);
+  border-radius: 2px 2px 0 0;
+}
+.n-vrai   { height: 62px; background: #1a3a5c; transform: rotate(0deg); }
+.n-mag    { height: 55px; background: #c62828; transform: rotate(10deg); }
+.n-compas { height: 48px; background: #e65100; transform: rotate(16deg); }
+
+/* point central */
+.center-dot {
+  position: absolute; width: 8px; height: 8px;
+  background: #333; border-radius: 50%;
+  top: calc(50% + 5px - 4px); left: calc(50% + 5px - 4px);
+}
+
+/* légendes aiguilles */
+.needle-label {
+  position: absolute; font-size: 10px; font-weight: bold;
+}
+.nl-vrai   { top: 4px; left: 54px; color: #1a3a5c; }
+.nl-mag    { top: 10px; left: 90px; color: #c62828; }
+.nl-compas { top: 22px; left: 108px; color: #e65100; }
+
+/* arcs d'angle */
+.arc-info { margin-top: 4px; }
+.arc-row  { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; font-size: 11px; }
+.arc-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.ad-decl  { background: #c62828; }
+.ad-dev   { background: #e65100; }
+
+/* ─── FORMULE ─── */
+.formula-box {
+  background: #1a3a5c; color: white; border-radius: 8px;
+  padding: 12px 16px; text-align: center; margin: 8px 0;
+}
+.formula-box .f-main { font-size: 15px; font-weight: bold; letter-spacing: 1px; margin-bottom: 6px; }
+.formula-box .f-sub  { font-size: 11px; opacity: 0.85; line-height: 1.6; }
+
+.arrow { color: #90caf9; font-size: 16px; margin: 0 6px; }
+
+/* ─── RÈGLE EST/OUEST ─── */
+.eo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.eo-card { border-radius: 6px; padding: 8px 10px; font-size: 11px; line-height: 1.6; }
+.eo-est  { background: #e3f2fd; border-left: 4px solid #1565c0; }
+.eo-ouest { background: #fce4ec; border-left: 4px solid #c62828; }
+.eo-card .title { font-weight: bold; font-size: 12px; margin-bottom: 3px; }
+
+/* ─── EXEMPLES CALCUL ─── */
+table.calc { width: 100%; border-collapse: collapse; margin-top: 8px; }
+table.calc th { background: #37474f; color: white; padding: 6px 8px; font-size: 11px; }
+table.calc td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 11px; }
+table.calc tr:nth-child(even) td { background: #f8f9fb; }
+.step { color: #888; font-size: 10px; display: block; }
+.result { font-weight: bold; color: #1a3a5c; }
+
+/* ─── DÉRIVE ─── */
+.derive-diagram {
+  width: 100%; max-width: 440px; margin: 8px auto;
+  position: relative; height: 130px;
+}
+/* flèche générique */
+.arr {
+  position: absolute;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.wind-schema {
+  background: #f0f4f8; border-radius: 8px; padding: 10px 14px;
+  display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;
+}
+.ws-case { flex: 1; min-width: 140px; }
+.ws-case .ws-title { font-weight: bold; font-size: 11px; color: #1a3a5c; margin-bottom: 6px; }
+
+/* mini schéma SVG inline */
+.svg-wrap { text-align: center; margin: 6px 0; }
+
+.derive-rule { margin-top: 6px; font-size: 11px; line-height: 1.7; }
+.dr-row { display: flex; gap: 6px; margin-bottom: 2px; align-items: flex-start; }
+.dr-icon { flex-shrink: 0; }
+
+/* ─── NOTE ─── */
+.note-box {
+  background: #fffde7; border-left: 4px solid #f9a825;
+  padding: 8px 12px; border-radius: 0 6px 6px 0;
+  font-size: 11px; line-height: 1.7; margin-top: 10px;
+}
+
+/* ─── TABLE RECAPS ─── */
+table.def { width: 100%; border-collapse: collapse; }
+table.def td { padding: 6px 8px; border-bottom: 1px dotted #e0e0e0; font-size: 11px; vertical-align: top; }
+table.def tr:last-child td { border-bottom: none; }
+table.def td:first-child { font-weight: bold; color: #1a3a5c; width: 35%; }
+
+footer { text-align: center; margin-top: 14px; font-size: 10px; color: #aaa; }
+</style>
+</head>
+<body>
+
+<h1>Nord Vrai · Nord Magnétique · Nord Compas · Dérive</h1>
+<p class="subtitle">Navigation — CATS Catégorie Spécifique</p>
+
+<!-- ══════ DÉFINITIONS ══════ -->
+<div class="section-label">📖 Les trois Nords</div>
+
+<div class="grid3">
+  <div class="card" style="border-top: 3px solid #1a3a5c;">
+    <h3>🌍 Nord Vrai (NV / TV)</h3>
+    <table class="def">
+      <tr><td>Définition</td><td>Direction du pôle Nord <strong>géographique</strong></td></tr>
+      <tr><td>Référence</td><td>Axe de rotation de la Terre</td></tr>
+      <tr><td>Sur carte</td><td>Méridiens → toujours Nord Vrai</td></tr>
+      <tr><td>Mesure angles</td><td>Cap Vrai (CV), Route Vraie</td></tr>
+      <tr><td>Symbole carte</td><td>Étoile ★ ou flèche simple</td></tr>
+    </table>
+  </div>
+
+  <div class="card" style="border-top: 3px solid #c62828;">
+    <h3>🧲 Nord Magnétique (NM)</h3>
+    <table class="def">
+      <tr><td>Définition</td><td>Direction vers laquelle pointe une boussole <strong>idéale</strong> (sans perturbation locale)</td></tr>
+      <tr><td>Position</td><td>Pôle magnétique ≠ pôle géographique</td></tr>
+      <tr><td>Varie</td><td>Selon la position sur le globe <em>et</em> dans le temps (~0,1°/an)</td></tr>
+      <tr><td>Mesure angles</td><td>Cap Magnétique (CM)</td></tr>
+      <tr><td>Isogones</td><td>Lignes de déclinaison égale sur les cartes</td></tr>
+    </table>
+  </div>
+
+  <div class="card" style="border-top: 3px solid #e65100;">
+    <h3>🔧 Nord Compas (NC)</h3>
+    <table class="def">
+      <tr><td>Définition</td><td>Direction indiquée par le compas <strong>à bord</strong></td></tr>
+      <tr><td>Perturbé par</td><td>Masses métalliques, moteurs, électronique <strong>du vecteur lui-même</strong></td></tr>
+      <tr><td>Propre à</td><td>Chaque appareil (déviation variable par cap)</td></tr>
+      <tr><td>Mesure angles</td><td>Cap Compas (CC)</td></tr>
+      <tr><td>Correction</td><td>Table de déviation (cardon de déviation)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════ SCHÉMA + FORMULE ══════ -->
+<div class="section-label">📐 Déclinaison & Déviation — Schéma</div>
+
+<div class="grid2">
+
+  <!-- Schéma visuel -->
+  <div class="card">
+    <h3>Schéma des trois aiguilles</h3>
+    <div class="compass-row">
+      <div class="compass-box">
+        <div class="compass-circle"></div>
+        <!-- Nord Vrai -->
+        <div class="needle n-vrai" style="bottom:calc(50% + 5px); left:calc(50% + 5px - 1.5px);"></div>
+        <!-- Nord Magnétique (dévié à E) -->
+        <div class="needle n-mag"  style="bottom:calc(50% + 5px); left:calc(50% + 5px - 1.5px);"></div>
+        <!-- Nord Compas (dévié encore plus) -->
+        <div class="needle n-compas" style="bottom:calc(50% + 5px); left:calc(50% + 5px - 1.5px);"></div>
+        <div class="center-dot"></div>
+        <span class="needle-label nl-vrai">NV</span>
+        <span class="needle-label nl-mag">NM</span>
+        <span class="needle-label nl-compas">NC</span>
+      </div>
+      <div class="arc-info" style="margin-top:10px;">
+        <div class="arc-row"><div class="arc-dot ad-decl"></div><strong>Déclinaison (D)</strong></div>
+        <div style="font-size:11px; color:#555; margin-left:16px; margin-bottom:8px;">Angle NV → NM<br>Propriété du <em>lieu</em></div>
+        <div class="arc-row"><div class="arc-dot ad-dev"></div><strong>Déviation (d)</strong></div>
+        <div style="font-size:11px; color:#555; margin-left:16px;">Angle NM → NC<br>Propriété de l'<em>appareil</em></div>
+        <div style="margin-top:10px; font-size:10px; color:#888; line-height:1.5;">
+          (Schéma : déclinaison et<br>déviation Est — cas courant)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formule de conversion -->
+  <div class="card">
+    <h3>Formule de conversion</h3>
+    <div class="formula-box">
+      <div class="f-main">CC <span class="arrow">±d</span> CM <span class="arrow">±D</span> CV</div>
+      <div class="f-sub">
+        CC = Cap Compas &nbsp;|&nbsp; CM = Cap Magnétique &nbsp;|&nbsp; CV = Cap Vrai<br>
+        d = déviation &nbsp;|&nbsp; D = déclinaison
+      </div>
+    </div>
+
+    <div class="eo-grid">
+      <div class="eo-card eo-est">
+        <div class="title">🔵 Est → Positif (+)</div>
+        Déclinaison / déviation à l'Est :<br>
+        <strong>on ajoute</strong> pour aller vers le Vrai<br>
+        <em>CC + d + D = CV</em>
+      </div>
+      <div class="eo-card eo-ouest">
+        <div class="title">🔴 Ouest → Négatif (−)</div>
+        Déclinaison / déviation à l'Ouest :<br>
+        <strong>on soustrait</strong> pour aller vers le Vrai<br>
+        <em>CC − d − D = CV</em>
+      </div>
+    </div>
+
+    <div class="note-box" style="margin-top:8px;">
+      <strong>Mnémo :</strong> « <strong>CDMVT</strong> » — <em>Cap De Ma Voiture Tourne</em><br>
+      CC → d → CM → D → CV (de gauche à droite, on va vers le Vrai)<br>
+      Pour revenir au CC, on inverse les signes.
+    </div>
+  </div>
+</div>
+
+<!-- ══════ EXEMPLES ══════ -->
+<div class="section-label">🧮 Exercices de calcul de tête</div>
+
+<div class="card">
+<table class="calc">
+  <tr>
+    <th>Données</th>
+    <th>CC</th>
+    <th>Déviation (d)</th>
+    <th>CM</th>
+    <th>Déclinaison (D)</th>
+    <th>CV</th>
+    <th>Sens de calcul</th>
+  </tr>
+
+  <tr>
+    <td>Décl. 5°E, Dév. 3°E</td>
+    <td>120°</td>
+    <td>+3°E</td>
+    <td class="result">123°</td>
+    <td>+5°E</td>
+    <td class="result">128°</td>
+    <td><span class="step">CC→CM→CV (tout +)</span></td>
+  </tr>
+
+  <tr>
+    <td>Décl. 5°O, Dév. 3°O</td>
+    <td>120°</td>
+    <td>−3°O</td>
+    <td class="result">117°</td>
+    <td>−5°O</td>
+    <td class="result">112°</td>
+    <td><span class="step">CC→CM→CV (tout −)</span></td>
+  </tr>
+
+  <tr>
+    <td>Décl. 8°O, Dév. 2°E</td>
+    <td>090°</td>
+    <td>+2°E</td>
+    <td class="result">092°</td>
+    <td>−8°O</td>
+    <td class="result">084°</td>
+    <td><span class="step">+2 puis −8 = −6 total</span></td>
+  </tr>
+
+  <tr>
+    <td>On connaît CV, trouver CC<br><span style="font-size:10px;color:#888">Décl. 4°E, Dév. 3°E</span></td>
+    <td class="result">?</td>
+    <td>−3°E</td>
+    <td>257°</td>
+    <td>−4°E</td>
+    <td>261°</td>
+    <td><span class="step">CV→CM→CC : inverser les signes<br>CC = CM − 3 = 254°</span></td>
+  </tr>
+
+  <tr>
+    <td>On connaît CV, trouver CC<br><span style="font-size:10px;color:#888">Décl. 6°O, Dév. 2°O</span></td>
+    <td class="result">?</td>
+    <td>+2°O (inversé)</td>
+    <td>036°</td>
+    <td>+6°O (inversé)</td>
+    <td>030°</td>
+    <td><span class="step">CV(030) → CM = 030+6 = 036 → CC = 036+2 = 038°</span></td>
+  </tr>
+</table>
+</div>
+
+<!-- ══════ DÉRIVE ══════ -->
+<div class="section-label">💨 Dérive — Cap vs Route</div>
+
+<div class="grid2">
+
+  <div class="card">
+    <h3>Définitions</h3>
+    <table class="def">
+      <tr><td>Cap</td><td>Direction <strong>pointée par le nez</strong> de l'appareil (en magnétique ou vrai)</td></tr>
+      <tr><td>Route</td><td>Trajectoire <strong>réelle sur le sol</strong> (résultante cap + vent)</td></tr>
+      <tr><td>Dérive</td><td>Angle entre cap et route — uniquement due au <strong>vent</strong></td></tr>
+      <tr><td>Vent traversier</td><td>Composante du vent <strong>perpendiculaire</strong> à la route</td></tr>
+      <tr><td>Vent de face/dos</td><td>Modifie la vitesse sol, pas la dérive</td></tr>
+    </table>
+
+    <div class="note-box" style="margin-top:8px;">
+      <strong>Règle fondamentale :</strong><br>
+      Le vent <em>pousse</em> l'aéronef dans sa direction de souffle.<br>
+      → Vent <strong>venant du Nord</strong> : l'avion dérive vers le <strong>Sud</strong><br>
+      → Pour suivre la route souhaitée, pointer le nez <em>face au vent</em> (corriger en crabe)
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Les 4 cas de vent traversier</h3>
+    <div class="wind-schema">
+
+      <!-- Cas 1 : vent de gauche -->
+      <div class="ws-case">
+        <div class="ws-title">Vent de gauche (venant du N, cap E)</div>
+        <div class="svg-wrap">
+          <svg width="120" height="80" viewBox="0 0 120 80">
+            <!-- route souhaitée (Est) -->
+            <line x1="10" y1="40" x2="110" y2="40" stroke="#aaa" stroke-width="1" stroke-dasharray="4,3"/>
+            <text x="90" y="35" font-size="9" fill="#aaa">route</text>
+            <!-- cap (légèrement nord) -->
+            <line x1="10" y1="40" x2="100" y2="28" stroke="#1565c0" stroke-width="2" marker-end="url(#ah)"/>
+            <text x="55" y="22" font-size="9" fill="#1565c0">cap</text>
+            <!-- vent (vers le bas = Sud) -->
+            <line x1="60" y1="5" x2="60" y2="38" stroke="#c62828" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#ar)"/>
+            <text x="64" y="18" font-size="9" fill="#c62828">vent</text>
+            <!-- trajectoire réelle -->
+            <line x1="10" y1="40" x2="100" y2="52" stroke="#2e7d32" stroke-width="2" marker-end="url(#ag)"/>
+            <text x="60" y="68" font-size="9" fill="#2e7d32">trajectoire réelle</text>
+            <defs>
+              <marker id="ah" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1565c0"/></marker>
+              <marker id="ar" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c62828"/></marker>
+              <marker id="ag" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2e7d32"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <div style="font-size:10px; line-height:1.5;">
+          Vent du <strong>N</strong> → dérive vers le <strong>S</strong><br>
+          Correction : pointer le nez vers le <strong>N</strong> (crabe)
+        </div>
+      </div>
+
+      <!-- Cas 2 : vent de droite -->
+      <div class="ws-case">
+        <div class="ws-title">Vent de droite (venant du S, cap E)</div>
+        <div class="svg-wrap">
+          <svg width="120" height="80" viewBox="0 0 120 80">
+            <line x1="10" y1="40" x2="110" y2="40" stroke="#aaa" stroke-width="1" stroke-dasharray="4,3"/>
+            <text x="90" y="35" font-size="9" fill="#aaa">route</text>
+            <!-- cap légèrement sud -->
+            <line x1="10" y1="40" x2="100" y2="52" stroke="#1565c0" stroke-width="2" marker-end="url(#ah2)"/>
+            <text x="55" y="60" font-size="9" fill="#1565c0">cap</text>
+            <!-- vent vers le haut = Nord -->
+            <line x1="60" y1="75" x2="60" y2="42" stroke="#c62828" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#ar2)"/>
+            <text x="64" y="70" font-size="9" fill="#c62828">vent</text>
+            <!-- trajectoire réelle -->
+            <line x1="10" y1="40" x2="100" y2="28" stroke="#2e7d32" stroke-width="2" marker-end="url(#ag2)"/>
+            <text x="55" y="20" font-size="9" fill="#2e7d32">trajectoire réelle</text>
+            <defs>
+              <marker id="ah2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1565c0"/></marker>
+              <marker id="ar2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c62828"/></marker>
+              <marker id="ag2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2e7d32"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <div style="font-size:10px; line-height:1.5;">
+          Vent du <strong>S</strong> → dérive vers le <strong>N</strong><br>
+          Correction : pointer le nez vers le <strong>S</strong> (crabe)
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Table des cas -->
+    <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:11px;">
+      <tr style="background:#37474f; color:white;">
+        <th style="padding:5px 8px;">Vent venant de…</th>
+        <th style="padding:5px 8px;">Pousse vers…</th>
+        <th style="padding:5px 8px;">Correction cap</th>
+      </tr>
+      <tr style="background:#e3f2fd;"><td style="padding:5px 8px;">Nord</td><td style="padding:5px 8px;">Sud ↓</td><td style="padding:5px 8px;">Pointer vers le Nord</td></tr>
+      <tr><td style="padding:5px 8px;">Sud</td><td style="padding:5px 8px;">Nord ↑</td><td style="padding:5px 8px;">Pointer vers le Sud</td></tr>
+      <tr style="background:#e3f2fd;"><td style="padding:5px 8px;">Est</td><td style="padding:5px 8px;">Ouest ←</td><td style="padding:5px 8px;">Pointer vers l'Est</td></tr>
+      <tr><td style="padding:5px 8px;">Ouest</td><td style="padding:5px 8px;">Est →</td><td style="padding:5px 8px;">Pointer vers l'Ouest</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- ══════ RÉCAP RAPIDE ══════ -->
+<div class="section-label">⚡ Mémo express</div>
+
+<div class="card">
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+    <div>
+      <div style="font-weight:bold; color:#1a3a5c; margin-bottom:6px;">Chaîne de correction (CC → CV)</div>
+      <div style="background:#f0f4f8; border-radius:6px; padding:10px; font-size:12px; line-height:2;">
+        <span style="background:#e65100; color:white; padding:2px 7px; border-radius:4px;">CC</span>
+        <span style="color:#e65100;"> ±d (déviation)</span> →
+        <span style="background:#c62828; color:white; padding:2px 7px; border-radius:4px;">CM</span>
+        <span style="color:#c62828;"> ±D (déclinaison)</span> →
+        <span style="background:#1a3a5c; color:white; padding:2px 7px; border-radius:4px;">CV</span><br>
+        <span style="font-size:10px; color:#666;">Est = +, Ouest = − &nbsp;(pour aller vers le Vrai)</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-weight:bold; color:#1a3a5c; margin-bottom:6px;">Différences clés</div>
+      <table style="width:100%; font-size:11px; border-collapse:collapse;">
+        <tr><td style="padding:4px 6px; border-bottom:1px dotted #ddd; width:40%; font-weight:bold;">Déclinaison</td><td style="padding:4px 6px; border-bottom:1px dotted #ddd;">Propriété du <strong>lieu</strong> (sur la carte, isogones)</td></tr>
+        <tr><td style="padding:4px 6px; border-bottom:1px dotted #ddd; font-weight:bold;">Déviation</td><td style="padding:4px 6px; border-bottom:1px dotted #ddd;">Propriété de l'<strong>appareil</strong> (table à bord)</td></tr>
+        <tr><td style="padding:4px 6px; border-bottom:1px dotted #ddd; font-weight:bold;">Dérive</td><td style="padding:4px 6px; border-bottom:1px dotted #ddd;">Due au <strong>vent</strong> (cap ≠ route)</td></tr>
+        <tr><td style="padding:4px 6px; font-weight:bold;">Vitesse sol</td><td style="padding:4px 6px;">TAS ± composante vent (estime)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>CATS Catégorie Spécifique · Navigation · Annexe 2 OACI · SERA</footer>
+
+</body>
+</html>

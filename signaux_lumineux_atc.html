@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Signaux lumineux ATC — Récap complet</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; font-size: 12px; background: #eef1f5; padding: 16px; color: #1a1a1a; }
+
+h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
+.subtitle { text-align: center; color: #666; font-size: 11px; margin-bottom: 16px; }
+
+.section-label {
+  font-size: 11px; font-weight: bold; text-transform: uppercase;
+  letter-spacing: 0.8px; color: #fff; background: #1a3a5c;
+  padding: 4px 10px; border-radius: 4px; margin: 14px 0 8px;
+  display: inline-block;
+}
+
+/* ─── TABLE PRINCIPALE ─── */
+table.main {
+  width: 100%; border-collapse: collapse; background: white;
+  border-radius: 8px; overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+table.main th {
+  background: #1a3a5c; color: white; padding: 8px 10px;
+  font-size: 11px; text-align: center;
+}
+table.main td {
+  padding: 8px 10px; border-bottom: 1px solid #eee;
+  font-size: 11px; vertical-align: middle; text-align: center;
+}
+table.main tr:last-child td { border-bottom: none; }
+
+/* colonne signal */
+td.signal {
+  font-weight: bold; font-size: 13px; text-align: center;
+  width: 120px;
+}
+
+/* couleurs de fond par type de feu */
+.vert-fixe   td { background: #e8f5e9; }
+.vert-ecl    td { background: #f1f8e9; }
+.rouge-fixe  td { background: #ffebee; }
+.rouge-ecl   td { background: #fce4ec; }
+.blanc-ecl   td { background: #f5f5f5; }
+.alternance  td { background: #fff8e1; }
+
+/* bulle de couleur */
+.dot {
+  display: inline-block; width: 14px; height: 14px;
+  border-radius: 50%; margin-right: 5px; vertical-align: middle;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+.d-vert  { background: #2e7d32; box-shadow: 0 0 6px #4caf50; }
+.d-rouge { background: #c62828; box-shadow: 0 0 6px #ef5350; }
+.d-blanc { background: #e0e0e0; box-shadow: 0 0 6px #bdbdbd; }
+.d-alt   { background: linear-gradient(90deg, #c62828 50%, #2e7d32 50%); }
+
+/* icônes état */
+.in-flight { color: #1565c0; font-size: 14px; }
+.on-ground { color: #6a1b9a; font-size: 14px; }
+
+/* texte de signification */
+td.sig-text { text-align: left; line-height: 1.5; }
+
+/* tag continu / clignotant */
+.mode-tag {
+  display: inline-block; padding: 1px 6px; border-radius: 8px;
+  font-size: 10px; font-weight: bold; margin-left: 4px;
+}
+.fixe { background: #e3f2fd; color: #0d47a1; }
+.ecl  { background: #fff3e0; color: #e65100; }
+
+/* ─── PYRO ─── */
+table.pyro {
+  width: 100%; border-collapse: collapse; background: white;
+  border-radius: 8px; overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-top: 8px;
+}
+table.pyro th { background: #b71c1c; color: white; padding: 7px 10px; font-size: 11px; }
+table.pyro td { padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 11px; vertical-align: middle; }
+table.pyro tr:last-child td { border-bottom: none; }
+table.pyro tr:nth-child(even) td { background: #fff8f8; }
+
+/* ─── NOTE ─── */
+.note-box {
+  background: #fffde7; border-left: 4px solid #f9a825;
+  padding: 8px 12px; border-radius: 0 6px 6px 0;
+  font-size: 11px; line-height: 1.6; margin-top: 10px;
+}
+.note-box strong { color: #e65100; }
+
+/* ─── LEGENDE ─── */
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin: 8px 0 4px; font-size: 11px; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+
+footer { text-align: center; margin-top: 14px; font-size: 10px; color: #aaa; }
+</style>
+</head>
+<body>
+
+<h1>Signaux lumineux ATC & Pyrotechniques</h1>
+<p class="subtitle">SERA.3225 (Règlement UE 923/2012) · Annexe 2 ICAO</p>
+
+<div class="legend">
+  <div class="legend-item"><span class="in-flight">✈</span> Aéronef en vol</div>
+  <div class="legend-item"><span class="on-ground">🟣</span> Aéronef au sol</div>
+  <div class="legend-item"><span class="mode-tag fixe">FIXE</span> Feu continu</div>
+  <div class="legend-item"><span class="mode-tag ecl">ÉCLATS</span> Feu clignotant</div>
+</div>
+
+<div class="section-label">💡 Feux de signalisation — Tour de contrôle → Aéronef</div>
+
+<table class="main">
+  <tr>
+    <th style="width:130px">Signal</th>
+    <th style="width:60px">Mode</th>
+    <th style="width:42%">✈ En vol</th>
+    <th style="width:42%">🟣 Au sol</th>
+  </tr>
+
+  <!-- VERT FIXE -->
+  <tr class="vert-fixe">
+    <td class="signal"><span class="dot d-vert"></span>VERT</td>
+    <td><span class="mode-tag fixe">FIXE</span></td>
+    <td class="sig-text">✅ <strong>Autorisé à atterrir</strong></td>
+    <td class="sig-text">✅ <strong>Autorisé à décoller</strong></td>
+  </tr>
+
+  <!-- VERT ÉCLATS -->
+  <tr class="vert-ecl">
+    <td class="signal"><span class="dot d-vert"></span>VERT</td>
+    <td><span class="mode-tag ecl">ÉCLATS</span></td>
+    <td class="sig-text">🔄 <strong>Revenez pour atterrir</strong><br><span style="color:#555">(l'autorisation d'atterrir sera donnée ultérieurement)</span></td>
+    <td class="sig-text">🚗 <strong>Autorisé à circuler</strong> (taxi)</td>
+  </tr>
+
+  <!-- ROUGE FIXE -->
+  <tr class="rouge-fixe">
+    <td class="signal"><span class="dot d-rouge"></span>ROUGE</td>
+    <td><span class="mode-tag fixe">FIXE</span></td>
+    <td class="sig-text">🔁 <strong>Cédez le passage, continuez à tourner</strong><br><span style="color:#555">(un autre aéronef a priorité)</span></td>
+    <td class="sig-text">🛑 <strong>STOP — Arrêtez-vous</strong></td>
+  </tr>
+
+  <!-- ROUGE ÉCLATS -->
+  <tr class="rouge-ecl">
+    <td class="signal"><span class="dot d-rouge"></span>ROUGE</td>
+    <td><span class="mode-tag ecl">ÉCLATS</span></td>
+    <td class="sig-text">⛔ <strong>N'atterrissez pas — aérodrome non disponible</strong><br><span style="color:#555">(danger, attendez)</span></td>
+    <td class="sig-text">⚠️ <strong>Dégagez la piste ou l'aire d'atterrissage</strong><br><span style="color:#555">(piste occupée / danger)</span></td>
+  </tr>
+
+  <!-- BLANC ÉCLATS -->
+  <tr class="blanc-ecl">
+    <td class="signal"><span class="dot d-blanc"></span>BLANC</td>
+    <td><span class="mode-tag ecl">ÉCLATS</span></td>
+    <td class="sig-text">↩️ <strong>Atterrissez sur cet aérodrome et rejoignez l'aire de trafic</strong><br><span style="color:#555">(sans autorisation atterrissage implicite)</span></td>
+    <td class="sig-text">↩️ <strong>Retournez à votre point de départ</strong><br><span style="color:#555">(sur l'aérodrome)</span></td>
+  </tr>
+
+  <!-- ALTERNANCE ROUGE/VERT -->
+  <tr class="alternance">
+    <td class="signal"><span class="dot d-alt"></span>ROUGE<br>+ VERT</td>
+    <td><span class="mode-tag ecl">ALTERNÉS</span></td>
+    <td class="sig-text">⚠️ <strong>Soyez très prudent</strong></td>
+    <td class="sig-text">⚠️ <strong>Soyez très prudent</strong></td>
+  </tr>
+
+</table>
+
+<!-- PYROTECHNIQUE -->
+<div class="section-label">🔴 Signal pyrotechnique — Tour de contrôle → Aéronef en vol</div>
+
+<table class="pyro">
+  <tr>
+    <th style="width:160px">Signal</th>
+    <th>Signification</th>
+  </tr>
+  <tr>
+    <td><span class="dot d-rouge"></span><strong>Fusée rouge</strong> (série d'éclats)</td>
+    <td>⛔ <strong>N'atterrissez pas — attendez.</strong><br>
+    L'aérodrome n'est temporairement pas disponible.<br>
+    <em>Utilisée notamment quand la radio est inopérante et que le feu rouge clignotant ne suffit pas à attirer l'attention.</em></td>
+  </tr>
+</table>
+
+<!-- AÉRONEF → ATC (acquittements) -->
+<div class="section-label">↩️ Acquittements — Aéronef → Tour (sans radio)</div>
+
+<table class="main">
+  <tr>
+    <th>Situation</th>
+    <th>De jour</th>
+    <th>De nuit</th>
+  </tr>
+  <tr>
+    <td><strong>En vol</strong> — signal reçu et compris</td>
+    <td>Balancement des ailes<br><span style="color:#555;font-size:10px">(sauf en finale)</span></td>
+    <td>Allumer et éteindre les feux d'atterrissage 2×<br><span style="color:#555;font-size:10px">ou clignoter les feux de navigation</span></td>
+  </tr>
+  <tr>
+    <td><strong>Au sol</strong> — signal reçu et compris</td>
+    <td>Mouvement des ailerons ou gouverne de direction</td>
+    <td>Clignoter les feux de navigation</td>
+  </tr>
+</table>
+
+<!-- NOTE CONTEXTUELLE DRONE -->
+<div class="note-box">
+  <strong>⚠️ Pertinence pour les drones (STS / CATS) :</strong><br>
+  En STS-01 (VLOS), si le vol se déroule à proximité d'un aérodrome contrôlé, le télépilote doit connaître ces signaux pour comprendre les instructions éventuelles de la tour.<br>
+  En STS-02 (BVLOS), l'observateur de l'espace aérien doit surveiller toute activité dans la zone — y compris les signaux lumineux émis par une tour si applicable.<br><br>
+  <strong>Moyen mnémotechnique :</strong><br>
+  🟢 <strong>VERT FIXE</strong> = <em>Go</em> (atterrir ou décoller)<br>
+  🟢 <strong>VERT ÉCLATS</strong> = <em>Reviens / Circule</em> (en cours de vol → reviens ; au sol → taxi)<br>
+  🔴 <strong>ROUGE FIXE</strong> = <em>Stop</em> (en vol → tourne encore ; au sol → arrêt)<br>
+  🔴 <strong>ROUGE ÉCLATS</strong> = <em>Danger</em> (n'atterris pas / dégage la piste)<br>
+  ⬜ <strong>BLANC ÉCLATS</strong> = <em>Rentre à la maison</em> (retour point départ)<br>
+  🟢🔴 <strong>ALTERNANCE</strong> = <em>Attention !</em> (prudence dans tous les cas)
+</div>
+
+<footer>SERA.3225 · Annexe 2 OACI · Règlement d'Exécution (UE) 923/2012</footer>
+
+</body>
+</html>

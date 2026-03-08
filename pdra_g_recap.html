@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>PDRA-G — Fiche récap</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 13px; background: #f0f2f5; padding: 20px; }
+  h1 { text-align: center; color: #1a3a5c; margin-bottom: 6px; font-size: 18px; }
+  .subtitle { text-align: center; color: #555; margin-bottom: 20px; font-size: 12px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+  .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+
+  .card-header { padding: 12px 14px; color: white; font-size: 15px; font-weight: bold; }
+  .g01 .card-header { background: #1565c0; }
+  .g02 .card-header { background: #2e7d32; }
+  .g03 .card-header { background: #6a1b9a; }
+
+  .card-sub { font-size: 11px; font-weight: normal; opacity: 0.88; margin-top: 2px; }
+
+  .card-body { padding: 12px 14px; }
+
+  .section-title {
+    font-size: 10px; font-weight: bold; text-transform: uppercase;
+    letter-spacing: 0.5px; color: #888; margin: 10px 0 4px;
+    border-bottom: 1px solid #eee; padding-bottom: 2px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  .row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; gap: 8px; }
+  .label { color: #555; flex-shrink: 0; }
+  .value { font-weight: bold; text-align: right; color: #1a1a1a; }
+
+  .tag {
+    display: inline-block; padding: 2px 7px; border-radius: 10px;
+    font-size: 11px; font-weight: bold; margin-bottom: 4px;
+  }
+  .tag-bvlos { background: #fff3e0; color: #e65100; }
+  .tag-zone  { background: #e8f5e9; color: #2e7d32; }
+  .tag-auth  { background: #fce4ec; color: #c62828; }
+  .tag-obs   { background: #e3f2fd; color: #1565c0; }
+  .tag-seg   { background: #f3e5f5; color: #6a1b9a; }
+  .tag-auto  { background: #fafafa; color: #555; border: 1px solid #ddd; }
+
+  .highlight { background: #fffde7; border-left: 3px solid #f9a825; padding: 6px 8px; border-radius: 0 4px 4px 0; font-size: 12px; margin-top: 8px; }
+
+  .common-box {
+    background: white; border-radius: 8px; padding: 14px 18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .common-box .item { display: flex; align-items: center; gap: 8px; }
+  .common-box .badge { background: #e8f5e9; color: #2e7d32; font-weight: bold; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+  .common-box .clabel { color: #555; font-size: 12px; }
+  .common-title { font-weight: bold; color: #1a3a5c; font-size: 12px; white-space: nowrap; }
+
+  .diff-table { width: 100%; border-collapse: collapse; margin-top: 14px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+  .diff-table th { background: #1a3a5c; color: white; padding: 8px 10px; font-size: 12px; text-align: center; }
+  .diff-table td { padding: 7px 10px; border-bottom: 1px solid #eee; font-size: 12px; vertical-align: top; }
+  .diff-table tr:last-child td { border-bottom: none; }
+  .diff-table tr:nth-child(even) td { background: #f8f9fa; }
+  .diff-table td:first-child { font-weight: bold; color: #444; width: 22%; }
+  .diff-table td:nth-child(2) { color: #1565c0; }
+  .diff-table td:nth-child(3) { color: #2e7d32; }
+  .diff-table td:nth-child(4) { color: #6a1b9a; }
+
+  footer { text-align: center; margin-top: 14px; font-size: 11px; color: #aaa; }
+</style>
+</head>
+<body>
+
+<h1>PDRA-G — Fiche récapitulative</h1>
+<p class="subtitle">Source : Guide DSAC Catégorie Spécifique v2.0 – décembre 2024 | Règlement (UE) 2019/947</p>
+
+<!-- Point commun -->
+<div class="common-box">
+  <span class="common-title">⚠ Commun à G01, G02, G03 :</span>
+  <div class="item"><span class="badge">BVLOS</span><span class="clabel">Hors vue obligatoire</span></div>
+  <div class="item"><span class="badge">Zone faiblement peuplée</span><span class="clabel">Dénominateur commun</span></div>
+  <div class="item"><span class="badge">Autorisation DSAC requise</span><span class="clabel">≠ STS (déclaration seule)</span></div>
+  <div class="item"><span class="badge">Pas de marquage CE imposé</span><span class="clabel">contrairement aux STS</span></div>
+</div>
+
+<!-- 3 cartes -->
+<div class="grid">
+
+  <!-- G01 -->
+  <div class="card g01">
+    <div class="card-header">
+      PDRA-G01
+      <div class="card-sub">BVLOS de proximité — EVLOS</div>
+    </div>
+    <div class="card-body">
+      <div class="section-title">Type d'opération</div>
+      <span class="tag tag-bvlos">BVLOS</span>
+      <span class="tag tag-obs">EVLOS</span>
+
+      <div class="section-title">Limites</div>
+      <div class="row"><span class="label">Hauteur max</span><span class="value">150 m AGL</span></div>
+      <div class="row"><span class="label">Distance max</span><span class="value">1 km</span></div>
+      <div class="row"><span class="label">Espace aérien</span><span class="value">Non ségrégué</span></div>
+
+      <div class="section-title">Mesure d'atténuation clé</div>
+      <div class="row"><span class="label">Observateur</span><span class="value">Vue directe sur le drone</span></div>
+      <div class="row"><span class="label">Latence comm.</span><span class="value">&lt; 15 s</span></div>
+
+      <div class="highlight">
+        L'observateur voit le <strong>drone</strong> (≠ STS-02 où l'observateur voit l'espace aérien)
+      </div>
+    </div>
+  </div>
+
+  <!-- G02 -->
+  <div class="card g02">
+    <div class="card-header">
+      PDRA-G02
+      <div class="card-sub">BVLOS longue distance — Espace réservé</div>
+    </div>
+    <div class="card-body">
+      <div class="section-title">Type d'opération</div>
+      <span class="tag tag-bvlos">BVLOS</span>
+      <span class="tag tag-seg">Espace ségrégué</span>
+
+      <div class="section-title">Limites</div>
+      <div class="row"><span class="label">Hauteur max</span><span class="value">Non limitée *</span></div>
+      <div class="row"><span class="label">Distance max</span><span class="value">Non limitée *</span></div>
+      <div class="row"><span class="label">Espace aérien</span><span class="value">Réservé pour l'opération</span></div>
+
+      <div class="section-title">Mesure d'atténuation clé</div>
+      <div class="row"><span class="label">Ségrégation</span><span class="value">RST / ZRT + NOTAM</span></div>
+      <div class="row"><span class="label">Observateur</span><span class="value">Non requis</span></div>
+
+      <div class="highlight">
+        * dans les limites de l'espace aérien réservé.<br>
+        Idéal : inspection linéaire, cartographie longue distance
+      </div>
+    </div>
+  </div>
+
+  <!-- G03 -->
+  <div class="card g03">
+    <div class="card-header">
+      PDRA-G03
+      <div class="card-sub">Routes préprogrammées — Autonome</div>
+    </div>
+    <div class="card-body">
+      <div class="section-title">Type d'opération</div>
+      <span class="tag tag-bvlos">BVLOS</span>
+      <span class="tag tag-auto">Autonome / semi-autonome</span>
+
+      <div class="section-title">Limites (2 régimes)</div>
+      <div class="row"><span class="label">Hors ségrégation</span><span class="value">≤ 50 m AGL</span></div>
+      <div class="row"><span class="label">En espace ségrégué</span><span class="value">Pas de limite</span></div>
+      <div class="row"><span class="label">Distance max</span><span class="value">Portée liaison C2</span></div>
+
+      <div class="section-title">Mesure d'atténuation clé</div>
+      <div class="row"><span class="label">Routes</span><span class="value">Précalculées / waypoints</span></div>
+      <div class="row"><span class="label">Télépilote</span><span class="value">Disponible à distance</span></div>
+
+      <div class="highlight">
+        50 m = atténuation intrinsèque du risque de collision aérienne hors espace réservé
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tableau comparatif -->
+<table class="diff-table">
+  <tr>
+    <th>Critère</th>
+    <th>G01</th>
+    <th>G02</th>
+    <th>G03</th>
+  </tr>
+  <tr>
+    <td>Hauteur max</td>
+    <td>150 m AGL</td>
+    <td>Selon espace réservé</td>
+    <td>50 m (hors ségrégué) / illimitée</td>
+  </tr>
+  <tr>
+    <td>Distance max</td>
+    <td>1 km (observateur ↔ drone)</td>
+    <td>Illimitée (dans l'espace réservé)</td>
+    <td>Portée C2</td>
+  </tr>
+  <tr>
+    <td>Espace aérien</td>
+    <td>Non ségrégué</td>
+    <td>Réservé obligatoire</td>
+    <td>Libre ≤50 m / Réservé &gt;50 m</td>
+  </tr>
+  <tr>
+    <td>Observateur</td>
+    <td>Vue directe drone (EVLOS)</td>
+    <td>Non requis</td>
+    <td>Non requis</td>
+  </tr>
+  <tr>
+    <td>Marquage CE</td>
+    <td>Non imposé</td>
+    <td>Non imposé</td>
+    <td>Non imposé</td>
+  </tr>
+  <tr>
+    <td>Autorisation DSAC</td>
+    <td>Oui (METEOR)</td>
+    <td>Oui (METEOR)</td>
+    <td>Oui (METEOR)</td>
+  </tr>
+  <tr>
+    <td>Analyse de risque</td>
+    <td colspan="3" style="text-align:center; color:#555;">Pré-faite par l'EASA — l'exploitant démontre sa conformité (≠ SORA complète)</td>
+  </tr>
+  <tr>
+    <td>Usages typiques</td>
+    <td>BVLOS proximité, relevé localisé</td>
+    <td>Inspection linéaire, cartographie</td>
+    <td>Surveillance automatique, livraison sur site</td>
+  </tr>
+</table>
+
+<footer>PDRA = Pre-Defined Risk Assessment | AMC2–AMC4 de l'Article 11 du règlement (UE) 2019/947</footer>
+
+</body>
+</html>
