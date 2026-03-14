@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparatif Avions Légers — Eagle 150B vs Concurrents</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #0c0e14;
+  --surface: #141722;
+  --surface2: #1a1f2e;
+  --border: #2a3040;
+  --text: #e0e4f0;
+  --text2: #8890a8;
+  --accent: #38bdf8;
+  --accent2: #818cf8;
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --orange: #fb923c;
+  --pink: #f472b6;
+  --eagle: #38bdf8;
+  --cessna: #fbbf24;
+  --piper: #4ade80;
+  --robin120: #fb923c;
+  --robin180: #f472b6;
+  --tecnam: #818cf8;
+  --bonanza: #e879f9;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.hero {
+  padding: 40px 24px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60%; left: 20%;
+  width: 60%; height: 200%;
+  background: radial-gradient(ellipse, rgba(56,189,248,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero h1 {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+.hero p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 16px 24px;
+}
+
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+}
+
+.ctrl-group label {
+  font-size: 0.78rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Space Mono', monospace;
+}
+
+.ctrl-group input[type="range"] {
+  width: 100px;
+  accent-color: var(--accent);
+}
+
+.ctrl-group .val {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent);
+  min-width: 52px;
+  text-align: right;
+}
+
+/* Aircraft cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.card.highlight {
+  border-color: var(--eagle);
+  box-shadow: 0 0 30px rgba(56,189,248,0.08);
+}
+
+.card .tag {
+  position: absolute;
+  top: 12px; right: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(56,189,248,0.15);
+  color: var(--accent);
+}
+
+.card .dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.card .sub {
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin-bottom: 14px;
+}
+
+.card .specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.spec {
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.spec .spec-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text2);
+  font-family: 'Space Mono', monospace;
+  margin-bottom: 3px;
+}
+
+.spec .spec-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+}
+
+.spec .spec-unit {
+  font-size: 0.7rem;
+  color: var(--text2);
+  font-weight: 400;
+}
+
+/* Bar chart section */
+.chart-section {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.chart-section h3 {
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  padding-left: 4px;
+}
+
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bar-label {
+  width: 130px;
+  font-size: 0.8rem;
+  color: var(--text2);
+  text-align: right;
+  flex-shrink: 0;
+  font-family: 'Space Mono', monospace;
+}
+
+.bar-track {
+  flex: 1;
+  height: 28px;
+  background: var(--surface);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  font-size: 0.78rem;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  color: var(--bg);
+  min-width: fit-content;
+}
+
+/* Radar / efficiency table */
+.eff-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+.eff-table th, .eff-table td {
+  padding: 10px 14px;
+  text-align: center;
+  font-size: 0.82rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.eff-table th {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text2);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+}
+
+.eff-table td {
+  font-family: 'Space Mono', monospace;
+}
+
+.eff-table tr:hover td {
+  background: var(--surface2);
+}
+
+.best {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.worst {
+  color: var(--red);
+  opacity: 0.7;
+}
+
+.medal {
+  font-size: 0.9rem;
+}
+
+/* Canvas radar */
+.radar-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 30px;
+}
+
+canvas#radar {
+  max-width: 500px;
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .cards { grid-template-columns: 1fr; }
+  .bar-label { width: 80px; font-size: 0.7rem; }
+  .controls { flex-direction: column; align-items: stretch; }
+  .eff-table { font-size: 0.72rem; }
+  .eff-table th, .eff-table td { padding: 6px 6px; }
+}
+
+.footer {
+  text-align: center;
+  padding: 30px 24px;
+  color: var(--text2);
+  font-size: 0.72rem;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px 24px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--text2);
+}
+
+.legend-item .ldot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.note-box {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin: 0 24px 20px;
+  max-width: 1352px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.note-box p {
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.note-box strong {
+  color: var(--text);
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Eagle 150B vs. La Concurrence</h1>
+  <p>Comparatif interactif — efficacité, coût/heure et performances des avions légers, de l'ULM au monomoteur prestige</p>
+</div>
+
+<div class="controls">
+  <div class="ctrl-group">
+    <label>Avgas</label>
+    <input type="range" id="fuelPrice" min="1.5" max="4.0" step="0.1" value="2.5">
+    <span class="val" id="fuelPriceVal">2.50 €/L</span>
+  </div>
+  <div class="ctrl-group">
+    <label>Mogas</label>
+    <input type="range" id="mogasPrice" min="1.2" max="3.0" step="0.1" value="1.8">
+    <span class="val" id="mogasPriceVal">1.80 €/L</span>
+  </div>
+  <div class="ctrl-group">
+    <label>Maint/h</label>
+    <input type="range" id="maintRate" min="10" max="60" step="5" value="25">
+    <span class="val" id="maintRateVal">25 €/h</span>
+  </div>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<div id="cardsContainer" class="cards"></div>
+
+<div class="chart-section">
+  <h3>Efficacité : NM par litre</h3>
+  <div class="bar-chart" id="effBars"></div>
+  
+  <h3>Coût carburant par heure</h3>
+  <div class="bar-chart" id="fuelCostBars"></div>
+  
+  <h3>Coût total estimé par heure (carburant + réserve moteur + maintenance)</h3>
+  <div class="bar-chart" id="totalCostBars"></div>
+  
+  <h3>💺 Coût par PASSAGER par heure (pilote offert, pax payent)</h3>
+  <div class="bar-chart" id="seatCostBars"></div>
+  
+  <h3>💺 Coût par PASSAGER par NM (pilote offert, pax payent)</h3>
+  <div class="bar-chart" id="seatNMBars"></div>
+</div>
+
+<div class="chart-section">
+  <h3>Tableau récapitulatif</h3>
+  <div style="overflow-x:auto;">
+    <table class="eff-table" id="summaryTable"></table>
+  </div>
+</div>
+
+<div class="chart-section">
+  <h3>Radar multi-critères (normalisé)</h3>
+  <div class="radar-wrap">
+    <canvas id="radar" width="500" height="500"></canvas>
+  </div>
+</div>
+
+<div class="note-box">
+  <p><strong>Notes méthodologiques :</strong> Consommation à 75% puissance sauf mention. Réserve moteur = prix overhaul neuf ÷ TBO.
+  <strong>Logique « pilote offert » :</strong> le coût/pax est divisé par (places − 1), car le pilote ne paye pas — seuls les passagers se partagent la note. Un biplace = 1 pax paye tout ; le Bonanza 6 places = 5 pax se partagent.
+  Le Robin DR400/120 et le Tecnam P2002 peuvent fonctionner au Mogas (sans plomb auto), nettement moins cher que l'Avgas 100LL.</p>
+</div>
+
+<div class="footer">
+  Données compilées depuis AOPA, Aviation Consumer, Plane & Pilot, POH constructeurs — Mars 2026<br>
+  Les coûts sont indicatifs et varient selon l'état de l'appareil, la région et le profil d'utilisation.
+</div>
+
+<script>
+const aircraft = [
+  {
+    id: 'eagle',
+    name: 'Eagle 150B',
+    origin: 'Australie 🇦🇺',
+    color: '#38bdf8',
+    highlight: true,
+    seats: 2,
+    engine: 'Continental IO-240B',
+    hp: 125,
+    construction: 'Composite (Kevlar/Nomex)',
+    fuelType: 'avgas', // 100LL only
+    fuelBurnLPH: 22.7, // 6 GPH × 3.785
+    cruiseKts: 120,
+    rangNM: 520,
+    stallKts: 49,
+    mtow_kg: 649,
+    empty_kg: 430,
+    tbo: 2000,
+    overhaulCost: 22000,
+    climbFPM: 800,
+    ceiling: 14000,
+    notes: 'Tri-surface (canard). Spin-resistant. Verrière bulle.'
+  },
+  {
+    id: 'cessna152',
+    name: 'Cessna 152',
+    origin: 'USA 🇺🇸',
+    color: '#fbbf24',
+    seats: 2,
+    engine: 'Lycoming O-235-L2C',
+    hp: 110,
+    construction: 'Alu riveté',
+    fuelType: 'avgas',
+    fuelBurnLPH: 23.1, // ~6.1 GPH
+    cruiseKts: 107,
+    rangNM: 395,
+    stallKts: 43,
+    mtow_kg: 757,
+    empty_kg: 510,
+    tbo: 2000,
+    overhaulCost: 18000,
+    climbFPM: 715,
+    ceiling: 14700,
+    notes: 'Référence mondiale école. Aile haute. +7500 produits.'
+  },
+  {
+    id: 'archer',
+    name: 'Piper Archer II',
+    origin: 'USA 🇺🇸',
+    color: '#4ade80',
+    seats: 4,
+    engine: 'Lycoming O-360-A4M',
+    hp: 180,
+    construction: 'Alu tout-métal',
+    fuelType: 'avgas',
+    fuelBurnLPH: 36, // ~9.5 GPH at 75%
+    cruiseKts: 125,
+    rangNM: 600,
+    stallKts: 50,
+    mtow_kg: 1157,
+    empty_kg: 680,
+    tbo: 2000,
+    overhaulCost: 26000,
+    climbFPM: 667,
+    ceiling: 13236,
+    notes: '4 places. Aile semi-effilée. Référence PA-28. Toujours produit.'
+  },
+  {
+    id: 'robin120',
+    name: 'Robin DR400/120',
+    origin: 'France 🇫🇷',
+    color: '#fb923c',
+    seats: '2+2',
+    engine: 'Lycoming O-235-L2A',
+    hp: 112,
+    construction: 'Bois entoilé / mixte',
+    fuelType: 'mogas', // peut fonctionner mogas
+    fuelBurnLPH: 25, // ~6.6 GPH typical
+    cruiseKts: 116,
+    rangNM: 465,
+    stallKts: 47,
+    mtow_kg: 900,
+    empty_kg: 535,
+    tbo: 2000,
+    overhaulCost: 18000,
+    climbFPM: 600,
+    ceiling: 12000,
+    notes: 'Dauphin 2+2. Verrière coulissante. Aile en W. Mogas OK.'
+  },
+  {
+    id: 'robin180',
+    name: 'Robin DR400/180',
+    origin: 'France 🇫🇷',
+    color: '#f472b6',
+    seats: 4,
+    engine: 'Lycoming O-360-A3A',
+    hp: 180,
+    construction: 'Bois entoilé / mixte',
+    fuelType: 'avgas',
+    fuelBurnLPH: 38, // ~10 GPH
+    cruiseKts: 134,
+    rangNM: 783,
+    stallKts: 51,
+    mtow_kg: 1100,
+    empty_kg: 600,
+    tbo: 1500,
+    overhaulCost: 28000,
+    climbFPM: 825,
+    ceiling: 15490,
+    notes: 'Regent. Vrai 4 places touring. Remorquage planeur.'
+  },
+  {
+    id: 'tecnam',
+    name: 'Tecnam P2002 Sierra',
+    origin: 'Italie 🇮🇹',
+    color: '#818cf8',
+    seats: 2,
+    engine: 'Rotax 912 ULS',
+    hp: 100,
+    construction: 'Alu (LSA)',
+    fuelType: 'mogas', // Rotax = mogas OK
+    fuelBurnLPH: 17, // ~4.5 GPH
+    cruiseKts: 110,
+    rangNM: 642,
+    stallKts: 39,
+    mtow_kg: 600,
+    empty_kg: 355,
+    tbo: 2000,
+    overhaulCost: 16000,
+    climbFPM: 800,
+    ceiling: 15000,
+    notes: 'LSA. Rotax mogas/avgas. Verrière bulle. Ultra-économique.'
+  },
+  {
+    id: 'bonanza',
+    name: 'Beech Bonanza A36',
+    origin: 'USA 🇺🇸',
+    color: '#e879f9',
+    seats: 6,
+    engine: 'Continental IO-550-B',
+    hp: 300,
+    construction: 'Alu tout-métal',
+    fuelType: 'avgas',
+    fuelBurnLPH: 60.6, // ~16 GPH at 75%
+    cruiseKts: 169,
+    rangNM: 720,
+    stallKts: 59,
+    mtow_kg: 1656,
+    empty_kg: 996,
+    tbo: 1700,
+    overhaulCost: 42000,
+    climbFPM: 1210,
+    ceiling: 18500,
+    notes: '6 places. Train rentrant. Hélice CS. Le \"doctor killer\". Prestige.'
+  }
+];
+
+function getInputs() {
+  return {
+    avgasEUR: parseFloat(document.getElementById('fuelPrice').value),
+    mogasEUR: parseFloat(document.getElementById('mogasPrice').value),
+    maintEUR: parseFloat(document.getElementById('maintRate').value)
+  };
+}
+
+function computeDerived(ac, inputs) {
+  const fuelPricePerL = ac.fuelType === 'mogas' ? inputs.mogasEUR : inputs.avgasEUR;
+  const fuelCostH = ac.fuelBurnLPH * fuelPricePerL;
+  const engineReserveH = ac.overhaulCost / ac.tbo;
+  const totalCostH = fuelCostH + engineReserveH + inputs.maintEUR;
+  const nmPerLiter = ac.cruiseKts / ac.fuelBurnLPH;
+  const costPerNM = totalCostH / ac.cruiseKts;
+  const usefulLoad = ac.mtow_kg - ac.empty_kg;
+  const seatsNum = typeof ac.seats === 'string' ? parseInt(ac.seats) + 2 : ac.seats; // "2+2" → 4
+  const pax = seatsNum - 1; // pilote ne paye pas
+  const costPerPaxH = totalCostH / pax;
+  const costPerPaxNM = costPerNM / pax;
+  return { fuelPricePerL, fuelCostH, engineReserveH, totalCostH, nmPerLiter, costPerNM, usefulLoad, seatsNum, pax, costPerPaxH, costPerPaxNM };
+}
+
+function renderCards() {
+  const inputs = getInputs();
+  const container = document.getElementById('cardsContainer');
+  container.innerHTML = '';
+  
+  aircraft.forEach(ac => {
+    const d = computeDerived(ac, inputs);
+    const card = document.createElement('div');
+    card.className = 'card' + (ac.highlight ? ' highlight' : '');
+    card.innerHTML = `
+      ${ac.highlight ? '<div class="tag">⭐ Focus</div>' : ''}
+      <h2><span class="dot" style="background:${ac.color}"></span>${ac.name}</h2>
+      <div class="sub">${ac.origin} — ${ac.engine} (${ac.hp} hp) — ${ac.construction}</div>
+      <div class="specs">
+        <div class="spec">
+          <div class="spec-label">Croisière</div>
+          <div class="spec-val">${ac.cruiseKts} <span class="spec-unit">kt</span></div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">Conso</div>
+          <div class="spec-val">${ac.fuelBurnLPH.toFixed(0)} <span class="spec-unit">L/h ${ac.fuelType === 'mogas' ? '⛽mogas' : '🛢avgas'}</span></div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">NM/Litre</div>
+          <div class="spec-val" style="color:${ac.color}">${d.nmPerLiter.toFixed(2)}</div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">Coût/h total</div>
+          <div class="spec-val">${d.totalCostH.toFixed(0)} <span class="spec-unit">€</span></div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">€/h par PAX</div>
+          <div class="spec-val" style="color:${ac.color}">${d.costPerPaxH.toFixed(1)} <span class="spec-unit">€ (÷${d.pax} pax)</span></div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">€/NM par PAX</div>
+          <div class="spec-val" style="color:${ac.color}">${d.costPerPaxNM.toFixed(3)} <span class="spec-unit">€</span></div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">Autonomie</div>
+          <div class="spec-val">${ac.rangNM} <span class="spec-unit">NM</span></div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">Places</div>
+          <div class="spec-val">${ac.seats}</div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">Charge utile</div>
+          <div class="spec-val">${d.usefulLoad} <span class="spec-unit">kg</span></div>
+        </div>
+        <div class="spec">
+          <div class="spec-label">Coût/NM</div>
+          <div class="spec-val">${d.costPerNM.toFixed(2)} <span class="spec-unit">€</span></div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:0.75rem;color:var(--text2);font-style:italic">${ac.notes}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderBars() {
+  const inputs = getInputs();
+  const data = aircraft.map(ac => ({ ac, d: computeDerived(ac, inputs) }));
+
+  // NM/L bars
+  const maxEff = Math.max(...data.map(x => x.d.nmPerLiter));
+  document.getElementById('effBars').innerHTML = data
+    .sort((a,b) => b.d.nmPerLiter - a.d.nmPerLiter)
+    .map(x => `
+      <div class="bar-row">
+        <div class="bar-label">${x.ac.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${(x.d.nmPerLiter/maxEff*100).toFixed(1)}%;background:${x.ac.color}">
+            ${x.d.nmPerLiter.toFixed(2)} NM/L
+          </div>
+        </div>
+      </div>`).join('');
+
+  // Fuel cost bars
+  const maxFuel = Math.max(...data.map(x => x.d.fuelCostH));
+  document.getElementById('fuelCostBars').innerHTML = data
+    .sort((a,b) => a.d.fuelCostH - b.d.fuelCostH)
+    .map(x => `
+      <div class="bar-row">
+        <div class="bar-label">${x.ac.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${(x.d.fuelCostH/maxFuel*100).toFixed(1)}%;background:${x.ac.color}">
+            ${x.d.fuelCostH.toFixed(0)} €/h
+          </div>
+        </div>
+      </div>`).join('');
+
+  // Total cost bars
+  const maxTotal = Math.max(...data.map(x => x.d.totalCostH));
+  document.getElementById('totalCostBars').innerHTML = data
+    .sort((a,b) => a.d.totalCostH - b.d.totalCostH)
+    .map(x => `
+      <div class="bar-row">
+        <div class="bar-label">${x.ac.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${(x.d.totalCostH/maxTotal*100).toFixed(1)}%;background:${x.ac.color}">
+            ${x.d.totalCostH.toFixed(0)} €/h
+          </div>
+        </div>
+      </div>`).join('');
+
+  // Per-pax cost/h bars (pilote ne paye pas)
+  const maxPaxH = Math.max(...data.map(x => x.d.costPerPaxH));
+  document.getElementById('seatCostBars').innerHTML = data
+    .sort((a,b) => a.d.costPerPaxH - b.d.costPerPaxH)
+    .map(x => `
+      <div class="bar-row">
+        <div class="bar-label">${x.ac.name} (${x.d.pax}pax)</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${(x.d.costPerPaxH/maxPaxH*100).toFixed(1)}%;background:${x.ac.color}">
+            ${x.d.costPerPaxH.toFixed(1)} €/h/pax
+          </div>
+        </div>
+      </div>`).join('');
+
+  // Per-pax cost/NM bars
+  const maxPaxNM = Math.max(...data.map(x => x.d.costPerPaxNM));
+  document.getElementById('seatNMBars').innerHTML = data
+    .sort((a,b) => a.d.costPerPaxNM - b.d.costPerPaxNM)
+    .map(x => `
+      <div class="bar-row">
+        <div class="bar-label">${x.ac.name} (${x.d.pax}pax)</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${(x.d.costPerPaxNM/maxPaxNM*100).toFixed(1)}%;background:${x.ac.color}">
+            ${x.d.costPerPaxNM.toFixed(3)} €/NM/pax
+          </div>
+        </div>
+      </div>`).join('');
+}
+
+function renderTable() {
+  const inputs = getInputs();
+  const data = aircraft.map(ac => ({ ac, d: computeDerived(ac, inputs) }));
+
+  const cols = [
+    { key: 'name', label: 'Appareil', fmt: x => x.ac.name },
+    { key: 'seats', label: 'Places', fmt: x => x.d.seatsNum, best: 'none' },
+    { key: 'hp', label: 'HP', fmt: x => x.ac.hp, best: 'none' },
+    { key: 'cruise', label: 'Croisière (kt)', fmt: x => x.ac.cruiseKts, best: 'max' },
+    { key: 'burn', label: 'Conso (L/h)', fmt: x => x.ac.fuelBurnLPH.toFixed(1), best: 'min' },
+    { key: 'eff', label: 'NM/L', fmt: x => x.d.nmPerLiter.toFixed(2), best: 'max' },
+    { key: 'range', label: 'Range (NM)', fmt: x => x.ac.rangNM, best: 'max' },
+    { key: 'totalcost', label: 'Total €/h', fmt: x => x.d.totalCostH.toFixed(0), best: 'min' },
+    { key: 'costnm', label: '€/NM', fmt: x => x.d.costPerNM.toFixed(2), best: 'min' },
+    { key: 'seathcost', label: '💺€/h/pax', fmt: x => x.d.costPerPaxH.toFixed(1), best: 'min' },
+    { key: 'seatnmcost', label: '💺€/NM/pax', fmt: x => x.d.costPerPaxNM.toFixed(3), best: 'min' },
+    { key: 'stall', label: 'Vs (kt)', fmt: x => x.ac.stallKts, best: 'min' },
+    { key: 'useful', label: 'CU (kg)', fmt: x => x.d.usefulLoad, best: 'max' },
+    { key: 'costnm', label: '€/NM', fmt: x => x.d.costPerNM.toFixed(2), best: 'min' },
+    { key: 'stall', label: 'Vs (kt)', fmt: x => x.ac.stallKts, best: 'min' },
+    { key: 'useful', label: 'CU (kg)', fmt: x => x.d.usefulLoad, best: 'max' },
+  ];
+
+  let html = '<thead><tr>' + cols.map(c => `<th>${c.label}</th>`).join('') + '</tr></thead><tbody>';
+
+  // Find best/worst for each column
+  const vals = {};
+  cols.forEach(c => {
+    if (c.best && c.best !== 'none') {
+      const numbers = data.map(x => parseFloat(c.fmt(x)));
+      vals[c.key] = {
+        best: c.best === 'max' ? Math.max(...numbers) : Math.min(...numbers),
+        worst: c.best === 'max' ? Math.min(...numbers) : Math.max(...numbers)
+      };
+    }
+  });
+
+  data.forEach(x => {
+    html += '<tr>';
+    cols.forEach(c => {
+      const v = c.fmt(x);
+      const num = parseFloat(v);
+      let cls = '';
+      if (vals[c.key]) {
+        if (num === vals[c.key].best) cls = 'best';
+        else if (num === vals[c.key].worst) cls = 'worst';
+      }
+      const nameStyle = c.key === 'name' ? ` style="color:${x.ac.color};font-weight:700;text-align:left"` : '';
+      html += `<td class="${cls}"${nameStyle}>${v}${cls === 'best' ? ' 🏆' : ''}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody>';
+  document.getElementById('summaryTable').innerHTML = html;
+}
+
+function renderRadar() {
+  const inputs = getInputs();
+  const canvas = document.getElementById('radar');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2, R = Math.min(W,H)*0.38;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Axes: cruise, efficiency, range, low stall, eco per seat, climb
+  const axes = [
+    { label: 'Vitesse', key: ac => ac.cruiseKts, max: 180 },
+    { label: 'NM/L', key: (ac,d) => d.nmPerLiter, max: 7 },
+    { label: 'Autonomie', key: ac => ac.rangNM, max: 800 },
+    { label: 'Vs basse', key: ac => 65 - ac.stallKts, max: 28 }, // inverted: lower stall = better
+    { label: '€/h/pax', key: (ac,d) => 100 - d.costPerPaxH, max: 70 }, // inverted: cheaper = better
+    { label: 'Montée', key: ac => ac.climbFPM, max: 1300 }
+  ];
+  const n = axes.length;
+  const angleStep = (Math.PI * 2) / n;
+
+  // Draw grid
+  for (let ring = 1; ring <= 5; ring++) {
+    const r = R * ring / 5;
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const angle = -Math.PI/2 + i * angleStep;
+      const px = cx + r * Math.cos(angle);
+      const py = cy + r * Math.sin(angle);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.strokeStyle = 'rgba(42,48,64,0.7)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Draw axis lines and labels
+  axes.forEach((ax, i) => {
+    const angle = -Math.PI/2 + i * angleStep;
+    const px = cx + R * Math.cos(angle);
+    const py = cy + R * Math.sin(angle);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(px, py);
+    ctx.strokeStyle = 'rgba(42,48,64,0.5)';
+    ctx.stroke();
+
+    const lx = cx + (R + 22) * Math.cos(angle);
+    const ly = cy + (R + 22) * Math.sin(angle);
+    ctx.fillStyle = '#8890a8';
+    ctx.font = '11px "Space Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ax.label, lx, ly);
+  });
+
+  // Draw each aircraft
+  const data = aircraft.map(ac => ({ ac, d: computeDerived(ac, inputs) }));
+
+  data.forEach(({ ac, d }) => {
+    ctx.beginPath();
+    axes.forEach((ax, i) => {
+      const val = Math.max(0, Math.min(1, ax.key(ac, d) / ax.max));
+      const angle = -Math.PI/2 + i * angleStep;
+      const px = cx + R * val * Math.cos(angle);
+      const py = cy + R * val * Math.sin(angle);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    });
+    ctx.closePath();
+    ctx.strokeStyle = ac.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    const rgba = ac.color + '18';
+    ctx.fillStyle = rgba;
+    ctx.fill();
+  });
+}
+
+function renderLegend() {
+  document.getElementById('legend').innerHTML = aircraft.map(ac =>
+    `<div class="legend-item"><div class="ldot" style="background:${ac.color}"></div>${ac.name}</div>`
+  ).join('');
+}
+
+function renderAll() {
+  document.getElementById('fuelPriceVal').textContent = parseFloat(document.getElementById('fuelPrice').value).toFixed(2) + ' €/L';
+  document.getElementById('mogasPriceVal').textContent = parseFloat(document.getElementById('mogasPrice').value).toFixed(2) + ' €/L';
+  document.getElementById('maintRateVal').textContent = document.getElementById('maintRate').value + ' €/h';
+  renderCards();
+  renderBars();
+  renderTable();
+  renderRadar();
+}
+
+document.getElementById('fuelPrice').addEventListener('input', renderAll);
+document.getElementById('mogasPrice').addEventListener('input', renderAll);
+document.getElementById('maintRate').addEventListener('input', renderAll);
+
+renderLegend();
+renderAll();
+</script>
+</body>
+</html>
