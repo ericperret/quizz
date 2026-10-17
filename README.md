@@ -44,7 +44,7 @@ A collection of standalone tools: one HTML file each, no library, no installatio
 | Tool | Launch | Content | Screenshot |
 |---|---|---|---|
 | Diagnostic self-orientation | ▶️ [quizz_2_5.html](https://ericperret.github.io/quizz/quizz_2_5.html) | Self-reflection questionnaire on emotional functioning, to prepare a discussion with a professional | [view](captures/quizz_2_5.png) |
-| Paediatric triage | ▶️ [triage-pediatrique.html](https://ericperret.github.io/quizz/triage-pediatrique.html) | Parental observation aid, child aged 6 to 15; does not replace medical advice (emergency in France: 15 or 112) | [view](captures/triage-pediatrique.png) |
+| ⭐ Paediatric triage | ▶️ [triage-pediatrique.html](https://ericperret.github.io/quizz/triage-pediatrique.html) | Flagship tool, tested and approved by emergency physicians: parental observation aid, child aged 6 to 15; does not replace medical advice (emergency in France: 15 or 112) | [view](captures/triage-pediatrique.png) |
 | Music and emotions | ▶️ [music-tpb-v2_3.html](https://ericperret.github.io/quizz/music-tpb-v2_3.html) | Music chosen from the felt state, ISO principle of music therapy | [view](captures/music-tpb-v2_3.png) |
 
 These tools are aids to reflection, not medical devices. Critical review of the triage tool (French): [revue-clinique-de_triage-pediatrique_chagpt_gemini_gork.txt](revue-clinique-de_triage-pediatrique_chagpt_gemini_gork.txt). Report (French): [Quizz Rapport.pdf](<Quizz Rapport.pdf>) / [quizz rapport.rtf](<quizz rapport.rtf>).

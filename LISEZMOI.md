@@ -44,7 +44,7 @@ Collection d'outils autonomes : un fichier HTML chacun, aucune librairie, aucune
 | Outil | Lancer | Contenu | Capture |
 |---|---|---|---|
 | Auto-orientation diagnostique | ▶️ [quizz_2_5.html](https://ericperret.github.io/quizz/quizz_2_5.html) | Questionnaire d'auto-réflexion sur le fonctionnement émotionnel, pour préparer un échange avec un professionnel | [voir](captures/quizz_2_5.png) |
-| Triage pédiatrique | ▶️ [triage-pediatrique.html](https://ericperret.github.io/quizz/triage-pediatrique.html) | Aide à l'observation parentale, enfant de 6 à 15 ans ; ne remplace pas un avis médical (urgence : 15 ou 112) | [voir](captures/triage-pediatrique.png) |
+| ⭐ Triage pédiatrique | ▶️ [triage-pediatrique.html](https://ericperret.github.io/quizz/triage-pediatrique.html) | Outil phare, testé et approuvé par des médecins urgentistes : aide à l'observation parentale, enfant de 6 à 15 ans ; ne remplace pas un avis médical (urgence : 15 ou 112) | [voir](captures/triage-pediatrique.png) |
 | Musique et émotions | ▶️ [music-tpb-v2_3.html](https://ericperret.github.io/quizz/music-tpb-v2_3.html) | Choix de musiques selon l'état ressenti, principe ISO de la musicothérapie | [voir](captures/music-tpb-v2_3.png) |
 
 Ces outils sont des aides à la réflexion, pas des dispositifs médicaux. Revue critique du triage : [revue-clinique-de_triage-pediatrique_chagpt_gemini_gork.txt](revue-clinique-de_triage-pediatrique_chagpt_gemini_gork.txt). Rapport : [Quizz Rapport.pdf](<Quizz Rapport.pdf>) / [quizz rapport.rtf](<quizz rapport.rtf>).
