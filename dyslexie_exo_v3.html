@@ -4,8 +4,12 @@
   Nom        : dyslexie_exo_v3.html
   Objet      : Exercices Remédiation — Dyslexie v3
   Auteur     : Eric PERRET
-  Date       : 2026-10-10
+  Date       : 2026-10-17
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
+  Historique :
+    2026-10-17  onglet Stats réparé : refreshDash() était appelée mais absente
+                (erreur au chargement, tableau de bord vide) ; indicateurs,
+                courbes de réussite et de niveau par session, historique
 ================================================================================
 -->
 <html lang="fr">
@@ -1033,6 +1037,74 @@ function doExport(){
     const u=URL.createObjectURL(b);
     const a=document.createElement('a');a.href=u;a.download=`progression_${A.name||'enfant'}_${new Date().toISOString().slice(0,10)}.json`;a.click();
     URL.revokeObjectURL(u);
+}
+
+/* ==============================================================
+   TABLEAU DE BORD (onglet Stats)
+   Indicateurs, courbes de réussite et de niveau par session pour
+   les trois exercices, historique des sessions (plus récente en tête).
+   ============================================================== */
+const DASH_EX=[
+    {k:'pF',nom:'Flash',col:'#34d399'},
+    {k:'pP',nom:'Phono',col:'#22d3ee'},
+    {k:'pR',nom:'RAN',col:'#fb923c'}
+];
+
+function refreshDash(){
+    const all=[];
+    DASH_EX.forEach(ex=>(A[ex.k].hist||[]).forEach(h=>all.push({...h,ex})));
+    all.sort((a,b)=>a.d<b.d?-1:1);
+    const nOk=all.reduce((s,h)=>s+h.ok,0), nTot=all.reduce((s,h)=>s+h.n,0);
+    const taux=nTot?Math.round(nOk/nTot*100):0;
+    const der=all.length?new Date(all[all.length-1].d).toLocaleDateString('fr-FR'):'—';
+    document.getElementById('dashTop').innerHTML=
+        `<div class="dc c1"><div class="big">${all.length}</div><div class="lab">Sessions</div></div>`+
+        `<div class="dc c2"><div class="big">${nTot?taux+'%':'—'}</div><div class="lab">Réussite globale</div></div>`+
+        `<div class="dc c3"><div class="big">${A.pF.lv} · ${A.pP.lv} · ${A.pR.lv}</div><div class="lab">Niveaux Flash · Phono · RAN</div></div>`+
+        `<div class="dc c4"><div class="big" style="font-size:20px">${der}</div><div class="lab">Dernière session</div></div>`;
+    dashChart('cvS',h=>h.taux*100,0,100,'%');
+    dashChart('cvL',h=>h.lv,1,6,'');
+    const log=document.getElementById('sesLog');
+    log.innerHTML=all.length?all.slice().reverse().map(h=>{
+        const p=Math.round(h.taux*100);
+        const c=p>=70?'var(--green)':p>=50?'var(--orange)':'var(--red)';
+        const dt=new Date(h.d);
+        return `<div class="slog"><span class="sd">${dt.toLocaleDateString('fr-FR')} ${dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span>`+
+               `<span class="st2">${h.ex.nom}</span><span class="ss" style="color:${c}">${p}% (${h.ok}/${h.n})</span>`+
+               `<span class="sl">niveau ${h.lv} · ${(h.at/1000).toFixed(1)} s / réponse</span></div>`;
+    }).join(''):'<p style="color:var(--text2)">Aucune session enregistrée.</p>';
+}
+
+// Courbe par exercice : abscisse = rang de la session dans l'exercice
+function dashChart(id,val,vMin,vMax,unit){
+    const cv=document.getElementById(id); if(!cv)return;
+    cv.style.width='100%'; cv.style.display='block';
+    const dpr=window.devicePixelRatio||1, W=cv.clientWidth||600, H=cv.height/ (cv._dpr||1);
+    cv._dpr=dpr; cv.width=W*dpr; cv.height=H*dpr; cv.style.height=H+'px';
+    const g=cv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
+    const L=34,R=10,T=10,B=22, pw=W-L-R, ph=H-T-B;
+    const nMax=Math.max(2,...DASH_EX.map(ex=>(A[ex.k].hist||[]).length));
+    const y=v=>T+ph-(Math.max(vMin,Math.min(vMax,v))-vMin)/(vMax-vMin)*ph;
+    const x=i=>L+i/(nMax-1)*pw;
+    g.font='11px system-ui,sans-serif'; g.fillStyle='#94a3b8'; g.strokeStyle='#2d3348'; g.lineWidth=1;
+    const pas=vMax-vMin>10?25:1;
+    for(let v=vMin;v<=vMax+1e-9;v+=pas){
+        g.beginPath(); g.moveTo(L,y(v)); g.lineTo(L+pw,y(v)); g.stroke();
+        g.textAlign='right'; g.fillText(v+unit,L-4,y(v)+4);
+    }
+    g.textAlign='center'; g.fillText('sessions',L+pw/2,H-4);
+    let any=false;
+    DASH_EX.forEach(ex=>{
+        const h=A[ex.k].hist||[]; if(!h.length)return; any=true;
+        g.strokeStyle=ex.col; g.fillStyle=ex.col; g.lineWidth=2; g.beginPath();
+        h.forEach((s,i)=>{const px=x(i),py=y(val(s)); if(i)g.lineTo(px,py); else g.moveTo(px,py);});
+        g.stroke();
+        h.forEach((s,i)=>{g.beginPath(); g.arc(x(i),y(val(s)),3,0,2*Math.PI); g.fill();});
+    });
+    // Légende
+    let lx=L+6;
+    DASH_EX.forEach(ex=>{g.fillStyle=ex.col; g.fillRect(lx,T+2,10,10); g.fillStyle='#e2e8f0'; g.textAlign='left'; g.fillText(ex.nom,lx+14,T+11); lx+=g.measureText(ex.nom).width+30;});
+    if(!any){g.fillStyle='#64748b'; g.textAlign='center'; g.fillText('Aucune session',L+pw/2,T+ph/2);}
 }
 
 /* ==============================================================
