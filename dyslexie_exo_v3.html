@@ -11,6 +11,8 @@
                 (erreur au chargement, tableau de bord vide) ; indicateurs,
                 courbes de réussite et de niveau par session, historique
 ================================================================================
+
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -164,8 +166,22 @@ input:focus{outline:none;border-color:var(--accent)}
     .tabs{gap:2px}.tab{font-size:11px;padding:7px 4px}
 }
 </style>
+
+<style id="charte-azs">
+.azs-barre{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#141c22;border-bottom:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%;position:relative;z-index:9999}
+.azs-barre .azs{font:800 20px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:-1px;text-transform:none;color:#f0a63a;text-decoration:none;padding-right:12px;border-right:1px solid #26343e}
+.azs-barre .azs:hover{color:#ffcf7a}
+.azs-barre a.fil{color:#8fa1ad;text-decoration:none}
+.azs-barre a.fil:hover{color:#f0a63a}
+.azs-foot{display:flex;justify-content:flex-end;align-items:center;padding:8px 16px;background:#141c22;border-top:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
+.azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
+.azs-foot a:hover{color:#f0a63a}
+</style>
 </head>
 <body>
+<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
 <div class="app">
 
 <div class="header">
@@ -1118,5 +1134,6 @@ function sc(id,c){const e=document.getElementById(id);if(e){e.className='st';if(
    ============================================================== */
 init();
 </script>
+<footer class="azs-foot"><a href="mailto:eperret@azs.fr">eperret@azs.fr</a></footer>
 </body>
 </html>
