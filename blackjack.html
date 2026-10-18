@@ -85,7 +85,7 @@
                                     selon la table ; abandon dans la règle simplifiée
 ==========================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette AZS (variante claire ou sombre), polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -94,7 +94,7 @@
 <title>Blackjack</title>
 <style>
 :root{
-  --page:#dde5e1; --ink:#15221e; --muted:#50625b; --panel:#f3f6f4; --line:#b6c4be;
+  --page:#f4f1ea; --ink:#1c2428; --muted:#5f6b72; --panel:#fffdf8; --line:#d8d0c0;
   --felt:#0f5c47; --felt-hi:#177a5e; --felt-deep:#073527;
   --rail:#5c3519; --rail-hi:#8d5a30; --edge:#23150a;
   --brass:#d9b86c; --print:rgba(233,210,150,.78);
@@ -103,9 +103,9 @@
   color-scheme:light dark;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){ --page:#0c1412; --ink:#e2eae6; --muted:#92a69e; --panel:#141f1c; --line:#2b3a35; }
+  :root:not([data-theme="light"]){ --page:#0e1418; --ink:#dfe7ec; --muted:#8fa1ad; --panel:#18222a; --line:#26343e; }
 }
-:root[data-theme="dark"]{ --page:#0c1412; --ink:#e2eae6; --muted:#92a69e; --panel:#141f1c; --line:#2b3a35; }
+:root[data-theme="dark"]{ --page:#0e1418; --ink:#dfe7ec; --muted:#8fa1ad; --panel:#18222a; --line:#26343e; }
 :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
 html{ scroll-padding-top:env(safe-area-inset-top,0px); }
 *,*::before,*::after{ box-sizing:inherit; }

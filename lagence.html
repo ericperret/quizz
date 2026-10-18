@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette AZS (variante claire ou sombre), polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -18,13 +18,13 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap');
+        
         
         :root {
-            --paper: #f4efe4;
-            --paper-dark: #e8e0d0;
-            --ink: #2c2416;
-            --ink-light: #5a4d3a;
+            --paper: #f4f1ea;
+            --paper-dark: #ebe6db;
+            --ink: #1c2428;
+            --ink-light: #5f6b72;
             --red-line: #c41e3a;
             --blue-line: #1e5799;
             --green-line: #2d6a4f;
@@ -40,7 +40,7 @@
         }
         
         body {
-            font-family: 'Courier Prime', 'Courier New', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             background: var(--ink);
             color: var(--ink);
             overflow: hidden;
@@ -84,7 +84,7 @@
         
         .lock-logo::before {
             content: "AB";
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             font-size: 2.5rem;
             color: var(--paper);
             letter-spacing: 0.1em;
@@ -99,7 +99,7 @@
         }
         
         .lock-message {
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             color: var(--paper);
             text-align: center;
             font-size: 1.1rem;
@@ -170,7 +170,7 @@
         }
         
         .title {
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             font-size: 0.9rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
@@ -228,7 +228,7 @@
         .leaflet-control-zoom a {
             background: var(--paper) !important;
             color: var(--ink) !important;
-            font-family: 'Courier Prime', monospace !important;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace !important;
             border-radius: 0 !important;
         }
         
@@ -273,7 +273,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             font-size: 11px;
             font-weight: bold;
             color: var(--ink);
@@ -326,13 +326,13 @@
         }
         
         .popup-content {
-            font-family: 'Courier Prime', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             padding: 0.5rem;
             max-width: 250px;
         }
         
         .popup-content h3 {
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             font-size: 0.95rem;
             margin-bottom: 0.5rem;
             border-bottom: 1px dashed var(--ink-light);
@@ -396,7 +396,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             font-size: 1.2rem;
             flex-shrink: 0;
         }
@@ -406,7 +406,7 @@
         }
         
         .nearest-info h4 {
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             font-size: 0.9rem;
             margin-bottom: 0.25rem;
         }
@@ -420,7 +420,7 @@
         .distance-display {
             font-size: 1.5rem;
             font-weight: bold;
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
         }
         
         .distance-display span {
@@ -501,7 +501,7 @@
         .location-item .name {
             flex: 1;
             font-size: 0.75rem;
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
         }
         
         .location-item .dist {
@@ -513,7 +513,7 @@
         #gps-screen {
             position: fixed;
             inset: 0;
-            background: rgba(44, 36, 22, 0.95);
+            background: rgba(14, 20, 24, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -557,7 +557,7 @@
         }
         
         .gps-title {
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             color: var(--paper);
             font-size: 1.1rem;
             margin-bottom: 1rem;
@@ -565,7 +565,7 @@
         }
         
         .gps-text {
-            font-family: 'Courier Prime', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             color: var(--paper);
             font-size: 0.85rem;
             line-height: 1.6;
@@ -575,7 +575,7 @@
         }
         
         .gps-btn {
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             background: var(--paper);
             color: var(--ink);
             border: none;
@@ -626,7 +626,7 @@
             background: var(--ink);
             color: var(--paper);
             padding: 1rem 1.5rem;
-            font-family: 'Special Elite', monospace;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
             font-size: 0.85rem;
             text-align: center;
             z-index: 1000;
@@ -685,6 +685,8 @@
   font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
 .azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
 .azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+body{background:#0e1418!important}
 </style>
 </head>
 <body>

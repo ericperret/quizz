@@ -165,7 +165,7 @@
                 repéré comme « multiples communs retirés ».
 ================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette AZS (variante claire ou sombre), polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -174,8 +174,8 @@
 <title>Défi Maths CM2</title>
 <style>
 :root{
-  --bg:#FBF5E6; --carte:#FFFFFF; --encre:#262626; --doux:#6B6455;
-  --bleu:#2F6DB5; --bleu2:#DCE9F8; --or:#E38B1F; --or2:#FDE9CF; --ligne:#D9CFB8;
+  --bg:#f4f1ea; --carte:#fffdf8; --encre:#1c2428; --doux:#5f6b72;
+  --bleu:#1f7f8c; --bleu2:#dcefef; --or:#b86a00; --or2:#f6e6cc; --ligne:#d8d0c0;
 }
 *{box-sizing:border-box}
 html{font-size:19px;-webkit-text-size-adjust:100%}
@@ -198,7 +198,7 @@ p{margin:.6em 0}
   border:3px solid var(--bleu);background:#fff;color:var(--bleu);cursor:pointer;font-weight:bold}
 .btn:hover:not(:disabled){background:var(--bleu2)}
 .btn.primaire{background:var(--bleu);color:#fff}
-.btn.primaire:hover:not(:disabled){background:#255A99}
+.btn.primaire:hover:not(:disabled){background:#165f69}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn.grand{font-size:1.3rem;min-height:64px;padding:.6em 2em}
 .btn.petit{min-height:44px;font-size:.9rem;padding:.3em 1.1em}
@@ -261,7 +261,7 @@ p{margin:.6em 0}
 .ballons .choisir{width:132px;height:158px;min-height:0;border:0;border-radius:50% 50% 50% 50%/58% 58% 42% 42%;
   color:#fff;font-weight:bold;font-size:1.7rem;box-shadow:inset -10px -10px 0 rgba(0,0,0,.14)}
 .ballons .choisir::before{content:'';position:absolute;bottom:-28px;left:50%;width:3px;height:28px;background:var(--doux);transform:translateX(-50%)}
-.ballons .c0{background:#D2452B}.ballons .c1{background:#2F6DB5}.ballons .c2{background:#B9840F}
+.ballons .c0{background:#D2452B}.ballons .c1{background:#1f7f8c}.ballons .c2{background:#B9840F}
 .ballons .c3{background:#7B4FA0}.ballons .c4{background:#1F8577}.ballons .c5{background:#C23A7E}
 .ballons .choisir.sel{transform:scale(1.12);outline:5px solid var(--encre);outline-offset:4px}
 .ballons .choisir.sel::after{color:#fff}
@@ -367,7 +367,7 @@ p{margin:.6em 0}
 .el.sel{border-color:var(--bleu);box-shadow:0 0 0 3px var(--bleu);background:var(--bleu2)}
 .el[data-n]::before{content:attr(data-n);position:absolute;top:-10px;left:-10px;width:26px;height:26px;border-radius:50%;
   background:var(--encre);color:#fff;font-size:.8rem;line-height:26px;font-weight:bold}
-.el.p0{background:#FFE3DA;border-color:#D2452B}.el.p1{background:#DCE9F8;border-color:#2F6DB5}
+.el.p0{background:#FFE3DA;border-color:#D2452B}.el.p1{background:#dcefef;border-color:#1f7f8c}
 .el.p2{background:#FBEFC8;border-color:#B9840F}.el.p3{background:#E9DDF5;border-color:#7B4FA0}
 .el.p4{background:#D6F0EC;border-color:#1F8577}.el.p5{background:#F8DCEA;border-color:#C23A7E}
 
@@ -426,9 +426,9 @@ table.detail{font-size:.72rem}
 .st{display:inline-block;min-width:6.5em;text-align:center;border-radius:999px;padding:1px 8px;font-size:.75rem;font-weight:bold;color:#fff}
 .st.ac{background:#2E7D4F}.st.fr{background:#C27A12}.st.na{background:#B03A2E}.st.ne{background:#A89F88}.st.pa{background:#5E7FA3}
 table.carte-c td{vertical-align:top}
-table.carte-c td.obs{font-size:.72rem;color:#6B6455}
+table.carte-c td.obs{font-size:.72rem;color:#5f6b72}
 ol.prio li{margin:6px 0}
-ol.prio .sous{display:block;font-size:.78rem;color:#6B6455}
+ol.prio .sous{display:block;font-size:.78rem;color:#5f6b72}
 table.detail td.err{color:#B03A2E;font-weight:bold}
 details.detail-th{margin:6px 0}
 details.detail-th summary{cursor:pointer;font-weight:bold;padding:4px 0}
@@ -479,6 +479,8 @@ body.protege.voile #voile{display:flex}
   font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
 .azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
 .azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+body{color-scheme:light}
 </style>
 </head>
 <body>
@@ -566,22 +568,22 @@ const FIG={
   triangleequi:'<polygon points="32,9 58,54 6,54"/>',
   cercle:'<circle cx="32" cy="32" r="25"/>'
 };
-const fig=(n,s)=>{s=s||64;return '<svg viewBox="0 0 64 64" width="'+s+'" height="'+s+'" aria-hidden="true" style="fill:#dce9f8;stroke:#2f6db5;stroke-width:3;stroke-linejoin:round">'+FIG[n]+'</svg>';};
+const fig=(n,s)=>{s=s||64;return '<svg viewBox="0 0 64 64" width="'+s+'" height="'+s+'" aria-hidden="true" style="fill:#dcefef;stroke:#1f7f8c;stroke-width:3;stroke-linejoin:round">'+FIG[n]+'</svg>';};
 
 function horloge(hh,mm){
   const c=90,R=84;
-  let s='<svg viewBox="0 0 180 180" width="210" height="210" role="img" aria-label="Horloge" style="max-width:100%;height:auto"><circle cx="'+c+'" cy="'+c+'" r="'+R+'" fill="#fff" stroke="#262626" stroke-width="5"/>';
+  let s='<svg viewBox="0 0 180 180" width="210" height="210" role="img" aria-label="Horloge" style="max-width:100%;height:auto"><circle cx="'+c+'" cy="'+c+'" r="'+R+'" fill="#fff" stroke="#1c2428" stroke-width="5"/>';
   for(let i=0;i<60;i++){
     const a=i*6*Math.PI/180,r1=i%5===0?R-12:R-7,r2=R-2;
-    s+='<line x1="'+(c+Math.sin(a)*r1).toFixed(1)+'" y1="'+(c-Math.cos(a)*r1).toFixed(1)+'" x2="'+(c+Math.sin(a)*r2).toFixed(1)+'" y2="'+(c-Math.cos(a)*r2).toFixed(1)+'" stroke="#262626" stroke-width="'+(i%5===0?3:1)+'"/>';
+    s+='<line x1="'+(c+Math.sin(a)*r1).toFixed(1)+'" y1="'+(c-Math.cos(a)*r1).toFixed(1)+'" x2="'+(c+Math.sin(a)*r2).toFixed(1)+'" y2="'+(c-Math.cos(a)*r2).toFixed(1)+'" stroke="#1c2428" stroke-width="'+(i%5===0?3:1)+'"/>';
   }
   for(let i=1;i<=12;i++){
     const a=i*30*Math.PI/180;
-    s+='<text x="'+(c+Math.sin(a)*64).toFixed(1)+'" y="'+(c-Math.cos(a)*64+7).toFixed(1)+'" text-anchor="middle" font-size="20" font-weight="bold" font-family="Verdana,sans-serif" fill="#262626">'+i+'</text>';
+    s+='<text x="'+(c+Math.sin(a)*64).toFixed(1)+'" y="'+(c-Math.cos(a)*64+7).toFixed(1)+'" text-anchor="middle" font-size="20" font-weight="bold" font-family="Verdana,sans-serif" fill="#1c2428">'+i+'</text>';
   }
   const ah=((hh%12)*30+mm*0.5)*Math.PI/180,am=mm*6*Math.PI/180;
-  s+='<line x1="'+c+'" y1="'+c+'" x2="'+(c+Math.sin(ah)*40).toFixed(1)+'" y2="'+(c-Math.cos(ah)*40).toFixed(1)+'" stroke="#262626" stroke-width="8" stroke-linecap="round"/>';
-  s+='<line x1="'+c+'" y1="'+c+'" x2="'+(c+Math.sin(am)*62).toFixed(1)+'" y2="'+(c-Math.cos(am)*62).toFixed(1)+'" stroke="#2f6db5" stroke-width="4" stroke-linecap="round"/><circle cx="'+c+'" cy="'+c+'" r="5" fill="#262626"/></svg>';
+  s+='<line x1="'+c+'" y1="'+c+'" x2="'+(c+Math.sin(ah)*40).toFixed(1)+'" y2="'+(c-Math.cos(ah)*40).toFixed(1)+'" stroke="#1c2428" stroke-width="8" stroke-linecap="round"/>';
+  s+='<line x1="'+c+'" y1="'+c+'" x2="'+(c+Math.sin(am)*62).toFixed(1)+'" y2="'+(c-Math.cos(am)*62).toFixed(1)+'" stroke="#1f7f8c" stroke-width="4" stroke-linecap="round"/><circle cx="'+c+'" cy="'+c+'" r="5" fill="#1c2428"/></svg>';
   return s;
 }
 
@@ -591,13 +593,13 @@ function graphBarres(data,max){
   let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+Math.min(W,540)+'" role="img" aria-label="Diagramme en bâtons" style="max-width:100%;height:auto">';
   for(let v=0;v<=max;v++){
     s+='<line x1="'+ml+'" x2="'+(W-6)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="'+(v%2===0?'#B9B09A':'#DDD5BF')+'" stroke-width="'+(v%2===0?2:1.5)+'"/>';
-    if(v%2===0) s+='<text x="'+(ml-8)+'" y="'+(y(v)+5)+'" text-anchor="end" font-size="15" font-family="Verdana,sans-serif" fill="#262626">'+v+'</text>';
+    if(v%2===0) s+='<text x="'+(ml-8)+'" y="'+(y(v)+5)+'" text-anchor="end" font-size="15" font-family="Verdana,sans-serif" fill="#1c2428">'+v+'</text>';
   }
   data.forEach((d,i)=>{
     const x=ml+18+i*76;
-    s+='<rect x="'+x+'" y="'+y(d.v)+'" width="48" height="'+(y(0)-y(d.v))+'" fill="#2f6db5" rx="4"/>';
+    s+='<rect x="'+x+'" y="'+y(d.v)+'" width="48" height="'+(y(0)-y(d.v))+'" fill="#1f7f8c" rx="4"/>';
     s+='<text x="'+(x+24)+'" y="'+(H-mb+26)+'" text-anchor="middle" font-size="24">'+d.e+'</text>';
-    s+='<text x="'+(x+24)+'" y="'+(H-mb+48)+'" text-anchor="middle" font-size="13" font-family="Verdana,sans-serif" fill="#262626">'+d.nom+'</text>';
+    s+='<text x="'+(x+24)+'" y="'+(H-mb+48)+'" text-anchor="middle" font-size="13" font-family="Verdana,sans-serif" fill="#1c2428">'+d.nom+'</text>';
   });
   return s+'</svg>';
 }
@@ -608,20 +610,20 @@ function graphCourbe(pts,max){
   let s='<svg viewBox="0 0 '+W+' '+H+'" width="'+Math.min(W,560)+'" role="img" aria-label="Graphique en courbe" style="max-width:100%;height:auto">';
   for(let v=0;v<=max;v+=2){
     s+='<line x1="'+ml+'" x2="'+(W-6)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="'+(v%4===0?'#B9B09A':'#E3DCC8')+'" stroke-width="'+(v%4===0?2:1.5)+'"/>';
-    if(v%4===0) s+='<text x="'+(ml-8)+'" y="'+(y(v)+5)+'" text-anchor="end" font-size="14" font-family="Verdana,sans-serif" fill="#262626">'+v+'</text>';
+    if(v%4===0) s+='<text x="'+(ml-8)+'" y="'+(y(v)+5)+'" text-anchor="end" font-size="14" font-family="Verdana,sans-serif" fill="#1c2428">'+v+'</text>';
   }
-  s+='<text x="6" y="12" font-size="13" font-family="Verdana,sans-serif" fill="#6b6455">°C</text>';
-  s+='<polyline fill="none" stroke="#2f6db5" stroke-width="4" stroke-linejoin="round" points="'+pts.map((p,i)=>x(i)+','+y(p.y)).join(' ')+'"/>';
+  s+='<text x="6" y="12" font-size="13" font-family="Verdana,sans-serif" fill="#5f6b72">°C</text>';
+  s+='<polyline fill="none" stroke="#1f7f8c" stroke-width="4" stroke-linejoin="round" points="'+pts.map((p,i)=>x(i)+','+y(p.y)).join(' ')+'"/>';
   pts.forEach((p,i)=>{
-    s+='<circle cx="'+x(i)+'" cy="'+y(p.y)+'" r="6" fill="#e38b1f" stroke="#262626" stroke-width="2"/>';
-    s+='<text x="'+x(i)+'" y="'+(H-mb+26)+'" text-anchor="middle" font-size="15" font-family="Verdana,sans-serif" fill="#262626">'+p.x+'</text>';
+    s+='<circle cx="'+x(i)+'" cy="'+y(p.y)+'" r="6" fill="#b86a00" stroke="#1c2428" stroke-width="2"/>';
+    s+='<text x="'+x(i)+'" y="'+(H-mb+26)+'" text-anchor="middle" font-size="15" font-family="Verdana,sans-serif" fill="#1c2428">'+p.x+'</text>';
   });
   return s+'</svg>';
 }
 
 function rectVisuel(L,Ha,tour){
   const w=L*14,hh=Ha*14;
-  return '<svg viewBox="0 0 '+(w+100)+' '+(hh+50)+'" width="'+(w+100)+'" role="img" aria-label="Rectangle" style="max-width:100%;height:auto"><rect x="10" y="32" width="'+w+'" height="'+hh+'" fill="#dce9f8" stroke="'+(tour?'#e38b1f':'#2f6db5')+'" stroke-width="'+(tour?7:3)+'" stroke-linejoin="round"/><text x="'+(10+w/2)+'" y="22" text-anchor="middle" font-size="16" font-weight="bold" font-family="Verdana,sans-serif" fill="#262626">'+L+' cm</text><text x="'+(w+18)+'" y="'+(32+hh/2+6)+'" font-size="16" font-weight="bold" font-family="Verdana,sans-serif" fill="#262626">'+Ha+' cm</text></svg>';
+  return '<svg viewBox="0 0 '+(w+100)+' '+(hh+50)+'" width="'+(w+100)+'" role="img" aria-label="Rectangle" style="max-width:100%;height:auto"><rect x="10" y="32" width="'+w+'" height="'+hh+'" fill="#dcefef" stroke="'+(tour?'#b86a00':'#1f7f8c')+'" stroke-width="'+(tour?7:3)+'" stroke-linejoin="round"/><text x="'+(10+w/2)+'" y="22" text-anchor="middle" font-size="16" font-weight="bold" font-family="Verdana,sans-serif" fill="#1c2428">'+L+' cm</text><text x="'+(w+18)+'" y="'+(32+hh/2+6)+'" font-size="16" font-weight="bold" font-family="Verdana,sans-serif" fill="#1c2428">'+Ha+' cm</text></svg>';
 }
 
 function repere(cols,rows,o){
@@ -631,12 +633,12 @@ function repere(cols,rows,o){
   let s='<svg class="grille-svg" viewBox="0 0 '+W+' '+H+'" width="'+Math.min(W,640)+'" role="img" aria-label="Repère quadrillé">';
   for(let x=0;x<=cols;x++) s+='<line x1="'+X(x)+'" y1="'+Y(0)+'" x2="'+X(x)+'" y2="'+Y(rows)+'" stroke="#CFC6AD" stroke-width="2"/>';
   for(let y=0;y<=rows;y++) s+='<line x1="'+X(0)+'" y1="'+Y(y)+'" x2="'+X(cols)+'" y2="'+Y(y)+'" stroke="#CFC6AD" stroke-width="2"/>';
-  s+='<line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+(X(cols)+10)+'" y2="'+Y(0)+'" stroke="#262626" stroke-width="3"/><line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(0)+'" y2="'+(Y(rows)-10)+'" stroke="#262626" stroke-width="3"/>';
-  for(let x=0;x<=cols;x++) s+='<text x="'+X(x)+'" y="'+(Y(0)+24)+'" text-anchor="middle" font-size="16" font-family="Verdana,sans-serif" fill="#262626">'+x+'</text>';
-  for(let y=0;y<=rows;y++) s+='<text x="'+(X(0)-14)+'" y="'+(Y(y)+5)+'" text-anchor="end" font-size="16" font-family="Verdana,sans-serif" fill="#262626">'+y+'</text>';
-  if(o.axeV!=null) s+='<line x1="'+X(o.axeV)+'" y1="'+Y(0)+'" x2="'+X(o.axeV)+'" y2="'+Y(rows)+'" stroke="#E38B1F" stroke-width="4" stroke-dasharray="8 6"/>';
+  s+='<line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+(X(cols)+10)+'" y2="'+Y(0)+'" stroke="#1c2428" stroke-width="3"/><line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(0)+'" y2="'+(Y(rows)-10)+'" stroke="#1c2428" stroke-width="3"/>';
+  for(let x=0;x<=cols;x++) s+='<text x="'+X(x)+'" y="'+(Y(0)+24)+'" text-anchor="middle" font-size="16" font-family="Verdana,sans-serif" fill="#1c2428">'+x+'</text>';
+  for(let y=0;y<=rows;y++) s+='<text x="'+(X(0)-14)+'" y="'+(Y(y)+5)+'" text-anchor="end" font-size="16" font-family="Verdana,sans-serif" fill="#1c2428">'+y+'</text>';
+  if(o.axeV!=null) s+='<line x1="'+X(o.axeV)+'" y1="'+Y(0)+'" x2="'+X(o.axeV)+'" y2="'+Y(rows)+'" stroke="#b86a00" stroke-width="4" stroke-dasharray="8 6"/>';
   (o.pts||[]).forEach(p=>{
-    s+='<circle cx="'+X(p.x)+'" cy="'+Y(p.y)+'" r="8" fill="#2f6db5"/><text x="'+(X(p.x)+12)+'" y="'+(Y(p.y)-10)+'" font-size="20" font-weight="bold" font-family="Verdana,sans-serif" fill="#2f6db5">'+(p.t||'')+'</text>';
+    s+='<circle cx="'+X(p.x)+'" cy="'+Y(p.y)+'" r="8" fill="#1f7f8c"/><text x="'+(X(p.x)+12)+'" y="'+(Y(p.y)-10)+'" font-size="20" font-weight="bold" font-family="Verdana,sans-serif" fill="#1f7f8c">'+(p.t||'')+'</text>';
   });
   if(o.noeuds){
     for(let x=0;x<=cols;x++)for(let y=0;y<=rows;y++) s+='<circle class="noeud" data-x="'+x+'" data-y="'+y+'" cx="'+X(x)+'" cy="'+Y(y)+'" r="17" fill="transparent" style="cursor:pointer"/>';
@@ -1742,7 +1744,7 @@ R.remplir=function(q,zone,notify){
       for(let i=0;i<N;i++){
         const a0=(-90+i*360/N)*Math.PI/180,a1=(-90+(i+1)*360/N)*Math.PI/180;
         const x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0),x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
-        s+='<path data-i="'+i+'" d="M'+cx+' '+cy+'L'+x0.toFixed(2)+' '+y0.toFixed(2)+'A'+r+' '+r+' 0 '+((360/N)>180?1:0)+' 1 '+x1.toFixed(2)+' '+y1.toFixed(2)+'Z" fill="'+(on[i]?'#e38b1f':'#fff7e0')+'" stroke="#7a4a1e" stroke-width="4" stroke-linejoin="round" style="cursor:pointer"/>';
+        s+='<path data-i="'+i+'" d="M'+cx+' '+cy+'L'+x0.toFixed(2)+' '+y0.toFixed(2)+'A'+r+' '+r+' 0 '+((360/N)>180?1:0)+' 1 '+x1.toFixed(2)+' '+y1.toFixed(2)+'Z" fill="'+(on[i]?'#b86a00':'#fff7e0')+'" stroke="#7a4a1e" stroke-width="4" stroke-linejoin="round" style="cursor:pointer"/>';
       }
       box.innerHTML=s+'</svg>';
       Array.prototype.forEach.call(box.querySelectorAll('path'),function(p){p.addEventListener('click',function(){toggle(+p.getAttribute('data-i'));});});
@@ -1815,9 +1817,9 @@ R.grille=function(q,zone,notify){
     let s='<svg class="grille-svg" viewBox="0 0 '+W+' '+H+'" width="'+Math.min(W,640)+'" role="group" aria-label="Quadrillage">';
     for(let r=0;r<q.rows;r++)for(let c=0;c<q.cols;c++){
       const key=r+','+c,lock=verrou.has(key),on=remp.has(key),actif=c>=min&&!lock;
-      s+='<rect '+(actif?'class="cel" ':'')+'data-r="'+r+'" data-c="'+c+'" x="'+(c*cs+2)+'" y="'+(r*cs+2)+'" width="'+cs+'" height="'+cs+'" fill="'+(lock?'#2f6db5':on?'#e38b1f':(c<min?'#f4eedd':'#fff'))+'" stroke="#A89F88" stroke-width="2"'+(actif?' style="cursor:pointer"':'')+'/>';
+      s+='<rect '+(actif?'class="cel" ':'')+'data-r="'+r+'" data-c="'+c+'" x="'+(c*cs+2)+'" y="'+(r*cs+2)+'" width="'+cs+'" height="'+cs+'" fill="'+(lock?'#1f7f8c':on?'#b86a00':(c<min?'#f4eedd':'#fff'))+'" stroke="#A89F88" stroke-width="2"'+(actif?' style="cursor:pointer"':'')+'/>';
     }
-    if(sym) s+='<line x1="'+(min*cs+2)+'" y1="0" x2="'+(min*cs+2)+'" y2="'+H+'" stroke="#E38B1F" stroke-width="5" stroke-dasharray="9 7"/>';
+    if(sym) s+='<line x1="'+(min*cs+2)+'" y1="0" x2="'+(min*cs+2)+'" y2="'+H+'" stroke="#b86a00" stroke-width="5" stroke-dasharray="9 7"/>';
     wrap.innerHTML=s+'</svg>';
     cpt.textContent='Carreaux coloriés : '+remp.size;
   };
@@ -2347,7 +2349,7 @@ function vueAdulte(){
           h('tbody',{},l.rep.map(function(r,k){return lignesDetail(r,k).map(function(x){
             const r2=x.r;
             return h('tr',{},h('td',{text:x.q}),h('td',{class:'pip',text:pip(r2)}),h('td',{text:r2.enonce||''}),h('td',{text:r2.attendu||''}),h('td',{text:r2.donne||''}),
-              h('td',{class:r2.erreur?'err':''},r2.erreur||'',r2.sorties?h('div',{style:'color:#B03A2E',text:noteSortie(r2)}):null,r2.brouillon?h('div',{style:'font-weight:normal;color:#6B6455',text:r2.brouillon}):null),h('td',{text:duree(r2.duree)}));
+              h('td',{class:r2.erreur?'err':''},r2.erreur||'',r2.sorties?h('div',{style:'color:#B03A2E',text:noteSortie(r2)}):null,r2.brouillon?h('div',{style:'font-weight:normal;color:#5f6b72',text:r2.brouillon}):null),h('td',{text:duree(r2.duree)}));
           });}))));
     }),
     h('div',{class:'actions'},

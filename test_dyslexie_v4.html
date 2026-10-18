@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette AZS (variante claire ou sombre), polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -17,18 +17,18 @@
 <title>Test Lecture & Orthographe — CM1/CM2</title>
 <style>
 :root {
-    --bg: #f0f0ec;
-    --card: #ffffff;
-    --accent: #2563eb;
-    --accent2: #0f4c81;
+    --bg: #f4f1ea;
+    --card: #fffdf8;
+    --accent: #b86a00;
+    --accent2: #8a4f00;
     --warm: #d97706;
     --green: #16a34a;
     --red: #dc2626;
     --orange: #ea580c;
-    --text: #1e293b;
-    --text2: #475569;
-    --border: #cbd5e1;
-    --soft: #f1f5f9;
+    --text: #1c2428;
+    --text2: #5f6b72;
+    --border: #d8d0c0;
+    --soft: #ebe6db;
     --radius: 8px;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -138,7 +138,7 @@ body {
 }
 .instruction strong { color: var(--warm); }
 .examiner-note {
-    background: #eff6ff;
+    background: #fbf1e2;
     border-left: 4px solid var(--accent);
     padding: 12px 16px;
     margin-bottom: 16px;
@@ -257,7 +257,7 @@ body {
     transition: all 0.15s;
     font-size: 14px;
 }
-.q-options label:hover { border-color: var(--accent); background: #f0f7ff; }
+.q-options label:hover { border-color: var(--accent); background: #fbf1e2; }
 .q-options input[type="radio"] { accent-color: var(--accent); width: 18px; height: 18px; }
 .q-options input[type="radio"]:checked + span { font-weight: 600; }
 
@@ -544,7 +544,7 @@ textarea { min-height: 80px; resize: vertical; }
     font-style: italic;
     margin-top: 4px;
     padding: 4px 8px;
-    background: #f8fafc;
+    background: #fffdf8;
     border-radius: 4px;
 }
 </style>
@@ -560,6 +560,8 @@ textarea { min-height: 80px; resize: vertical; }
   font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
 .azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
 .azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+body{color-scheme:light}
 </style>
 </head>
 <body>
@@ -612,7 +614,7 @@ const pseudoWords = {
 };
 
 // --- 5. RAN ---
-const ranColors = ['#dc2626','#2563eb','#16a34a','#eab308','#1e1e1e'];
+const ranColors = ['#dc2626','#b86a00','#16a34a','#eab308','#1e1e1e'];
 const ranColorNames = ['rouge','bleu','vert','jaune','noir'];
 
 // --- 6. CONSCIENCE PHONOLOGIQUE ---
@@ -2139,7 +2141,7 @@ function drawRadar(axes){
     ctx.closePath();
     ctx.fillStyle = 'rgba(37, 99, 235, 0.15)';
     ctx.fill();
-    ctx.strokeStyle = '#2563eb';
+    ctx.strokeStyle = '#b86a00';
     ctx.lineWidth = 2.5;
     ctx.stroke();
 
