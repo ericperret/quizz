@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -16,10 +16,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cours Météo — Nuages et Fronts</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+  
 
   :root {
-    --sky-dark: #0b1a2e;
+    --sky-dark: #0e1418;
     --sky-mid: #1a3a5c;
     --sky-light: #4a8db7;
     --warm-front: #d94f30;
@@ -29,8 +29,8 @@
     --cold-light: #7fb3ff;
     --cold-bg: #0e1a30;
     --occluded: #8b5cf6;
-    --text: #e8e0d6;
-    --text-dim: #9aa8b8;
+    --text: #dfe7ec;
+    --text-dim: #8fa1ad;
     --card-bg: rgba(255,255,255,0.04);
     --card-border: rgba(255,255,255,0.08);
   }
@@ -38,7 +38,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Source Sans 3', sans-serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     background: var(--sky-dark);
     color: var(--text);
     line-height: 1.7;
@@ -87,7 +87,7 @@
   }
 
   .hero h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 900;
     letter-spacing: -0.02em;
@@ -185,7 +185,7 @@
   }
 
   .section-title {
-    font-family: 'Playfair Display', serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 700;
     margin-bottom: 0.5rem;
@@ -220,7 +220,7 @@
   .principle-card:hover { transform: translateY(-4px); }
 
   .principle-card h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     font-size: 1.3rem;
     margin-bottom: 0.8rem;
   }
@@ -375,7 +375,7 @@
   }
 
   .cloud-name {
-    font-family: 'Playfair Display', serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     font-size: 1.3rem;
     font-weight: 700;
   }
@@ -457,7 +457,7 @@
   }
 
   .timeline-bar h4 {
-    font-family: 'Playfair Display', serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     margin-bottom: 1rem;
     font-size: 1.1rem;
   }
@@ -519,7 +519,7 @@
   }
 
   .comp-table th {
-    font-family: 'Playfair Display', serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     font-weight: 700;
     font-size: 1rem;
     position: sticky;
@@ -561,7 +561,7 @@
     border-bottom: none;
     color: var(--text-dim);
     cursor: pointer;
-    font-family: 'Source Sans 3', sans-serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     font-weight: 600;
     font-size: 0.9rem;
     transition: all 0.2s;
@@ -621,7 +621,7 @@
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
 
 <!-- ═══════ HERO ═══════ -->
 <div class="hero" id="top">

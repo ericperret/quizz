@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -17,8 +17,8 @@
 <title>PDRA-G — Fiche récap</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, sans-serif; font-size: 13px; background: #f0f2f5; padding: 20px; }
-  h1 { text-align: center; color: #1a3a5c; margin-bottom: 6px; font-size: 18px; }
+  body { font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; font-size: 13px; background: #f4f1ea; padding: 20px; }
+  h1 { text-align: center; color: #1c2428; margin-bottom: 6px; font-size: 18px; }
   .subtitle { text-align: center; color: #555; margin-bottom: 20px; font-size: 12px; }
 
   .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
@@ -54,7 +54,7 @@
   .tag-auth  { background: #fce4ec; color: #c62828; }
   .tag-obs   { background: #e3f2fd; color: #1565c0; }
   .tag-seg   { background: #f3e5f5; color: #6a1b9a; }
-  .tag-auto  { background: #fafafa; color: #555; border: 1px solid #ddd; }
+  .tag-auto  { background: #fffdf8; color: #555; border: 1px solid #ddd; }
 
   .highlight { background: #fffde7; border-left: 3px solid #f9a825; padding: 6px 8px; border-radius: 0 4px 4px 0; font-size: 12px; margin-top: 8px; }
 
@@ -66,13 +66,13 @@
   .common-box .item { display: flex; align-items: center; gap: 8px; }
   .common-box .badge { background: #e8f5e9; color: #2e7d32; font-weight: bold; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
   .common-box .clabel { color: #555; font-size: 12px; }
-  .common-title { font-weight: bold; color: #1a3a5c; font-size: 12px; white-space: nowrap; }
+  .common-title { font-weight: bold; color: #1c2428; font-size: 12px; white-space: nowrap; }
 
   .diff-table { width: 100%; border-collapse: collapse; margin-top: 14px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
-  .diff-table th { background: #1a3a5c; color: white; padding: 8px 10px; font-size: 12px; text-align: center; }
+  .diff-table th { background: #1c2428; color: white; padding: 8px 10px; font-size: 12px; text-align: center; }
   .diff-table td { padding: 7px 10px; border-bottom: 1px solid #eee; font-size: 12px; vertical-align: top; }
   .diff-table tr:last-child td { border-bottom: none; }
-  .diff-table tr:nth-child(even) td { background: #f8f9fa; }
+  .diff-table tr:nth-child(even) td { background: #fffdf8; }
   .diff-table td:first-child { font-weight: bold; color: #444; width: 22%; }
   .diff-table td:nth-child(2) { color: #1565c0; }
   .diff-table td:nth-child(3) { color: #2e7d32; }
@@ -92,10 +92,13 @@
   font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
 .azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
 .azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+h1,h2{color:#1c2428}
+h1{border-left:3px solid #b86a00;padding-left:10px}
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
 
 <h1>PDRA-G — Fiche récapitulative</h1>
 <p class="subtitle">Source : Guide DSAC Catégorie Spécifique v2.0 – décembre 2024 | Règlement (UE) 2019/947</p>

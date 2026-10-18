@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -17,14 +17,14 @@
 <title>Signaux lumineux ATC — Récap complet</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; font-size: 12px; background: #eef1f5; padding: 16px; color: #1a1a1a; }
+body { font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; font-size: 12px; background: #f4f1ea; padding: 16px; color: #1a1a1a; }
 
-h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
+h1 { text-align: center; color: #1c2428; font-size: 17px; margin-bottom: 3px; }
 .subtitle { text-align: center; color: #666; font-size: 11px; margin-bottom: 16px; }
 
 .section-label {
   font-size: 11px; font-weight: bold; text-transform: uppercase;
-  letter-spacing: 0.8px; color: #fff; background: #1a3a5c;
+  letter-spacing: 0.8px; color: #fff; background: #1c2428;
   padding: 4px 10px; border-radius: 4px; margin: 14px 0 8px;
   display: inline-block;
 }
@@ -36,7 +36,7 @@ table.main {
   box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 table.main th {
-  background: #1a3a5c; color: white; padding: 8px 10px;
+  background: #1c2428; color: white; padding: 8px 10px;
   font-size: 11px; text-align: center;
 }
 table.main td {
@@ -122,10 +122,13 @@ footer { text-align: center; margin-top: 14px; font-size: 10px; color: #aaa; }
   font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
 .azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
 .azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+h1,h2{color:#1c2428}
+h1{border-left:3px solid #b86a00;padding-left:10px}
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
 
 <h1>Signaux lumineux ATC & Pyrotechniques</h1>
 <p class="subtitle">SERA.3225 (Règlement UE 923/2012) · Annexe 2 ICAO</p>

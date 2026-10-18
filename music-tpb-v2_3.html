@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -23,9 +23,9 @@
         }
 
         body {
-            font-family: Georgia, 'Times New Roman', serif;
-            background: #0a1628;
-            color: #e0e6ed;
+            font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+            background: #0e1418;
+            color: #dfe7ec;
             min-height: 100vh;
             transition: all 0.8s ease;
         }
@@ -37,13 +37,13 @@
             left: 0;
             right: 0;
             height: 6px;
-            background: #1e293b;
+            background: #18222a;
             transition: background 0.8s ease;
         }
 
         .gradient-bar.crise { background: linear-gradient(90deg, #dc2626, #ea580c, #eab308, #22c55e); }
         .gradient-bar.tension { background: linear-gradient(90deg, #ea580c, #ea580c, #eab308, #22c55e); }
-        .gradient-bar.vide { background: linear-gradient(90deg, #1e293b, #3b82f6, #eab308); }
+        .gradient-bar.vide { background: linear-gradient(90deg, #18222a, #3b82f6, #eab308); }
         .gradient-bar.rumination { background: linear-gradient(90deg, #3b82f6, #ea580c, #eab308); }
         .gradient-bar.redescente { background: linear-gradient(90deg, #eab308, #22c55e, #22c55e); }
 
@@ -90,10 +90,10 @@
             align-items: center;
             gap: 15px;
             padding: 18px 25px;
-            background: #1e293b;
-            border: 2px solid #334155;
+            background: #18222a;
+            border: 2px solid #26343e;
             border-radius: 12px;
-            color: #e0e6ed;
+            color: #dfe7ec;
             font-family: inherit;
             font-size: 1.1rem;
             cursor: pointer;
@@ -102,7 +102,7 @@
         }
 
         .state-btn:hover {
-            background: #334155;
+            background: #26343e;
             transform: translateX(5px);
         }
 
@@ -156,10 +156,10 @@
             gap: 15px;
             width: 100%;
             padding: 25px;
-            background: linear-gradient(135deg, #1e3a5f, #1e293b);
+            background: linear-gradient(135deg, #1e3a5f, #18222a);
             border: 2px solid #3b82f6;
             border-radius: 16px;
-            color: #e0e6ed;
+            color: #dfe7ec;
             font-family: inherit;
             font-size: 1.3rem;
             cursor: pointer;
@@ -188,10 +188,10 @@
             align-items: center;
             gap: 15px;
             padding: 20px;
-            background: #1e293b;
-            border: 2px solid #334155;
+            background: #18222a;
+            border: 2px solid #26343e;
             border-radius: 12px;
-            color: #e0e6ed;
+            color: #dfe7ec;
             font-family: inherit;
             font-size: 1rem;
             cursor: pointer;
@@ -200,8 +200,8 @@
         }
 
         .phase-btn:hover {
-            background: #334155;
-            border-color: #475569;
+            background: #26343e;
+            border-color: #33434e;
         }
 
         .phase-btn .pastilles {
@@ -219,7 +219,7 @@
         .pastille.orange { background: #ea580c; }
         .pastille.yellow { background: #eab308; }
         .pastille.green { background: #22c55e; }
-        .pastille.black { background: #1e293b; border: 2px solid #475569; }
+        .pastille.black { background: #18222a; border: 2px solid #33434e; }
         .pastille.blue { background: #3b82f6; }
 
         .phase-btn .phase-info {
@@ -274,8 +274,8 @@
         .disclaimer {
             margin-top: 50px;
             padding: 20px 25px;
-            background: rgba(30, 41, 59, 0.5);
-            border-left: 3px solid #334155;
+            background: rgba(24,34,42,0.6);
+            border-left: 3px solid #26343e;
             border-radius: 0 8px 8px 0;
             font-size: 0.85rem;
             line-height: 1.6;
@@ -291,7 +291,7 @@
         }
 
         .disclaimer strong {
-            color: #94a3b8;
+            color: #8fa1ad;
         }
     </style>
 
@@ -306,10 +306,12 @@
   font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
 .azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
 .azs-foot a:hover{color:#f0a63a}
+.disclaimer{box-sizing:border-box;max-width:100%}
+html,body{overflow-x:hidden}
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
     <div class="gradient-bar" id="gradient-bar"></div>
     
     <div class="container">

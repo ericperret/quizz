@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -19,7 +19,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0e1418;
             padding: 20px;
             line-height: 1.8;
         }
@@ -36,7 +36,7 @@
             color: #2d3748;
             margin-bottom: 40px;
             font-size: 2.5em;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0e1418;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -46,7 +46,7 @@
             margin-top: 40px;
             margin-bottom: 20px;
             font-size: 2em;
-            border-left: 6px solid #667eea;
+            border-left: 6px solid #b86a00;
             padding-left: 20px;
             background: #f7fafc;
             padding: 15px 20px;
@@ -57,11 +57,11 @@
             margin-top: 30px;
             margin-bottom: 15px;
             font-size: 1.5em;
-            border-left: 4px solid #764ba2;
+            border-left: 4px solid #8a4f00;
             padding-left: 15px;
         }
         h4 {
-            color: #667eea;
+            color: #b86a00;
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 1.2em;
@@ -120,7 +120,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0e1418;
             color: white;
             padding: 15px;
             text-align: left;
@@ -156,7 +156,7 @@
             padding: 15px 20px;
             border-radius: 10px;
             margin: 15px 0;
-            border: 2px solid #667eea;
+            border: 2px solid #b86a00;
         }
         .key-point::before {
             content: "🔑 ";
@@ -190,13 +190,13 @@
             padding: 8px 0;
         }
         .toc a {
-            color: #667eea;
+            color: #b86a00;
             text-decoration: none;
             font-size: 1.1em;
             transition: all 0.2s;
         }
         .toc a:hover {
-            color: #764ba2;
+            color: #8a4f00;
             padding-left: 10px;
         }
     </style>
@@ -212,10 +212,11 @@
   font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
 .azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
 .azs-foot a:hover{color:#f0a63a}
+@media (max-width:640px){table{display:block;overflow-x:auto;max-width:100%}}
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
     <div class="container">
         <h1>📖 Cours Théorique Drone A1/A3</h1>
         
@@ -882,7 +883,7 @@
             </div>
         </div>
 
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; text-align: center; margin-top: 50px;">
+        <div style="background: #0e1418; color: white; padding: 30px; border-radius: 15px; text-align: center; margin-top: 50px;">
             <h2 style="color: white; margin: 0; border: none; background: none; padding: 0;">🎯 Vous êtes maintenant prêt pour l'examen !</h2>
             <p style="margin-top: 15px; font-size: 1.2em; color: white;">Bon courage ! 🚁</p>
         </div>

@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -17,14 +17,14 @@
 <title>Nord · Déclinaison · Déviation · Dérive</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; font-size: 12px; background: #eef1f5; padding: 16px; color: #1a1a1a; }
+body { font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; font-size: 12px; background: #f4f1ea; padding: 16px; color: #1a1a1a; }
 
-h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
+h1 { text-align: center; color: #1c2428; font-size: 17px; margin-bottom: 3px; }
 .subtitle { text-align: center; color: #666; font-size: 11px; margin-bottom: 14px; }
 
 .section-label {
   font-size: 11px; font-weight: bold; text-transform: uppercase;
-  letter-spacing: 0.8px; color: #fff; background: #1a3a5c;
+  letter-spacing: 0.8px; color: #fff; background: #1c2428;
   padding: 4px 10px; border-radius: 4px; margin: 14px 0 8px;
   display: inline-block;
 }
@@ -33,7 +33,7 @@ h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
 .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
 .card { background: white; border-radius: 7px; box-shadow: 0 2px 5px rgba(0,0,0,0.11); padding: 12px 14px; }
-.card h3 { font-size: 13px; color: #1a3a5c; margin-bottom: 8px; border-bottom: 2px solid #e0e7f0; padding-bottom: 4px; }
+.card h3 { font-size: 13px; color: #1c2428; margin-bottom: 8px; border-bottom: 2px solid #e0e7f0; padding-bottom: 4px; }
 
 /* ─── SCHÉMA BOUSSOLE ─── */
 .compass-row { display: flex; gap: 20px; align-items: flex-start; }
@@ -44,7 +44,7 @@ h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
 }
 .compass-circle {
   width: 150px; height: 150px; border-radius: 50%;
-  border: 3px solid #90a4ae; background: #f8fafc;
+  border: 3px solid #90a4ae; background: #fffdf8;
   position: absolute; top: 5px; left: 5px;
 }
 /* aiguilles */
@@ -55,7 +55,7 @@ h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
   bottom: 50%; left: calc(50% - 1.5px);
   border-radius: 2px 2px 0 0;
 }
-.n-vrai   { height: 62px; background: #1a3a5c; transform: rotate(0deg); }
+.n-vrai   { height: 62px; background: #1c2428; transform: rotate(0deg); }
 .n-mag    { height: 55px; background: #c62828; transform: rotate(10deg); }
 .n-compas { height: 48px; background: #e65100; transform: rotate(16deg); }
 
@@ -70,7 +70,7 @@ h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
 .needle-label {
   position: absolute; font-size: 10px; font-weight: bold;
 }
-.nl-vrai   { top: 4px; left: 54px; color: #1a3a5c; }
+.nl-vrai   { top: 4px; left: 54px; color: #1c2428; }
 .nl-mag    { top: 10px; left: 90px; color: #c62828; }
 .nl-compas { top: 22px; left: 108px; color: #e65100; }
 
@@ -83,7 +83,7 @@ h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
 
 /* ─── FORMULE ─── */
 .formula-box {
-  background: #1a3a5c; color: white; border-radius: 8px;
+  background: #1c2428; color: white; border-radius: 8px;
   padding: 12px 16px; text-align: center; margin: 8px 0;
 }
 .formula-box .f-main { font-size: 15px; font-weight: bold; letter-spacing: 1px; margin-bottom: 6px; }
@@ -102,9 +102,9 @@ h1 { text-align: center; color: #1a3a5c; font-size: 17px; margin-bottom: 3px; }
 table.calc { width: 100%; border-collapse: collapse; margin-top: 8px; }
 table.calc th { background: #37474f; color: white; padding: 6px 8px; font-size: 11px; }
 table.calc td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 11px; }
-table.calc tr:nth-child(even) td { background: #f8f9fb; }
+table.calc tr:nth-child(even) td { background: #fffdf8; }
 .step { color: #888; font-size: 10px; display: block; }
-.result { font-weight: bold; color: #1a3a5c; }
+.result { font-weight: bold; color: #1c2428; }
 
 /* ─── DÉRIVE ─── */
 .derive-diagram {
@@ -122,7 +122,7 @@ table.calc tr:nth-child(even) td { background: #f8f9fb; }
   display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;
 }
 .ws-case { flex: 1; min-width: 140px; }
-.ws-case .ws-title { font-weight: bold; font-size: 11px; color: #1a3a5c; margin-bottom: 6px; }
+.ws-case .ws-title { font-weight: bold; font-size: 11px; color: #1c2428; margin-bottom: 6px; }
 
 /* mini schéma SVG inline */
 .svg-wrap { text-align: center; margin: 6px 0; }
@@ -142,7 +142,7 @@ table.calc tr:nth-child(even) td { background: #f8f9fb; }
 table.def { width: 100%; border-collapse: collapse; }
 table.def td { padding: 6px 8px; border-bottom: 1px dotted #e0e0e0; font-size: 11px; vertical-align: top; }
 table.def tr:last-child td { border-bottom: none; }
-table.def td:first-child { font-weight: bold; color: #1a3a5c; width: 35%; }
+table.def td:first-child { font-weight: bold; color: #1c2428; width: 35%; }
 
 footer { text-align: center; margin-top: 14px; font-size: 10px; color: #aaa; }
 </style>
@@ -158,10 +158,15 @@ footer { text-align: center; margin-top: 14px; font-size: 10px; color: #aaa; }
   font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
 .azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
 .azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+h1,h2{color:#1c2428}
+h1{border-left:3px solid #b86a00;padding-left:10px}
+@media (max-width:640px){.grid2,.grid3,.eo-grid{grid-template-columns:1fr!important}div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}}
+@media (max-width:640px){table.calc{display:block;overflow-x:auto;max-width:100%}}
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
 
 <h1>Nord Vrai · Nord Magnétique · Nord Compas · Dérive</h1>
 <p class="subtitle">Navigation — CATS Catégorie Spécifique</p>
@@ -170,7 +175,7 @@ footer { text-align: center; margin-top: 14px; font-size: 10px; color: #aaa; }
 <div class="section-label">📖 Les trois Nords</div>
 
 <div class="grid3">
-  <div class="card" style="border-top: 3px solid #1a3a5c;">
+  <div class="card" style="border-top: 3px solid #1c2428;">
     <h3>🌍 Nord Vrai (NV / TV)</h3>
     <table class="def">
       <tr><td>Définition</td><td>Direction du pôle Nord <strong>géographique</strong></td></tr>
@@ -449,18 +454,18 @@ footer { text-align: center; margin-top: 14px; font-size: 10px; color: #aaa; }
 <div class="card">
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
     <div>
-      <div style="font-weight:bold; color:#1a3a5c; margin-bottom:6px;">Chaîne de correction (CC → CV)</div>
+      <div style="font-weight:bold; color:#1c2428; margin-bottom:6px;">Chaîne de correction (CC → CV)</div>
       <div style="background:#f0f4f8; border-radius:6px; padding:10px; font-size:12px; line-height:2;">
         <span style="background:#e65100; color:white; padding:2px 7px; border-radius:4px;">CC</span>
         <span style="color:#e65100;"> ±d (déviation)</span> →
         <span style="background:#c62828; color:white; padding:2px 7px; border-radius:4px;">CM</span>
         <span style="color:#c62828;"> ±D (déclinaison)</span> →
-        <span style="background:#1a3a5c; color:white; padding:2px 7px; border-radius:4px;">CV</span><br>
+        <span style="background:#1c2428; color:white; padding:2px 7px; border-radius:4px;">CV</span><br>
         <span style="font-size:10px; color:#666;">Est = +, Ouest = − &nbsp;(pour aller vers le Vrai)</span>
       </div>
     </div>
     <div>
-      <div style="font-weight:bold; color:#1a3a5c; margin-bottom:6px;">Différences clés</div>
+      <div style="font-weight:bold; color:#1c2428; margin-bottom:6px;">Différences clés</div>
       <table style="width:100%; font-size:11px; border-collapse:collapse;">
         <tr><td style="padding:4px 6px; border-bottom:1px dotted #ddd; width:40%; font-weight:bold;">Déclinaison</td><td style="padding:4px 6px; border-bottom:1px dotted #ddd;">Propriété du <strong>lieu</strong> (sur la carte, isogones)</td></tr>
         <tr><td style="padding:4px 6px; border-bottom:1px dotted #ddd; font-weight:bold;">Déviation</td><td style="padding:4px 6px; border-bottom:1px dotted #ddd;">Propriété de l'<strong>appareil</strong> (table à bord)</td></tr>

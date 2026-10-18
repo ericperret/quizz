@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -18,16 +18,16 @@
 <style>
 
   :root {
-    --bg: #0a0e14;
-    --panel: #111823;
-    --border: #1e2d3d;
-    --accent: #00d4ff;
-    --accent2: #ff6b35;
+    --bg: #0e1418;
+    --panel: #18222a;
+    --border: #26343e;
+    --accent: #f0a63a;
+    --accent2: #5cc8d6;
     --correct: #00e676;
     --wrong: #ff1744;
-    --text: #c9d8e8;
-    --dim: #5a7a99;
-    --glow: 0 0 20px rgba(0,212,255,0.15);
+    --text: #dfe7ec;
+    --dim: #8fa1ad;
+    --glow: 0 0 20px rgba(240,166,58,0.15);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,14 +38,14 @@
     font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
     min-height: 100vh;
     background-image:
-      radial-gradient(ellipse at 20% 10%, rgba(0,212,255,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 90%, rgba(255,107,53,0.03) 0%, transparent 60%);
+      radial-gradient(ellipse at 20% 10%, rgba(240,166,58,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(92,200,214,0.03) 0%, transparent 60%);
   }
 
   /* ── HUD HEADER ── */
   header {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(10,14,20,0.95);
+    background: rgba(14,20,24,0.95);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 12px 24px;
@@ -95,12 +95,12 @@
     border: 3px solid var(--accent);
     border-radius: 50%; margin: 0 auto 24px;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: var(--glow), inset 0 0 20px rgba(0,212,255,0.08);
+    box-shadow: var(--glow), inset 0 0 20px rgba(240,166,58,0.08);
     animation: pulse 3s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%,100% { box-shadow: var(--glow), inset 0 0 20px rgba(0,212,255,0.08); }
-    50% { box-shadow: 0 0 40px rgba(0,212,255,0.3), inset 0 0 30px rgba(0,212,255,0.12); }
+    0%,100% { box-shadow: var(--glow), inset 0 0 20px rgba(240,166,58,0.08); }
+    50% { box-shadow: 0 0 40px rgba(240,166,58,0.3), inset 0 0 30px rgba(240,166,58,0.12); }
   }
   #start-screen h1 {
     font-size: 2.2rem; font-weight: 700; color: #fff;
@@ -131,7 +131,7 @@
   }
   .option-toggle.active {
     border-color: var(--accent); color: var(--accent);
-    background: rgba(0,212,255,0.06);
+    background: rgba(240,166,58,0.06);
   }
 
   .meta-card-click {
@@ -140,7 +140,7 @@
   }
   .meta-card-click:hover {
     border-color: var(--accent);
-    background: rgba(0,212,255,0.06);
+    background: rgba(240,166,58,0.06);
   }
   .btn-matiere {
     background: var(--bg);
@@ -157,7 +157,7 @@
   }
   .btn-matiere:hover {
     border-color: var(--accent);
-    background: rgba(0,212,255,0.08);
+    background: rgba(240,166,58,0.08);
     color: #fff;
   }
   .btn-matiere .mat-count {
@@ -171,9 +171,9 @@
     font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 1rem; font-weight: 700;
     border-radius: 10px; cursor: pointer; letter-spacing: 1px;
     transition: all .2s;
-    box-shadow: 0 0 30px rgba(0,212,255,0.3);
+    box-shadow: 0 0 30px rgba(240,166,58,0.3);
   }
-  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 4px 40px rgba(0,212,255,0.5); }
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 4px 40px rgba(240,166,58,0.5); }
 
   /* QUIZ */
   .q-header {
@@ -203,7 +203,7 @@
   }
   .q-text {
     font-size: 1.05rem; line-height: 1.65;
-    color: #dde8f0; margin-bottom: 24px; font-weight: 400;
+    color: #dfe7ec; margin-bottom: 24px; font-weight: 400;
   }
 
   .answers { display: flex; flex-direction: column; gap: 10px; }
@@ -218,7 +218,7 @@
   }
   .answer-btn:hover:not(:disabled) {
     border-color: var(--accent); color: #fff;
-    background: rgba(0,212,255,0.04);
+    background: rgba(240,166,58,0.04);
     transform: translateX(3px);
   }
   .answer-btn .letter {
@@ -260,7 +260,7 @@
   }
   .btn-nav:hover { border-color: var(--accent); color: var(--accent); }
   .btn-nav.primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
-  .btn-nav.primary:hover { background: #00eeff; }
+  .btn-nav.primary:hover { background: #ffcf7a; }
 
   .q-dots {
     display: flex; gap: 4px; flex-wrap: wrap; max-width: 300px; justify-content: center;
@@ -358,7 +358,7 @@
   }
   .btn-action:hover { border-color: var(--accent); color: var(--accent); }
   .btn-action.primary { background: var(--accent); color: #000; font-weight: 700; border-color: var(--accent); }
-  .btn-action.primary:hover { background: #00eeff; }
+  .btn-action.primary:hover { background: #ffcf7a; }
 
   @media(max-width:600px) {
     header { flex-wrap: wrap; gap: 10px; }
@@ -384,7 +384,7 @@
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
 
 <header>
   <div class="hud-title">ULM <span>///</span></div>
@@ -425,12 +425,12 @@
 
   <!-- Choix du mode -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:480px;margin:0 auto 24px">
-    <button onclick="startQuiz()" style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px 16px;cursor:pointer;text-align:center;font-family:inherit;color:var(--text);transition:border-color .2s,background .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(0,212,255,0.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--panel)'">
+    <button onclick="startQuiz()" style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px 16px;cursor:pointer;text-align:center;font-family:inherit;color:var(--text);transition:border-color .2s,background .2s" onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(240,166,58,0.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--panel)'">
       <div style="font-size:2rem;margin-bottom:8px">&#127919;</div>
       <div style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px">Entraînement</div>
       <div style="font-size:.78rem;color:var(--dim)">Progressez à votre rythme sur les 242 questions.</div>
     </button>
-    <button onclick="opts.exam=true;startQuiz()" style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px 16px;cursor:pointer;text-align:center;font-family:inherit;color:var(--text);transition:border-color .2s,background .2s" onmouseover="this.style.borderColor='var(--accent2)';this.style.background='rgba(255,107,53,0.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--panel)'">
+    <button onclick="opts.exam=true;startQuiz()" style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px 16px;cursor:pointer;text-align:center;font-family:inherit;color:var(--text);transition:border-color .2s,background .2s" onmouseover="this.style.borderColor='var(--accent2)';this.style.background='rgba(92,200,214,0.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--panel)'">
       <div style="font-size:2rem;margin-bottom:8px">&#9201;&#65039;</div>
       <div style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px">Simulation Examen</div>
       <div style="font-size:.78rem;color:var(--dim)">40 questions tirées au sort (60 min).</div>

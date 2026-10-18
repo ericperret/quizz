@@ -12,7 +12,7 @@
                 courbes de réussite et de niveau par session, historique
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -21,18 +21,18 @@
 <title>Exercices Remédiation — Dyslexie v3</title>
 <style>
 :root {
-    --bg:#0f1117;--card:#1a1d27;--card2:#242836;--accent:#6366f1;--accent2:#818cf8;
+    --bg:#0e1418;--card:#18222a;--card2:#141c22;--accent:#f0a63a;--accent2:#ffcf7a;
     --green:#34d399;--green2:#059669;--orange:#fb923c;--red:#f87171;--cyan:#22d3ee;
-    --pink:#f472b6;--yellow:#fbbf24;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
-    --border:#2d3348;--radius:10px;
+    --pink:#f472b6;--yellow:#fbbf24;--text:#dfe7ec;--text2:#a9b7bf;--text3:#8fa1ad;
+    --border:#26343e;--radius:10px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI','Helvetica Neue',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 .app{max-width:900px;margin:0 auto;padding:16px}
 
 /* ===== HEADER ===== */
-.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4338ca 100%);padding:24px 28px;border-radius:14px;margin-bottom:16px;position:relative;overflow:hidden}
-.header::before{content:'';position:absolute;top:-30%;right:-10%;width:250px;height:250px;background:radial-gradient(circle,rgba(99,102,241,.3) 0%,transparent 70%);border-radius:50%}
+.header{background:linear-gradient(135deg,#141c22 0%,#18222a 60%,#1e2a33 100%);border:1px solid #26343e;padding:24px 28px;border-radius:14px;margin-bottom:16px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-30%;right:-10%;width:250px;height:250px;background:radial-gradient(circle,rgba(240,166,58,.3) 0%,transparent 70%);border-radius:50%}
 .header h1{font-size:22px;font-weight:700;position:relative}
 .header .sub{font-size:13px;opacity:.7;position:relative}
 .header .child-badge{position:absolute;top:20px;right:24px;background:rgba(255,255,255,.12);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600}
@@ -55,7 +55,7 @@ body{font-family:'Segoe UI','Helvetica Neue',system-ui,sans-serif;background:var
 /* ===== PROFILE GRID ===== */
 .profile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
 .pbtn{padding:12px;background:var(--card2);border:2px solid var(--border);border-radius:8px;cursor:pointer;text-align:left;color:var(--text);font-size:13px;transition:all .2s}
-.pbtn:hover{border-color:var(--accent)}.pbtn.sel{border-color:var(--accent);background:rgba(99,102,241,.15)}
+.pbtn:hover{border-color:var(--accent)}.pbtn.sel{border-color:var(--accent);background:rgba(240,166,58,.15)}
 .pbtn .pn{font-weight:700;margin-bottom:2px}.pbtn .pd{font-size:11px;color:var(--text2)}
 
 /* ===== EXO HEADER ===== */
@@ -117,7 +117,7 @@ body{font-family:'Segoe UI','Helvetica Neue',system-ui,sans-serif;background:var
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-go{background:var(--accent);color:white}.btn-go:hover{background:#4f46e5}
 .btn-ok{background:var(--green2);color:white}.btn-ok:hover{background:#047857}
-.btn-out{background:transparent;color:var(--accent2);border:1.5px solid var(--accent)}.btn-out:hover{background:rgba(99,102,241,.1)}
+.btn-out{background:transparent;color:var(--accent2);border:1.5px solid var(--accent)}.btn-out:hover{background:rgba(240,166,58,.1)}
 .btn-red{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
 .btn-sm{padding:7px 14px;font-size:12px}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
@@ -181,7 +181,7 @@ input:focus{outline:none;border-color:var(--accent)}
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
 <div class="app">
 
 <div class="header">

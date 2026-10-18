@@ -8,7 +8,7 @@
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
 ================================================================================
 
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr) ; palette et polices inchangées ; aucun changement fonctionnel
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -25,15 +25,15 @@
             max-width: 900px;
             margin: 0 auto;
             padding: 0;
-            background: #0b1120;
-            color: #c8d6e5;
+            background: #0e1418;
+            color: #dfe7ec;
         }
-        ::selection { background: #f0c040; color: #0b1120; }
+        ::selection { background: #f0a63a; color: #0e1418; }
 
         /* === NAVIGATION TABS === */
         .topbar {
-            background: #0f1a2e;
-            border-bottom: 2px solid #1a2a4a;
+            background: #141c22;
+            border-bottom: 2px solid #26343e;
             padding: 10px 16px;
             position: sticky;
             top: 0;
@@ -44,7 +44,7 @@
             align-items: center;
         }
         .topbar .logo {
-            color: #f0c040;
+            color: #f0a63a;
             font-weight: 800;
             font-size: .95em;
             margin-right: 10px;
@@ -55,15 +55,15 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: .82em;
-            border: 1px solid #1a2a4a;
-            background: #0b1120;
-            color: #7a8ba5;
+            border: 1px solid #26343e;
+            background: #0e1418;
+            color: #8fa1ad;
             transition: .2s;
             white-space: nowrap;
         }
-        .nav-tab:hover { border-color: #3a5a8a; color: #c8d6e5; }
-        .nav-tab#tabCours:hover { border-color: #d94f30; color: #f0c040; background: rgba(217,79,48,0.15); }
-        .nav-tab.active { background: #1a2a4a; color: #f0c040; border-color: #f0c040; font-weight: 700; }
+        .nav-tab:hover { border-color: #33434e; color: #dfe7ec; }
+        .nav-tab#tabCours:hover { border-color: #d94f30; color: #f0a63a; background: rgba(217,79,48,0.15); }
+        .nav-tab.active { background: #26343e; color: #f0a63a; border-color: #f0a63a; font-weight: 700; }
         .nav-tab .badge {
             display: inline-block;
             font-size: .7em;
@@ -71,11 +71,11 @@
             border-radius: 10px;
             margin-left: 4px;
             vertical-align: middle;
-            background: #3a4a6a;
-            color: #8a9ab5;
+            background: #33434e;
+            color: #8fa1ad;
         }
         .nav-tab .badge.done { background: #27ae60; color: #fff; }
-        .nav-sep { width: 1px; height: 24px; background: #1a2a4a; margin: 0 6px; }
+        .nav-sep { width: 1px; height: 24px; background: #26343e; margin: 0 6px; }
 
         /* === CONTAINER === */
         .main-container { padding: 20px; }
@@ -86,7 +86,7 @@
 
         /* === EXAM HEADER === */
         .exam-header {
-            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            background: linear-gradient(135deg, #1e2a33, #33434e);
             color: white;
             padding: 25px;
             border-radius: 10px;
@@ -96,15 +96,15 @@
         .exam-header h1 { margin: 0 0 10px 0; font-size: 1.6em; }
         .exam-header p { margin: 5px 0; opacity: 0.9; font-size: 0.95em; }
         .info-box {
-            background: #111d33;
+            background: #18222a;
             padding: 15px 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #2d5a87;
+            border-left: 4px solid #33434e;
         }
         .timer {
-            background: #1e3a5f;
-            color: #f0c040;
+            background: #1e2a33;
+            color: #f0a63a;
             padding: 10px 20px;
             border-radius: 8px;
             font-size: 1.2em;
@@ -125,8 +125,8 @@
 
         /* === QUESTIONS (shared) === */
         .question {
-            background: #111d33;
-            border: 1px solid #1a2a4a;
+            background: #18222a;
+            border: 1px solid #26343e;
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 15px;
@@ -142,8 +142,8 @@
             gap: 8px;
         }
         .question-number {
-            background: #1a2a4a;
-            color: #5dade2;
+            background: #26343e;
+            color: #5cc8d6;
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.85em;
@@ -154,32 +154,32 @@
             padding: 4px 10px;
             border-radius: 4px;
         }
-        .theme-meteo { background: #0d253f; color: #5dade2; border: 1px solid #1a3a5a; }
+        .theme-meteo { background: #141c22; color: #5cc8d6; border: 1px solid #1e2a33; }
         .theme-perf { background: #2a1a08; color: #f0a030; border: 1px solid #4a3018; }
         .theme-risque { background: #2a0818; color: #e06080; border: 1px solid #4a1828; }
         .question-text {
             font-size: 1.05em;
             margin-bottom: 15px;
             line-height: 1.5;
-            color: #dde6ef;
+            color: #dfe7ec;
         }
         .choices { display: flex; flex-direction: column; gap: 10px; }
         .choice {
             display: flex;
             align-items: flex-start;
             padding: 12px 15px;
-            background: #0b1120;
-            border: 2px solid #1a2a4a;
+            background: #0e1418;
+            border: 2px solid #26343e;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .choice:hover { border-color: #3a5a8a; background: #0f1a2e; }
-        .choice.selected { border-color: #5dade2; background: #0f1a3e; }
+        .choice:hover { border-color: #33434e; background: #141c22; }
+        .choice.selected { border-color: #5cc8d6; background: #141c22; }
         .choice.correct { border-color: #27ae60 !important; background: #0f2a15 !important; }
         .choice.incorrect { border-color: #e74c3c !important; background: #2a0f15 !important; }
         .choice.was-correct { border-color: #27ae60 !important; background: #0f2a15 !important; }
-        .choice input { margin-right: 12px; margin-top: 3px; accent-color: #f0c040; }
+        .choice input { margin-right: 12px; margin-top: 3px; accent-color: #f0a63a; }
         .choice label { cursor: pointer; flex: 1; }
         /* renfort quiz uses these too */
         .choice.locked { pointer-events: none; }
@@ -189,7 +189,7 @@
             margin-top: 15px;
             padding: 15px;
             background: #1a1a10;
-            border-left: 4px solid #f0c040;
+            border-left: 4px solid #f0a63a;
             border-radius: 0 8px 8px 0;
             font-size: 0.95em;
             color: #d4c87a;
@@ -202,22 +202,22 @@
             display: inline-block;
             margin-top: 10px;
             padding: 8px 18px;
-            background: #1a2a4a;
-            color: #f0c040;
-            border: 1px solid rgba(240,192,64,0.4);
+            background: #26343e;
+            color: #f0a63a;
+            border: 1px solid rgba(240,166,58,0.4);
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.85em;
             font-weight: 600;
             transition: .2s;
         }
-        .renfort-btn:hover { background: #2a3a5a; border-color: #f0c040; }
+        .renfort-btn:hover { background: #33434e; border-color: #f0a63a; }
 
         /* === RESULTS === */
         .results {
             display: none;
-            background: #111d33;
-            border: 1px solid #1a2a4a;
+            background: #18222a;
+            border: 1px solid #26343e;
             padding: 30px;
             border-radius: 10px;
             text-align: center;
@@ -243,17 +243,17 @@
             margin-top: 20px;
         }
         .theme-stat {
-            background: #0b1120;
+            background: #0e1418;
             padding: 15px;
             border-radius: 8px;
             text-align: left;
-            border: 1px solid #1a2a4a;
+            border: 1px solid #26343e;
         }
-        .theme-stat h4 { margin: 0 0 10px 0; color: #c8d6e5; }
+        .theme-stat h4 { margin: 0 0 10px 0; color: #dfe7ec; }
         .progress-bar {
             width: 100%;
             height: 10px;
-            background: #1a2a4a;
+            background: #26343e;
             border-radius: 5px;
             overflow: hidden;
         }
@@ -276,31 +276,31 @@
             font-weight: 600;
             transition: .2s;
         }
-        .btn-primary { background: #f0c040; color: #0b1120; }
-        .btn-primary:hover { background: #f5d060; }
-        .btn-secondary { background: #1a2a4a; color: #5dade2; border: 1px solid #3a5a8a; }
-        .btn-secondary:hover { background: #1a3a5a; }
+        .btn-primary { background: #f0a63a; color: #0e1418; }
+        .btn-primary:hover { background: #ffcf7a; }
+        .btn-secondary { background: #26343e; color: #5cc8d6; border: 1px solid #33434e; }
+        .btn-secondary:hover { background: #1e2a33; }
 
         /* ===================================================================
            CSS RENFORCEMENT (source originale)
            =================================================================== */
         .cours {
-            background: #111d33;
-            border: 1px solid #1a2a4a;
+            background: #18222a;
+            border: 1px solid #26343e;
             border-radius: 12px;
             padding: 26px 28px;
             margin-bottom: 20px;
             line-height: 1.7;
         }
         .cours h2 {
-            color: #f0c040;
+            color: #f0a63a;
             font-size: 1.3em;
             margin: 0 0 14px 0;
             padding-bottom: 10px;
-            border-bottom: 1px solid #1a2a4a;
+            border-bottom: 1px solid #26343e;
         }
         .cours h3 {
-            color: #5dade2;
+            color: #5cc8d6;
             font-size: 1em;
             margin: 16px 0 8px;
         }
@@ -311,19 +311,19 @@
             font-size: 0.88em;
         }
         .cours th {
-            background: #162040;
-            color: #f0c040;
+            background: #18222a;
+            color: #f0a63a;
             text-align: left;
             padding: 7px 10px;
-            border: 1px solid #1a2a4a;
+            border: 1px solid #26343e;
         }
         .cours td {
             padding: 7px 10px;
-            border: 1px solid #1a2a4a;
+            border: 1px solid #26343e;
             vertical-align: top;
         }
-        .cours tr:nth-child(even) td { background: #0f1828; }
-        .cours .code { color: #f0c040; font-weight: 700; font-family: Consolas, monospace; }
+        .cours tr:nth-child(even) td { background: #141c22; }
+        .cours .code { color: #f0a63a; font-weight: 700; font-family: Consolas, monospace; }
         .cours .important {
             background: #1a2510;
             border-left: 3px solid #27ae60;
@@ -348,8 +348,8 @@
         .quiz-area.visible { display: block; }
 
         .question-card {
-            background: #111d33;
-            border: 1px solid #1a2a4a;
+            background: #18222a;
+            border: 1px solid #26343e;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 14px;
@@ -357,12 +357,12 @@
         }
         .question-card.answered-correct { border-color: #27ae60; }
         .question-card.answered-wrong { border-color: #e74c3c; }
-        .q-num { color: #5dade2; font-size: .85em; font-weight: 700; margin-bottom: 10px; }
-        .q-text { font-size: 1.02em; margin-bottom: 14px; line-height: 1.5; color: #dde6ef; }
+        .q-num { color: #5cc8d6; font-size: .85em; font-weight: 700; margin-bottom: 10px; }
+        .q-text { font-size: 1.02em; margin-bottom: 14px; line-height: 1.5; color: #dfe7ec; }
 
         .score-bar {
-            background: #111d33;
-            border: 1px solid #1a2a4a;
+            background: #18222a;
+            border: 1px solid #26343e;
             border-radius: 10px;
             padding: 14px 20px;
             margin-bottom: 16px;
@@ -371,7 +371,7 @@
             gap: 16px;
             flex-wrap: wrap;
         }
-        .score-bar .round { color: #5dade2; font-size: .9em; }
+        .score-bar .round { color: #5cc8d6; font-size: .9em; }
         .score-bar .status { font-size: 1.05em; font-weight: 700; }
         .score-bar .status.pass { color: #27ae60; }
         .score-bar .status.fail { color: #e74c3c; }
@@ -379,13 +379,13 @@
             flex: 1;
             min-width: 100px;
             height: 8px;
-            background: #1a2a4a;
+            background: #26343e;
             border-radius: 4px;
             overflow: hidden;
         }
         .progress-track .progress-fill {
             height: 100%;
-            background: #f0c040;
+            background: #f0a63a;
             border-radius: 4px;
             transition: width .4s;
         }
@@ -395,7 +395,7 @@
             padding: 30px 16px;
         }
         .victory h2 { color: #27ae60; font-size: 1.4em; margin-bottom: 6px; }
-        .victory p { color: #7a8ba5; }
+        .victory p { color: #8fa1ad; }
         .victory .icon { font-size: 2em; }
 
         .btn-row {
@@ -406,8 +406,8 @@
             flex-wrap: wrap;
         }
         .btn-validate {
-            background: #f0c040;
-            color: #0b1120;
+            background: #f0a63a;
+            color: #0e1418;
             padding: 10px 24px;
             border-radius: 8px;
             font-weight: 600;
@@ -415,43 +415,43 @@
             cursor: pointer;
             font-size: .95em;
         }
-        .btn-validate:hover { background: #f5d060; }
+        .btn-validate:hover { background: #ffcf7a; }
         .btn-retry {
-            background: #1a2a4a;
-            color: #5dade2;
-            border: 1px solid #3a5a8a;
+            background: #26343e;
+            color: #5cc8d6;
+            border: 1px solid #33434e;
             padding: 10px 24px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             font-size: .95em;
         }
-        .btn-retry:hover { background: #1a3a5a; }
+        .btn-retry:hover { background: #1e2a33; }
         .btn-cours {
-            background: #162040;
-            color: #f0c040;
-            border: 1px solid rgba(240,192,64,0.2);
+            background: #18222a;
+            color: #f0a63a;
+            border: 1px solid rgba(240,166,58,0.2);
             padding: 10px 24px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             font-size: .95em;
         }
-        .btn-cours:hover { background: #1a2a50; }
+        .btn-cours:hover { background: #26343e; }
         .btn-back {
-            background: #0b1120;
-            color: #7a8ba5;
-            border: 1px solid #1a2a4a;
+            background: #0e1418;
+            color: #8fa1ad;
+            border: 1px solid #26343e;
             padding: 10px 24px;
             border-radius: 8px;
             cursor: pointer;
             font-size: .9em;
         }
-        .btn-back:hover { color: #c8d6e5; border-color: #3a5a8a; }
+        .btn-back:hover { color: #dfe7ec; border-color: #33434e; }
 
         footer {
             text-align: center;
-            color: #3a4a6a;
+            color: #33434e;
             padding: 20px;
             font-size: 0.9em;
         }
@@ -478,7 +478,7 @@
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="http://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
 
 <!-- ================================================================ -->
 <!-- NAVIGATION -->
@@ -520,7 +520,7 @@
         2. Performances UAS (enveloppe vol, masse/centrage, batteries, charges)<br>
         3. Attenuation risques sol (mode basse vitesse, distances, regle 1:1)<br>
         <br>
-        <span style="color:#f0c040">En cas d'erreur, un bouton <b>Renforcer →</b> apparaitra pour travailler le point faible.</span><br>
+        <span style="color:#f0a63a">En cas d'erreur, un bouton <b>Renforcer →</b> apparaitra pour travailler le point faible.</span><br>
         <span style="color:#f4a261">Le bouton <b>☁ Fronts &amp; Nuages</b> (barre de nav) ouvre le cours illustré sur les nuages et fronts.</span>
     </div>
 
