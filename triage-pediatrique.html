@@ -28,8 +28,9 @@
                        malaise a l'effort
                      - module comportement / sommeil / moral, pupilles,
                        tremblements ; numeros 15, 3114, 3018, 119
-                     - langage parent, pistes sans pourcentage (3 au plus),
-                       CTAS / ESI / SAMU repliés pour le medecin et exportes
+                     - libelles parent (noms medicaux conserves), niveaux
+                       CTAS / ESI / SAMU ajoutes a l'export ; hypotheses,
+                       pourcentages et criteres inchanges
                      - seuils uniques triage / suivi, age saisi une fois,
                        fievre seule non classee urgente, caracteres repares
                      - banc de non-regression integre (?banc)
@@ -530,7 +531,11 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         <div class="symptom-item">
             <label><input type="checkbox" id="hasFc" onchange="toggleSub(this)"> Frequence cardiaque</label>
             <div class="sub-options" id="sub-hasFc">
-                <small style="color:#5f6b72">Normes selon l'age saisi en haut : 6-8 ans 70-110 ; 9-12 ans 65-105 ; 13-15 ans 60-100 (plus 10 par degre de fievre)</small><br>
+                <strong>Age :</strong> <small style="color:#5f6b72">(inutile si l'age est saisi en haut ; tolerance de 10 par degre de fievre)</small><br>
+                <label><input type="radio" name="fc-age" value="6-8"> 6-8 ans (N: 70-110)</label>
+                <label><input type="radio" name="fc-age" value="9-12"> 9-12 ans (N: 65-105)</label>
+                <label><input type="radio" name="fc-age" value="13-15"> 13-15 ans (N: 60-100)</label>
+                <hr>
                 <label>FC mesuree : <input type="number" id="fc-value" min="40" max="220" style="width:80px"> bpm</label>
             </div>
         </div>
@@ -538,7 +543,11 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         <div class="symptom-item">
             <label><input type="checkbox" id="hasFr" onchange="toggleSub(this)"> Frequence respiratoire</label>
             <div class="sub-options" id="sub-hasFr">
-                <small style="color:#5f6b72">Normes selon l'age saisi en haut : 6-8 ans 18-24 ; 9-12 ans 16-22 ; 13-15 ans 12-20</small><br>
+                <strong>Age :</strong> <small style="color:#5f6b72">(inutile si l'age est saisi en haut)</small><br>
+                <label><input type="radio" name="fr-age" value="6-8"> 6-8 ans (N: 18-24)</label>
+                <label><input type="radio" name="fr-age" value="9-12"> 9-12 ans (N: 16-22)</label>
+                <label><input type="radio" name="fr-age" value="13-15"> 13-15 ans (N: 12-20)</label>
+                <hr>
                 <label>FR mesuree : <input type="number" id="fr-value" min="8" max="60" style="width:80px"> /min</label>
             </div>
         </div>
@@ -684,18 +693,18 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
                 <label><input type="checkbox" name="abdo-carac" value="constante"> Douleur constante</label>
                 <label><input type="checkbox" name="abdo-carac" value="augmente"> Douleur qui augmente depuis quelques heures</label>
                 <label><input type="checkbox" name="abdo-carac" value="crampes"> Crampes</label>
-                <label><input type="checkbox" name="abdo-carac" value="migration"> Douleur partie du nombril, puis descendue en bas a droite</label>
+                <label><input type="checkbox" name="abdo-carac" value="migration"> Migration de la douleur (partie du nombril, puis descendue en bas a droite)</label>
                 <label><input type="checkbox" name="abdo-carac" value="ballonne"> Ventre gonfle, tendu</label>
-                <label class="red-flag"><input type="checkbox" name="abdo-carac" value="defense"> Ventre dur comme du bois, empeche qu'on le touche</label>
+                <label class="red-flag"><input type="checkbox" name="abdo-carac" value="defense"> Ventre dur comme du bois, empeche qu'on le touche (defense)</label>
                 <hr>
                 <strong>Signes appendice :</strong><br>
                 <label><input type="checkbox" name="abdo-append" value="vomi-apres"> Vomissements apres le debut de la douleur</label>
                 <label><input type="checkbox" name="abdo-append" value="anorexie"> Ne veut pas manger</label>
                 <label><input type="checkbox" name="abdo-append" value="marche"> Marche penche en avant, a mal en sautant a cloche-pied</label>
                 <label><input type="checkbox" name="abdo-append" value="couche"> Reste couche en chien de fusil</label>
-                <label><input type="checkbox" name="abdo-append" value="blumberg"> Tres mal quand on relache apres avoir appuye en bas a droite</label>
-                <label><input type="checkbox" name="abdo-append" value="psoitis"> Mal en bas a droite en levant la jambe droite tendue</label>
-                <label><input type="checkbox" name="abdo-append" value="rovsing"> Appuyer en bas a gauche fait mal en bas a droite</label>
+                <label><input type="checkbox" name="abdo-append" value="blumberg"> Tres mal quand on relache apres avoir appuye en bas a droite (douleur au relachement)</label>
+                <label><input type="checkbox" name="abdo-append" value="psoitis"> Mal en bas a droite en levant la jambe droite tendue (douleur extension jambe)</label>
+                <label><input type="checkbox" name="abdo-append" value="rovsing"> Appuyer en bas a gauche fait mal en bas a droite (douleur cote oppose)</label>
             </div>
         </div>
         
@@ -708,7 +717,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <div class="sub-options" id="sub-deshydratation">
                 <label><input type="checkbox" name="desh" value="soif"> Soif intense</label>
                 <label><input type="checkbox" name="desh" value="bouche"> Bouche seche</label>
-                <label class="red-flag"><input type="checkbox" name="desh" value="pli"> Pli de peau qui reste marque (pincer le dos de la main)</label>
+                <label class="red-flag"><input type="checkbox" name="desh" value="pli"> Pli cutane persistant (pincer le dos de la main : le pli reste marque)</label>
                 <label class="red-flag"><input type="checkbox" name="desh" value="yeux"> Yeux creux</label>
                 <label class="red-flag"><input type="checkbox" name="desh" value="pasurines"> Pas d'urines &gt; 8h</label>
             </div>
@@ -726,7 +735,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
                 <label><input type="radio" name="eruption-type" value="papules"> Boutons en relief</label>
                 <label><input type="radio" name="eruption-type" value="vesicules"> Petites cloques (avec liquide)</label>
                 <label><input type="radio" name="eruption-type" value="urticaire"> Plaques qui grattent</label>
-                <label class="red-flag"><input type="radio" name="eruption-type" value="purpura"> Taches qui ne s'effacent PAS sous un verre transparent appuye dessus</label>
+                <label class="red-flag"><input type="radio" name="eruption-type" value="purpura"> Ne s'efface PAS a la pression (test du verre transparent)</label>
                 <hr>
                 <strong>Localisation :</strong><br>
                 <label><input type="checkbox" name="eruption-loc" value="visage"> Visage</label>
@@ -826,8 +835,8 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <label class="red-flag"><input type="checkbox" id="raideurNuque" onchange="toggleSub(this)"> Raideur de nuque (ne peut pas poser le menton sur la poitrine)</label>
             <div class="sub-options" id="sub-raideurNuque">
                 <strong>A observer, enfant allonge sur le dos :</strong><br>
-                <label class="red-flag"><input type="checkbox" id="kernig"> Ne peut pas tendre la jambe a la verticale sans douleur dans le dos ou la nuque</label>
-                <label class="red-flag"><input type="checkbox" id="brudzinski"> Plie les jambes tout seul quand on lui souleve doucement la tete</label>
+                <label class="red-flag"><input type="checkbox" id="kernig"> Ne peut pas tendre la jambe a la verticale sans douleur dans le dos ou la nuque (signe de Kernig)</label>
+                <label class="red-flag"><input type="checkbox" id="brudzinski"> Plie les jambes tout seul quand on lui souleve doucement la tete (signe de Brudzinski)</label>
             </div>
         </div>
         <div class="symptom-item">
@@ -2027,7 +2036,8 @@ const maladiesDB = {
         description: "Infection virale (Coxsackie). Tres contagieuse. Benigne. Guerit en 7-10 jours.",
         niveau: "vert",
         criteres: [
-            { texte: "Vesicules mains et pieds", champ: "eruptionLoc", op: "contains", val: "palmoplantaire" },
+            { texte: "Vesicules mains", champ: "eruptionLoc", op: "contains", val: "palmoplantaire" },
+            { texte: "Vesicules pieds", champ: "eruptionLoc", op: "contains", val: "palmoplantaire" },
             { texte: "Aphtes bouche", champ: "aphtes", op: "==", val: true },
             { texte: "Eruption fesses", champ: "eruptionLoc", op: "contains", val: "fesses" },
             { texte: "Fievre moderee", champ: "fievre", op: "==", val: true },
@@ -2325,7 +2335,7 @@ const maladiesDB = {
             { texte: "Douleurs articulaires predominantes", champ: "articIntensite", op: "==", val: "intense" }
         ],
         urgence: {
-            condition: (data) => data.fievre && (data.douleurYeux || data.courbatures) && (data.saignements || (data.douleurAbdo && data.abdoLoc === 'epigastre') || data.extremitesFroides),
+            condition: (data) => data.saignements || (data.fievre && (data.douleurYeux || data.courbatures) && ((data.douleurAbdo && data.abdoLoc === 'epigastre') || data.extremitesFroides)),
             message: "Dengue avec signes d'alarme - Hospitalisation"
         },
         alertes: [
@@ -3142,16 +3152,19 @@ const maladiesDB = {
             { texte: "Vomissements", champ: "vomissements", op: "==", val: true },
             { texte: "Somnolence / confusion", champ: "confusion", op: "==", val: true },
             { texte: "Pupilles anormales", champ: "pupilles", op: "==", val: true },
-            { texte: "Agitation", champ: "agitation", op: "==", val: true }
+            { texte: "Agitation", champ: "agitation", op: "==", val: true },
+            { texte: "Douleur HCD", champ: "abdoLoc", op: "==", val: "hcd" },
+            { texte: "Ictere", champ: "ictere", op: "==", val: true }
         ],
         exclusions: [],
         urgence: {
-            condition: (data) => data.ingestion,
-            message: "Ingestion de medicament / produit - Appeler le 15 (ou le centre antipoison) MEME SANS SYMPTOME"
+            condition: (data) => data.ingestion || (data.abdoLoc === 'hcd' && data.ictere),
+            message: "Ingestion de medicament / produit, ou douleur HCD + ictere (intox paracetamol suspectee) - Appeler le 15 MEME SANS SYMPTOME - NAC < 8h - Paracetamolemie H4"
         },
         alertes: [
             "Paracetamol : pas de symptome les premieres heures, atteinte du foie retardee",
-            "Delai > 8h = efficacite de l'antidote reduite",
+            "Delai > 8h = efficacite antidote reduite",
+            "Paracetamolemie H4",
             "Somnolence, respiration lente, convulsions"
         ],
         conseils: [
@@ -3159,13 +3172,16 @@ const maladiesDB = {
             "Garder la boite ou le flacon (nom, dosage, quantite manquante)",
             "Noter l'heure de prise",
             "Si geste volontaire : ne pas laisser l'enfant seul",
-            "Paracetamol : N-acetylcysteine (NAC) le plus tot possible, paracetamolemie a H4"
+            "N-acetylcysteine (NAC) le plus tot possible",
+            "Efficace meme apres 8h (moins bien)",
+            "Paracetamolemie a H4",
+            "Charbon active si < 1h"
         ],
         nonFaire: [
             "Faire vomir",
             "Donner du lait ou de l'eau 'pour diluer'",
             "Se rassurer car 'pas de symptomes'",
-            "Attendre les symptomes pour appeler"
+            "Attendre les symptomes pour traiter"
         ]
     },
 
@@ -4000,10 +4016,10 @@ function collecterDonnees() {
         hasSpo2: isChecked('hasSpo2'),
         spo2Val: getVal('spo2-val'),
         hasFc: isChecked('hasFc'),
-        fcAge: trancheAge(age),
+        fcAge: trancheAge(age) || getVal('fc-age'),
         fcValue: document.getElementById('fc-value')?.value || null,
         hasFr: isChecked('hasFr'),
-        frAge: trancheAge(age),
+        frAge: trancheAge(age) || getVal('fr-age'),
         frValue: document.getElementById('fr-value')?.value || null,
         hasTa: isChecked('hasTa'),
         taSys: document.getElementById('ta-sys')?.value || null,
@@ -4203,10 +4219,10 @@ function trancheAge(age) {
 
 // Retourne 'rouge', 'orange', 'hors' (hors norme sans gravite), 'ok' ou '' (pas de valeur)
 // FC : tolerance de 10 battements par degre de fievre ; TA basse : 70 + 2 x age jusqu'a 10 ans, 90 ensuite
-function seuilConstante(type, valeur, age, temp) {
+function seuilConstante(type, valeur, age, temp, tranche) {
     if (valeur === null || valeur === undefined || valeur === '' || isNaN(parseFloat(valeur))) return '';
     const v = parseFloat(valeur);
-    const t = trancheAge(age) || '9-12';
+    const t = tranche || trancheAge(age) || '9-12';
     const corrFievre = (temp && temp > 37) ? Math.round((temp - 37) * 10) : 0;
     switch (type) {
         case 'fc': {
@@ -4415,6 +4431,7 @@ function analyser() {
         return;
     }
 
+    console.log('Donnees:', data);
     afficherResultat(analyserDonnees(data), data);
 }
 
@@ -4423,8 +4440,8 @@ function calculerTriageOfficiel(data, drapeaux) {
 
     // Analyse des constantes vitales (seuils uniques, voir seuilConstante)
     const niv = s => (s === 'rouge' || s === 'orange') ? s : null;
-    const fcAlerte = data.hasFc ? niv(seuilConstante('fc', data.fcValue, data.age, data.fievre ? data.temp : null)) : null;
-    const frAlerte = data.hasFr ? niv(seuilConstante('fr', data.frValue, data.age)) : null;
+    const fcAlerte = data.hasFc ? niv(seuilConstante('fc', data.fcValue, data.age, data.fievre ? data.temp : null, data.fcAge)) : null;
+    const frAlerte = data.hasFr ? niv(seuilConstante('fr', data.frValue, data.age, null, data.frAge)) : null;
     const taAlerte = data.hasTa ? niv(seuilConstante('taSys', data.taSys, data.age)) : null;
     const glycemieAlerte = data.hasGlycemie ? niv(seuilConstante('glycemie', data.glycemieVal, data.age)) : null;
 
@@ -4619,16 +4636,18 @@ function afficherResultat(a, data) {
         html += '</div>';
     }
 
-    // Pourquoi ce niveau
-    const raisons = [];
-    a.drapeaux.forEach(d => raisons.push({ n: 'rouge', m: `<strong>${d.maladie}</strong> : ${d.message}` }));
-    a.signes.forEach(s => raisons.push({ n: s.n, m: s.m }));
-    raisons.sort((x, y) => RANG_NIVEAU[y.n] - RANG_NIVEAU[x.n]);
-    const vus = new Set();
-    const raisonsUniques = raisons.filter(r => { if (vus.has(r.m)) return false; vus.add(r.m); return true; });
-    if (raisonsUniques.length > 0) {
-        html += `<div class="${niveau === 'rouge' ? 'alerte-rouge' : 'conseils'}"><h4>&#x1F6A8; Pourquoi ce niveau</h4><ul>`;
-        raisonsUniques.forEach(r => html += `<li>${getNiveauIcon(r.n)} ${r.m}</li>`);
+    // Drapeaux rouges des fiches (bloc v1)
+    if (a.drapeaux.length > 0) {
+        html += '<div class="alerte-rouge"><h4>&#x1F6A8; ALERTES URGENTES</h4>';
+        a.drapeaux.forEach(d => html += `<p><strong>${d.maladie}</strong>: ${d.message}</p>`);
+        html += '</div>';
+    }
+
+    // Signes d'alerte qui fixent le niveau
+    if (a.signes.length > 0) {
+        const signesTries = a.signes.slice().sort((x, y) => RANG_NIVEAU[y.n] - RANG_NIVEAU[x.n]);
+        html += `<div class="${niveau === 'rouge' ? 'alerte-rouge' : 'conseils'}"><h4>&#x26A0; Pourquoi ce niveau</h4><ul>`;
+        signesTries.forEach(sg => html += `<li>${getNiveauIcon(sg.n)} ${sg.m}</li>`);
         html += '</ul></div>';
     }
 
@@ -4660,7 +4679,7 @@ function afficherResultat(a, data) {
     }
 
     // Conseils
-    html += '<div class="conseils"><h4>&#x1F4A1; Que faire</h4><ul>';
+    html += '<div class="conseils"><h4>&#x1F4A1; Conseils generaux</h4><ul>';
     if (niveau === 'rouge') {
         html += '<li><strong>Appelez le 15 maintenant</strong></li>';
         html += '<li>Restez avec l\'enfant ; le bouton "Exporter symptomes" copie la liste a lire au regulateur</li>';
@@ -4686,59 +4705,67 @@ function afficherResultat(a, data) {
         html += '</ul><p style="margin-bottom:0">Reevaluez 1 h apres le paracetamol : s\'il joue, boit et sourit, c\'est rassurant ; s\'il reste abattu alors que la fievre a baisse, medecin aujourd\'hui.</p></div>';
     }
 
-    // Pistes (3 au plus, sans pourcentage ; une piste grave n'est nommee que si elle a un drapeau ou au moins 50 %)
-    const visibles = a.resultats.filter(r => !(r.niveau === 'rouge' && !a.idsDrapeau.has(r.id) && r.pourcent < 50));
-    const graveMasquee = visibles.length < a.resultats.length;
-    if (visibles.length > 0 || graveMasquee) {
-        html += '<div class="pathologies-probables"><h4>&#x1F50D; Pistes que le medecin envisagera</h4>';
-        html += '<p style="font-size:0.85em;color:#5f6b72;margin-top:0">Ce ne sont pas des diagnostics : seul l\'examen par un medecin le permet.</p>';
-        visibles.slice(0, 3).forEach((r, idx) => {
+    // Pathologies candidates avec criteres colores (8 au plus, comme en v1)
+    if (a.resultats.length > 0) {
+        html += '<div class="pathologies-probables"><h4>&#x1F50D; Hypotheses diagnostiques</h4>';
+        html += '<p style="font-size:0.85em;color:#5f6b72;margin-top:0">Pistes que le medecin envisagera ; seul son examen permet un diagnostic.</p>';
+
+        a.resultats.slice(0, 8).forEach((r, idx) => {
             const m = maladiesDB[r.id];
             html += `<div class="patho-card ${idx === 0 ? 'top' : ''}">`;
-            html += `<div class="patho-header"><strong>${getNiveauIcon(r.niveau)} ${r.nom}</strong></div>`;
+
+            // Header
+            html += '<div class="patho-header">';
+            html += `<strong>${getNiveauIcon(r.niveau)} ${r.nom}</strong>`;
+            html += `<span class="patho-score">${r.pourcent}%</span>`;
+            html += '</div>';
+
+            // Description
             html += `<div class="patho-desc">${r.description}</div>`;
-            html += '<details><summary style="cursor:pointer;font-size:0.85em">Pourquoi cette piste</summary>';
+
+            // CRITERES ATTENDUS (bleu pale, cercle vert si coche)
             const criteresParTexte = {};
-            m.criteres.forEach(c => { (criteresParTexte[c.texte] = criteresParTexte[c.texte] || []).push(c); });
-            html += '<div><small><strong>Criteres attendus :</strong></small><div class="criteres-box">';
+            m.criteres.forEach(c => {
+                if (!criteresParTexte[c.texte]) criteresParTexte[c.texte] = [];
+                criteresParTexte[c.texte].push(c);
+            });
+            html += '<div><small><strong>Criteres attendus :</strong></small>';
+            html += '<div class="criteres-box">';
             for (const [texte, criteres] of Object.entries(criteresParTexte)) {
                 const match = criteres.some(c => champEstCoche(data, c));
                 html += `<span class="critere-tag critere-attendu ${match ? 'critere-match' : ''}">${texte}</span>`;
             }
             html += '</div></div>';
+
+            // EXCLUSIONS (rouge pale, cercle vert si coche = probleme)
             if (m.exclusions && m.exclusions.length > 0) {
                 const exclusionsParTexte = {};
-                m.exclusions.forEach(e => { (exclusionsParTexte[e.texte] = exclusionsParTexte[e.texte] || []).push(e); });
-                html += '<div style="margin-top:6px"><small><strong>Filtres negatifs :</strong></small><div class="criteres-box">';
+                m.exclusions.forEach(e => {
+                    if (!exclusionsParTexte[e.texte]) exclusionsParTexte[e.texte] = [];
+                    exclusionsParTexte[e.texte].push(e);
+                });
+                html += '<div style="margin-top:6px"><small><strong>Filtres negatifs :</strong></small>';
+                html += '<div class="criteres-box">';
                 for (const [texte, exclusions] of Object.entries(exclusionsParTexte)) {
                     const match = exclusions.some(e => champEstCoche(data, e));
                     html += `<span class="critere-tag critere-exclusion ${match ? 'critere-match' : ''}">${texte}</span>`;
                 }
                 html += '</div></div>';
             }
-            html += '</details></div>';
+
+            html += '</div>';
         });
-        if (graveMasquee) {
-            html += '<p style="font-size:0.9em"><strong>Une cause qui demande un avis rapide n\'est pas exclue</strong> : elle compte dans le niveau affiche.</p>';
-        }
+
         html += '</div>';
+    } else {
+        html += '<div class="pathologies-probables"><p>Aucune pathologie ne correspond precisement aux symptomes selectionnes.</p></div>';
     }
 
-    // Reconsulter si
-    html += '<div class="surveillance"><h4>&#x26A0; Appeler le 15 ou reconsulter si :</h4><ul>';
-    html += '<li>Il devient difficile a reveiller, ne reagit plus comme d\'habitude</li>';
-    html += '<li>Taches qui ne s\'effacent pas sous un verre</li>';
-    html += '<li>Mains et pieds froids, marbrures, levres bleues</li>';
-    html += '<li>Respire avec effort ou tres vite</li>';
-    html += '<li>Refuse de boire, n\'urine plus</li>';
-    html += '<li>Fievre au-dela de 3 jours, ou qui revient apres une amelioration</li>';
-    html += '<li>Vous etes inquiet</li>';
-    html += '</ul></div>';
-
-    // Pour le medecin : triage officiel et constantes
+    // Triage officiel (CTAS / ESI / SAMU)
     const t = a.triage;
-    html += '<details class="pathologies-probables" style="margin-top: 20px; background: #fffdf8; border: 2px solid #5f6b72;">';
-    html += '<summary style="cursor:pointer;font-weight:bold">&#x1F4CA; Pour le medecin : niveaux CTAS / ESI / SAMU</summary>';
+    html += '<div class="pathologies-probables" style="margin-top: 20px; background: #fffdf8; border: 2px solid #5f6b72;">';
+    html += '<h4>&#x1F4CA; Niveaux de triage (protocoles officiels)</h4>';
+    html += '<p style="font-size: 0.85em; color: #5f6b72; margin-bottom: 15px;">Classification selon 3 standards internationaux :</p>';
     const ctasColors = ['', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#1f7f8c'];
     const ctasLabels = ['', 'Reanimation', 'Tres urgent', 'Urgent', 'Moins urgent', 'Non urgent'];
     const ctasDelais = ['', 'Immediat', '< 15 min', '< 30 min', '< 60 min', '< 120 min'];
@@ -4752,21 +4779,39 @@ function afficherResultat(a, data) {
     html += ligne('&#x1F1E8;&#x1F1E6; CTAS', ctasColors[t.ctas.niveau], 'Niveau ' + t.ctas.niveau, `${ctasLabels[t.ctas.niveau]} (${ctasDelais[t.ctas.niveau]})`);
     html += ligne('&#x1F1FA;&#x1F1F8; ESI', ctasColors[t.esi.niveau], 'Niveau ' + t.esi.niveau, esiLabels[t.esi.niveau]);
     html += ligne('&#x1F1EB;&#x1F1F7; SAMU', ctasColors[t.french.niveau], frenchLabels[t.french.niveau].split(' - ')[0], frenchLabels[t.french.niveau].split(' - ')[1] || '');
-    const ac = t.alertesConstantes;
-    if (ac.fc || ac.fr || ac.ta || ac.glycemie) {
-        html += '<h4 style="margin-bottom:5px">&#x1F4CF; Constantes vitales anormales</h4><ul>';
-        const lib = { fc: ['FC critique', 'FC anormale'], fr: ['FR critique', 'FR elevee'], ta: ['TA critique', 'TA anormale'], glycemie: ['Glycemie critique', 'Glycemie anormale'] };
-        for (const k of ['fc', 'fr', 'ta', 'glycemie']) {
-            if (ac[k] === 'rouge') html += `<li style="color:#dc3545"><strong>${lib[k][0]}</strong></li>`;
-            else if (ac[k] === 'orange') html += `<li style="color:#b86a00"><strong>${lib[k][1]}</strong></li>`;
-        }
-        html += '</ul>';
-    }
-    if ((data.hasFc || data.hasFr) && data.age === null) {
+    if ((data.hasFc && !data.fcAge) || (data.hasFr && !data.frAge)) {
         html += '<p style="font-size:0.85em">Age non saisi : normes de 9-12 ans utilisees.</p>';
     }
-    html += '<p style="font-size: 0.8em; color: #888; margin-top: 10px; margin-bottom: 0;">&#x26A0; Classifications indicatives, ne remplacent pas l\'avis medical.</p>';
-    html += '</details>';
+    html += '<p style="font-size: 0.8em; color: #888; margin-top: 10px; margin-bottom: 0;">&#x26A0; Ces classifications sont indicatives et ne remplacent pas l\'avis medical.</p>';
+    html += '</div>';
+
+    // Alertes constantes vitales
+    const ac = t.alertesConstantes;
+    if (ac.fc || ac.fr || ac.ta || ac.glycemie) {
+        html += '<div class="pathologies-probables" style="margin-top: 15px; background: #fff3cd; border: 2px solid #ffc107;">';
+        html += '<h4>&#x1F4CF; Constantes vitales anormales</h4><ul>';
+        if (ac.fc === 'rouge') html += '<li style="color:#dc3545"><strong>FC critique</strong> - Bradycardie/tachycardie severe</li>';
+        else if (ac.fc === 'orange') html += '<li style="color:#fd7e14"><strong>FC anormale</strong> - A surveiller</li>';
+        if (ac.fr === 'rouge') html += '<li style="color:#dc3545"><strong>FR critique</strong> - Detresse respiratoire</li>';
+        else if (ac.fr === 'orange') html += '<li style="color:#fd7e14"><strong>FR elevee</strong> - Polypnee</li>';
+        if (ac.ta === 'rouge') html += '<li style="color:#dc3545"><strong>TA critique</strong> - Choc ou HTA severe</li>';
+        else if (ac.ta === 'orange') html += '<li style="color:#fd7e14"><strong>TA anormale</strong> - A surveiller</li>';
+        if (ac.glycemie === 'rouge') html += '<li style="color:#dc3545"><strong>Glycemie critique</strong> - Hypo/hyperglycemie severe</li>';
+        else if (ac.glycemie === 'orange') html += '<li style="color:#fd7e14"><strong>Glycemie anormale</strong> - A controler</li>';
+        html += '</ul></div>';
+    }
+
+    // Surveillance (liste v1 conservee, completee)
+    html += '<div class="surveillance"><h4>&#x26A0; Reconsulter si :</h4><ul>';
+    html += '<li>Fievre > 48-72h ou aggravation</li>';
+    html += '<li>Difficultes respiratoires</li>';
+    html += '<li>Prostration, somnolence</li>';
+    html += '<li>Refus de boire</li>';
+    html += '<li>Eruption qui ne s\'efface pas</li>';
+    html += '<li>Mains et pieds froids, marbrures, levres bleues : appeler le 15</li>';
+    html += '<li>N\'urine plus</li>';
+    html += '<li>Vous etes inquiet</li>';
+    html += '</ul></div>';
 
     div.innerHTML = html;
     div.style.display = 'block';
