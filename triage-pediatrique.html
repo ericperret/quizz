@@ -28,6 +28,11 @@
                        malaise a l'effort
                      - module comportement / sommeil / moral, pupilles,
                        tremblements ; numeros 15, 3114, 3018, 119
+                     - 13 fiches comportement / sommeil / moral avec score :
+                       crise suicidaire, depression, anxiete, harcelement,
+                       trouble alimentaire, trouble aigu, intoxication,
+                       proto, hypoglycemie, hyperthyroidie, mouvements
+                       anormaux, sommeil (ecrans, apnees)
                      - libelles parent (noms medicaux conserves), niveaux
                        CTAS / ESI / SAMU ajoutes a l'export ; hypotheses,
                        pourcentages et criteres inchanges
@@ -3319,6 +3324,406 @@ const maladiesDB = {
     },
 
     // ============================================
+    // COMPORTEMENT / SOMMEIL / MORAL
+    // affichage : condition d'affichage propre a la fiche (remplace le seuil
+    // general, pour qu'une fiche psy n'apparaisse pas sur un tableau physique)
+    // ============================================
+
+    crise_suicidaire: {
+        nom: "Crise suicidaire / automutilation",
+        description: "Idees de mort, envie de disparaitre, gestes contre soi. En parler directement ne donne pas l'idee : cela soulage et permet d'aider.",
+        niveau: "orange",
+        affichage: (data) => data.ideesNoires || data.scarifications,
+        criteres: [
+            { texte: "Parle de mourir / idees noires", champ: "ideesNoires", op: "==", val: true },
+            { texte: "Plan ou moyen evoque", champ: "ideesType", op: "==", val: "plan" },
+            { texte: "Se fait du mal", champ: "scarifications", op: "==", val: true },
+            { texte: "Tristesse > 2 semaines", champ: "tristesse", op: "==", val: true },
+            { texte: "Ingestion de medicaments", champ: "ingestion", op: "==", val: true },
+            { texte: "Sommeil perturbe", champ: "sommeilType", op: "in", val: ["rumine", "reveilTot", "hypersomnie"] },
+            { texte: "Harcelement", champ: "harcelement", op: "==", val: true },
+            { texte: "Consommation de produits", champ: "substances", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: {
+            condition: (data) => data.ideesType === 'plan' || (data.ingestion && (data.ideesNoires || data.scarifications)),
+            message: "CRISE SUICIDAIRE - Appeler le 15 - Ne pas laisser seul - 3114 (24h/24)"
+        },
+        alertes: [
+            "Plan, date ou moyen evoque",
+            "Adieux, don de ses affaires, calme soudain apres une periode de crise",
+            "Prise de medicaments ou blessure volontaire"
+        ],
+        conseils: [
+            "Lui demander directement s'il pense a mourir, ecouter sans juger",
+            "Eloigner medicaments, armes, produits dangereux",
+            "Medecin aujourd'hui ; 3114 (24h/24, gratuit) pour l'enfant et pour les parents",
+            "Si danger immediat : appeler le 15"
+        ],
+        nonFaire: [
+            "Minimiser ('c'est pour attirer l'attention')",
+            "Promettre de garder le secret",
+            "Laisser seul en cas de plan ou de geste"
+        ]
+    },
+
+    depression: {
+        nom: "Episode depressif",
+        description: "Tristesse ou irritabilite durable, perte d'interet, fatigue, sommeil et appetit perturbes. Chez l'enfant, souvent masquee par des plaintes physiques ou l'irritabilite.",
+        niveau: "jaune",
+        affichage: (data) => data.tristesse,
+        criteres: [
+            { texte: "Triste, irritable, desinteresse > 2 semaines", champ: "tristesse", op: "==", val: true },
+            { texte: "Sommeil perturbe", champ: "sommeilType", op: "in", val: ["rumine", "reveilTot", "hypersomnie"] },
+            { texte: "Perte d'appetit", champ: "appetit", op: "==", val: true },
+            { texte: "Fatigue", champ: "fatigue", op: "==", val: true },
+            { texte: "Plaintes les jours d'ecole", champ: "plaintesEcole", op: "==", val: true },
+            { texte: "Refus scolaire", champ: "refusScolaire", op: "==", val: true },
+            { texte: "Idees noires", champ: "ideesNoires", op: "==", val: true }
+        ],
+        exclusions: [
+            { texte: "Fievre", champ: "fievre", op: "==", val: true }
+        ],
+        urgence: null,
+        alertes: [
+            "Idees noires, envie de mourir",
+            "Se fait du mal",
+            "Ne mange plus, ne sort plus de sa chambre"
+        ],
+        conseils: [
+            "Medecin traitant, qui orientera vers un psychologue ou un pedopsychiatre",
+            "Garder un moment d'echange chaque jour, sans ecran",
+            "Prevenir l'ecole (infirmiere scolaire)"
+        ],
+        nonFaire: [
+            "Attendre que 'ca passe' au-dela de 2 semaines",
+            "Mettre sur le compte de la paresse"
+        ]
+    },
+
+    anxiete_panique: {
+        nom: "Trouble anxieux / attaques de panique",
+        description: "Peur intense avec coeur qui bat, souffle court, fourmillements autour de la bouche (hyperventilation). Impressionnant mais sans danger en soi ; une premiere crise avec douleur thoracique ou malaise merite un avis.",
+        niveau: "jaune",
+        affichage: (data) => data.crisePanique || (data.trembAssoc && data.trembAssoc.includes('panique')),
+        criteres: [
+            { texte: "Crise de peur intense", champ: "crisePanique", op: "==", val: true },
+            { texte: "Tremblements pendant la crise", champ: "trembAssoc", op: "contains", val: "panique" },
+            { texte: "Fourmillements (hyperventilation)", champ: "paresthesies", op: "==", val: true },
+            { texte: "Rumine le soir", champ: "sommeilType", op: "==", val: "rumine" },
+            { texte: "Plaintes les jours d'ecole", champ: "plaintesEcole", op: "==", val: true },
+            { texte: "Refus scolaire anxieux", champ: "refusScolaire", op: "==", val: true }
+        ],
+        exclusions: [
+            { texte: "Fievre", champ: "fievre", op: "==", val: true },
+            { texte: "Agitation + pupilles dilatees (intoxication ?)", champ: "trembAssoc", op: "contains", val: "agitationPupilles" },
+            { texte: "Malaise a l'effort", champ: "malaiseEffort", op: "==", val: true }
+        ],
+        urgence: {
+            condition: (data) => data.crisePanique && data.paniquePremiere && (data.douleurThorax || data.vertiges),
+            message: "Premiere crise avec douleur thoracique ou malaise - Appeler le 15 pour avis"
+        },
+        alertes: [
+            "Premiere crise avec douleur dans la poitrine",
+            "Malaise, perte de connaissance",
+            "Crises de plus en plus frequentes"
+        ],
+        conseils: [
+            "Rester calme a cote de lui, parler lentement",
+            "Respirer avec lui : inspirer 4 s, souffler 6 s, pendant quelques minutes",
+            "Medecin traitant si les crises se repetent"
+        ],
+        nonFaire: [
+            "Faire respirer dans un sac",
+            "Lui dire de 'se calmer'"
+        ]
+    },
+
+    harcelement: {
+        nom: "Harcelement / cyberharcelement",
+        description: "Moqueries, exclusion, violences ou messages repetes, a l'ecole ou en ligne. Se traduit souvent par des maux les jours d'ecole, un isolement, la peur du telephone.",
+        niveau: "jaune",
+        affichage: (data) => data.harcelement,
+        criteres: [
+            { texte: "Signes de harcelement", champ: "harcelement", op: "==", val: true },
+            { texte: "Plaintes les jours d'ecole", champ: "plaintesEcole", op: "==", val: true },
+            { texte: "Refus scolaire", champ: "refusScolaire", op: "==", val: true },
+            { texte: "Tristesse", champ: "tristesse", op: "==", val: true },
+            { texte: "Rumine le soir", champ: "sommeilType", op: "==", val: "rumine" },
+            { texte: "Se fait du mal", champ: "scarifications", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: null,
+        alertes: [
+            "Idees noires",
+            "Se fait du mal",
+            "Refus total d'aller a l'ecole"
+        ],
+        conseils: [
+            "3018 : harcelement et cyberharcelement (7j/7, gratuit)",
+            "Garder les preuves (captures d'ecran)",
+            "Prevenir l'etablissement",
+            "Medecin traitant si retentissement sur le moral ou le sommeil"
+        ],
+        nonFaire: [
+            "Supprimer les messages",
+            "Confisquer le telephone en punition (il ne parlera plus)"
+        ]
+    },
+
+    tca: {
+        nom: "Trouble du comportement alimentaire",
+        description: "Restriction alimentaire, vomissements provoques ou crises de boulimie, avec perte de poids rapide. Peut retentir sur le coeur.",
+        niveau: "orange",
+        affichage: (data) => data.alimentationTrouble,
+        criteres: [
+            { texte: "Ne mange presque plus / se fait vomir", champ: "alimentationTrouble", op: "==", val: true },
+            { texte: "Perte d'appetit", champ: "appetit", op: "==", val: true },
+            { texte: "Fatigue", champ: "fatigue", op: "==", val: true },
+            { texte: "Tristesse", champ: "tristesse", op: "==", val: true },
+            { texte: "Vertiges / malaises", champ: "vertiges", op: "==", val: true },
+            { texte: "Paleur", champ: "paleur", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: {
+            condition: (data) => data.alimentationTrouble && (data.malaiseEffort || data.difficileReveiller || (data.vertiges && data.paleur)),
+            message: "Trouble alimentaire avec malaise - Appeler le 15"
+        },
+        alertes: [
+            "Malaise, perte de connaissance",
+            "Pouls tres lent, froid permanent",
+            "Refus de boire"
+        ],
+        conseils: [
+            "Medecin traitant aujourd'hui (poids, pouls, tension)",
+            "Parler de ce qu'il ressent plutot que de ce qu'il mange"
+        ],
+        nonFaire: [
+            "Commenter le poids ou les repas de facon culpabilisante",
+            "Attendre plusieurs semaines"
+        ]
+    },
+
+    trouble_psy_aigu: {
+        nom: "Trouble aigu du comportement (agitation, delire)",
+        description: "Agitation, propos incoherents, hallucinations. Avant de penser psychiatrie : chercher une cause physique (fievre, intoxication, hypoglycemie, encephalite).",
+        niveau: "rouge",
+        affichage: (data) => data.hallucinations || data.agitation,
+        criteres: [
+            { texte: "Hallucinations / propos incoherents", champ: "hallucinations", op: "==", val: true },
+            { texte: "Agitation incontrolable", champ: "agitation", op: "==", val: true },
+            { texte: "Changement brutal de comportement", champ: "changementBrutal", op: "==", val: true },
+            { texte: "Consommation de produits", champ: "substances", op: "==", val: true },
+            { texte: "Dort mal", champ: "sommeil", op: "==", val: true }
+        ],
+        exclusions: [
+            { texte: "Fievre (encephalite ?)", champ: "fievre", op: "==", val: true }
+        ],
+        urgence: {
+            condition: (data) => data.hallucinations || data.agitation,
+            message: "Trouble aigu du comportement - Appeler le 15 - Chercher une cause physique (fievre, toxique, glycemie)"
+        },
+        alertes: [
+            "Fievre, mal de tete, convulsion : encephalite",
+            "Pupilles anormales, sueurs : intoxication"
+        ],
+        conseils: [
+            "Appeler le 15",
+            "Mettre en securite (objets dangereux), parler calmement",
+            "Mesurer la glycemie si possible"
+        ],
+        nonFaire: [
+            "Contenir physiquement seul",
+            "Donner un medicament calmant sans avis"
+        ]
+    },
+
+    intox_stimulants: {
+        nom: "Intoxication (drogue, puff, boisson energisante, medicament)",
+        description: "Cannabis de synthese (puff 'PTC'), stimulants, cafeine en exces ou medicaments : agitation, tremblements, sueurs, pupilles anormales, coeur rapide.",
+        niveau: "rouge",
+        affichage: (data) => (data.trembAssoc && data.trembAssoc.includes('agitationPupilles')) || (data.substances && (data.pupilles || data.agitation || data.tremblements || data.hallucinations || data.confusion)),
+        criteres: [
+            { texte: "Agitation, sueurs, pupilles dilatees", champ: "trembAssoc", op: "contains", val: "agitationPupilles" },
+            { texte: "Pupilles tres grandes", champ: "pupillesType", op: "==", val: "dilatees" },
+            { texte: "Pupilles tres petites", champ: "pupillesType", op: "==", val: "petites" },
+            { texte: "Consommation de produits", champ: "substances", op: "==", val: true },
+            { texte: "Agitation", champ: "agitation", op: "==", val: true },
+            { texte: "Hallucinations", champ: "hallucinations", op: "==", val: true },
+            { texte: "Somnolence / confusion", champ: "confusion", op: "==", val: true },
+            { texte: "Vomissements", champ: "vomissements", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: {
+            condition: (data) => (data.trembAssoc && data.trembAssoc.includes('agitationPupilles')) || (data.substances && (data.pupillesType === 'dilatees' || data.pupillesType === 'petites' || data.agitation || data.confusion || data.hallucinations)),
+            message: "INTOXICATION suspectee - Appeler le 15 - Garder le produit"
+        },
+        alertes: [
+            "Convulsions",
+            "Somnolence, respiration lente (pupilles tres petites)",
+            "Fievre, rigidite, sueurs (syndrome serotoninergique)"
+        ],
+        conseils: [
+            "Appeler le 15",
+            "Garder le produit, la puff ou la boite",
+            "Rester avec lui, au calme, au frais"
+        ],
+        nonFaire: [
+            "Faire vomir",
+            "Donner du cafe ou une boisson energisante"
+        ]
+    },
+
+    protoxyde: {
+        nom: "Atteinte des nerfs par le protoxyde d'azote",
+        description: "Le 'proto' (ballons, cartouches) bloque la vitamine B12 : fourmillements, faiblesse des jambes, troubles de la marche, parfois definitifs sans traitement.",
+        niveau: "orange",
+        affichage: (data) => data.protoxyde,
+        criteres: [
+            { texte: "Consommation de proto", champ: "protoxyde", op: "==", val: true },
+            { texte: "Fourmillements", champ: "paresthesies", op: "==", val: true },
+            { texte: "Faiblesse des jambes", champ: "faiblesseMusculaire", op: "==", val: true },
+            { texte: "Troubles de la marche", champ: "douleurJambes", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: null,
+        alertes: [
+            "Faiblesse qui progresse, chutes",
+            "Troubles urinaires"
+        ],
+        conseils: [
+            "Medecin aujourd'hui (dosage B12, traitement)",
+            "Arret complet de la consommation"
+        ],
+        nonFaire: [
+            "Attendre que les fourmillements passent seuls"
+        ]
+    },
+
+    hypoglycemie: {
+        nom: "Hypoglycemie",
+        description: "Sucre trop bas : tremblements, sueurs, faim, paleur, puis somnolence. Rare hors diabete traite, jeune prolonge ou effort intense.",
+        niveau: "orange",
+        affichage: (data) => (data.trembAssoc && data.trembAssoc.includes('sueursFaim')) || parseFloat(data.glycemieVal) < 0.7,
+        criteres: [
+            { texte: "Tremblements, sueurs, faim", champ: "trembAssoc", op: "contains", val: "sueursFaim" },
+            { texte: "Glycemie < 0.7 g/L", champ: "glycemieVal", op: "<", val: 0.7 },
+            { texte: "Paleur", champ: "paleur", op: "==", val: true },
+            { texte: "Vertiges", champ: "vertiges", op: "==", val: true },
+            { texte: "Somnolence / confusion", champ: "confusion", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: {
+            condition: (data) => (data.trembAssoc && data.trembAssoc.includes('sueursFaim') && (data.confusion || data.difficileReveiller)) || parseFloat(data.glycemieVal) < 0.5,
+            message: "HYPOGLYCEMIE severe - Sucre si l'enfant avale bien - Appeler le 15"
+        },
+        alertes: [
+            "Somnolence, convulsion",
+            "Recidive"
+        ],
+        conseils: [
+            "Si l'enfant est bien reveille : 3 morceaux de sucre ou un verre de jus",
+            "Recontroler 15 min apres",
+            "Medecin aujourd'hui pour en chercher la cause"
+        ],
+        nonFaire: [
+            "Faire avaler un enfant somnolent (risque de fausse route)"
+        ]
+    },
+
+    hyperthyroidie: {
+        nom: "Hyperthyroidie",
+        description: "Thyroide trop active : tremblements fins, coeur rapide, amaigrissement malgre l'appetit, chaleur, nervosite, sommeil agite.",
+        niveau: "jaune",
+        affichage: (data) => data.trembAssoc && data.trembAssoc.includes('coeurPoids'),
+        criteres: [
+            { texte: "Tremblements, coeur rapide, amaigrissement", champ: "trembAssoc", op: "contains", val: "coeurPoids" },
+            { texte: "Dort mal", champ: "sommeil", op: "==", val: true },
+            { texte: "Crises d'angoisse", champ: "crisePanique", op: "==", val: true },
+            { texte: "Diarrhee", champ: "diarrhee", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: null,
+        alertes: [
+            "Fievre, agitation, coeur tres rapide"
+        ],
+        conseils: [
+            "Medecin traitant : prise de sang (TSH)"
+        ],
+        nonFaire: []
+    },
+
+    mouvements_anormaux: {
+        nom: "Mouvements anormaux (choree, encephalite)",
+        description: "Mouvements saccades involontaires, parfois apres une angine (choree de Sydenham) ou avec troubles du comportement et du sommeil (encephalite auto-immune, rare).",
+        niveau: "orange",
+        affichage: (data) => data.trembAssoc && data.trembAssoc.includes('mouvements'),
+        criteres: [
+            { texte: "Mouvements saccades involontaires", champ: "trembAssoc", op: "contains", val: "mouvements" },
+            { texte: "Changement brutal de comportement", champ: "changementBrutal", op: "==", val: true },
+            { texte: "Dort mal", champ: "sommeil", op: "==", val: true },
+            { texte: "Hallucinations", champ: "hallucinations", op: "==", val: true },
+            { texte: "Convulsions", champ: "convulsions", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: null,
+        alertes: [
+            "Convulsions, confusion",
+            "Troubles de la parole ou de la deglutition"
+        ],
+        conseils: [
+            "Medecin aujourd'hui (examen neurologique)",
+            "Filmer les mouvements pour les montrer"
+        ],
+        nonFaire: [
+            "Mettre sur le compte du stress sans avis"
+        ]
+    },
+
+    sommeil_ecrans: {
+        nom: "Sommeil decale par les ecrans",
+        description: "Endormissement tardif lie au telephone ou a la console. Si l'enfant dort bien sans ecran et que l'humeur est bonne, ce n'est pas une maladie.",
+        niveau: "vert",
+        affichage: (data) => data.sommeilType === 'ecran',
+        criteres: [
+            { texte: "S'endort tard a cause de l'ecran", champ: "sommeilType", op: "==", val: "ecran" },
+            { texte: "Dort bien sans ecran", champ: "sommeilSansEcranOk", op: "==", val: true }
+        ],
+        exclusions: [
+            { texte: "Tristesse durable", champ: "tristesse", op: "==", val: true }
+        ],
+        urgence: null,
+        alertes: [
+            "Dort mal meme sans ecran",
+            "Humeur qui change, isolement"
+        ],
+        conseils: [
+            "Telephone et console hors de la chambre la nuit",
+            "Ecrans coupes 1 h avant le coucher",
+            "Heure de lever fixe, meme le week-end"
+        ],
+        nonFaire: []
+    },
+
+    apnees_sommeil: {
+        nom: "Apnees du sommeil",
+        description: "Ronflement avec pauses respiratoires, souvent par grosses amygdales ou vegetations : fatigue, difficultes scolaires.",
+        niveau: "jaune",
+        affichage: (data) => data.sommeilType === 'apnees',
+        criteres: [
+            { texte: "Ronfle avec pauses", champ: "sommeilType", op: "==", val: "apnees" },
+            { texte: "Fatigue", champ: "fatigue", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: null,
+        alertes: [],
+        conseils: [
+            "En parler au medecin traitant (examen ORL)"
+        ],
+        nonFaire: []
+    },
+
+    // ============================================
     // URGENCES PEDIATRIQUES SPECIFIQUES
     // ============================================
 
@@ -3837,7 +4242,13 @@ const RED_FLAGS = {
     diarrheeType: ['sang'],
     diarrheeCouleur: ['sang', 'noire'],
     testiculeDebut: ['brutal'],
-    cephaleeType: ['brutal']
+    cephaleeType: ['brutal'],
+    ideesType: ['plan'],
+    ingestion: true,
+    agitation: true,
+    hallucinations: true,
+    trembAssoc: ['agitationPupilles'],
+    pupillesType: ['inegalesNouveau', 'fixes']
 };
 
 function estRedFlag(critere, data) {
@@ -4395,6 +4806,9 @@ function analyserDonnees(data) {
     // Filtrer selon seuil : 2/3, 3/4, 4/5+ SAUF si la maladie a un drapeau d'urgence
     const filtres = resultats.filter(r => {
         if (idsDrapeau.has(r.id)) return true;
+        // Fiche avec condition d'affichage propre (comportement / sommeil / moral)
+        const fiche = maladiesDB[r.id];
+        if (typeof fiche.affichage === 'function') return !!fiche.affichage(data);
         const nbCriteres = r.max;
         const nbMatchsPositifs = r.matches.filter(m => !m.startsWith('(-)')).length;
         if (nbCriteres <= 3) return nbMatchsPositifs >= 2;
@@ -5087,7 +5501,8 @@ function genererListeMaladies() {
         else if (/cystite|pyelonephrite|torsion_test|torsion_ovaire|geu/i.test(id)) cat = 'Uro-genital';
         else if (/myocardite|pericardite|endocardite/i.test(id)) cat = 'Cardiovasculaire';
         else if (/drepa|pti|crise_vaso/i.test(id)) cat = 'Hematologique';
-        else if (/diabete/i.test(id)) cat = 'Metabolique';
+        else if (/diabete|hypoglyc|hyperthyro/i.test(id)) cat = 'Metabolique';
+        else if (/crise_suicid|depression|anxiete|harcelement|^tca$|trouble_psy|sommeil|apnees|mouvements_anorm|protoxyde/i.test(id)) cat = 'Comportement / Sommeil / Moral';
         else if (/intox|botulisme|envenimation/i.test(id)) cat = 'Toxicologique';
         else if (/herpes_ocul|zona_ophtal|cellulite_orb|conjonctivite/i.test(id)) cat = 'Ophtalmologique';
         else if (/arthrite_sept/i.test(id)) cat = 'Osteo-articulaire';
@@ -5824,6 +6239,13 @@ const BANC = [
     ["P10 Tristesse depuis plus de 2 semaines", "jaune", { tristesse: true }],
     ["P11 Harcelement", "jaune", { harcelement: true }],
     ["P12 Crise de peur, pas la premiere", "jaune", { crisePanique: true }],
+    ["P13 Sommeil : apnees", "jaune", { sommeil: true, sommeilType: "apnees" }],
+    ["P14 Tristesse + sommeil + plaintes ecole", "jaune", { tristesse: true, sommeil: true, sommeilType: "reveilTot", plaintesEcole: true }],
+    ["P15 Ne mange presque plus", "orange", { alimentationTrouble: true }],
+    ["P16 Puff + agitation", "rouge", { substances: true, agitation: true }],
+    ["P17 Mouvements saccades", "orange", { tremblements: true, trembAssoc: ["mouvements"] }],
+    ["P18 Tremblements, coeur rapide, amaigrissement", "orange", { tremblements: true, trembAssoc: ["coeurPoids"] }],
+    ["V25 Gastro avec fatigue et paleur (pas de piste psy)", "vert|jaune", { vomissements: true, vomiFreq: "quelques", diarrhee: true, diarrheeType: "liquide", appetit: true, fatigue: true, fatigueLevel: "legere", paleur: true, paleurType: "pale", vertiges: true }],
     ["V01 Rhume", "vert", { nez: true, nezType: "clair", toux: true, touxType: "seche", touxDuree: "recent", fievre: true, temp: 38, fievreDuree: "1-2j", fatigue: true, fatigueLevel: "legere" }],
     ["V02 Gastro simple", "vert|jaune", { vomissements: true, vomiType: "alimentaire", vomiFreq: "quelques", diarrhee: true, diarrheeType: "liquide", nausees: true, fievre: true, temp: 38, douleurAbdo: true, abdoLoc: "diffuse", abdoCarac: ["crampes"] }],
     ["V03 Fievre 39 isolee 1-2 j", "vert|jaune", { fievre: true, temp: 39, fievreDuree: "1-2j" }],
