@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--
+================================================================================
+  Nom        : image2b64.html
+  Objet      : Image Resizer and Base64 Exporter
+  Auteur     : Eric PERRET
+  Date       : 2026-10-10
+  Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
+================================================================================
+
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer and Base64 Exporter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        button, input {
+            margin: 10px;
+        }
+    </style>
+
+<style id="charte-azs">
+.azs-barre{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#141c22;border-bottom:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%;position:relative;z-index:9999}
+.azs-barre .azs{font:800 20px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:-1px;text-transform:none;color:#f0a63a;text-decoration:none;padding-right:12px;border-right:1px solid #26343e}
+.azs-barre .azs:hover{color:#ffcf7a}
+.azs-barre a.fil{color:#8fa1ad;text-decoration:none}
+.azs-barre a.fil:hover{color:#f0a63a}
+.azs-foot{display:flex;justify-content:flex-end;align-items:center;padding:8px 16px;background:#141c22;border-top:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
+.azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
+.azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+body{background:#0e1418;color:#dfe7ec;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+input,button,select{font:inherit;background:#18222a;color:#dfe7ec;border:1px solid #33434e;border-radius:6px;padding:6px 10px}
+button{background:#f0a63a;border-color:#f0a63a;color:#111;font-weight:600;cursor:pointer}
+button:hover{filter:brightness(1.1)}
+canvas,img{border-color:#26343e!important}
+</style>
+</head>
+<body>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+    <h1>Charger et Redimensionner Image</h1>
+    
+    <input type="file" id="imageInput" accept="image/*">
+    <canvas id="canvas" width="256" height="256"></canvas>
+    <button id="exportBtn" disabled>Exporter Base64 vers image_B64.txt</button>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const exportBtn = document.getElementById('exportBtn');
+
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Redimensionner l'image à 256x256
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, 256, 256);
+                        exportBtn.disabled = false;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        exportBtn.addEventListener('click', () => {
+            // Exporter en base64
+            const base64 = canvas.toDataURL('image/jpeg'); // Ou 'image/png' si préféré
+            const blob = new Blob([base64], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'image_B64.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+<footer class="azs-foot"><a href="mailto:eperret@azs.fr">eperret@azs.fr</a></footer>
+</body>
+</html>

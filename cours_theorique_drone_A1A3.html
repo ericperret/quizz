@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<!--
+================================================================================
+  Nom        : cours_theorique_drone_A1A3.html
+  Objet      : Cours Théorique Drone A1/A3 - Support Complet
+  Auteur     : Eric PERRET
+  Date       : 2026-10-10
+  Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
+================================================================================
+
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
+-->
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours Théorique Drone A1/A3 - Support Complet</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0e1418;
+            padding: 20px;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            background: #0e1418;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        h2 {
+            color: #2d3748;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-left: 6px solid #b86a00;
+            padding-left: 20px;
+            background: #f7fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+        }
+        h3 {
+            color: #4a5568;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-left: 4px solid #8a4f00;
+            padding-left: 15px;
+        }
+        h4 {
+            color: #b86a00;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        p {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+        .important {
+            background: #fff5f5;
+            border-left: 5px solid #f56565;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .important strong {
+            color: #c53030;
+            font-size: 1.1em;
+        }
+        .tip {
+            background: #f0fff4;
+            border-left: 5px solid #48bb78;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .tip strong {
+            color: #22543d;
+            font-size: 1.1em;
+        }
+        .info {
+            background: #ebf8ff;
+            border-left: 5px solid #4299e1;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .info strong {
+            color: #2c5282;
+            font-size: 1.1em;
+        }
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th {
+            background: #0e1418;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 1.05em;
+        }
+        tr:nth-child(even) {
+            background: #f7fafc;
+        }
+        tr:hover {
+            background: #edf2f7;
+        }
+        .warning {
+            background: #fffaf0;
+            border-left: 5px solid #ed8936;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .warning strong {
+            color: #c05621;
+            font-size: 1.1em;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .key-point {
+            background: #f7fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #b86a00;
+        }
+        .key-point::before {
+            content: "🔑 ";
+            font-size: 1.2em;
+        }
+        code {
+            background: #2d3748;
+            color: #f7fafc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .toc {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            border: 2px solid #e2e8f0;
+        }
+        .toc h2 {
+            margin-top: 0;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        .toc li {
+            padding: 8px 0;
+        }
+        .toc a {
+            color: #b86a00;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: all 0.2s;
+        }
+        .toc a:hover {
+            color: #8a4f00;
+            padding-left: 10px;
+        }
+    </style>
+
+<style id="charte-azs">
+.azs-barre{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#141c22;border-bottom:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%;position:relative;z-index:9999}
+.azs-barre .azs{font:800 20px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:-1px;text-transform:none;color:#f0a63a;text-decoration:none;padding-right:12px;border-right:1px solid #26343e}
+.azs-barre .azs:hover{color:#ffcf7a}
+.azs-barre a.fil{color:#8fa1ad;text-decoration:none}
+.azs-barre a.fil:hover{color:#f0a63a}
+.azs-foot{display:flex;justify-content:flex-end;align-items:center;padding:8px 16px;background:#141c22;border-top:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
+.azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
+.azs-foot a:hover{color:#f0a63a}
+@media (max-width:640px){table{display:block;overflow-x:auto;max-width:100%}}
+</style>
+</head>
+<body>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+    <div class="container">
+        <h1>📖 Cours Théorique Drone A1/A3</h1>
+        
+        <div class="toc">
+            <h2>📑 Table des matières</h2>
+            <ul>
+                <li><a href="#module1">1. Réglementation et Catégories</a></li>
+                <li><a href="#module2">2. Distances et Limitations</a></li>
+                <li><a href="#module3">3. Zones Géographiques</a></li>
+                <li><a href="#module4">4. Préparation et Visite Pré-vol</a></li>
+                <li><a href="#module5">5. Facteurs Humains</a></li>
+                <li><a href="#module6">6. Sécurité des Opérations</a></li>
+                <li><a href="#module7">7. Technique et Mécanique du Vol</a></li>
+                <li><a href="#module8">8. Aspects Juridiques et Administratifs</a></li>
+            </ul>
+        </div>
+
+        <div class="section" id="module1">
+            <h2>1️⃣ Réglementation et Catégories</h2>
+            
+            <h3>1.1 Catégorie Ouverte - Principe général</h3>
+            <p>La <strong>catégorie Ouverte</strong> est la catégorie de vol accessible sans autorisation préalable. Elle nécessite :</p>
+            <ul>
+                <li><strong>L'enregistrement de l'exploitant</strong></li>
+                <li><strong>Le respect des limites opérationnelles</strong> (hauteur, distances, zones)</li>
+                <li><strong>Le respect des exigences de compétence</strong> (formation, examen)</li>
+            </ul>
+            
+            <div class="important">
+                <strong>⚠️ IMPORTANT :</strong> Pas besoin d'autorisation de vol en catégorie Ouverte, mais il faut respecter toutes les conditions !
+            </div>
+
+            <h3>1.2 Les trois sous-catégories A1, A2, A3</h3>
+            
+            <h4>A1 - À proximité des personnes</h4>
+            <table>
+                <tr>
+                    <th>Type de drone</th>
+                    <th>Distance personnes</th>
+                    <th>Formation</th>
+                    <th>Identification</th>
+                </tr>
+                <tr>
+                    <td><strong>C0</strong> (&lt; 250g)</td>
+                    <td>✅ Survol toléré personnes <strong>isolées</strong><br>❌ Pas de rassemblements</td>
+                    <td>Manuel d'utilisation<br>(Examen recommandé)</td>
+                    <td>❌ Non requise</td>
+                </tr>
+                <tr>
+                    <td><strong>C1</strong> (&lt; 900g)</td>
+                    <td>Près des personnes</td>
+                    <td>Manuel + <strong>Examen obligatoire</strong></td>
+                    <td>✅ Requise</td>
+                </tr>
+            </table>
+
+            <h4>A2 - À distance des personnes</h4>
+            <table>
+                <tr>
+                    <th>Type de drone</th>
+                    <th>Distance personnes</th>
+                    <th>Formation</th>
+                    <th>Identification</th>
+                </tr>
+                <tr>
+                    <td><strong>C2</strong> (&lt; 4kg)</td>
+                    <td><strong>30 mètres</strong> minimum<br>(5m si mode basse vitesse actif)</td>
+                    <td>Manuel + Examen catégorie Ouverte<br>+ Autoformation pratique<br>+ Examen complémentaire<br>→ <strong>Brevet télépilote</strong></td>
+                    <td>✅ Requise</td>
+                </tr>
+            </table>
+
+            <h4>A3 - Loin des zones habitées</h4>
+            <table>
+                <tr>
+                    <th>Type de drone</th>
+                    <th>Distance zones habitées</th>
+                    <th>Formation</th>
+                    <th>Identification</th>
+                </tr>
+                <tr>
+                    <td><strong>C2, C3, C4</strong><br>Construction privée<br>(&lt; 25kg)</td>
+                    <td><strong>150 mètres</strong> minimum<br>(zones résidentielles, commerciales, industrielles, récréatives)</td>
+                    <td>Manuel + Examen catégorie Ouverte</td>
+                    <td>C2/C3 : ✅<br>C4/Privé : ❌<br>Signalement &gt;800g : ✅</td>
+                </tr>
+            </table>
+
+            <div class="key-point">
+                <strong>Point clé :</strong> En A1 avec C0, on peut survoler des personnes ISOLÉES mais JAMAIS des rassemblements !
+            </div>
+
+            <h3>1.3 Sous-catégories limitées (drones sans marquage CE)</h3>
+            <table>
+                <tr>
+                    <th>Catégorie</th>
+                    <th>Masse max</th>
+                    <th>Équivalence</th>
+                    <th>Formation</th>
+                </tr>
+                <tr>
+                    <td><strong>A1 limitée</strong></td>
+                    <td>&lt; 500g</td>
+                    <td>= A1</td>
+                    <td>Manuel + Examen catégorie Ouverte<br>(OU Fox AlphaTango avant 01/01/2022)</td>
+                </tr>
+                <tr>
+                    <td><strong>A2 limitée</strong></td>
+                    <td>&lt; 2kg</td>
+                    <td>= A2 mais <strong>50m</strong> des personnes</td>
+                    <td>Manuel + Certificat télépilote + Formation pratique</td>
+                </tr>
+                <tr>
+                    <td><strong>A3 limitée</strong></td>
+                    <td>&lt; 25kg</td>
+                    <td>= A3 (150m zones habitées)</td>
+                    <td>Manuel + Examen catégorie Ouverte<br>(Sauf si &lt;250g)<br>(OU Fox AlphaTango avant 01/01/2022)</td>
+                </tr>
+            </table>
+
+            <h3>1.4 Enregistrement de l'exploitant</h3>
+            <div class="info">
+                <strong>📝 Obligation d'enregistrement si :</strong>
+                <ul>
+                    <li>Drone de <strong>plus de 250g</strong></li>
+                    <li><strong>OU</strong> Drone de moins de 250g équipé d'un <strong>dispositif d'enregistrement</strong> (caméra, microphone)</li>
+                </ul>
+            </div>
+
+            <h3>1.5 Réglementation selon le lieu</h3>
+            <ul>
+                <li>✅ La réglementation UAS s'applique <strong>uniquement en extérieur</strong></li>
+                <li>❌ Elle ne s'applique PAS aux vols en intérieur</li>
+                <li>✅ Elle s'applique même dans votre jardin privé (si extérieur)</li>
+                <li>✅ Elle s'applique à TOUS les drones, même &lt;250g</li>
+            </ul>
+        </div>
+
+        <div class="section" id="module2">
+            <h2>2️⃣ Distances et Limitations</h2>
+
+            <h3>2.1 Hauteur maximale de vol</h3>
+            <div class="important">
+                <strong>🚁 Hauteur maximale : 120 mètres</strong> au-dessus du point le plus proche de la surface de la terre (sauf sites d'aéromodélisme)
+            </div>
+
+            <h3>2.2 Distance de vol (portée)</h3>
+            <div class="key-point">
+                <strong>VLOS - Visual Line of Sight</strong> : Le drone doit être piloté en <strong>vue directe</strong>. Le télépilote doit :
+                <ul>
+                    <li>Voir clairement le drone <strong>sans aide optique</strong> (pas de jumelles)</li>
+                    <li>Être capable de piloter efficacement</li>
+                    <li>Surveiller l'espace aérien environnant</li>
+                </ul>
+            </div>
+            
+            <p>❌ La distance de 200m n'est PAS une limite réglementaire absolue</p>
+            <p>✅ C'est la capacité à maintenir le contact visuel qui détermine la distance maximale</p>
+
+            <h3>2.3 Limitations de masse</h3>
+            <ul>
+                <li>Catégorie Ouverte : <strong>maximum 25 kg</strong></li>
+                <li>Au-delà de 25kg : catégorie Spécifique obligatoire</li>
+            </ul>
+
+            <h3>2.4 Survol de personnes</h3>
+            <table>
+                <tr>
+                    <th>Situation</th>
+                    <th>Autorisé ?</th>
+                    <th>Conditions</th>
+                </tr>
+                <tr>
+                    <td>Personnes isolées</td>
+                    <td>✅ OUI</td>
+                    <td>Uniquement A1 avec C0 (&lt;250g, &lt;19m/s)</td>
+                </tr>
+                <tr>
+                    <td>Rassemblement de personnes</td>
+                    <td>❌ NON</td>
+                    <td>INTERDIT en catégorie Ouverte (même avec autorisation)</td>
+                </tr>
+                <tr>
+                    <td>Personnes impliquées</td>
+                    <td>✅ OUI</td>
+                    <td>Membres de l'équipe informés et consentants</td>
+                </tr>
+            </table>
+
+            <div class="warning">
+                <strong>⚠️ ATTENTION :</strong> Si un cycliste/piéton s'arrête sous votre drone en vol, vous devez <strong>DÉPLACER le drone immédiatement</strong> pour éviter le survol !
+            </div>
+
+            <h3>2.5 Transport de marchandises</h3>
+            <div class="important">
+                <strong>🚫 INTERDIT en catégorie Ouverte :</strong>
+                <ul>
+                    <li>❌ Gaz</li>
+                    <li>❌ Liquides ou solides inflammables</li>
+                    <li>❌ Substances corrosives</li>
+                    <li>❌ Toute marchandise dangereuse</li>
+                </ul>
+                <strong>✅ AUTORISÉ :</strong>
+                <ul>
+                    <li>✅ Outils (pince, tournevis, etc.)</li>
+                    <li>✅ Équipements non dangereux</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="module3">
+            <h2>3️⃣ Zones Géographiques</h2>
+
+            <h3>3.1 Zones de restriction UAS</h3>
+            <p>Les zones de restriction sont des zones où le vol de drones est <strong>réglementé</strong>.</p>
+            
+            <div class="info">
+                <strong>📍 Où trouve-t-on principalement des zones de restriction ?</strong>
+                <ul>
+                    <li><strong>À proximité des aéroports</strong> (zone la plus fréquente)</li>
+                    <li>Autour de monuments sensibles</li>
+                    <li>Zones militaires</li>
+                    <li>Centrales nucléaires</li>
+                    <li>Prisons</li>
+                </ul>
+            </div>
+
+            <h3>3.2 Vol en zone de restriction</h3>
+            <div class="key-point">
+                Zone de restriction ≠ Zone interdite !
+                <ul>
+                    <li>✅ Vol possible si <strong>autorisation de l'autorité compétente</strong></li>
+                    <li>✅ Vol possible si <strong>respect des conditions/restrictions</strong> de la zone</li>
+                    <li>❌ Pas de vol libre sans vérification</li>
+                </ul>
+            </div>
+
+            <h3>3.3 Éléments à vérifier près de la zone d'opération</h3>
+            <table>
+                <tr>
+                    <th>À vérifier</th>
+                    <th>Pourquoi</th>
+                </tr>
+                <tr>
+                    <td>✅ Routes</td>
+                    <td>Circulation de véhicules et personnes</td>
+                </tr>
+                <tr>
+                    <td>✅ Sentiers pédestres</td>
+                    <td>Passage de randonneurs, cyclistes → risque de survol</td>
+                </tr>
+                <tr>
+                    <td>✅ Personnes</td>
+                    <td>Éviter le survol non autorisé</td>
+                </tr>
+                <tr>
+                    <td>✅ Éoliennes</td>
+                    <td>Obstacles dangereux + zones souvent réglementées</td>
+                </tr>
+                <tr>
+                    <td>❌ Herbes hautes</td>
+                    <td>Non pertinent pour la sécurité</td>
+                </tr>
+                <tr>
+                    <td>❌ Paysages photogéniques</td>
+                    <td>Pas un critère de sécurité</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" id="module4">
+            <h2>4️⃣ Préparation et Visite Pré-vol</h2>
+
+            <h3>4.1 Vérifications OBLIGATOIRES avant le vol</h3>
+            <table>
+                <tr>
+                    <th>✅ À vérifier</th>
+                    <th>❌ Pas obligatoire</th>
+                </tr>
+                <tr>
+                    <td>
+                        <ul>
+                            <li>Zones de restrictions UAS</li>
+                            <li>Performances de l'UAS vs météo réelle</li>
+                            <li>Classe CE appropriée pour l'opération</li>
+                            <li>Montage correct des hélices</li>
+                            <li>Niveau de batterie UAS et radiocommande</li>
+                            <li>Espace aérien visible et utilisateurs</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>❌ Informer le maire de la commune</li>
+                            <li>❌ Téléphone allumé pour les autorités</li>
+                            <li>❌ Plans de vol aviation habitée</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <h3>4.2 Autonomie et batteries</h3>
+            <div class="important">
+                <strong>⚡ Règle d'or :</strong> Le temps de vol prévu doit être <strong>INFÉRIEUR</strong> à l'autonomie maximale de l'UAS pour <strong>disposer de réserves</strong>.
+            </div>
+            
+            <ul>
+                <li>❌ Ne jamais voler jusqu'à épuisement total de la batterie</li>
+                <li>❌ Ne jamais prévoir un temps de vol = autonomie max</li>
+                <li>✅ Toujours garder une marge de sécurité (15-20% minimum)</li>
+            </ul>
+
+            <h3>4.3 Conditions météorologiques</h3>
+            <div class="key-point">
+                <strong>Facteurs justifiant le REPORT du vol :</strong>
+                <ul>
+                    <li>🔋 Niveau de batterie faible détecté en visite pré-vol</li>
+                    <li>📡 Signal GPS dégradé</li>
+                    <li>💨 Vent au-delà des limitations du drone</li>
+                </ul>
+                <strong>NE justifie PAS le report :</strong>
+                <ul>
+                    <li>☁️ Plafond nuageux à 300m (on vole max 120m donc OK)</li>
+                </ul>
+            </div>
+
+            <h3>4.4 Inspection de la zone</h3>
+            <p>En terrain <strong>vallonné avec obstacles</strong> (arbres, bâtiments) :</p>
+            <div class="tip">
+                <strong>✅ Meilleure technique :</strong> Le pilote procède à une <strong>ronde d'inspection physique</strong> de la zone d'opération.
+                <br><br>
+                <strong>Pourquoi ?</strong> Les obstacles visuels empêchent de voir toutes les personnes depuis le point de décollage.
+            </div>
+
+            <h3>4.5 Où trouver les limitations du drone ?</h3>
+            <p>Les limitations environnementales (température, vent max, conditions météo) se trouvent dans :</p>
+            <div class="key-point">
+                📖 <strong>Le manuel d'utilisation</strong> fourni par le fabricant (source officielle)
+            </div>
+            <p>❌ Pas sur les sites de revendeurs, forums ou site de l'autorité compétente</p>
+        </div>
+
+        <div class="section" id="module5">
+            <h2>5️⃣ Facteurs Humains</h2>
+
+            <h3>5.1 Alcool et substances</h3>
+            <div class="important">
+                <strong>🚫 TOLÉRANCE ZÉRO :</strong>
+                <ul>
+                    <li>L'alcool affecte <strong>TOUJOURS</strong> la sécurité du vol</li>
+                    <li>Effet principal : <strong>Augmentation du temps de réponse</strong></li>
+                    <li>❌ Aucune limite d'alcoolémie acceptable</li>
+                    <li>❌ Valable dans TOUS les espaces aériens</li>
+                </ul>
+            </div>
+
+            <h3>5.2 Facteurs affectant les capacités du télépilote</h3>
+            <table>
+                <tr>
+                    <th>✅ Affecte les capacités</th>
+                    <th>❌ N'affecte pas</th>
+                </tr>
+                <tr>
+                    <td>
+                        <ul>
+                            <li>💊 Alcool</li>
+                            <li>😰 Stress</li>
+                            <li>😴 Fatigue</li>
+                            <li>🤒 Maladie</li>
+                            <li>💊 Certains médicaments</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>👕 Vêtements</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <h3>5.3 État de santé et maladie</h3>
+            <div class="tip">
+                <strong>En cas de maladie :</strong> Le télépilote doit <strong>s'assurer que son état de santé n'affectera pas la sécurité de l'opération</strong>.
+                <ul>
+                    <li>✅ Auto-évaluation de l'aptitude</li>
+                    <li>⚠️ Si doute : reporter le vol</li>
+                    <li>❌ Pas d'annulation systématique mais prudence</li>
+                </ul>
+            </div>
+
+            <h3>5.4 Conscience de la situation (Situational Awareness)</h3>
+            <div class="key-point">
+                <strong>Définition :</strong> La capacité du pilote à <strong>percevoir</strong>, <strong>comprendre</strong> et <strong>réagir</strong> à tout risque possible dans l'environnement d'exploitation.
+            </div>
+            
+            <p>Cela inclut :</p>
+            <ul>
+                <li>🔍 Perception : détecter les dangers (oiseaux, avions, personnes, obstacles)</li>
+                <li>🧠 Compréhension : analyser la situation et les risques</li>
+                <li>⚡ Réaction : prendre les bonnes décisions rapidement</li>
+            </ul>
+        </div>
+
+        <div class="section" id="module6">
+            <h2>6️⃣ Sécurité des Opérations</h2>
+
+            <h3>6.1 Surveillance de l'espace aérien</h3>
+            <div class="important">
+                <strong>🛩️ POURQUOI surveiller en permanence ?</strong>
+                <br><br>
+                Parce que <strong>les aéronefs habités ne peuvent généralement PAS détecter les UAS</strong> pour les éviter.
+                <br><br>
+                → C'est la responsabilité du télépilote de <strong>voir et éviter</strong> (see and avoid).
+            </div>
+
+            <h3>6.2 Situations d'urgence</h3>
+
+            <h4>Perte de liaison radio</h4>
+            <div class="tip">
+                <strong>✅ Action à prendre :</strong> Essayer de se rapprocher de l'UAS pour rétablir la liaison.
+                <br>
+                <strong>❌ Ne pas attendre passivement</strong> que la liaison revienne ou que la batterie s'épuise.
+            </div>
+
+            <h4>Personne sous le drone en vol</h4>
+            <div class="warning">
+                <strong>⚠️ Si un cycliste/piéton s'arrête sous votre drone :</strong>
+                <ul>
+                    <li>✅ Déplacer votre UAS <strong>DÈS QUE POSSIBLE</strong> pour éviter le survol</li>
+                    <li>❌ Ne pas rester en vol stationnaire</li>
+                    <li>❌ Ne pas monter en altitude (reste du survol)</li>
+                </ul>
+            </div>
+
+            <h3>6.3 Situations anormales</h3>
+            <div class="key-point">
+                <strong>Définition :</strong> Une situation dans laquelle <strong>la manœuvrabilité de l'UAS est dégradée</strong> en raison d'une ou plusieurs circonstances imprévues.
+            </div>
+            
+            <p>Exemples :</p>
+            <ul>
+                <li>Perte partielle de contrôle</li>
+                <li>Défaillance d'un moteur</li>
+                <li>Vent soudain plus fort que prévu</li>
+                <li>Interférences électromagnétiques</li>
+            </ul>
+
+            <h3>6.4 Risques de crash</h3>
+            <table>
+                <tr>
+                    <th>✅ Peut causer un crash</th>
+                    <th>❌ Ne cause PAS de crash</th>
+                </tr>
+                <tr>
+                    <td>
+                        <ul>
+                            <li>Échappée incontrôlée (flyaway)</li>
+                            <li>Panne moteur</li>
+                            <li>Perte du signal GPS</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>Prendre des photos sans consentement (problème légal, pas technique)</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+
+            <h3>6.5 Menaces pour la sûreté</h3>
+            <div class="important">
+                <strong>🔐 Sûreté = Sécurité contre les actes malveillants</strong>
+                <br><br>
+                <strong>Exemple de menace sûreté :</strong> Survol de site interdit (prison, centrale nucléaire)
+                <br><br>
+                <strong>❌ Ne sont PAS des menaces sûreté :</strong>
+                <ul>
+                    <li>Vol dans une CTR (question de sécurité aérienne)</li>
+                    <li>Larguer des tracts (problème opérationnel)</li>
+                    <li>Voler hors vue (violation réglementaire)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="module7">
+            <h2>7️⃣ Technique et Mécanique du Vol</h2>
+
+            <h3>7.1 Les 4 forces aérodynamiques</h3>
+            <table>
+                <tr>
+                    <th>Force</th>
+                    <th>Direction</th>
+                    <th>Rôle</th>
+                </tr>
+                <tr>
+                    <td><strong>Portance</strong></td>
+                    <td>⬆️ Vers le haut</td>
+                    <td>Soulève l'aéronef</td>
+                </tr>
+                <tr>
+                    <td><strong>Poids</strong></td>
+                    <td>⬇️ Vers le bas</td>
+                    <td>Attire l'aéronef vers le sol (gravité)</td>
+                </tr>
+                <tr>
+                    <td><strong>Traction</strong></td>
+                    <td>➡️ Vers l'avant</td>
+                    <td>Propulse l'aéronef</td>
+                </tr>
+                <tr>
+                    <td><strong>Traînée</strong></td>
+                    <td>⬅️ Vers l'arrière</td>
+                    <td><strong>S'oppose à l'avancement</strong> (résistance de l'air)</td>
+                </tr>
+            </table>
+
+            <div class="key-point">
+                <strong>Question examen :</strong> Quelle force s'oppose à l'avancement ?
+                <br>
+                <strong>Réponse :</strong> La <strong>TRAÎNÉE</strong>
+            </div>
+
+            <h3>7.2 Les 3 axes de rotation</h3>
+            <table>
+                <tr>
+                    <th>Axe</th>
+                    <th>Mouvement</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><strong>Tangage</strong> (Pitch)</td>
+                    <td>⬆️⬇️</td>
+                    <td>Nez monte ou descend (axe latéral)</td>
+                </tr>
+                <tr>
+                    <td><strong>Roulis</strong> (Roll)</td>
+                    <td>↔️</td>
+                    <td>Inclinaison gauche/droite (axe longitudinal)</td>
+                </tr>
+                <tr>
+                    <td><strong>Lacet</strong> (Yaw)</td>
+                    <td>🔄</td>
+                    <td>Rotation sur soi-même (axe vertical)</td>
+                </tr>
+            </table>
+
+            <div class="warning">
+                <strong>⚠️ PIÈGE :</strong> "Rotation" n'est PAS un axe de référence spécifique !
+                <br>
+                Les 3 axes sont : Tangage, Roulis, Lacet.
+            </div>
+
+            <h3>7.3 Interférences radio</h3>
+            <div class="info">
+                <strong>📡 Fréquences 2,4 GHz et 5,8 GHz :</strong>
+                <br><br>
+                Ces fréquences utilisées pour la liaison drone ↔ radiocommande peuvent interférer avec :
+                <ul>
+                    <li>✅ <strong>Les équipements Wi-Fi</strong> (même bandes de fréquence)</li>
+                </ul>
+                <strong>❌ Pas d'interférence avec :</strong>
+                <ul>
+                    <li>Télévision satellite</li>
+                    <li>Radio aéronautique</li>
+                    <li>3G/4G/5G (fréquences différentes)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="module8">
+            <h2>8️⃣ Aspects Juridiques et Administratifs</h2>
+
+            <h3>8.1 RGPD et données personnelles</h3>
+            
+            <h4>Qu'est-ce qu'une donnée personnelle ?</h4>
+            <div class="key-point">
+                <strong>Définition :</strong> Toute information en lien avec une <strong>personne physique identifiée ou identifiable</strong>.
+            </div>
+            
+            <p>Exemples : photos de personnes, vidéos, plaques d'immatriculation visibles, etc.</p>
+
+            <h4>RGPD et drones</h4>
+            <div class="info">
+                <strong>Le RGPD s'applique-t-il aux drones ?</strong>
+                <br><br>
+                ✅ <strong>OUI, si l'UAS peut enregistrer des données personnelles</strong> (images, vidéos, sons)
+                <br>
+                ❌ Non si le drone n'a pas de caméra/micro et ne collecte aucune donnée personnelle
+                <br><br>
+                → Applicable dans <strong>TOUTES les catégories</strong>, y compris Ouverte
+            </div>
+
+            <h3>8.2 Assurance</h3>
+            <div class="tip">
+                <strong>💰 Recommandation assurance :</strong>
+                <ul>
+                    <li>✅ Fortement recommandé de s'assurer (Responsabilité Civile)</li>
+                    <li>✅ Même si la loi ne l'exige pas explicitement en catégorie Ouverte en France</li>
+                    <li>✅ Valable pour usage loisir ET commercial</li>
+                </ul>
+            </div>
+
+            <h3>8.3 Sanctions</h3>
+            <div class="important">
+                <strong>⚖️ En cas de non-respect de la réglementation :</strong>
+                <br><br>
+                L'exploitant s'expose aux <strong>amendes ou sanctions pénales applicables dans l'État</strong> où la violation a eu lieu.
+                <br><br>
+                ❌ Pas de simple rappel
+                <br>
+                ✅ Sanctions réelles et applicables
+            </div>
+
+            <h3>8.4 Récapitulatif des interdictions en catégorie Ouverte</h3>
+            <table>
+                <tr>
+                    <th>❌ INTERDIT</th>
+                    <th>Raison</th>
+                </tr>
+                <tr>
+                    <td>Masse &gt; 25 kg</td>
+                    <td>Limite de la catégorie Ouverte</td>
+                </tr>
+                <tr>
+                    <td>Transport marchandises dangereuses</td>
+                    <td>Risque pour la sécurité</td>
+                </tr>
+                <tr>
+                    <td>Survol de rassemblements</td>
+                    <td>Risque en cas de chute</td>
+                </tr>
+                <tr>
+                    <td>Vol hors vue (BVLOS)</td>
+                    <td>Obligation de VLOS en Ouverte</td>
+                </tr>
+                <tr>
+                    <td>Vol de nuit sans équipement adapté</td>
+                    <td>Visibilité insuffisante</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>📝 Checklist finale avant l'examen</h2>
+            
+            <div class="tip">
+                <strong>✅ Points essentiels à retenir :</strong>
+                <ol>
+                    <li><strong>VLOS obligatoire</strong> : vol en vue directe, sans jumelles</li>
+                    <li><strong>120m maximum</strong> de hauteur en catégorie Ouverte</li>
+                    <li><strong>Survol personnes isolées OK en A1 avec C0</strong>, rassemblements JAMAIS</li>
+                    <li><strong>Enregistrement si &gt;250g OU si caméra/micro</strong></li>
+                    <li><strong>Tolérance zéro alcool</strong>, toujours</li>
+                    <li><strong>Zones restriction ≠ zones interdites</strong> (vol possible sous conditions)</li>
+                    <li><strong>Traînée = force qui s'oppose à l'avancement</strong></li>
+                    <li><strong>3 axes : tangage, roulis, lacet</strong> (pas "rotation")</li>
+                    <li><strong>Manuel d'utilisation = source des limitations</strong></li>
+                    <li><strong>RGPD s'applique si enregistrement données personnelles</strong></li>
+                    <li><strong>Situation anormale = manœuvrabilité dégradée</strong></li>
+                    <li><strong>Aéroports = zone principale de restriction</strong></li>
+                    <li><strong>Wi-Fi = risque d'interférence avec 2,4/5,8 GHz</strong></li>
+                    <li><strong>Réserve de batterie obligatoire</strong> (temps vol &lt; autonomie max)</li>
+                    <li><strong>Déplacer le drone si personne passe en dessous</strong></li>
+                </ol>
+            </div>
+        </div>
+
+        <div style="background: #0e1418; color: white; padding: 30px; border-radius: 15px; text-align: center; margin-top: 50px;">
+            <h2 style="color: white; margin: 0; border: none; background: none; padding: 0;">🎯 Vous êtes maintenant prêt pour l'examen !</h2>
+            <p style="margin-top: 15px; font-size: 1.2em; color: white;">Bon courage ! 🚁</p>
+        </div>
+    </div>
+<footer class="azs-foot"><a href="mailto:eperret@azs.fr">eperret@azs.fr</a></footer>
+</body>
+</html>

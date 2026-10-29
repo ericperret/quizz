@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--
+================================================================================
+  Nom        : index2.html
+  Objet      : page d'accueil du dépôt quizz, liens vers tous les outils par thème
+  Auteur     : Eric PERRET
+  Date       : 2026-10-17
+================================================================================
+
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette ardoise / ambre / cyan, polices système ; aucun changement fonctionnel
+-->
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizz — cours, examens et outils</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #0e1418;
+            color: #dfe7ec;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        h2 { color: #8fa1ad; font-size: 15px; margin-top: 28px; }
+        h1 { color: #5cc8d6; border-bottom: 1px solid #26343e; padding-bottom: 10px; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 12px 0; border-bottom: 1px solid #26343e; }
+        a {
+            color: #5cc8d6;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        a:hover { text-decoration: underline; }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #26343e;
+            font-size: 12px;
+            color: #8fa1ad;
+        }
+        .footer a { font-size: 12px; }
+    </style>
+
+<style id="charte-azs">
+.azs-barre{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#141c22;border-bottom:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%;position:relative;z-index:9999}
+.azs-barre .azs{font:800 20px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:-1px;text-transform:none;color:#f0a63a;text-decoration:none;padding-right:12px;border-right:1px solid #26343e}
+.azs-barre .azs:hover{color:#ffcf7a}
+.azs-barre a.fil{color:#8fa1ad;text-decoration:none}
+.azs-barre a.fil:hover{color:#f0a63a}
+.azs-foot{display:flex;justify-content:flex-end;align-items:center;padding:8px 16px;background:#141c22;border-top:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
+.azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
+.azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+h1{display:flex;align-items:center;gap:10px;color:#dfe7ec;letter-spacing:-.3px}
+h1::before{content:"";width:3px;height:1em;border-radius:2px;background:#f0a63a;flex:none}
+h2{color:#f0a63a!important}
+a:hover{color:#f0a63a!important;text-decoration:none!important}
+</style>
+</head>
+<body>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+    <h1>Quizz — cours, examens et outils</h1>
+    <h2>Aéronautique et drone</h2>
+    <ul>
+        <li><a href="cats_quiz_v8.html">CATS — Entraînement Examen Théorique</a></li>
+        <li><a href="bapd_a2_v2.html">Examen BAPD A2 — Examen + Renforcement</a></li>
+        <li><a href="quiz_ulm.html">ULM — Entraînement Examen Théorique</a></li>
+        <li><a href="cours_theorique_drone_A1A3.html">Cours Théorique Drone A1/A3 - Support Complet</a></li>
+        <li><a href="pdra_g_recap.html">PDRA-G — Fiche récap</a></li>
+        <li><a href="metar_decoder.html">Décodeur METAR / TAF — Télépilote UAS</a></li>
+        <li><a href="cours_meteo_fronts.html">Cours Météo — Nuages et Fronts</a></li>
+        <li><a href="nord_declinaison_derive.html">Nord · Déclinaison · Déviation · Dérive</a></li>
+        <li><a href="signaux_lumineux_atc.html">Signaux lumineux ATC — Récap complet</a></li>
+        <li><a href="aircraft_compare.html">Comparatif Avions Légers — Eagle 150B vs Concurrents</a></li>
+    </ul>
+    <h2>École</h2>
+    <ul>
+        <li><a href="defi-maths-cm2.html">Défi Maths CM2</a></li>
+        <li><a href="test_dyslexie_v4.html">Test Lecture & Orthographe — CM1/CM2</a></li>
+        <li><a href="dyslexie_exo_v3.html">Exercices Remédiation — Dyslexie v3</a></li>
+    </ul>
+    <h2>Santé et bien-être</h2>
+    <ul>
+        <li><a href="quizz_2_5.html">Questionnaire d'Auto-Orientation Diagnostique v2.4</a></li>
+        <li><a href="triage-pediatrique.html">Triage Pediatrique</a></li>
+        <li><a href="music-tpb-v2_3.html">Musique & Émotions</a></li>
+    </ul>
+    <h2>Jeux et outils</h2>
+    <ul>
+        <li><a href="blackjack.html">Blackjack</a></li>
+        <li><a href="lagence.html">The Adjustment Bureau — Field Operations Manual</a></li>
+        <li><a href="image2b64.html">Image Resizer and Base64 Exporter</a></li>
+    </ul>
+    <div class="footer">
+        <a href="https://github.com/ericperret/quizz">View on GitHub</a>
+    </div>
+<footer class="azs-foot"><a href="mailto:eperret@azs.fr">eperret@azs.fr</a></footer>
+</body>
+</html>

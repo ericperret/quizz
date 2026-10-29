@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<!--
+================================================================================
+  Nom        : lagence.html
+  Objet      : The Adjustment Bureau — Field Operations Manual
+  Auteur     : Eric PERRET
+  Date       : 2026-10-10
+  Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
+================================================================================
+
+ · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette AZS (variante claire ou sombre), polices système ; aucun changement fonctionnel
+-->
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>The Adjustment Bureau — Field Operations Manual</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        
+        
+        :root {
+            --paper: #f4f1ea;
+            --paper-dark: #ebe6db;
+            --ink: #1c2428;
+            --ink-light: #5f6b72;
+            --red-line: #c41e3a;
+            --blue-line: #1e5799;
+            --green-line: #2d6a4f;
+            --gold-line: #b8860b;
+            --purple-line: #6b3fa0;
+            --stamp-red: rgba(196, 30, 58, 0.85);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            background: var(--ink);
+            color: var(--ink);
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+        }
+        
+        /* === LOCKSCREEN === */
+        #lockscreen {
+            position: fixed;
+            inset: 0;
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 2rem;
+        }
+        
+        #lockscreen.unlocked {
+            animation: fadeOut 1.5s ease-out forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+        
+        .lock-logo {
+            width: 120px;
+            height: 120px;
+            border: 3px solid var(--paper);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .lock-logo::before {
+            content: "AB";
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            font-size: 2.5rem;
+            color: var(--paper);
+            letter-spacing: 0.1em;
+        }
+        
+        .lock-logo::after {
+            content: "";
+            position: absolute;
+            inset: -10px;
+            border: 1px solid rgba(244, 239, 228, 0.3);
+            border-radius: 50%;
+        }
+        
+        .lock-message {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            color: var(--paper);
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 320px;
+            opacity: 0.9;
+        }
+        
+        .lock-message .classified {
+            color: var(--red-line);
+            font-size: 0.85rem;
+            letter-spacing: 0.3em;
+            margin-top: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        /* === MAIN APP === */
+        #app {
+            display: none;
+            height: 100vh;
+            height: 100dvh;
+            flex-direction: column;
+            background: var(--paper);
+        }
+        
+        #app.active {
+            display: flex;
+        }
+        
+        /* === HEADER === */
+        header {
+            background: linear-gradient(to bottom, var(--paper-dark), var(--paper));
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--ink);
+            position: relative;
+            z-index: 100;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--red-line) 0px,
+                var(--red-line) 20px,
+                var(--blue-line) 20px,
+                var(--blue-line) 40px,
+                var(--green-line) 40px,
+                var(--green-line) 60px,
+                var(--gold-line) 60px,
+                var(--gold-line) 80px
+            );
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .title {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+        
+        .title span {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--ink-light);
+            letter-spacing: 0.2em;
+            margin-top: 2px;
+        }
+        
+        .status-badge {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 0.3rem 0.6rem;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            border-radius: 2px;
+        }
+        
+        .status-badge.tracking {
+            background: var(--green-line);
+            animation: blink 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* === MAP === */
+        #map-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+            background: var(--paper-dark);
+        }
+        
+        /* Leaflet customization */
+        .leaflet-tile-pane {
+            filter: sepia(25%) saturate(85%) brightness(98%);
+        }
+        
+        .leaflet-control-zoom {
+            border: 2px solid var(--ink) !important;
+            border-radius: 0 !important;
+        }
+        
+        .leaflet-control-zoom a {
+            background: var(--paper) !important;
+            color: var(--ink) !important;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace !important;
+            border-radius: 0 !important;
+        }
+        
+        .leaflet-control-zoom a:hover {
+            background: var(--paper-dark) !important;
+        }
+        
+        /* Center on me button */
+        .center-btn {
+            position: absolute;
+            bottom: 90px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+            background: var(--paper);
+            border: 2px solid var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 500;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .center-btn:active {
+            background: var(--paper-dark);
+        }
+        
+        .center-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        
+        /* Custom markers */
+        .custom-marker {
+            background: var(--paper);
+            border: 2px solid var(--ink);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--ink);
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+        }
+        
+        .custom-marker:hover {
+            transform: scale(1.2);
+        }
+        
+        .custom-marker.category-romance { border-color: var(--red-line); color: var(--red-line); }
+        .custom-marker.category-bureau { border-color: var(--blue-line); color: var(--blue-line); }
+        .custom-marker.category-chase { border-color: var(--gold-line); color: var(--gold-line); }
+        .custom-marker.category-dance { border-color: var(--purple-line); color: var(--purple-line); }
+        .custom-marker.category-key { border-color: var(--green-line); color: var(--green-line); }
+        
+        .custom-marker.visited {
+            background: var(--ink);
+            color: var(--paper) !important;
+        }
+        
+        /* User position */
+        .user-marker {
+            width: 20px;
+            height: 20px;
+            background: var(--red-line);
+            border: 3px solid var(--paper);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px var(--red-line), 0 0 15px rgba(196, 30, 58, 0.5);
+            animation: userPulse 2s ease-out infinite;
+        }
+        
+        @keyframes userPulse {
+            0% { box-shadow: 0 0 0 2px var(--red-line), 0 0 0 4px rgba(196, 30, 58, 0.4); }
+            100% { box-shadow: 0 0 0 2px var(--red-line), 0 0 0 20px rgba(196, 30, 58, 0); }
+        }
+        
+        /* Popup styling */
+        .leaflet-popup-content-wrapper {
+            background: var(--paper);
+            border: 2px solid var(--ink);
+            border-radius: 0;
+            box-shadow: 4px 4px 0 var(--ink);
+        }
+       
+        .leaflet-popup-tip {
+            background: var(--paper);
+            border: 1px solid var(--ink);
+        }
+        
+        .popup-content {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            padding: 0.5rem;
+            max-width: 250px;
+        }
+        
+        .popup-content h3 {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--ink-light);
+            padding-bottom: 0.4rem;
+        }
+        
+        .popup-content .scene {
+            font-size: 0.8rem;
+            color: var(--ink-light);
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+        
+        .popup-content .distance {
+            font-size: 0.75rem;
+            background: var(--ink);
+            color: var(--paper);
+            padding: 0.2rem 0.5rem;
+            display: inline-block;
+        }
+        
+        /* === INFO PANEL === */
+        #info-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--paper);
+            border-top: 3px solid var(--ink);
+            padding: 1rem;
+            transform: translateY(calc(100% - 70px));
+            transition: transform 0.3s ease;
+            z-index: 500;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        
+        #info-panel.expanded {
+            transform: translateY(0);
+        }
+        
+        .panel-handle {
+            width: 50px;
+            height: 4px;
+            background: var(--ink-light);
+            border-radius: 2px;
+            margin: 0 auto 1rem;
+            cursor: pointer;
+        }
+        
+        .nearest-location {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .nearest-icon {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .nearest-info {
+            flex: 1;
+        }
+        
+        .nearest-info h4 {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .nearest-info .address {
+            font-size: 0.75rem;
+            color: var(--ink-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .distance-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+        }
+        
+        .distance-display span {
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+        
+        /* === LEGEND === */
+        .legend {
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--ink-light);
+        }
+        
+        #info-panel.expanded .legend {
+            display: grid;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 3px;
+        }
+        
+        .legend-color.romance { background: var(--red-line); }
+        .legend-color.bureau { background: var(--blue-line); }
+        .legend-color.chase { background: var(--gold-line); }
+        .legend-color.dance { background: var(--purple-line); }
+        .legend-color.key { background: var(--green-line); }
+        
+        /* === LOCATION LIST === */
+        .location-list {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--ink-light);
+        }
+        
+        #info-panel.expanded .location-list {
+            display: block;
+        }
+        
+        .location-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px dotted var(--ink-light);
+            cursor: pointer;
+        }
+        
+        .location-item:active {
+            background: var(--paper-dark);
+        }
+        
+        .location-item .marker-small {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--ink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .location-item .name {
+            flex: 1;
+            font-size: 0.75rem;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+        }
+        
+        .location-item .dist {
+            font-size: 0.7rem;
+            color: var(--ink-light);
+        }
+        
+        /* === GPS PERMISSION SCREEN === */
+        #gps-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(14, 20, 24, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 800;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        #gps-screen.hidden {
+            display: none;
+        }
+        
+        .gps-icon {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--paper);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--paper);
+            position: relative;
+        }
+        
+        .gps-icon.searching::after {
+            content: "";
+            position: absolute;
+            inset: -8px;
+            border: 2px solid var(--paper);
+            border-radius: 50%;
+            opacity: 0;
+            animation: radarPulse 1.5s ease-out infinite;
+        }
+        
+        @keyframes radarPulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .gps-title {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            color: var(--paper);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .gps-text {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            color: var(--paper);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            max-width: 300px;
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
+        }
+        
+        .gps-btn {
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            background: var(--paper);
+            color: var(--ink);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            margin: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .gps-btn:hover {
+            background: var(--gold-line);
+            color: var(--paper);
+        }
+        
+        .gps-btn.secondary {
+            background: transparent;
+            color: var(--paper);
+            border: 1px solid var(--paper);
+        }
+        
+        .gps-btn.secondary:hover {
+            background: rgba(244, 239, 228, 0.1);
+        }
+        
+        .gps-error {
+            background: var(--red-line);
+            color: var(--paper);
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            max-width: 300px;
+        }
+        
+        .gps-error a {
+            color: var(--paper);
+            text-decoration: underline;
+        }
+        
+        /* === NOTIFICATION === */
+        #notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ink);
+            color: var(--paper);
+            padding: 1rem 1.5rem;
+            font-family: ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+            font-size: 0.85rem;
+            text-align: center;
+            z-index: 1000;
+            border: 2px solid var(--paper);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            transition: top 0.4s ease;
+            max-width: 90%;
+        }
+        
+        #notification.show {
+            top: 20px;
+        }
+        
+        #notification .stamp {
+            color: var(--red-line);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            margin-top: 0.5rem;
+        }
+        
+        /* === NOISE TEXTURE OVERLAY === */
+        #app::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 9998;
+        }
+        
+        /* === DEBUG MODE (remove for production) === */
+        .debug-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 10px;
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            padding: 0.5rem;
+            font-size: 0.6rem;
+            z-index: 600;
+            opacity: 0.3;
+            font-family: monospace;
+        }
+    </style>
+
+<style id="charte-azs">
+.azs-barre{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#141c22;border-bottom:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%;position:relative;z-index:9999}
+.azs-barre .azs{font:800 20px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:-1px;text-transform:none;color:#f0a63a;text-decoration:none;padding-right:12px;border-right:1px solid #26343e}
+.azs-barre .azs:hover{color:#ffcf7a}
+.azs-barre a.fil{color:#8fa1ad;text-decoration:none}
+.azs-barre a.fil:hover{color:#f0a63a}
+.azs-foot{display:flex;justify-content:flex-end;align-items:center;padding:8px 16px;background:#141c22;border-top:1px solid #26343e;
+  font:600 11px/1 ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:#8fa1ad;box-sizing:border-box;width:100%}
+.azs-foot a{color:#8fa1ad;text-decoration:none;text-transform:none}
+.azs-foot a:hover{color:#f0a63a}
+/* palette AZS */
+body{background:#0e1418!important}
+</style>
+</head>
+<body>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+    <!-- LOCKSCREEN -->
+    <div id="lockscreen">
+        <div class="lock-logo"></div>
+        <div class="lock-message">
+            <div id="lock-text">
+                The Chairman has other plans for today.<br><br>
+                Your case file will be accessible<br>on the designated date.
+            </div>
+            <div class="classified">CLASSIFIED — LEVEL 7</div>
+        </div>
+        <!-- Debug button INSIDE lockscreen -->
+        <button class="debug-btn" onclick="bypassDate()" style="position:absolute; bottom:20px; right:20px; opacity:0.5;">.</button>
+    </div>
+    
+    <!-- MAIN APP -->
+    <div id="app">
+        <!-- GPS PERMISSION SCREEN -->
+        <div id="gps-screen">
+            <div class="gps-icon" id="gps-icon">📍</div>
+            <div class="gps-title" id="gps-title">Localisation requise</div>
+            <div class="gps-text" id="gps-text">
+                Pour suivre votre position et vous guider vers les lieux du film, l'application a besoin d'accéder à votre GPS.
+            </div>
+            <button class="gps-btn" id="gps-btn" onclick="requestGPS()">Activer le GPS</button>
+            <button class="gps-btn secondary" onclick="skipGPS()">Continuer sans GPS</button>
+            <div class="gps-error" id="gps-error" style="display:none;"></div>
+        </div>
+        
+        <header>
+            <div class="header-content">
+                <div class="title">
+                    Field Operations Manual
+                    <span>Case #2011-0214 — NYC Sector</span>
+                </div>
+                <div class="status-badge" id="status">STANDBY</div>
+            </div>
+        </header>
+        
+        <div id="map-container">
+            <div id="map"></div>
+            <button class="center-btn disabled" id="center-btn" onclick="centerOnUser()" title="Me localiser">📍</button>
+            
+            <div id="info-panel">
+                <div class="panel-handle" onclick="togglePanel()"></div>
+                
+                <div class="nearest-location">
+                    <div class="nearest-icon" id="nearest-icon">?</div>
+                    <div class="nearest-info">
+                        <h4 id="nearest-name">En attente du GPS...</h4>
+                        <div class="address" id="nearest-address">Activez la localisation pour le tracking</div>
+                        <div class="distance-display">
+                            <span id="nearest-distance">---</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color romance"></div> Romance</div>
+                    <div class="legend-item"><div class="legend-color bureau"></div> Le Bureau</div>
+                    <div class="legend-item"><div class="legend-color chase"></div> Poursuite</div>
+                    <div class="legend-item"><div class="legend-color dance"></div> Danse</div>
+                    <div class="legend-item"><div class="legend-color key"></div> Scènes clés</div>
+                </div>
+                
+                <div class="location-list" id="location-list"></div>
+            </div>
+        </div>
+        
+        <div id="notification">
+            <div id="notif-text"></div>
+            <div class="stamp">★ ADJUSTMENT REQUIRED ★</div>
+        </div>
+    </div>
+    
+
+    
+    <script>
+        // ============================================
+        // THE ADJUSTMENT BUREAU — NYC FIELD GUIDE
+        // ============================================
+        
+        // All filming locations with categories
+        const LOCATIONS = [
+            // KEY SCENES
+            {
+                id: 1,
+                name: "Waldorf-Astoria Hotel",
+                address: "301 Park Avenue",
+                lat: 40.7564,
+                lng: -73.9743,
+                category: "key",
+                scene: "🚽 LA rencontre culte : David et Elise se rencontrent dans les toilettes pour hommes. Elle se cache après avoir crashé un mariage.",
+                icon: "W"
+            },
+            {
+                id: 2,
+                name: "Top of the Rock",
+                address: "30 Rockefeller Plaza",
+                lat: 40.7593,
+                lng: -73.9794,
+                category: "key",
+                scene: "🏙️ Scène finale : Encerclés sur le toit, David et Elise déclarent leur amour. Le Chairman réécrit leur destin.",
+                icon: "★"
+            },
+            
+            // BUREAU LOCATIONS
+            {
+                id: 3,
+                name: "New York Public Library",
+                address: "476 5th Avenue",
+                lat: 40.7532,
+                lng: -73.9822,
+                category: "bureau",
+                scene: "📚 QG du Bureau : Harry consulte les carnets du destin et les 'plans'.",
+                icon: "B"
+            },
+            {
+                id: 4,
+                name: "11 Madison Avenue",
+                address: "Metropolitan Life North Building",
+                lat: 40.7417,
+                lng: -73.9872,
+                category: "bureau",
+                scene: "🏢 Extérieur du QG : Augmenté à 100 étages en CGI (hauteur prévue avant la Grande Dépression).",
+                icon: "HQ"
+            },
+            {
+                id: 5,
+                name: "60 Centre Street",
+                address: "NY County Supreme Court",
+                lat: 40.7142,
+                lng: -74.0018,
+                category: "bureau",
+                scene: "⚖️ Le tribunal : Point de départ de la course à travers les portes magiques.",
+                icon: "C"
+            },
+            
+            // ROMANCE
+            {
+                id: 6,
+                name: "Madison Square Park",
+                address: "Madison Ave & E 25th St",
+                lat: 40.7421,
+                lng: -73.9876,
+                category: "romance",
+                scene: "💑 Retrouvailles & le banc fatal : C'est ICI que Harry s'endort et rate sa mission (renverser le café). David prend son bus et retrouve Elise.",
+                icon: "♥"
+            },
+            {
+                id: 21,
+                name: "Arrêt de bus — Le Premier Vrai Baiser",
+                address: "Madison Ave & E 23rd St",
+                lat: 40.7407,
+                lng: -73.9878,
+                category: "key",
+                scene: "💋 LE BAISER : David prend ce bus chaque jour pendant 3 ANS. Ce jour-là, Harry s'endort, David monte... et retrouve Elise. Leur baiser dans le bus déclenche tout.",
+                icon: "🚌"
+            },
+            {
+                id: 7,
+                name: "Fort Tryon Park",
+                address: "Washington Heights",
+                lat: 40.8624,
+                lng: -73.9315,
+                category: "romance",
+                scene: "🌳 Rendez-vous romantique au New Leaf Restaurant (propriété de Bette Midler).",
+                icon: "F"
+            },
+            {
+                id: 8,
+                name: "Circle Line Ferry",
+                address: "Hudson River",
+                lat: 40.7627,
+                lng: -74.0002,
+                category: "romance",
+                scene: "🚢 Balade en bateau : Vues sur Manhattan et la Statue de la Liberté.",
+                icon: "⚓"
+            },
+            {
+                id: 9,
+                name: "Brooklyn Ice House",
+                address: "Van Brunt St & Pioneer St",
+                lat: 40.6797,
+                lng: -74.0104,
+                category: "romance",
+                scene: "🍺 Bar à Red Hook : David retrouve Elise.",
+                icon: "R"
+            },
+            
+            // CHASE SCENES
+            {
+                id: 10,
+                name: "Yankee Stadium",
+                address: "1 E 161st St, Bronx",
+                lat: 40.8296,
+                lng: -73.9262,
+                category: "chase",
+                scene: "⚾ Porte magique : David et Elise émergent sur le terrain depuis les toilettes du tribunal !",
+                icon: "Y"
+            },
+            {
+                id: 11,
+                name: "6th Avenue & W 54th St",
+                address: "Midtown Manhattan",
+                lat: 40.7634,
+                lng: -73.9776,
+                category: "chase",
+                scene: "🏃 Course-poursuite : David court dans la foule avec Elise, poursuivis par les agents.",
+                icon: "6"
+            },
+            {
+                id: 12,
+                name: "Statue of Liberty",
+                address: "Liberty Island",
+                lat: 40.6892,
+                lng: -74.0445,
+                category: "chase",
+                scene: "🗽 Passage éclair lors de la course-poursuite finale à travers les portes.",
+                icon: "L"
+            },
+            {
+                id: 13,
+                name: "Howard St & Crosby St",
+                address: "SoHo",
+                lat: 40.7217,
+                lng: -73.9985,
+                category: "chase",
+                scene: "🚶 Course à pied dans SoHo.",
+                icon: "S"
+            },
+            {
+                id: 14,
+                name: "West 4th St & Perry St",
+                address: "West Village",
+                lat: 40.7350,
+                lng: -74.0014,
+                category: "chase",
+                scene: "🚪 Portes magiques : Traversée du West Village.",
+                icon: "4"
+            },
+            
+            // DANCE
+            {
+                id: 15,
+                name: "Cedar Lake Studios",
+                address: "547 W 26th St, Chelsea",
+                lat: 40.7506,
+                lng: -74.0039,
+                category: "dance",
+                scene: "💃 Toutes les scènes de danse d'Elise. Emily Blunt s'est entraînée ici pendant des mois.",
+                icon: "D"
+            },
+            
+            // OTHER KEY LOCATIONS
+            {
+                id: 16,
+                name: "Appartement de David",
+                address: "1 Madison Ave & E 24th St",
+                lat: 40.7413,
+                lng: -73.9873,
+                category: "key",
+                scene: "🏠 L'appartement de David Norris. Scène du réveil avec les agents.",
+                icon: "A"
+            },
+            {
+                id: 17,
+                name: "Bureau du Maire",
+                address: "51 Chambers Street",
+                lat: 40.7142,
+                lng: -74.0059,
+                category: "key",
+                scene: "🏛️ Travail politique de David.",
+                icon: "M"
+            },
+            {
+                id: 18,
+                name: "Fulton Ferry Pier",
+                address: "Brooklyn Bridge area",
+                lat: 40.7024,
+                lng: -73.9944,
+                category: "key",
+                scene: "🎤 Discours électoral de David après sa défaite.",
+                icon: "P"
+            },
+            {
+                id: 19,
+                name: "South Street Seaport",
+                address: "Front St & Beekman St",
+                lat: 40.7069,
+                lng: -74.0030,
+                category: "chase",
+                scene: "🌊 Scènes de rue historiques.",
+                icon: "SS"
+            },
+            {
+                id: 20,
+                name: "Stella Bistro",
+                address: "217 Front Street",
+                lat: 40.7066,
+                lng: -74.0034,
+                category: "romance",
+                scene: "🍽️ Restaurant où les personnages se retrouvent.",
+                icon: "SB"
+            }
+        ];
+        
+        // Route connections (for metro-style lines)
+        const ROUTES = {
+            romance: [1, 6, 7, 8, 9, 20],
+            bureau: [3, 4, 5, 17],
+            chase: [5, 10, 11, 12, 13, 14, 19],
+            key: [1, 2, 16, 18, 21]
+        };
+        
+        const ROUTE_COLORS = {
+            romance: '#c41e3a',
+            bureau: '#1e5799',
+            chase: '#b8860b',
+            dance: '#6b3fa0',
+            key: '#2d6a4f'
+        };
+        
+        // Global state
+        let map = null;
+        let userMarker = null;
+        let userPosition = null;
+        let markers = {};
+        let panelExpanded = false;
+        let visitedLocations = new Set();
+        let lastNotifiedLocation = null;
+        
+        // ============================================
+        // DATE CHECK
+        // ============================================
+        
+        function checkDate() {
+            const now = new Date();
+            const month = now.getMonth(); // 0-indexed
+            const day = now.getDate();
+            
+            // February 14th = month 1, day 14
+            return (month === 1 && day === 14);
+        }
+        
+        function bypassDate() {
+            // Debug function - remove for production
+            unlockApp();
+        }
+        
+        function unlockApp() {
+            document.getElementById('lockscreen').classList.add('unlocked');
+            document.getElementById('app').classList.add('active');
+            
+            setTimeout(() => {
+                document.getElementById('lockscreen').style.display = 'none';
+                initMap();
+                initGeolocation();
+            }, 1500);
+        }
+        
+        // ============================================
+        // MAP INITIALIZATION
+        // ============================================
+        
+        function initMap() {
+            // Center on Midtown Manhattan
+            map = L.map('map', {
+                center: [40.7505, -73.9934],
+                zoom: 13,
+                zoomControl: true
+            });
+            
+            // OpenStreetMap tiles with custom styling
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap | The Adjustment Bureau Field Ops',
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Draw route lines first (behind markers)
+            drawRouteLines();
+            
+            // Add location markers
+            LOCATIONS.forEach(loc => {
+                const marker = createMarker(loc);
+                markers[loc.id] = marker;
+                marker.addTo(map);
+            });
+            
+            // Populate location list
+            updateLocationList();
+        }
+        
+        function createMarker(location) {
+            const icon = L.divIcon({
+                className: 'custom-marker-wrapper',
+                html: `<div class="custom-marker category-${location.category}">${location.icon}</div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+            
+            const marker = L.marker([location.lat, location.lng], { icon: icon });
+            
+            marker.bindPopup(`
+                <div class="popup-content">
+                    <h3>${location.name}</h3>
+                    <div class="scene">${location.scene}</div>
+                    <div class="address">${location.address}</div>
+                    <div class="distance" id="popup-dist-${location.id}">Calcul...</div>
+                </div>
+            `);
+            
+            marker.on('click', () => {
+                if (userPosition) {
+                    const dist = calculateDistance(
+                        userPosition.lat, userPosition.lng,
+                        location.lat, location.lng
+                    );
+                    setTimeout(() => {
+                        const el = document.getElementById(`popup-dist-${location.id}`);
+                        if (el) el.textContent = formatDistance(dist);
+                    }, 100);
+                }
+            });
+            
+            return marker;
+        }
+        
+        function drawRouteLines() {
+            Object.entries(ROUTES).forEach(([category, ids]) => {
+                const coords = ids
+                    .map(id => LOCATIONS.find(l => l.id === id))
+                    .filter(l => l)
+                    .map(l => [l.lat, l.lng]);
+                
+                if (coords.length > 1) {
+                    L.polyline(coords, {
+                        color: ROUTE_COLORS[category],
+                        weight: 4,
+                        opacity: 0.6,
+                        dashArray: category === 'chase' ? '10, 10' : null,
+                        lineJoin: 'round'
+                    }).addTo(map);
+                }
+            });
+        }
+        
+        // ============================================
+        // GEOLOCATION
+        // ============================================
+        
+        let gpsWatchId = null;
+        
+        function showGPSScreen() {
+            document.getElementById('gps-screen').classList.remove('hidden');
+        }
+        
+        function hideGPSScreen() {
+            document.getElementById('gps-screen').classList.add('hidden');
+        }
+        
+        function requestGPS() {
+            if (!navigator.geolocation) {
+                showGPSError("Votre appareil ne supporte pas la géolocalisation.", false);
+                return;
+            }
+            
+            // Update UI to "searching" state
+            document.getElementById('gps-icon').classList.add('searching');
+            document.getElementById('gps-title').textContent = "Recherche en cours...";
+            document.getElementById('gps-text').textContent = "Localisation de votre position...";
+            document.getElementById('gps-btn').style.display = 'none';
+            document.getElementById('gps-error').style.display = 'none';
+            
+            // First, try to get a single position to trigger the permission prompt
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    // Success! Now start watching
+                    hideGPSScreen();
+                    updateStatus('TRACKING', true);
+                    onPositionUpdate(position);
+                    startWatchingPosition();
+                },
+                (error) => {
+                    handleGPSError(error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        function startWatchingPosition() {
+            gpsWatchId = navigator.geolocation.watchPosition(
+                onPositionUpdate,
+                (error) => {
+                    console.warn('GPS watch error:', error);
+                    // Don't show error screen, just update status
+                    updateStatus('GPS PERDU');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 5000
+                }
+            );
+        }
+        
+        function handleGPSError(error) {
+            console.warn('GPS Error:', error);
+            
+            document.getElementById('gps-icon').classList.remove('searching');
+            document.getElementById('gps-btn').style.display = 'inline-block';
+            document.getElementById('gps-btn').textContent = 'Réessayer';
+            
+            let errorMsg = '';
+            let canRetry = true;
+            
+            switch(error.code) {
+                case 1: // PERMISSION_DENIED
+                    errorMsg = `
+                        <strong>Accès refusé</strong><br><br>
+                        Vous avez refusé l'accès au GPS. Pour le réactiver :<br><br>
+                        <strong>Sur iPhone :</strong><br>
+                        Réglages → Safari → Localisation → Autoriser<br><br>
+                        <strong>Sur Android :</strong><br>
+                        Paramètres → Applications → Chrome → Autorisations → Position<br><br>
+                        Puis rechargez cette page.
+                    `;
+                    canRetry = false;
+                    break;
+                case 2: // POSITION_UNAVAILABLE
+                    errorMsg = `
+                        <strong>Position introuvable</strong><br><br>
+                        Vérifiez que le GPS est activé sur votre appareil et que vous êtes à l'extérieur ou près d'une fenêtre.
+                    `;
+                    break;
+                case 3: // TIMEOUT
+                    errorMsg = `
+                        <strong>Délai dépassé</strong><br><br>
+                        La recherche de position prend trop de temps. Vérifiez votre connexion et réessayez.
+                    `;
+                    break;
+                default:
+                    errorMsg = `
+                        <strong>Erreur inconnue</strong><br><br>
+                        Impossible d'obtenir votre position. Réessayez ou continuez sans GPS.
+                    `;
+            }
+            
+            showGPSError(errorMsg, canRetry);
+        }
+        
+        function showGPSError(message, canRetry) {
+            document.getElementById('gps-title').textContent = "Problème de localisation";
+            document.getElementById('gps-text').textContent = "";
+            document.getElementById('gps-error').innerHTML = message;
+            document.getElementById('gps-error').style.display = 'block';
+            
+            if (!canRetry) {
+                document.getElementById('gps-btn').textContent = 'Recharger la page';
+                document.getElementById('gps-btn').onclick = () => location.reload();
+            }
+        }
+        
+        function skipGPS() {
+            hideGPSScreen();
+            updateStatus('SANS GPS');
+            showNotification("Mode carte uniquement — distances non disponibles");
+        }
+        
+        function initGeolocation() {
+            // Show the GPS permission screen instead of auto-requesting
+            showGPSScreen();
+        }
+        
+        function onPositionUpdate(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            userPosition = { lat, lng };
+            
+            // Enable center button
+            document.getElementById('center-btn').classList.remove('disabled');
+            
+            // Update or create user marker
+            if (userMarker) {
+                userMarker.setLatLng([lat, lng]);
+            } else {
+                const userIcon = L.divIcon({
+                    className: 'user-marker-wrapper',
+                    html: '<div class="user-marker"></div>',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                });
+                
+                userMarker = L.marker([lat, lng], { 
+                    icon: userIcon,
+                    zIndexOffset: 1000 
+                }).addTo(map);
+                
+                // Center map on first position
+                map.setView([lat, lng], 15);
+            }
+            
+            // Update distances and find nearest
+            updateDistances();
+        }
+        
+        function centerOnUser() {
+            if (userPosition && map) {
+                map.flyTo([userPosition.lat, userPosition.lng], 16, { duration: 0.8 });
+            }
+        }
+        
+        // ============================================
+        // DISTANCE CALCULATIONS
+        // ============================================
+        
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            // Haversine formula
+            const R = 6371e3; // Earth radius in meters
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+            
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            
+            return R * c; // Distance in meters
+        }
+        
+        function formatDistance(meters) {
+            if (meters < 1000) {
+                return `${Math.round(meters)} m`;
+            } else {
+                return `${(meters / 1000).toFixed(1)} km`;
+            }
+        }
+        
+        function updateDistances() {
+            if (!userPosition) return;
+            
+            let nearest = null;
+            let nearestDist = Infinity;
+            
+            const sortedLocations = LOCATIONS.map(loc => {
+                const dist = calculateDistance(
+                    userPosition.lat, userPosition.lng,
+                    loc.lat, loc.lng
+                );
+                
+                if (dist < nearestDist) {
+                    nearestDist = dist;
+                    nearest = loc;
+                }
+                
+                return { ...loc, distance: dist };
+            }).sort((a, b) => a.distance - b.distance);
+            
+            // Update nearest display
+            if (nearest) {
+                document.getElementById('nearest-icon').textContent = nearest.icon;
+                document.getElementById('nearest-icon').className = `nearest-icon category-${nearest.category}`;
+                document.getElementById('nearest-name').textContent = nearest.name;
+                document.getElementById('nearest-address').textContent = nearest.address;
+                document.getElementById('nearest-distance').innerHTML = 
+                    `${formatDistance(nearestDist)} <span>jusqu'au lieu</span>`;
+                
+                // Check for proximity notification (within 100m)
+                if (nearestDist < 100 && lastNotifiedLocation !== nearest.id) {
+                    lastNotifiedLocation = nearest.id;
+                    showNotification(`Vous approchez de ${nearest.name}`);
+                    markAsVisited(nearest.id);
+                }
+            }
+            
+            // Update location list
+            updateLocationList(sortedLocations);
+        }
+        
+        function markAsVisited(id) {
+            visitedLocations.add(id);
+            const markerEl = document.querySelector(`[data-location-id="${id}"] .custom-marker`);
+            if (markerEl) {
+                markerEl.classList.add('visited');
+            }
+        }
+        
+        // ============================================
+        // UI UPDATES
+        // ============================================
+        
+        function updateLocationList(sortedLocations = null) {
+            const list = document.getElementById('location-list');
+            const locations = sortedLocations || LOCATIONS.map(loc => ({
+                ...loc,
+                distance: userPosition ? calculateDistance(
+                    userPosition.lat, userPosition.lng,
+                    loc.lat, loc.lng
+                ) : null
+            }));
+            
+            list.innerHTML = locations.map(loc => `
+                <div class="location-item" onclick="flyToLocation(${loc.id})" data-location-id="${loc.id}">
+                    <div class="marker-small category-${loc.category}" style="border-color: ${ROUTE_COLORS[loc.category]}; color: ${ROUTE_COLORS[loc.category]}">
+                        ${loc.icon}
+                    </div>
+                    <div class="name">${loc.name}</div>
+                    <div class="dist">${loc.distance ? formatDistance(loc.distance) : '---'}</div>
+                </div>
+            `).join('');
+        }
+        
+        function flyToLocation(id) {
+            const loc = LOCATIONS.find(l => l.id === id);
+            if (loc && map) {
+                map.flyTo([loc.lat, loc.lng], 17, { duration: 1 });
+                markers[id].openPopup();
+                togglePanel(); // Close panel
+            }
+        }
+        
+        function togglePanel() {
+            panelExpanded = !panelExpanded;
+            document.getElementById('info-panel').classList.toggle('expanded', panelExpanded);
+        }
+        
+        function updateStatus(text, tracking = false) {
+            const badge = document.getElementById('status');
+            badge.textContent = text;
+            badge.classList.toggle('tracking', tracking);
+        }
+        
+        function showNotification(text) {
+            const notif = document.getElementById('notification');
+            document.getElementById('notif-text').textContent = text;
+            notif.classList.add('show');
+            
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 4000);
+        }
+        
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkDate()) {
+                // It's February 14th!
+                unlockApp();
+            } else {
+                // Show countdown or message
+                const daysUntil = getDaysUntilValentines();
+                if (daysUntil > 0 && daysUntil <= 14) {
+                    document.getElementById('lock-text').innerHTML = 
+                        `The Chairman has scheduled<br>your case review in<br><br><strong style="font-size: 2rem;">${daysUntil}</strong><br><br>day${daysUntil > 1 ? 's' : ''}.`;
+                }
+            }
+        });
+        
+        function getDaysUntilValentines() {
+            const now = new Date();
+            const year = now.getMonth() >= 2 ? now.getFullYear() + 1 : now.getFullYear();
+            const valentines = new Date(year, 1, 14); // Feb 14
+            if (now.getMonth() === 1 && now.getDate() <= 14) {
+                valentines.setFullYear(now.getFullYear());
+            }
+            const diff = valentines - now;
+            return Math.ceil(diff / (1000 * 60 * 60 * 24));
+        }
+        
+        // Swipe to expand panel
+        let touchStartY = 0;
+        document.getElementById('info-panel').addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+        
+        document.getElementById('info-panel').addEventListener('touchmove', (e) => {
+            const deltaY = touchStartY - e.touches[0].clientY;
+            if (Math.abs(deltaY) > 50) {
+                if (deltaY > 0 && !panelExpanded) {
+                    togglePanel();
+                } else if (deltaY < 0 && panelExpanded) {
+                    togglePanel();
+                }
+                touchStartY = e.touches[0].clientY;
+            }
+        });
+    </script>
+<footer class="azs-foot"><a href="mailto:eperret@azs.fr">eperret@azs.fr</a></footer>
+</body>
+</html>

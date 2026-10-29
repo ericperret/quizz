@@ -1,0 +1,43 @@
+# ==============================================================================
+#  Nom / Name : CITATION.cff
+#  Projet     : quizz — https://github.com/ericperret/quizz
+#  Auteur     : Eric PERRET
+#  Date       : 2026-10-27
+#  Version    : 1.0
+#  Objet      : métadonnées de citation (bouton « Cite this repository » de GitHub)
+#  Licence    : CC BY-NC 4.0 — usage commercial sur autorisation écrite (eperret@azs.fr)
+# ==============================================================================
+cff-version: 1.2.0
+message: "If you use or cite this work, please credit it as below. / Merci de citer ce travail comme ci-dessous."
+type: software
+title: "Quizz — courses, exams and tools"
+abstract: "Standalone browser tools: drone theory exams (EASA A2, STS, SORA), microlight theory, METAR/TAF decoder, aviation weather, school maths and reading tests, paediatric triage. Offline."
+authors:
+  - family-names: "PERRET"
+    given-names: "Eric"
+    email: "eperret@azs.fr"
+repository-code: "https://github.com/ericperret/quizz"
+url: "https://ericperret.github.io/quizz/index2.html"
+license: CC-BY-NC-4.0
+date-released: "2026-10-27"
+keywords:
+  - quiz
+  - drone
+  - easa
+  - uas
+  - drone-pilot
+  - sora
+  - aviation
+  - microlight
+  - metar
+  - taf
+  - aviation-weather
+  - exam-preparation
+  - e-learning
+  - education
+  - dyslexia
+  - pediatric-triage
+  - medical-education
+  - offline
+  - html5
+  - vanilla-javascript
