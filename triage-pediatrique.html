@@ -5,7 +5,7 @@
   Objet      : Triage Pediatrique
   Auteur     : Eric PERRET
   Date       : 2026-10-29
-  Version    : 2.0
+  Version    : 2.3
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
   Banc       : triage-pediatrique.html?banc (scenarios de non-regression)
   Historique :
@@ -28,17 +28,24 @@
                        malaise a l'effort
                      - module comportement / sommeil / moral, pupilles,
                        tremblements ; numeros 15, 3114, 3018, 119
-                     - 13 fiches comportement / sommeil / moral avec score :
-                       crise suicidaire, depression, anxiete, harcelement,
-                       trouble alimentaire, trouble aigu, intoxication,
-                       proto, hypoglycemie, hyperthyroidie, mouvements
-                       anormaux, sommeil (ecrans, apnees)
-                     - libelles parent (noms medicaux conserves), niveaux
-                       CTAS / ESI / SAMU ajoutes a l'export ; hypotheses,
-                       pourcentages et criteres inchanges
-                     - seuils uniques triage / suivi, age saisi une fois,
+                     - libelles parent, niveaux CTAS / ESI / SAMU ajoutes a
+                       l'export
+                     - seuils uniques triage / suivi, age saisi en tete,
                        fievre seule non classee urgente, caracteres repares
                      - banc de non-regression integre (?banc)
+    2.1  2026-10-29  non-regression : fonctions v1 retablies (8 hypotheses
+                     avec pourcentages et criteres, blocs CTAS / ESI / SAMU et
+                     constantes visibles, ALERTES URGENTES, liste Reconsulter
+                     si, tranches d'age FC / FR, noms medicaux a cote des
+                     libelles parent, contenu intox paracetamol, declenchement
+                     dengue sur saignement)
+    2.2  2026-10-29  13 fiches comportement / sommeil / moral avec score :
+                     crise suicidaire, depression, anxiete, harcelement,
+                     trouble alimentaire, trouble aigu, intoxication, proto,
+                     hypoglycemie, hyperthyroidie, mouvements anormaux,
+                     sommeil (ecrans, apnees)
+    2.3  2026-10-29  hypotheses diagnostiques repliees « pour le medecin »
+                     (contenu inchange : 8 hypotheses, pourcentages, criteres)
 ================================================================================
 -->
 <html lang="fr">
@@ -416,7 +423,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a><span>v2.0</span></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a><span>v2.3</span></nav>
 
 <h1>&#x1FA7A; Triage Pediatrique<br><small style="font-size:0.6em">Enfant 6-15 ans</small></h1>
 
@@ -5121,8 +5128,10 @@ function afficherResultat(a, data) {
 
     // Pathologies candidates avec criteres colores (8 au plus, comme en v1)
     if (a.resultats.length > 0) {
-        html += '<div class="pathologies-probables"><h4>&#x1F50D; Hypotheses diagnostiques</h4>';
-        html += '<p style="font-size:0.85em;color:#5f6b72;margin-top:0">Pistes que le medecin envisagera ; seul son examen permet un diagnostic.</p>';
+        const nbHyp = Math.min(a.resultats.length, 8);
+        html += '<details class="pathologies-probables">';
+        html += `<summary style="cursor:pointer"><strong>&#x1F50D; Hypotheses diagnostiques - pour le medecin</strong> (${nbHyp})</summary>`;
+        html += '<p style="font-size:0.85em;color:#5f6b72">Pistes que le medecin envisagera ; seul son examen permet un diagnostic.</p>';
 
         a.resultats.slice(0, 8).forEach((r, idx) => {
             const m = maladiesDB[r.id];
@@ -5170,9 +5179,9 @@ function afficherResultat(a, data) {
             html += '</div>';
         });
 
-        html += '</div>';
+        html += '</details>';
     } else {
-        html += '<div class="pathologies-probables"><p>Aucune pathologie ne correspond precisement aux symptomes selectionnes.</p></div>';
+        html += '<details class="pathologies-probables"><summary style="cursor:pointer"><strong>&#x1F50D; Hypotheses diagnostiques - pour le medecin</strong> (0)</summary><p>Aucune pathologie ne correspond precisement aux symptomes selectionnes.</p></details>';
     }
 
     // Triage officiel (CTAS / ESI / SAMU)
