@@ -4,15 +4,36 @@
   Nom        : triage-pediatrique.html
   Objet      : Triage Pediatrique
   Auteur     : Eric PERRET
-  Date       : 2026-10-17
+  Date       : 2026-10-29
+  Version    : 2.0
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
+  Banc       : triage-pediatrique.html?banc (scenarios de non-regression)
   Historique :
-    2026-10-17  mention « Non valide cliniquement » remplacée par « Teste et
-                approuve par des medecins urgentistes » (avertissement 15 / 112
-                conservé)
+    1.0  2026-10-17  mention « Non valide cliniquement » remplacée par « Teste et
+                     approuve par des medecins urgentistes » (avertissement 15 / 112
+                     conservé)
+         2026-10-18  charte graphique AZS : bandeau AZS et pied de page
+                     (eperret@azs.fr), palette AZS (variante claire ou sombre),
+                     polices système ; aucun changement fonctionnel
+    2.0  2026-10-29  - niveau affiche = le plus grave des drapeaux, signes
+                       d'alerte, triage SAMU et premiere piste (le bandeau
+                       pouvait rester vert avec purpura, convulsion, SpO2 < 92)
+                     - actions : 15 / medecin de ville aujourd'hui (sinon 15) /
+                       medecin 24-48 h / maison ; une piste verte donne vert
+                     - 37 criteres morts repares, fiche sepsis reconstruite,
+                       fiches ingestion, acidocetose, torsion d'ovaire,
+                       envenimation
+                     - signes d'alerte : etat de l'enfant, circulation,
+                       trauma cranien, paludisme, dengue, diabete, proto,
+                       malaise a l'effort
+                     - module comportement / sommeil / moral, pupilles,
+                       tremblements ; numeros 15, 3114, 3018, 119
+                     - langage parent, pistes sans pourcentage (3 au plus),
+                       CTAS / ESI / SAMU repliés pour le medecin et exportes
+                     - seuils uniques triage / suivi, age saisi une fois,
+                       fievre seule non classee urgente, caracteres repares
+                     - banc de non-regression integre (?banc)
 ================================================================================
-
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette AZS (variante claire ou sombre), polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
@@ -389,14 +410,14 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a><span>v2.0</span></nav>
 
 <h1>&#x1FA7A; Triage Pediatrique<br><small style="font-size:0.6em">Enfant 6-15 ans</small></h1>
 
 <div class="disclaimer">
     <strong>&#x26A0; Cet outil ne remplace pas un avis medical.</strong><br>
     En cas d'urgence vitale, appelez le <strong>15</strong> ou le <strong>112</strong>.<br>
-    <small style="color: #856404;">Outil d'aide a l'observation parentale - Teste et approuve par des medecins urgentistes - Traumatologie : urgences de base uniquement</small>
+    <small style="color: #856404;">Outil d'aide a l'observation parentale - Version 1 testee et approuvee par des medecins urgentistes, ajouts de la version 2.0 en relecture - Traumatologie : urgences de base uniquement</small>
 </div>
 
 <div class="mode-switch">
@@ -406,6 +427,28 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
 </div>
 
 <div id="mode-triage" class="active">
+
+    <div class="category" style="border-left: 4px solid #dc3545;">
+        <h2>&#x1F440; Comment est l'enfant ? (a regarder en premier)</h2>
+        <div class="symptom-item">
+            <label>Age de l'enfant :&nbsp;<input type="number" id="age-enfant" min="0" max="17" style="width:70px">&nbsp;ans</label>
+        </div>
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="difficileReveiller"> Difficile a reveiller, ou ne reste pas eveille</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="comportementInhabituel"> Ne reagit pas comme d'habitude (ne sourit pas, ne joue pas, regard vide)</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="refusBoire"> Refuse de boire ou ne garde rien</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="aggravationRapide"> S'aggrave en quelques heures</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="inquietudeParent"> Je suis inquiet : ce n'est pas comme d'habitude</label>
+        </div>
+    </div>
 
     <div class="category">
         <h2>&#x2764; Etat General</h2>
@@ -422,7 +465,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
                 <strong>Duree :</strong><br>
                 <label><input type="radio" name="fievre-duree" value="1-2j"> 1-2 jours</label>
                 <label><input type="radio" name="fievre-duree" value="3-4j"> 3-4 jours</label>
-                <label><input type="radio" name="fievre-duree" value="5j-plus"> = 5 jours</label>
+                <label><input type="radio" name="fievre-duree" value="5j-plus"> &ge; 5 jours</label>
             </div>
         </div>
         
@@ -456,7 +499,19 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             </div>
         </div>
         <div class="symptom-item">
+            <label><input type="checkbox" id="extremitesFroides"> Mains et pieds froids</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="recolorationLente"> Peau lente a se recolorer (appuyer 5 s sur le sternum : la marque blanche reste plus de 3 s)</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="douleurJambes"> Mal aux jambes, refuse de marcher</label>
+        </div>
+        <div class="symptom-item">
             <label><input type="checkbox" id="douleurThorax"> Douleur thoracique</label>
+        </div>
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="malaiseEffort"> Malaise ou perte de connaissance pendant un effort</label>
         </div>
     </div>
 
@@ -466,7 +521,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         <div class="symptom-item">
             <label><input type="checkbox" id="hasSpo2" onchange="toggleSub(this)"> SpO2 (saturation)</label>
             <div class="sub-options" id="sub-hasSpo2">
-                <label><input type="radio" name="spo2-val" value="95"> = 95% (normale)</label>
+                <label><input type="radio" name="spo2-val" value="95"> &ge; 95% (normale)</label>
                 <label><input type="radio" name="spo2-val" value="92"> 92-94%</label>
                 <label class="red-flag"><input type="radio" name="spo2-val" value="90"> &lt; 92%</label>
             </div>
@@ -475,11 +530,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         <div class="symptom-item">
             <label><input type="checkbox" id="hasFc" onchange="toggleSub(this)"> Frequence cardiaque</label>
             <div class="sub-options" id="sub-hasFc">
-                <strong>Ã‚ge :</strong><br>
-                <label><input type="radio" name="fc-age" value="6-8"> 6-8 ans (N: 70-110)</label>
-                <label><input type="radio" name="fc-age" value="9-12"> 9-12 ans (N: 65-105)</label>
-                <label><input type="radio" name="fc-age" value="13-15"> 13-15 ans (N: 60-100)</label>
-                <hr>
+                <small style="color:#5f6b72">Normes selon l'age saisi en haut : 6-8 ans 70-110 ; 9-12 ans 65-105 ; 13-15 ans 60-100 (plus 10 par degre de fievre)</small><br>
                 <label>FC mesuree : <input type="number" id="fc-value" min="40" max="220" style="width:80px"> bpm</label>
             </div>
         </div>
@@ -487,11 +538,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         <div class="symptom-item">
             <label><input type="checkbox" id="hasFr" onchange="toggleSub(this)"> Frequence respiratoire</label>
             <div class="sub-options" id="sub-hasFr">
-                <strong>Ã‚ge :</strong><br>
-                <label><input type="radio" name="fr-age" value="6-8"> 6-8 ans (N: 18-24)</label>
-                <label><input type="radio" name="fr-age" value="9-12"> 9-12 ans (N: 16-22)</label>
-                <label><input type="radio" name="fr-age" value="13-15"> 13-15 ans (N: 12-20)</label>
-                <hr>
+                <small style="color:#5f6b72">Normes selon l'age saisi en haut : 6-8 ans 18-24 ; 9-12 ans 16-22 ; 13-15 ans 12-20</small><br>
                 <label>FR mesuree : <input type="number" id="fr-value" min="8" max="60" style="width:80px"> /min</label>
             </div>
         </div>
@@ -509,7 +556,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <label><input type="checkbox" id="hasGlycemie" onchange="toggleSub(this)"> Glycemie capillaire</label>
             <div class="sub-options" id="sub-hasGlycemie">
                 <label>Valeur : <input type="number" id="glycemie-val" min="0.2" max="6" step="0.1" style="width:80px"> g/L</label>
-                <p style="font-size:0.8em;color:#5f6b72;margin-top:5px">Normal : 0.7-1.1 g/L â€¢ Hypo &lt; 0.6 â€¢ Hyper &gt; 1.26</p>
+                <p style="font-size:0.8em;color:#5f6b72;margin-top:5px">Normal : 0.7-1.1 g/L - Hypo &lt; 0.7 - Haute &ge; 2 (a jeun &gt; 1.26)</p>
             </div>
         </div>
     </div>
@@ -566,7 +613,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <div class="sub-options" id="sub-respiration">
                 <label><input type="radio" name="respi-type" value="rapide"> Respiration rapide</label>
                 <label><input type="radio" name="respi-type" value="sifflante"> Sifflements</label>
-                <label class="red-flag"><input type="radio" name="respi-type" value="tirage"> Tirage (creuse sous cotes)</label>
+                <label class="red-flag"><input type="radio" name="respi-type" value="tirage"> Tirage (la peau se creuse entre les cotes ou au-dessus du sternum)</label>
                 <label class="red-flag"><input type="radio" name="respi-type" value="cyanose"> Levres bleues</label>
             </div>
         </div>
@@ -594,7 +641,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <div class="sub-options" id="sub-vomissements">
                 <strong>Type :</strong><br>
                 <label><input type="radio" name="vomi-type" value="alimentaire"> Alimentaires</label>
-                <label><input type="radio" name="vomi-type" value="bilieux"> Verdatres (bilieux)</label>
+                <label><input type="radio" name="vomi-type" value="bilieux"> Verts (bilieux)</label>
                 <label class="red-flag"><input type="radio" name="vomi-type" value="sang"> Avec sang</label>
                 <hr>
                 <strong>Frequence :</strong><br>
@@ -632,16 +679,23 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
                 <label><input type="radio" name="abdo-loc" value="periombilicale"> Autour nombril</label>
                 <label><input type="radio" name="abdo-loc" value="fid"> Bas-ventre droit</label>
                 <label><input type="radio" name="abdo-loc" value="epigastre"> Estomac</label>
+                <label><input type="radio" name="abdo-loc" value="hcd"> Sous les cotes a droite</label>
                 <hr>
                 <label><input type="checkbox" name="abdo-carac" value="constante"> Douleur constante</label>
+                <label><input type="checkbox" name="abdo-carac" value="augmente"> Douleur qui augmente depuis quelques heures</label>
                 <label><input type="checkbox" name="abdo-carac" value="crampes"> Crampes</label>
-                <label><input type="checkbox" name="abdo-carac" value="migration"> Migration de la douleur</label>
-                <label class="red-flag"><input type="checkbox" name="abdo-carac" value="defense"> Ventre dur (defense)</label>
+                <label><input type="checkbox" name="abdo-carac" value="migration"> Douleur partie du nombril, puis descendue en bas a droite</label>
+                <label><input type="checkbox" name="abdo-carac" value="ballonne"> Ventre gonfle, tendu</label>
+                <label class="red-flag"><input type="checkbox" name="abdo-carac" value="defense"> Ventre dur comme du bois, empeche qu'on le touche</label>
                 <hr>
                 <strong>Signes appendice :</strong><br>
-                <label><input type="checkbox" name="abdo-append" value="blumberg"> Douleur au relachement</label>
-                <label><input type="checkbox" name="abdo-append" value="psoitis"> Douleur extension jambe</label>
-                <label><input type="checkbox" name="abdo-append" value="rovsing"> Douleur cote oppose</label>
+                <label><input type="checkbox" name="abdo-append" value="vomi-apres"> Vomissements apres le debut de la douleur</label>
+                <label><input type="checkbox" name="abdo-append" value="anorexie"> Ne veut pas manger</label>
+                <label><input type="checkbox" name="abdo-append" value="marche"> Marche penche en avant, a mal en sautant a cloche-pied</label>
+                <label><input type="checkbox" name="abdo-append" value="couche"> Reste couche en chien de fusil</label>
+                <label><input type="checkbox" name="abdo-append" value="blumberg"> Tres mal quand on relache apres avoir appuye en bas a droite</label>
+                <label><input type="checkbox" name="abdo-append" value="psoitis"> Mal en bas a droite en levant la jambe droite tendue</label>
+                <label><input type="checkbox" name="abdo-append" value="rovsing"> Appuyer en bas a gauche fait mal en bas a droite</label>
             </div>
         </div>
         
@@ -654,7 +708,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <div class="sub-options" id="sub-deshydratation">
                 <label><input type="checkbox" name="desh" value="soif"> Soif intense</label>
                 <label><input type="checkbox" name="desh" value="bouche"> Bouche seche</label>
-                <label class="red-flag"><input type="checkbox" name="desh" value="pli"> Pli cutane persistant</label>
+                <label class="red-flag"><input type="checkbox" name="desh" value="pli"> Pli de peau qui reste marque (pincer le dos de la main)</label>
                 <label class="red-flag"><input type="checkbox" name="desh" value="yeux"> Yeux creux</label>
                 <label class="red-flag"><input type="checkbox" name="desh" value="pasurines"> Pas d'urines &gt; 8h</label>
             </div>
@@ -672,13 +726,14 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
                 <label><input type="radio" name="eruption-type" value="papules"> Boutons en relief</label>
                 <label><input type="radio" name="eruption-type" value="vesicules"> Petites cloques (avec liquide)</label>
                 <label><input type="radio" name="eruption-type" value="urticaire"> Plaques qui grattent</label>
-                <label class="red-flag"><input type="radio" name="eruption-type" value="purpura"> Ne s'efface PAS a la pression</label>
+                <label class="red-flag"><input type="radio" name="eruption-type" value="purpura"> Taches qui ne s'effacent PAS sous un verre transparent appuye dessus</label>
                 <hr>
                 <strong>Localisation :</strong><br>
                 <label><input type="checkbox" name="eruption-loc" value="visage"> Visage</label>
                 <label><input type="checkbox" name="eruption-loc" value="tronc"> Tronc</label>
                 <label><input type="checkbox" name="eruption-loc" value="membres"> Membres</label>
                 <label><input type="checkbox" name="eruption-loc" value="palmoplantaire"> Paumes/plantes</label>
+                <label><input type="checkbox" name="eruption-loc" value="fesses"> Fesses</label>
                 <hr>
                 <label><input type="checkbox" id="eruptionGratte"> Demangeaisons</label>
                 <hr>
@@ -690,6 +745,9 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
                 <label><input type="radio" name="eruption-evolution" value="centrifuge"> Du centre vers exterieur</label>
                 <label><input type="radio" name="eruption-evolution" value="centripete"> De l'exterieur vers centre</label>
                 <label><input type="radio" name="eruption-evolution" value="simultanee"> Apparition simultanee</label>
+                <label><input type="radio" name="eruption-evolution" value="descend"> Commence au visage puis descend</label>
+                <label><input type="radio" name="eruption-evolution" value="avec-fievre"> Apparue pendant la fievre</label>
+                <label><input type="radio" name="eruption-evolution" value="apres-fievre"> Apparue quand la fievre est tombee</label>
             </div>
         </div>
         
@@ -701,6 +759,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <label><input type="checkbox" id="oedeme" onchange="toggleSub(this)"> Gonflement (oedeme)</label>
             <div class="sub-options" id="sub-oedeme">
                 <label><input type="radio" name="oedeme-loc" value="visage"> Visage</label>
+                <label><input type="radio" name="oedeme-loc" value="oeil"> Paupieres / autour de l'oeil</label>
                 <label class="red-flag"><input type="radio" name="oedeme-loc" value="levres"> Levres/langue</label>
                 <label><input type="radio" name="oedeme-loc" value="membres"> Membres</label>
             </div>
@@ -728,6 +787,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
                 <label><input type="radio" name="plaie-type" value="contuse"> Contuse (bords irreguliers)</label>
                 <label class="red-flag"><input type="radio" name="plaie-type" value="profonde"> Profonde (graisse/muscle visible)</label>
                 <label class="red-flag"><input type="radio" name="plaie-type" value="morsure"> Morsure animale/humaine</label>
+                <label class="red-flag"><input type="radio" name="plaie-type" value="serpent"> Morsure de serpent, piqure de scorpion ou de raie</label>
                 <hr>
                 <strong>Saignement :</strong><br>
                 <label><input type="radio" name="plaie-saignement" value="minime"> Minime (s'arrete seul)</label>
@@ -763,11 +823,11 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         </div>
         
         <div class="symptom-item">
-            <label class="red-flag"><input type="checkbox" id="raideurNuque" onchange="toggleSub(this)"> Raideur de nuque</label>
+            <label class="red-flag"><input type="checkbox" id="raideurNuque" onchange="toggleSub(this)"> Raideur de nuque (ne peut pas poser le menton sur la poitrine)</label>
             <div class="sub-options" id="sub-raideurNuque">
-                <strong>Signes meninges specifiques :</strong><br>
-                <label class="red-flag"><input type="checkbox" id="kernig"> Signe de Kernig (douleur quand on tend la jambe, enfant couche)</label>
-                <label class="red-flag"><input type="checkbox" id="brudzinski"> Signe de Brudzinski (jambes se plient quand on penche la tete)</label>
+                <strong>A observer, enfant allonge sur le dos :</strong><br>
+                <label class="red-flag"><input type="checkbox" id="kernig"> Ne peut pas tendre la jambe a la verticale sans douleur dans le dos ou la nuque</label>
+                <label class="red-flag"><input type="checkbox" id="brudzinski"> Plie les jambes tout seul quand on lui souleve doucement la tete</label>
             </div>
         </div>
         <div class="symptom-item">
@@ -793,6 +853,16 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         </div>
         <div class="symptom-item">
             <label><input type="checkbox" id="paresthesies"> Fourmillements / engourdissements</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="pupilles" onchange="toggleSub(this)"> Pupilles anormales (regarder avec une lampe)</label>
+            <div class="sub-options" id="sub-pupilles">
+                <label><input type="radio" name="pupilles-type" value="dilatees"> Tres grandes</label>
+                <label><input type="radio" name="pupilles-type" value="petites"> Tres petites (tete d'epingle)</label>
+                <label class="red-flag"><input type="radio" name="pupilles-type" value="inegalesNouveau"> Inegales, c'est nouveau</label>
+                <label><input type="radio" name="pupilles-type" value="inegalesToujours"> Inegales depuis toujours</label>
+                <label class="red-flag"><input type="radio" name="pupilles-type" value="fixes"> Ne bougent pas a la lumiere</label>
+            </div>
         </div>
     </div>
 
@@ -850,8 +920,12 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
                 <label><input type="checkbox" name="urinaire-types" value="brulure"> Brulures mictionnelles</label>
                 <label><input type="checkbox" name="urinaire-types" value="frequent"> Envies frequentes</label>
                 <label><input type="checkbox" name="urinaire-types" value="urgence"> Urgences mictionnelles</label>
+                <label><input type="checkbox" name="urinaire-types" value="odeur"> Urines qui sentent fort</label>
                 <label class="red-flag"><input type="checkbox" name="urinaire-types" value="sang"> Sang dans urines</label>
             </div>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="polyuriePolydipsie"> Boit et urine beaucoup plus que d'habitude (se releve la nuit pour boire, a maigri)</label>
         </div>
         <div class="symptom-item">
             <label><input type="checkbox" id="urinesCouleur" onchange="toggleSub(this)"> Urines anormales</label>
@@ -893,6 +967,10 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <div class="sub-options" id="sub-traumaCrane">
                 <label class="red-flag"><input type="checkbox" id="traumaPCI"> Perte de connaissance (meme breve)</label>
                 <label><input type="checkbox" id="traumaAmnesia"> Ne se souvient pas du choc</label>
+                <label class="red-flag"><input type="checkbox" id="traumaVomi"> Vomit plusieurs fois</label>
+                <label class="red-flag"><input type="checkbox" id="traumaCephaleeAugmente"> Mal de tete qui augmente</label>
+                <label class="red-flag"><input type="checkbox" id="traumaEcoulement"> Liquide clair ou sang qui coule du nez ou de l'oreille</label>
+                <label><input type="checkbox" id="traumaMecanismeViolent"> Choc violent : chute de plus de 1,5 m, velo ou trottinette sans casque, heurte par un vehicule</label>
             </div>
         </div>
         
@@ -966,6 +1044,78 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         </div>
     </div>
 
+    <div class="category" style="border-left: 4px solid #7b61a8;">
+        <h2>&#x1F319; Comportement / Sommeil / Moral</h2>
+
+        <div class="symptom-item">
+            <label><input type="checkbox" id="sommeil" onchange="toggleSub(this)"> Dort mal</label>
+            <div class="sub-options" id="sub-sommeil">
+                <label><input type="radio" name="sommeil-type" value="ecran"> S'endort tard a cause de l'ecran (telephone, console)</label>
+                <label><input type="radio" name="sommeil-type" value="rumine"> Met longtemps a s'endormir : ressasse, s'inquiete</label>
+                <label><input type="radio" name="sommeil-type" value="reveilTot"> Se reveille tres tot et ne se rendort pas</label>
+                <label><input type="radio" name="sommeil-type" value="cauchemars"> Cauchemars repetes, peur de dormir</label>
+                <label><input type="radio" name="sommeil-type" value="hypersomnie"> Dort beaucoup trop, ne se leve plus</label>
+                <label><input type="radio" name="sommeil-type" value="apnees"> Ronfle avec des pauses respiratoires</label>
+                <hr>
+                <label><input type="checkbox" id="sommeilSansEcranOk"> Sans telephone dans la chambre, il dort bien</label>
+            </div>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="tristesse"> Triste, irritable ou ne veut plus rien faire depuis plus de 2 semaines</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="plaintesEcole"> Maux de ventre ou de tete repetes les jours d'ecole</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="harcelement"> Signes de harcelement (isole, affaires abimees, peur du telephone ou de l'ecole)</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="refusScolaire"> Refuse d'aller a l'ecole avec angoisse depuis plusieurs jours</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="alimentationTrouble"> Ne mange presque plus, se fait vomir ou maigrit vite</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="changementBrutal"> Changement brutal de comportement en quelques jours</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="crisePanique" onchange="toggleSub(this)"> Crise de peur intense (souffle court, coeur qui bat, fourmillements autour de la bouche)</label>
+            <div class="sub-options" id="sub-crisePanique">
+                <label><input type="checkbox" id="paniquePremiere"> C'est la premiere fois</label>
+            </div>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="tremblements" onchange="toggleSub(this)"> Tremblements</label>
+            <div class="sub-options" id="sub-tremblements">
+                <label><input type="checkbox" name="tremb-assoc" value="sueursFaim"> Avec sueurs, faim, paleur</label>
+                <label><input type="checkbox" name="tremb-assoc" value="coeurPoids"> Avec coeur rapide, perte de poids, a toujours chaud</label>
+                <label><input type="checkbox" name="tremb-assoc" value="panique"> Pendant une crise de peur</label>
+                <label class="red-flag"><input type="checkbox" name="tremb-assoc" value="agitationPupilles"> Avec agitation, sueurs, pupilles dilatees, coeur rapide</label>
+                <label><input type="checkbox" name="tremb-assoc" value="mouvements"> Mouvements saccades involontaires</label>
+                <small style="color:#5f6b72">Frissons de fievre : cocher plutot Fievre et Frissons.</small>
+            </div>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="scarifications"> Se fait du mal (coupures, brulures) sans danger immediat</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="ideesNoires" onchange="toggleSub(this)"> Parle de mourir ou d'idees noires</label>
+            <div class="sub-options" id="sub-ideesNoires">
+                <label><input type="radio" name="idees-type" value="sansPlan"> Sans plan precis</label>
+                <label class="red-flag"><input type="radio" name="idees-type" value="plan"> Avec un plan ou un moyen (medicaments, arme, hauteur)</label>
+            </div>
+        </div>
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="ingestion"> A avale des medicaments, un produit ou une drogue (meme s'il semble aller bien)</label>
+        </div>
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="agitation"> Agitation ou violence incontrolable</label>
+        </div>
+        <div class="symptom-item">
+            <label class="red-flag"><input type="checkbox" id="hallucinations"> Propos incoherents, voit ou entend des choses qui n'existent pas</label>
+        </div>
+    </div>
+
     <div class="category" style="border-left: 4px solid #20c997;">
         <h2>&#x1F4CB; Contexte / Terrain</h2>
         
@@ -998,6 +1148,12 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
             <label><input type="checkbox" id="immunodepression"> Immunodeprime</label>
         </div>
         <div class="symptom-item">
+            <label><input type="checkbox" id="protoxyde"> Consomme du proto (protoxyde d'azote : ballons, cartouches)</label>
+        </div>
+        <div class="symptom-item">
+            <label><input type="checkbox" id="substances"> Consomme cannabis, puff, boissons energisantes ou autre produit</label>
+        </div>
+        <div class="symptom-item">
             <label><input type="checkbox" id="zonePalu" onchange="toggleSub(this)"> Sejour zone impaludee</label>
             <div class="sub-options" id="sub-zonePalu">
                 <label><input type="radio" name="palu-zone" value="afrique"> Afrique</label>
@@ -1017,7 +1173,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
 
     <button id="analyser" onclick="analyser()">&#x1F50E; ANALYSER</button>
     <button id="exporter" onclick="exporterSymptomes()" style="display:block;width:100%;padding:12px;font-size:1em;background:#1f7f8c;color:white;border:none;border-radius:8px;cursor:pointer;margin-bottom:10px;">&#x1F4CB; Exporter symptomes</button>
-    <button id="reset" onclick="resetForm()">? Reinitialiser</button>
+    <button id="reset" onclick="resetForm()">&#x21BA; Reinitialiser</button>
     
     <div id="resultat"></div>
 </div>
@@ -1037,7 +1193,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Aria
         </select>
         <input type="text" id="new-patient-prenom" placeholder="Prenom">
         <input type="text" id="new-patient-initiale" placeholder="M." maxlength="2" style="width:50px">
-        <input type="number" id="new-patient-age" placeholder="Ã‚ge" min="6" max="15">
+        <input type="number" id="new-patient-age" placeholder="Age" min="6" max="15">
         <button class="btn-add" onclick="ajouterPatient()">+ Ajouter</button>
         <button class="btn-del" onclick="supprimerPatient()">>&#x1F5D1;</button>
     </div>
@@ -1197,14 +1353,14 @@ const maladiesDB = {
             message: "Impossibilite de deglutir / bave - SUSPICION EPIGLOTTITE - URGENCE"
         },
         alertes: [
-            "Impossibilite de deglutir / bave ? epiglottite = URGENCE",
+            "Impossibilite de deglutir / bave -> epiglottite = URGENCE",
             "Difficultes respiratoires",
             "Gonflement du cou important",
             "Fievre persistante malgre traitement"
         ],
         conseils: [
             "Test rapide streptocoque (TROD) en pharmacie",
-            "Si TROD positif ? consultation pour antibiotiques",
+            "Si TROD positif -> consultation pour antibiotiques",
             "Paracetamol pour la douleur et fievre",
             "Alimentation froide/tiede (moins douloureux)"
         ],
@@ -1228,7 +1384,7 @@ const maladiesDB = {
         ],
         urgence: {
             condition: (data) => data.oreille && data.raideurNuque,
-            message: "Otite + raideur nuque - ELIMINER MASTOÃDITE/MENINGITE"
+            message: "Otite + raideur nuque - ELIMINER MASTOIDITE/MENINGITE"
         },
         alertes: [
             "Gonflement/rougeur derriere l'oreille (mastoidite)",
@@ -1270,7 +1426,7 @@ const maladiesDB = {
             "Difficultes respiratoires marquees",
             "Tirage (creuse sous les cotes)",
             "Cyanose (levres bleues)",
-            "Enfant qui bave, ne peut pas avaler ? URGENCE (epiglottite)",
+            "Enfant qui bave, ne peut pas avaler -> URGENCE (epiglottite)",
             "Agitation ou prostration"
         ],
         conseils: [
@@ -1328,7 +1484,7 @@ const maladiesDB = {
             { texte: "Sifflements respiratoires", champ: "respiType", op: "==", val: "sifflante" },
             { texte: "Difficultes respiratoires", champ: "respiration", op: "==", val: true },
             { texte: "Toux", champ: "toux", op: "==", val: true },
-            { texte: "Declencheur identifie", champ: "asthmeTriggers", op: "!=", val: [] }
+            { texte: "Declencheur identifie", champ: "asthmeTriggers", op: "nonvide", val: true }
         ],
         exclusions: [
             { texte: "Fievre elevee", champ: "temp", op: ">=", val: 38.5 }
@@ -1349,7 +1505,7 @@ const maladiesDB = {
             "Bronchodilatateur (Ventoline) : 2-4 bouffees avec chambre d'inhalation",
             "Position assise",
             "Calmer l'enfant",
-            "Si pas d'amelioration en 20 min ? Urgences",
+            "Si pas d'amelioration en 20 min -> appeler le 15",
             "Consulter medecin dans les 48h apres crise"
         ],
         nonFaire: [
@@ -1470,9 +1626,9 @@ const maladiesDB = {
         niveau: "orange",
         criteres: [
             { texte: "Toux en quintes", champ: "touxType", op: "==", val: "quinteuse" },
-            { texte: "Chant du coq", champ: "touxQuinte", op: "contains", val: "chant" },
-            { texte: "Vomissements declenches par toux", champ: "touxQuinte", op: "contains", val: "vomit" },
-            { texte: "Toux > 2 semaines", champ: "touxDuree", op: "==", val: "plus2sem" },
+            { texte: "Chant du coq", champ: "touxQuinte", op: "contains", val: "chantCoq" },
+            { texte: "Vomissements declenches par toux", champ: "touxQuinte", op: "contains", val: "vomissement" },
+            { texte: "Toux > 2 semaines", champ: "touxDuree", op: "in", val: ["prolongee", "chronique"] },
             { texte: "Vaccins incomplets", champ: "vaccinStatut", op: "in", val: ["incomplet", "inconnu"] }
         ],
         exclusions: [
@@ -1570,7 +1726,7 @@ const maladiesDB = {
             "Deshydratation severe",
             "Sang abondant dans les selles",
             "Fievre tres elevee",
-            "Signes neurologiques (vision trouble, faiblesse) ? botulisme"
+            "Signes neurologiques (vision trouble, faiblesse) -> botulisme"
         ],
         conseils: [
             "Rehydratation prioritaire",
@@ -1598,7 +1754,7 @@ const maladiesDB = {
             { texte: "Position chien de fusil", champ: "abdoAppend", op: "contains", val: "couche" }
         ],
         exclusions: [
-            { texte: "Diarrhee importante", champ: "diarrheeType", op: "==", val: "explosive" }
+            { texte: "Diarrhee importante", champ: "diarrheeType", op: "==", val: "liquide" }
         ],
         urgence: {
             condition: (data) => data.abdoLoc === 'fid' && data.abdoCarac && data.abdoCarac.includes('defense'),
@@ -1631,7 +1787,7 @@ const maladiesDB = {
         criteres: [
             { texte: "Douleurs abdominales intenses", champ: "douleurAbdo", op: "==", val: true },
             { texte: "Vomissements bilieux", champ: "vomiType", op: "==", val: "bilieux" },
-            { texte: "Vomissements repetes", champ: "vomiFreq", op: "in", val: ["repete", "incoercible"] },
+            { texte: "Vomissements repetes", champ: "vomiFreq", op: "in", val: ["repetes", "incoercible"] },
             { texte: "Arret selles et gaz", champ: "constipation", op: "==", val: true },
             { texte: "Ventre ballonne", champ: "abdoCarac", op: "contains", val: "ballonne" }
         ],
@@ -1792,7 +1948,7 @@ const maladiesDB = {
         description: "Inflammation aigue du pancreas. Formes severes avec necrose = urgence.",
         niveau: "orange",
         criteres: [
-            { texte: "Douleur epigastrique intense", champ: "abdoLoc", op: "==", val: "estomac" },
+            { texte: "Douleur epigastrique intense", champ: "abdoLoc", op: "==", val: "epigastre" },
             { texte: "Douleur constante", champ: "abdoCarac", op: "contains", val: "constante" },
             { texte: "Vomissements persistants", champ: "vomiFreq", op: "==", val: "incoercible" },
             { texte: "Position antalgique", champ: "abdoAppend", op: "contains", val: "couche" },
@@ -1801,7 +1957,7 @@ const maladiesDB = {
         ],
         exclusions: [],
         urgence: {
-            condition: (data) => data.abdoLoc === 'estomac' && data.vomiFreq === 'incoercible' && data.confusion,
+            condition: (data) => data.abdoLoc === 'epigastre' && data.vomiFreq === 'incoercible' && data.confusion,
             message: "Pancreatite avec confusion - Forme grave - Reanimation"
         },
         alertes: [
@@ -1839,7 +1995,7 @@ const maladiesDB = {
             { texte: "Immunodeprime (gravite ++)", champ: "immunodepression", op: "==", val: true }
         ],
         exclusions: [
-            { texte: "Localisation mains/pieds predominante", champ: "eruptionLoc", op: "contains", val: "mains" },
+            { texte: "Localisation mains/pieds predominante", champ: "eruptionLoc", op: "contains", val: "palmoplantaire" },
             { texte: "Fievre elevee persistante", champ: "temp", op: ">=", val: 39 }
         ],
         urgence: {
@@ -1871,8 +2027,7 @@ const maladiesDB = {
         description: "Infection virale (Coxsackie). Tres contagieuse. Benigne. Guerit en 7-10 jours.",
         niveau: "vert",
         criteres: [
-            { texte: "Vesicules mains", champ: "eruptionLoc", op: "contains", val: "mains" },
-            { texte: "Vesicules pieds", champ: "eruptionLoc", op: "contains", val: "pieds" },
+            { texte: "Vesicules mains et pieds", champ: "eruptionLoc", op: "contains", val: "palmoplantaire" },
             { texte: "Aphtes bouche", champ: "aphtes", op: "==", val: true },
             { texte: "Eruption fesses", champ: "eruptionLoc", op: "contains", val: "fesses" },
             { texte: "Fievre moderee", champ: "fievre", op: "==", val: true },
@@ -1916,9 +2071,9 @@ const maladiesDB = {
             message: "Urticaire + oedeme/gene respiratoire - ANAPHYLAXIE - Adrenaline"
         },
         alertes: [
-            "Gonflement des levres/langue/gorge ? URGENCE",
-            "Difficultes respiratoires ? URGENCE",
-            "Malaise, chute de tension ? URGENCE"
+            "Gonflement des levres/langue/gorge -> URGENCE",
+            "Difficultes respiratoires -> URGENCE",
+            "Malaise, chute de tension -> URGENCE"
         ],
         conseils: [
             "Antihistaminique",
@@ -1935,7 +2090,7 @@ const maladiesDB = {
         criteres: [
             { texte: "Angine avec fievre elevee", champ: "gorge", op: "==", val: true },
             { texte: "Fievre elevee", champ: "temp", op: ">=", val: 38.5 },
-            { texte: "Eruption granitee", champ: "eruptionTexture", op: "contains", val: "granite" },
+            { texte: "Eruption granitee", champ: "eruptionTexture", op: "contains", val: "rugueuse" },
             { texte: "Langue framboisee", champ: "langueType", op: "==", val: "framboise" },
             { texte: "Ganglions", champ: "ganglions", op: "==", val: true }
         ],
@@ -2170,7 +2325,7 @@ const maladiesDB = {
             { texte: "Douleurs articulaires predominantes", champ: "articIntensite", op: "==", val: "intense" }
         ],
         urgence: {
-            condition: (data) => data.saignements || (data.douleurAbdo && data.abdoLoc === 'estomac') || data.extremitesFroides,
+            condition: (data) => data.fievre && (data.douleurYeux || data.courbatures) && (data.saignements || (data.douleurAbdo && data.abdoLoc === 'epigastre') || data.extremitesFroides),
             message: "Dengue avec signes d'alarme - Hospitalisation"
         },
         alertes: [
@@ -2179,7 +2334,7 @@ const maladiesDB = {
             "Saignements (gencives, nez, ecchymoses)",
             "Agitation ou lethargie",
             "Extremites froides",
-            "Chute brutale de la fievre + malaise ? dengue severe"
+            "Chute brutale de la fievre + malaise -> dengue severe"
         ],
         conseils: [
             "Paracetamol UNIQUEMENT",
@@ -2249,7 +2404,7 @@ const maladiesDB = {
         },
         alertes: [
             "Jaunisse (atteinte hepatique)",
-            "Oligurie (peu d'urines ? atteinte renale)",
+            "Oligurie (peu d'urines -> atteinte renale)",
             "Saignements",
             "Confusion"
         ],
@@ -2284,9 +2439,9 @@ const maladiesDB = {
             message: "PALUDISME GRAVE - Artesunate IV - Urgence vitale"
         },
         alertes: [
-            "Confusion / troubles de conscience ? PALUDISME GRAVE",
-            "Convulsions ? PALUDISME GRAVE",
-            "Prostration ? PALUDISME GRAVE",
+            "Confusion / troubles de conscience -> PALUDISME GRAVE",
+            "Convulsions -> PALUDISME GRAVE",
+            "Prostration -> PALUDISME GRAVE",
             "Ictere",
             "Urines foncees / rares",
             "Saignements"
@@ -2314,7 +2469,7 @@ const maladiesDB = {
         criteres: [
             { texte: "Fatigue intense et prolongee", champ: "fatigueLevel", op: "in", val: ["marquee", "prostration"] },
             { texte: "Ganglions gonfles multiples", champ: "ganglions", op: "==", val: true },
-            { texte: "Ganglions gonfles multiples", champ: "ganglionsLoc", op: "==", val: "multiple" },
+            { texte: "Ganglions gonfles multiples", champ: "ganglionsLoc", op: "==", val: "multiples" },
             { texte: "Angine", champ: "gorge", op: "==", val: true },
             { texte: "Fievre prolongee", champ: "fievreDuree", op: "==", val: "5j-plus" },
             { texte: "Perte d'appetit", champ: "appetit", op: "==", val: true }
@@ -2347,7 +2502,7 @@ const maladiesDB = {
         criteres: [
             { texte: "Brulures en urinant", champ: "urinaireTypes", op: "contains", val: "brulure" },
             { texte: "Envies frequentes d'uriner", champ: "urinaireTypes", op: "contains", val: "frequent" },
-            { texte: "Urines troubles", champ: "urinaireTypes", op: "contains", val: "trouble" },
+            { texte: "Urines troubles", champ: "urinesCouleur", op: "==", val: "trouble" },
             { texte: "Urines malodorantes", champ: "urinaireTypes", op: "contains", val: "odeur" }
         ],
         exclusions: [
@@ -2411,7 +2566,7 @@ const maladiesDB = {
             { texte: "Refus de manger", champ: "appetit", op: "==", val: true }
         ],
         exclusions: [
-            { texte: "Eruption mains/pieds", champ: "eruptionLoc", op: "contains", val: "mains" }
+            { texte: "Eruption mains/pieds", champ: "eruptionLoc", op: "contains", val: "palmoplantaire" }
         ],
         urgence: null,
         alertes: [
@@ -2431,7 +2586,7 @@ const maladiesDB = {
         description: "Inflammation de la conjonctive. Virale, bacterienne ou allergique.",
         niveau: "vert",
         criteres: [
-            { texte: "Å’il rouge", champ: "yeuxTypes", op: "contains", val: "rouge" },
+            { texte: "Oeil rouge", champ: "yeuxTypes", op: "contains", val: "rouge" },
             { texte: "Larmoiement", champ: "yeuxTypes", op: "contains", val: "larmoie" },
             { texte: "Paupieres collees", champ: "yeuxTypes", op: "contains", val: "colles" },
             { texte: "Yeux", champ: "yeux", op: "==", val: true }
@@ -2467,7 +2622,7 @@ const maladiesDB = {
         description: "Infection de la cornee par HSV. URGENCE CECITANTE. Traitement antiviral < 24h imperatif.",
         niveau: "rouge",
         criteres: [
-            { texte: "Å’il rouge unilateral", champ: "yeuxTypes", op: "contains", val: "rouge" },
+            { texte: "Oeil rouge unilateral", champ: "yeuxTypes", op: "contains", val: "rouge" },
             { texte: "Photophobie intense", champ: "photophobie", op: "==", val: true },
             { texte: "Larmoiement", champ: "yeuxTypes", op: "contains", val: "larmoie" },
             { texte: "Vesicules visage", champ: "eruptionType", op: "==", val: "vesicules" },
@@ -2505,10 +2660,10 @@ const maladiesDB = {
             { texte: "Eruption vesiculeuse hemifront", champ: "eruptionType", op: "==", val: "vesicules" },
             { texte: "Eruption visage", champ: "eruptionLoc", op: "contains", val: "visage" },
             { texte: "Cephalees", champ: "cephalee", op: "==", val: true },
-            { texte: "Å’il rouge", champ: "yeuxTypes", op: "contains", val: "rouge" },
+            { texte: "Oeil rouge", champ: "yeuxTypes", op: "contains", val: "rouge" },
             { texte: "Photophobie", champ: "photophobie", op: "==", val: true },
-            { texte: "Å’deme palpebral", champ: "oedeme", op: "==", val: true },
-            { texte: "Å’deme palpebral", champ: "oedemeLoc", op: "==", val: "oeil" }
+            { texte: "Oedeme palpebral", champ: "oedeme", op: "==", val: true },
+            { texte: "Oedeme palpebral", champ: "oedemeLoc", op: "==", val: "oeil" }
         ],
         exclusions: [],
         urgence: {
@@ -2537,9 +2692,9 @@ const maladiesDB = {
         niveau: "rouge",
         criteres: [
             { texte: "Fievre elevee", champ: "temp", op: ">=", val: 38.5 },
-            { texte: "Å’deme palpebral important", champ: "oedeme", op: "==", val: true },
-            { texte: "Å’deme palpebral important", champ: "oedemeLoc", op: "==", val: "oeil" },
-            { texte: "Å’il rouge", champ: "yeuxTypes", op: "contains", val: "rouge" }
+            { texte: "Oedeme palpebral important", champ: "oedeme", op: "==", val: true },
+            { texte: "Oedeme palpebral important", champ: "oedemeLoc", op: "==", val: "oeil" },
+            { texte: "Oeil rouge", champ: "yeuxTypes", op: "contains", val: "rouge" }
         ],
         exclusions: [],
         urgence: {
@@ -2943,32 +3098,173 @@ const maladiesDB = {
 
     sepsis_choc: {
         nom: "Sepsis / Choc septique",
-        description: "Reponse inflammatoire systemique a une infection. Mortalite elevee. Chaque heure compte.",
+        description: "Reponse grave de l'organisme a une infection. Mauvaise circulation (mains froides, marbrures, recoloration lente). Chaque heure compte.",
         niveau: "rouge",
         criteres: [
             { texte: "Fievre (ou hypothermie)", champ: "fievre", op: "==", val: true },
             { texte: "Extremites froides", champ: "extremitesFroides", op: "==", val: true },
-            { texte: "Douleur HCD", champ: "abdoLoc", op: "==", val: "hcd" },
-            { texte: "Ictere", champ: "ictere", op: "==", val: true }
+            { texte: "Recoloration lente (> 3 s)", champ: "recolorationLente", op: "==", val: true },
+            { texte: "Marbrures / teint gris", champ: "paleurType", op: "in", val: ["marbrures", "gris"] },
+            { texte: "Mal aux jambes, refuse de marcher", champ: "douleurJambes", op: "==", val: true },
+            { texte: "Abattement / prostration", champ: "fatigueLevel", op: "in", val: ["marquee", "prostration"] },
+            { texte: "Difficile a reveiller", champ: "difficileReveiller", op: "==", val: true },
+            { texte: "Respiration rapide", champ: "respiType", op: "==", val: "rapide" }
         ],
         exclusions: [],
         urgence: {
-            condition: (data) => data.abdoLoc === 'hcd' && data.ictere,
-            message: "Intox paracetamol suspectee - NAC < 8h - Paracetamolemie H4"
+            condition: (data) => data.fievre && (data.paleurType === 'marbrures' || data.paleurType === 'gris' || data.difficileReveiller || data.fatigueLevel === 'prostration' || (data.extremitesFroides && data.recolorationLente)),
+            message: "Fievre avec signes de mauvaise circulation - SEPSIS possible - SAMU 15"
         },
         alertes: [
-            "Delai > 8h = efficacite antidote reduite",
-            "Paracetamolemie H4"
+            "Mains et pieds froids, marbrures, teint gris",
+            "Recoloration de la peau > 3 secondes",
+            "Douleurs des jambes, refus de marcher",
+            "Somnolence, enfant 'pas comme d'habitude'",
+            "Peu ou pas d'urines"
         ],
         conseils: [
-            "N-acetylcysteine (NAC) le plus tot possible",
-            "Efficace meme apres 8h (moins bien)",
-            "Paracetamolemie a H4",
-            "Charbon active si < 1h"
+            "APPELER LE 15",
+            "Signaler l'heure de debut des signes",
+            "Chercher des taches qui ne s'effacent pas (test du verre)"
         ],
         nonFaire: [
+            "Attendre que la fievre baisse pour juger",
+            "Se rassurer parce que la temperature n'est pas tres elevee"
+        ]
+    },
+
+    intox_medicament: {
+        nom: "Ingestion de medicaments ou de produit",
+        description: "Medicament (paracetamol, antidepresseur...), produit menager ou drogue avale, par accident ou volontairement. Certains produits sont dangereux avant tout symptome.",
+        niveau: "rouge",
+        criteres: [
+            { texte: "Ingestion de medicament ou produit", champ: "ingestion", op: "==", val: true },
+            { texte: "Vomissements", champ: "vomissements", op: "==", val: true },
+            { texte: "Somnolence / confusion", champ: "confusion", op: "==", val: true },
+            { texte: "Pupilles anormales", champ: "pupilles", op: "==", val: true },
+            { texte: "Agitation", champ: "agitation", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: {
+            condition: (data) => data.ingestion,
+            message: "Ingestion de medicament / produit - Appeler le 15 (ou le centre antipoison) MEME SANS SYMPTOME"
+        },
+        alertes: [
+            "Paracetamol : pas de symptome les premieres heures, atteinte du foie retardee",
+            "Delai > 8h = efficacite de l'antidote reduite",
+            "Somnolence, respiration lente, convulsions"
+        ],
+        conseils: [
+            "Appeler le 15 MEME SI l'enfant va bien",
+            "Garder la boite ou le flacon (nom, dosage, quantite manquante)",
+            "Noter l'heure de prise",
+            "Si geste volontaire : ne pas laisser l'enfant seul",
+            "Paracetamol : N-acetylcysteine (NAC) le plus tot possible, paracetamolemie a H4"
+        ],
+        nonFaire: [
+            "Faire vomir",
+            "Donner du lait ou de l'eau 'pour diluer'",
             "Se rassurer car 'pas de symptomes'",
-            "Attendre les symptomes pour traiter"
+            "Attendre les symptomes pour appeler"
+        ]
+    },
+
+    diabete_acidocetose: {
+        nom: "Diabete / Acidocetose diabetique",
+        description: "Diabete de type 1 qui se revele : soif, urines abondantes, amaigrissement. Sans traitement, evolue vers l'acidocetose (vomissements, mal au ventre, souffle rapide, somnolence).",
+        niveau: "orange",
+        criteres: [
+            { texte: "Boit et urine beaucoup, a maigri", champ: "polyuriePolydipsie", op: "==", val: true },
+            { texte: "Soif intense", champ: "deshSignes", op: "contains", val: "soif" },
+            { texte: "Envies frequentes d'uriner", champ: "urinaireTypes", op: "contains", val: "frequent" },
+            { texte: "Glycemie elevee (>= 2 g/L)", champ: "glycemieVal", op: ">=", val: 2 },
+            { texte: "Vomissements", champ: "vomissements", op: "==", val: true },
+            { texte: "Mal au ventre", champ: "douleurAbdo", op: "==", val: true },
+            { texte: "Fatigue marquee", champ: "fatigueLevel", op: "in", val: ["marquee", "prostration"] }
+        ],
+        exclusions: [],
+        urgence: {
+            condition: (data) => (data.polyuriePolydipsie || parseFloat(data.glycemieVal) >= 2) && (data.vomissements || data.douleurAbdo || data.respiType === 'rapide' || data.confusion || data.difficileReveiller),
+            message: "ACIDOCETOSE DIABETIQUE possible - SAMU 15"
+        },
+        alertes: [
+            "Vomissements, mal au ventre",
+            "Respiration rapide et profonde, haleine qui sent la pomme",
+            "Somnolence"
+        ],
+        conseils: [
+            "Glycemie capillaire le jour meme (medecin ou pharmacie)",
+            "Si glycemie >= 2 g/L : medecin aujourd'hui",
+            "Laisser boire de l'eau"
+        ],
+        nonFaire: [
+            "Attendre plusieurs jours 'pour voir'",
+            "Donner des boissons sucrees pour la soif"
+        ]
+    },
+
+    torsion_ovaire: {
+        nom: "Torsion d'ovaire",
+        description: "Rotation de l'ovaire sur son axe : douleur brutale du bas-ventre d'un cote, souvent avec vomissements. Urgence chirurgicale, comme la torsion du testicule.",
+        niveau: "rouge",
+        criteres: [
+            { texte: "Douleur pelvienne", champ: "douleurPelvienne", op: "==", val: true },
+            { texte: "Debut brutal", champ: "pelvienDebut", op: "==", val: "brutal" },
+            { texte: "Nausees", champ: "nausees", op: "==", val: true },
+            { texte: "Vomissements", champ: "vomissements", op: "==", val: true },
+            { texte: "Douleur bas-ventre droit", champ: "abdoLoc", op: "==", val: "fid" }
+        ],
+        exclusions: [
+            { texte: "Fievre", champ: "fievre", op: "==", val: true }
+        ],
+        urgence: {
+            condition: (data) => data.douleurPelvienne && data.pelvienDebut === 'brutal',
+            message: "Douleur pelvienne brutale - TORSION D'OVAIRE / GEU possibles - SAMU 15"
+        },
+        alertes: [
+            "Douleur brutale, d'un cote, avec vomissements",
+            "Malaise, paleur"
+        ],
+        conseils: [
+            "APPELER LE 15",
+            "Ne pas manger ni boire (chirurgie possible)"
+        ],
+        nonFaire: [
+            "Attendre que ca passe",
+            "Mettre sur le compte des regles sans avis"
+        ]
+    },
+
+    envenimation: {
+        nom: "Envenimation (serpent, scorpion, raie)",
+        description: "Morsure de serpent (Bothrops en Guyane), piqure de scorpion ou de raie d'eau douce. Gravite imprevisible chez l'enfant.",
+        niveau: "rouge",
+        criteres: [
+            { texte: "Morsure / piqure venimeuse", champ: "plaieType", op: "==", val: "serpent" },
+            { texte: "Gonflement", champ: "oedeme", op: "==", val: true },
+            { texte: "Saignement", champ: "saignements", op: "==", val: true },
+            { texte: "Vomissements", champ: "vomissements", op: "==", val: true }
+        ],
+        exclusions: [],
+        urgence: {
+            condition: (data) => data.plaieType === 'serpent',
+            message: "ENVENIMATION - SAMU 15 - Immobiliser, garder au calme"
+        },
+        alertes: [
+            "Gonflement qui s'etend",
+            "Saignement des gencives, du nez, de la plaie",
+            "Sueurs, vomissements, malaise"
+        ],
+        conseils: [
+            "APPELER LE 15",
+            "Allonger, immobiliser le membre, retirer bagues et bracelets",
+            "Noter l'heure ; photo de l'animal si possible sans risque",
+            "Raie : eau chaude supportable sur la piqure en attendant (calme la douleur)"
+        ],
+        nonFaire: [
+            "Garrot",
+            "Inciser ou aspirer",
+            "Glace sur la morsure de serpent"
         ]
     },
 
@@ -3015,7 +3311,7 @@ const maladiesDB = {
         description: "Vascularite febrile aigue. Risque de complications coronariennes si non traitee. Urgence diagnostique.",
         niveau: "orange",
         criteres: [
-            { texte: "Fievre = 5 jours", champ: "fievreDuree", op: "==", val: "5j-plus" },
+            { texte: "Fievre >= 5 jours", champ: "fievreDuree", op: "==", val: "5j-plus" },
             { texte: "Conjonctivite bilaterale", champ: "yeuxTypes", op: "contains", val: "rouge" },
             { texte: "Levres fissurees", champ: "levresFissures", op: "==", val: true },
             { texte: "Langue framboisee", champ: "langueType", op: "==", val: "framboise" },
@@ -3141,7 +3437,7 @@ const maladiesDB = {
         conseils: [
             "Test de grossesse IMMEDIAT",
             "Echographie pelvienne urgente",
-            "Bilan sanguin (ÃŸHCG, NFS, groupe)",
+            "Bilan sanguin (beta-HCG, NFS, groupe)",
             "Voie veineuse si instable"
         ],
         nonFaire: [
@@ -3171,9 +3467,9 @@ const maladiesDB = {
             message: "BOTULISME - Antitoxine urgente - Reanimation"
         },
         alertes: [
-            "Paralysie descendante (yeux ? gorge ? membres ? respiration)",
+            "Paralysie descendante (yeux -> gorge -> membres -> respiration)",
             "Risque de paralysie respiratoire",
-            "Pas de fievre (? infection)"
+            "Pas de fievre (contrairement a une infection)"
         ],
         conseils: [
             "Reanimation - surveillance respiratoire",
@@ -3501,6 +3797,7 @@ function evaluer(data, critere) {
         case '<': return parseFloat(v) < critere.val;
         case 'in': return critere.val.includes(v);
         case 'contains': return Array.isArray(v) && v.includes(critere.val);
+        case 'nonvide': return Array.isArray(v) && v.length > 0;
     }
     return false;
 }
@@ -3670,7 +3967,17 @@ function getCheckedValues(name) {
 }
 
 function collecterDonnees() {
+    const ageSaisi = parseInt(document.getElementById('age-enfant')?.value);
+    const age = isNaN(ageSaisi) ? null : ageSaisi;
     return {
+        // Comment est l'enfant
+        age: age,
+        difficileReveiller: isChecked('difficileReveiller'),
+        comportementInhabituel: isChecked('comportementInhabituel'),
+        refusBoire: isChecked('refusBoire'),
+        aggravationRapide: isChecked('aggravationRapide'),
+        inquietudeParent: isChecked('inquietudeParent'),
+
         // Etat general
         fievre: isChecked('fievre'),
         temp: getVal('temp') ? parseFloat(getVal('temp')) : null,
@@ -3684,15 +3991,19 @@ function collecterDonnees() {
         paleur: isChecked('paleur'),
         paleurType: getVal('paleur-type'),
         douleurThorax: isChecked('douleurThorax'),
-        
+        extremitesFroides: isChecked('extremitesFroides'),
+        recolorationLente: isChecked('recolorationLente'),
+        douleurJambes: isChecked('douleurJambes'),
+        malaiseEffort: isChecked('malaiseEffort'),
+
         // Constantes vitales
         hasSpo2: isChecked('hasSpo2'),
         spo2Val: getVal('spo2-val'),
         hasFc: isChecked('hasFc'),
-        fcAge: getVal('fc-age'),
+        fcAge: trancheAge(age),
         fcValue: document.getElementById('fc-value')?.value || null,
         hasFr: isChecked('hasFr'),
-        frAge: getVal('fr-age'),
+        frAge: trancheAge(age),
         frValue: document.getElementById('fr-value')?.value || null,
         hasTa: isChecked('hasTa'),
         taSys: document.getElementById('ta-sys')?.value || null,
@@ -3768,7 +4079,9 @@ function collecterDonnees() {
         paupieresTombantes: isChecked('paupieresTombantes'),
         faiblesseMusculaire: isChecked('faiblesseMusculaire'),
         paresthesies: isChecked('paresthesies'),
-        
+        pupilles: isChecked('pupilles'),
+        pupillesType: getVal('pupilles-type'),
+
         // Autres
         ganglions: isChecked('ganglions'),
         ganglionsLoc: getVal('ganglions-loc'),
@@ -3785,7 +4098,8 @@ function collecterDonnees() {
         urinaireTypes: getCheckedValues('urinaire-types'),
         urinesCouleur: getVal('urines-couleur'),
         douleurLombaire: isChecked('douleurLombaire'),
-        
+        polyuriePolydipsie: isChecked('polyuriePolydipsie'),
+
         // Osteo
         douleurMembre: isChecked('douleurMembre'),
         membreSignes: getCheckedValues('membre-signes'),
@@ -3815,11 +4129,38 @@ function collecterDonnees() {
         zonePalu: isChecked('zonePalu'),
         paluZone: getVal('palu-zone'),
         vaccinStatut: getVal('vaccin-statut'),
-        
+        protoxyde: isChecked('protoxyde'),
+        substances: isChecked('substances'),
+
+        // Comportement / sommeil / moral
+        sommeil: isChecked('sommeil'),
+        sommeilType: getVal('sommeil-type'),
+        sommeilSansEcranOk: isChecked('sommeilSansEcranOk'),
+        tristesse: isChecked('tristesse'),
+        plaintesEcole: isChecked('plaintesEcole'),
+        harcelement: isChecked('harcelement'),
+        refusScolaire: isChecked('refusScolaire'),
+        alimentationTrouble: isChecked('alimentationTrouble'),
+        changementBrutal: isChecked('changementBrutal'),
+        crisePanique: isChecked('crisePanique'),
+        paniquePremiere: isChecked('paniquePremiere'),
+        tremblements: isChecked('tremblements'),
+        trembAssoc: getCheckedValues('tremb-assoc'),
+        scarifications: isChecked('scarifications'),
+        ideesNoires: isChecked('ideesNoires'),
+        ideesType: getVal('idees-type'),
+        ingestion: isChecked('ingestion'),
+        agitation: isChecked('agitation'),
+        hallucinations: isChecked('hallucinations'),
+
         // Traumatologie
         traumaCrane: isChecked('traumaCrane'),
         traumaPCI: isChecked('traumaPCI'),
         traumaAmnesia: isChecked('traumaAmnesia'),
+        traumaVomi: isChecked('traumaVomi'),
+        traumaCephaleeAugmente: isChecked('traumaCephaleeAugmente'),
+        traumaEcoulement: isChecked('traumaEcoulement'),
+        traumaMecanismeViolent: isChecked('traumaMecanismeViolent'),
         traumaMembre: isChecked('traumaMembre'),
         traumaDeformation: isChecked('traumaDeformation'),
         traumaOuvert: isChecked('traumaOuvert'),
@@ -3840,91 +4181,263 @@ function champEstCoche(data, critere) {
     return evaluer(data, critere);
 }
 
-// === ANALYSER ===
-function analyser() {
-    const data = collecterDonnees();
-    console.log('Donnees:', data);
-    
-    // Verifier qu'il y a au moins un symptome
-    const hasSymptom = Object.values(data).some(v => v === true || (Array.isArray(v) && v.length > 0) || (typeof v === 'number'));
-    if (!hasSymptom) {
-        alert('Veuillez cocher au moins un symptome.');
-        return;
+// ============================================
+// NORMES ET SEUILS UNIQUES (triage et suivi 24h)
+// ============================================
+const NORMES_PEDIATRIQUES = {
+    fc: { '6-8': [70, 110], '9-12': [65, 105], '13-15': [60, 100] },
+    fr: { '6-8': [18, 24], '9-12': [16, 22], '13-15': [12, 20] },
+    taSys: { '6-8': [90, 115], '9-12': [95, 120], '13-15': [100, 125] },
+    taDia: { '6-8': [55, 75], '9-12': [57, 78], '13-15': [60, 80] },
+    spo2: { min: 95 },
+    temp: { min: 36, max: 38 },
+    glycemie: { min: 0.7, max: 1.1 }
+};
+
+function trancheAge(age) {
+    if (age === null || age === undefined || isNaN(age)) return null;
+    if (age <= 8) return '6-8';
+    if (age <= 12) return '9-12';
+    return '13-15';
+}
+
+// Retourne 'rouge', 'orange', 'hors' (hors norme sans gravite), 'ok' ou '' (pas de valeur)
+// FC : tolerance de 10 battements par degre de fievre ; TA basse : 70 + 2 x age jusqu'a 10 ans, 90 ensuite
+function seuilConstante(type, valeur, age, temp) {
+    if (valeur === null || valeur === undefined || valeur === '' || isNaN(parseFloat(valeur))) return '';
+    const v = parseFloat(valeur);
+    const t = trancheAge(age) || '9-12';
+    const corrFievre = (temp && temp > 37) ? Math.round((temp - 37) * 10) : 0;
+    switch (type) {
+        case 'fc': {
+            const [mn, mx] = NORMES_PEDIATRIQUES.fc[t];
+            if (v > 170 || v < (t === '13-15' ? 40 : 50)) return 'rouge';
+            if (v > mx + 30 + corrFievre || v < mn - 15) return 'orange';
+            if (v > mx + corrFievre || v < mn) return 'hors';
+            return 'ok';
+        }
+        case 'fr': {
+            const [mn, mx] = NORMES_PEDIATRIQUES.fr[t];
+            if (v > 40 || v < 10) return 'rouge';
+            if (v > mx + 8) return 'orange';
+            if (v > mx || v < mn) return 'hors';
+            return 'ok';
+        }
+        case 'taSys': {
+            const a = (age === null || age === undefined || isNaN(age)) ? 9 : age;
+            const hypo = a <= 10 ? 70 + 2 * a : 90;
+            const [mn, mx] = NORMES_PEDIATRIQUES.taSys[t];
+            if (v < hypo || v > 180) return 'rouge';
+            if (v < mn - 5 || v > 140) return 'orange';
+            if (v < mn || v > mx) return 'hors';
+            return 'ok';
+        }
+        case 'spo2':
+            if (v < 92) return 'rouge';
+            if (v < 95) return 'orange';
+            return 'ok';
+        case 'glycemie':
+            if (v < 0.5 || v > 4) return 'rouge';
+            if (v < 0.7 || v >= 2) return 'orange';
+            if (v > 1.4) return 'hors';
+            return 'ok';
+        case 'temp':
+            if (v < 35) return 'rouge';
+            if (v < 36 || v >= 41) return 'orange';
+            if (v >= 38) return 'hors';
+            return 'ok';
+        case 'eva':
+            if (v >= 8) return 'orange';
+            if (v >= 5) return 'hors';
+            return 'ok';
     }
-    
-    // Utiliser le scorer de maladiesDB.js
+    return '';
+}
+
+// ============================================
+// SIGNES D'ALERTE INDEPENDANTS DES FICHES
+// Un seul signe suffit a fixer le niveau minimal.
+// n : niveau, m : message, psy : detresse psychique (affiche les numeros d'ecoute)
+// ============================================
+const vomiRepetes = d => d.vomiFreq === 'repetes' || d.vomiFreq === 'incoercible';
+const nbSignesCirculation = d => [
+    d.extremitesFroides, d.recolorationLente, d.douleurJambes, d.comportementInhabituel,
+    d.fatigueLevel === 'marquee', d.refusBoire
+].filter(Boolean).length;
+
+const SIGNES = [
+    // ---------- ROUGE : appeler le 15 ----------
+    { n: 'rouge', t: d => d.fievre && d.eruptionType === 'purpura', m: "Fievre et taches qui ne s'effacent pas a la pression" },
+    { n: 'rouge', t: d => d.convulsions, m: "Convulsion" },
+    { n: 'rouge', t: d => d.confusion || d.difficileReveiller, m: "Difficile a reveiller, confus ou anormalement somnolent" },
+    { n: 'rouge', t: d => d.fatigueLevel === 'prostration', m: "Prostration : ne bouge plus, reagit a peine" },
+    { n: 'rouge', t: d => d.paleurType === 'marbrures' || (d.fievre && d.paleurType === 'gris'), m: "Marbrures ou teint gris" },
+    { n: 'rouge', t: d => d.fievre && nbSignesCirculation(d) >= 2, m: "Fievre avec plusieurs signes de mauvaise circulation (mains froides, recoloration lente, mal aux jambes, abattement) : infection grave possible" },
+    { n: 'rouge', t: d => d.respiType === 'cyanose' || (d.touxQuinte || []).includes('cyanose'), m: "Levres bleues" },
+    { n: 'rouge', t: d => d.respiType === 'tirage', m: "Tirage : l'enfant se creuse pour respirer" },
+    { n: 'rouge', t: d => d.hasSpo2 && d.spo2Val === '90', m: "Saturation inferieure a 92 %" },
+    { n: 'rouge', t: d => d.difficulteParler && (d.respiration || d.asthme), m: "Essoufflement qui empeche de parler" },
+    { n: 'rouge', t: d => d.gorgeType === 'bave', m: "Bave, ne peut plus avaler" },
+    { n: 'rouge', t: d => d.fievre && d.raideurNuque, m: "Fievre et raideur de nuque" },
+    { n: 'rouge', t: d => d.cephaleeType === 'brutal', m: "Mal de tete brutal, le pire de sa vie" },
+    { n: 'rouge', t: d => d.oedemeLoc === 'levres' && (d.respiration || d.voix || d.difficulteParler || d.vertiges || d.vomissements), m: "Gonflement des levres ou de la langue avec gene : allergie grave possible" },
+    { n: 'rouge', t: d => d.douleurTesticule && d.testiculeDebut === 'brutal', m: "Douleur brutale d'un testicule (torsion possible : a operer en moins de 6 h)" },
+    { n: 'rouge', t: d => d.douleurPelvienne && d.pelvienDebut === 'brutal', m: "Douleur brutale du bas-ventre (torsion d'ovaire ou grossesse extra-uterine possibles)" },
+    { n: 'rouge', t: d => d.abdoCarac && d.abdoCarac.includes('defense'), m: "Ventre dur comme du bois" },
+    { n: 'rouge', t: d => d.vomiType === 'bilieux' && (d.constipation || (d.douleurAbdo && d.abdoCarac && (d.abdoCarac.includes('constante') || d.abdoCarac.includes('ballonne')))), m: "Vomissements verts avec mal au ventre ou arret des selles : occlusion possible" },
+    { n: 'rouge', t: d => d.diarrheeCouleur === 'noire' && (d.paleur || d.vertiges), m: "Selles noires avec paleur ou malaise : saignement digestif possible" },
+    { n: 'rouge', t: d => d.traumaCrane && (d.traumaPCI || d.traumaVomi || vomiRepetes(d) || d.traumaCephaleeAugmente || d.traumaEcoulement || d.confusion || d.convulsions), m: "Choc a la tete avec un signe d'alerte (perte de connaissance, vomissements, mal de tete qui augmente, ecoulement, somnolence)" },
+    { n: 'rouge', t: d => d.malaiseEffort, m: "Malaise pendant un effort : cause cardiaque a eliminer" },
+    { n: 'rouge', t: d => d.plaieType === 'serpent', m: "Morsure de serpent ou piqure de scorpion ou de raie" },
+    { n: 'rouge', t: d => d.fievre && d.immunodepression, m: "Fievre chez un enfant immunodeprime : appeler le service qui le suit ou le 15" },
+    { n: 'rouge', t: d => d.drepanocytose && d.fievre && d.temp >= 38.5, m: "Fievre a 38,5 ou plus chez un enfant drepanocytaire" },
+    { n: 'rouge', t: d => d.saignements && d.fievre, m: "Saignements spontanes avec fievre" },
+    { n: 'rouge', t: d => (d.polyuriePolydipsie || parseFloat(d.glycemieVal) >= 2) && (d.vomissements || d.douleurAbdo || d.respiType === 'rapide' || d.confusion || d.difficileReveiller), m: "Soif et urines abondantes avec vomissements, mal au ventre ou souffle rapide : acidocetose diabetique possible" },
+    { n: 'rouge', t: d => d.pupillesType === 'inegalesNouveau' || d.pupillesType === 'fixes', m: "Pupilles inegales (nouveau) ou qui ne reagissent pas a la lumiere" },
+    { n: 'rouge', t: d => d.pupillesType === 'petites' && (d.confusion || d.difficileReveiller || d.respiration), m: "Pupilles tres petites avec somnolence ou gene respiratoire : intoxication possible" },
+    { n: 'rouge', t: d => (d.pupillesType === 'dilatees' && (d.agitation || d.confusion || d.hallucinations)) || (d.tremblements && d.trembAssoc.includes('agitationPupilles')), m: "Agitation, tremblements, sueurs, pupilles dilatees : intoxication possible (medicament, drogue, boisson energisante)" },
+    { n: 'rouge', t: d => d.tremblements && d.trembAssoc.includes('sueursFaim') && (d.confusion || d.difficileReveiller), m: "Tremblements et sueurs avec somnolence : hypoglycemie possible" },
+    { n: 'rouge', t: d => d.crisePanique && d.paniquePremiere && (d.douleurThorax || d.vertiges), m: "Premiere crise avec douleur dans la poitrine ou malaise" },
+    { n: 'rouge', psy: true, t: d => d.ideesNoires && d.ideesType === 'plan', m: "Parle de se tuer avec un plan ou un moyen" },
+    { n: 'rouge', psy: true, t: d => d.ingestion, m: "A avale des medicaments, un produit ou une drogue : appeler meme s'il va bien" },
+    { n: 'rouge', psy: true, t: d => d.agitation, m: "Agitation ou violence incontrolable" },
+    { n: 'rouge', psy: true, t: d => d.hallucinations, m: "Propos incoherents, voit ou entend ce qui n'existe pas" },
+
+    // ---------- ORANGE : medecin aujourd'hui ----------
+    { n: 'orange', t: d => !d.fievre && d.eruptionType === 'purpura', m: "Taches qui ne s'effacent pas, sans fievre : prise de sang le jour meme" },
+    { n: 'orange', t: d => d.comportementInhabituel, m: "Ne reagit pas comme d'habitude" },
+    { n: 'orange', t: d => d.refusBoire, m: "Refuse de boire ou ne garde rien" },
+    { n: 'orange', t: d => d.aggravationRapide, m: "S'aggrave en quelques heures" },
+    { n: 'orange', t: d => d.inquietudeParent, m: "Votre inquietude compte : faites-le examiner aujourd'hui" },
+    { n: 'orange', t: d => d.extremitesFroides || d.recolorationLente, m: "Mains et pieds froids ou peau lente a se recolorer" },
+    { n: 'orange', t: d => d.fievre && d.douleurJambes, m: "Fievre avec mal aux jambes ou refus de marcher" },
+    { n: 'orange', t: d => d.fievre && d.fievreDuree === '5j-plus', m: "Fievre depuis 5 jours ou plus" },
+    { n: 'orange', t: d => d.fievre && d.zonePalu, m: "Fievre apres un sejour en zone de paludisme : test (goutte epaisse) le jour meme" },
+    { n: 'orange', t: d => d.fievre && (d.douleurYeux || d.courbatures) && (d.douleurAbdo || vomiRepetes(d) || d.saignements || d.refusBoire), m: "Fievre type dengue avec un signe d'alerte (mal au ventre, vomissements, saignement, refus de boire)" },
+    { n: 'orange', t: d => d.polyuriePolydipsie || parseFloat(d.glycemieVal) >= 2, m: "Boit et urine beaucoup ou glycemie haute : glycemie le jour meme (diabete)" },
+    { n: 'orange', t: d => d.vomiType === 'bilieux', m: "Vomissements verts" },
+    { n: 'orange', t: d => d.vomiFreq === 'incoercible', m: "Vomit tout ce qu'il boit" },
+    { n: 'orange', t: d => d.vomiType === 'sang' || d.diarrheeType === 'sang' || d.diarrheeCouleur === 'sang' || d.diarrheeCouleur === 'noire', m: "Sang dans les selles ou les vomissements" },
+    { n: 'orange', t: d => d.deshSignes && (d.deshSignes.includes('pli') || d.deshSignes.includes('yeux') || d.deshSignes.includes('pasurines')), m: "Signe de deshydratation" },
+    { n: 'orange', t: d => d.douleurAbdo && (d.abdoLoc === 'fid' || (d.abdoCarac && (d.abdoCarac.includes('augmente') || d.abdoCarac.includes('migration')))), m: "Douleur du ventre en bas a droite ou qui augmente : appendicite a eliminer" },
+    { n: 'orange', t: d => d.traumaCrane && (d.traumaMecanismeViolent || d.traumaAmnesia), m: "Choc violent a la tete ou oubli du choc" },
+    { n: 'orange', t: d => d.faiblesseMusculaire, m: "Faiblesse musculaire" },
+    { n: 'orange', t: d => d.protoxyde && (d.paresthesies || d.faiblesseMusculaire), m: "Fourmillements ou faiblesse chez un consommateur de proto (atteinte des nerfs)" },
+    { n: 'orange', t: d => d.hasSpo2 && d.spo2Val === '92', m: "Saturation entre 92 et 94 %" },
+    { n: 'orange', t: d => d.respiType === 'rapide' || d.respiType === 'sifflante', m: "Respire vite ou siffle" },
+    { n: 'orange', t: d => d.touxType === 'aboyante' && d.respiration, m: "Toux aboyante avec gene respiratoire" },
+    { n: 'orange', t: d => d.douleurTesticule, m: "Douleur d'un testicule" },
+    { n: 'orange', t: d => d.grossessePossible && (d.douleurPelvienne || d.metrorragies), m: "Grossesse possible avec douleur ou saignement" },
+    { n: 'orange', t: d => d.ictere, m: "Jaunisse" },
+    { n: 'orange', t: d => d.oedemeLoc === 'levres', m: "Gonflement des levres ou de la langue" },
+    { n: 'orange', t: d => d.oedemeLoc === 'oeil' && d.fievre, m: "Paupiere gonflee avec fievre" },
+    { n: 'orange', t: d => (d.urinaireTypes && d.urinaireTypes.includes('sang')) || d.urinesCouleur === 'sang', m: "Sang dans les urines" },
+    { n: 'orange', t: d => d.douleurLombaire && d.fievre, m: "Fievre avec douleur dans le dos (rein)" },
+    { n: 'orange', t: d => d.fievre && d.douleurMembre && d.membreSignes && (d.membreSignes.includes('gonfle') || d.membreSignes.includes('boiterie')), m: "Fievre avec boiterie ou articulation gonflee" },
+    { n: 'orange', t: d => d.saignements && !d.fievre, m: "Saignements spontanes" },
+    { n: 'orange', t: d => d.plaieType === 'profonde' || d.plaieType === 'morsure' || d.plaieMobiliteReduite || d.plaieCorpsEtranger || d.plaieSaignement === 'abondant', m: "Plaie a montrer aujourd'hui (suture, tendon, corps etranger, morsure)" },
+    { n: 'orange', t: d => d.traumaImpotence, m: "Ne peut plus bouger le membre" },
+    { n: 'orange', t: d => d.pupillesType === 'dilatees' || d.pupillesType === 'petites', m: "Pupilles tres grandes ou tres petites" },
+    { n: 'orange', t: d => d.tremblements && d.trembAssoc.includes('sueursFaim'), m: "Tremblements avec sueurs et faim : mesurer la glycemie, donner du sucre" },
+    { n: 'orange', t: d => d.tremblements && d.trembAssoc.includes('coeurPoids'), m: "Tremblements, coeur rapide, amaigrissement : bilan de la thyroide" },
+    { n: 'orange', t: d => d.tremblements && d.trembAssoc.includes('mouvements'), m: "Mouvements saccades involontaires" },
+    { n: 'orange', t: d => d.changementBrutal, m: "Changement brutal de comportement : chercher d'abord une cause physique" },
+    { n: 'orange', psy: true, t: d => d.ideesNoires && d.ideesType !== 'plan', m: "Parle de mourir ou d'idees noires" },
+    { n: 'orange', psy: true, t: d => d.scarifications, m: "Se fait du mal" },
+    { n: 'orange', psy: true, t: d => d.alimentationTrouble, m: "Ne mange presque plus, se fait vomir ou maigrit vite" },
+    { n: 'orange', psy: true, t: d => d.refusScolaire, m: "Refuse l'ecole avec angoisse depuis plusieurs jours" },
+
+    // ---------- JAUNE : medecin sous 24-48 h ----------
+    { n: 'jaune', t: d => d.fievre && d.fievreDuree === '3-4j', m: "Fievre depuis 3 a 4 jours" },
+    { n: 'jaune', t: d => !d.fievre && d.urinaireTypes && (d.urinaireTypes.includes('brulure') || d.urinaireTypes.includes('frequent')), m: "Brulures ou envies frequentes d'uriner : bandelette urinaire chez le medecin" },
+    { n: 'jaune', t: d => d.douleurThorax, m: "Douleur dans la poitrine (le plus souvent benigne a cet age) : a montrer" },
+    { n: 'jaune', t: d => d.touxType === 'aboyante', m: "Toux aboyante" },
+    { n: 'jaune', t: d => d.touxDuree === 'chronique', m: "Toux depuis plus de 3 semaines" },
+    { n: 'jaune', t: d => d.crisePanique && !(d.paniquePremiere && (d.douleurThorax || d.vertiges)), m: "Crise de peur intense" },
+    { n: 'jaune', psy: true, t: d => d.sommeil && ['rumine', 'reveilTot', 'cauchemars', 'hypersomnie'].includes(d.sommeilType), m: "Sommeil perturbe par les soucis ou l'humeur" },
+    { n: 'jaune', t: d => d.sommeil && d.sommeilType === 'apnees', m: "Ronflement avec pauses respiratoires" },
+    { n: 'jaune', t: d => d.sommeil && d.sommeilType === 'ecran' && !d.sommeilSansEcranOk, m: "Dort mal meme sans ecran" },
+    { n: 'jaune', psy: true, t: d => d.tristesse, m: "Tristesse, irritabilite ou desinteret depuis plus de 2 semaines" },
+    { n: 'jaune', psy: true, t: d => d.plaintesEcole, m: "Maux repetes les jours d'ecole" },
+    { n: 'jaune', psy: true, t: d => d.harcelement, m: "Signes de harcelement" }
+];
+
+const RANG_NIVEAU = { vert: 0, jaune: 1, orange: 2, rouge: 3 };
+
+// Analyse complete : fiches, drapeaux, signes, triage officiel, niveau final
+function analyserDonnees(data) {
     const { resultats, drapeaux } = scorer(data);
-    
+
     // IDs des maladies avec drapeau d'urgence
-    const maladiesAvecDrapeau = new Set(drapeaux.map(d => {
-        // Trouver l'ID de la maladie depuis son nom
+    const idsDrapeau = new Set(drapeaux.map(d => {
         for (const [id, m] of Object.entries(maladiesDB)) {
             if (m.nom === d.maladie) return id;
         }
         return null;
     }).filter(Boolean));
-    
-    // Filtrer selon seuil : 2/3, 3/4, 4/5+
-    // SAUF si la maladie a un drapeau d'urgence
-    const resultatsFiltres = resultats.filter(r => {
-        // Toujours garder les maladies avec drapeau
-        if (maladiesAvecDrapeau.has(r.id)) return true;
-        
+
+    // Filtrer selon seuil : 2/3, 3/4, 4/5+ SAUF si la maladie a un drapeau d'urgence
+    const filtres = resultats.filter(r => {
+        if (idsDrapeau.has(r.id)) return true;
         const nbCriteres = r.max;
         const nbMatchsPositifs = r.matches.filter(m => !m.startsWith('(-)')).length;
         if (nbCriteres <= 3) return nbMatchsPositifs >= 2;
         if (nbCriteres === 4) return nbMatchsPositifs >= 3;
-        return nbMatchsPositifs >= 4; // 5 criteres ou plus
+        return nbMatchsPositifs >= 4;
     });
-    
-    afficherResultat(resultatsFiltres, drapeaux, data);
+
+    const signes = SIGNES.filter(s => { try { return !!s.t(data); } catch (e) { return false; } });
+    const triage = calculerTriageOfficiel(data, drapeaux);
+
+    // Niveau final = le plus grave de : drapeaux, signes, triage SAMU, premiere piste
+    let niveau = 'vert';
+    const monter = n => { if (RANG_NIVEAU[n] > RANG_NIVEAU[niveau]) niveau = n; };
+    if (drapeaux.length > 0) monter('rouge');
+    signes.forEach(s => monter(s.n));
+    if (triage.french.niveau === 1) monter('rouge');
+    else if (triage.french.niveau === 2) monter('orange');
+    if (filtres.length > 0) monter(filtres[0].niveau);
+
+    const psy = signes.some(s => s.psy) || ['ideesNoires', 'scarifications', 'tristesse', 'harcelement', 'refusScolaire', 'alimentationTrouble', 'ingestion'].some(c => data[c]);
+    const psyRouge = signes.some(s => s.psy && s.n === 'rouge');
+
+    return { niveau, resultats: filtres, drapeaux, signes, triage, psy, psyRouge, idsDrapeau };
+}
+
+// === ANALYSER ===
+function analyser() {
+    const data = collecterDonnees();
+
+    // Verifier qu'il y a au moins un symptome (l'age seul ne compte pas)
+    const hasSymptom = Object.entries(data).some(([k, v]) => k !== 'age' && k !== 'fcAge' && k !== 'frAge' && (v === true || (Array.isArray(v) && v.length > 0) || (typeof v === 'number')));
+    if (!hasSymptom) {
+        alert('Veuillez cocher au moins un symptome.');
+        return;
+    }
+
+    afficherResultat(analyserDonnees(data), data);
 }
 
 // === TRIAGE OFFICIEL (CTAS / ESI / FRENCH) ===
 function calculerTriageOfficiel(data, drapeaux) {
-    
-    // Analyse des constantes vitales
-    let fcAlerte = null;
-    if (data.hasFc && data.fcValue && data.fcAge) {
-        const fc = parseInt(data.fcValue);
-        const fcMax = { '6-8': 110, '9-12': 105, '13-15': 100 };
-        const fcMin = { '6-8': 70, '9-12': 65, '13-15': 60 };
-        if (fc > 170 || fc < 50) fcAlerte = 'rouge';
-        else if (fc > fcMax[data.fcAge] + 30 || fc < fcMin[data.fcAge] - 10) fcAlerte = 'orange';
-    }
-    
-    let frAlerte = null;
-    if (data.hasFr && data.frValue && data.frAge) {
-        const fr = parseInt(data.frValue);
-        const frMax = { '6-8': 24, '9-12': 22, '13-15': 20 };
-        if (fr > 40 || fr < 10) frAlerte = 'rouge';
-        else if (fr > frMax[data.frAge] + 8) frAlerte = 'orange';
-    }
-    
-    let taAlerte = null;
-    if (data.hasTa && data.taSys) {
-        const sys = parseInt(data.taSys);
-        if (sys < 70 || sys > 180) taAlerte = 'rouge';
-        else if (sys < 85 || sys > 140) taAlerte = 'orange';
-    }
-    
-    let glycemieAlerte = null;
-    if (data.hasGlycemie && data.glycemieVal) {
-        const gly = parseFloat(data.glycemieVal);
-        if (gly < 0.4 || gly > 4) glycemieAlerte = 'rouge';
-        else if (gly < 0.6 || gly > 2.5) glycemieAlerte = 'orange';
-    }
-    
+
+    // Analyse des constantes vitales (seuils uniques, voir seuilConstante)
+    const niv = s => (s === 'rouge' || s === 'orange') ? s : null;
+    const fcAlerte = data.hasFc ? niv(seuilConstante('fc', data.fcValue, data.age, data.fievre ? data.temp : null)) : null;
+    const frAlerte = data.hasFr ? niv(seuilConstante('fr', data.frValue, data.age)) : null;
+    const taAlerte = data.hasTa ? niv(seuilConstante('taSys', data.taSys, data.age)) : null;
+    const glycemieAlerte = data.hasGlycemie ? niv(seuilConstante('glycemie', data.glycemieVal, data.age)) : null;
+
     // ===== CTAS (Canadian Triage and Acuity Scale) =====
     let ctas = 5;
     let ctasRaison = "Pas de critere de gravite identifie";
-    
+
     // CTAS 1 - Reanimation
     if (drapeaux.length > 0 ||
         data.convulsions ||
         data.respiType === 'cyanose' ||
         data.fatigueLevel === 'prostration' ||
-        data.confusion ||
+        data.confusion || data.difficileReveiller ||
         (data.faiblesseMusculaire && data.respiration) ||
         (data.hasSpo2 && data.spo2Val === '90') ||
         fcAlerte === 'rouge' || frAlerte === 'rouge' || taAlerte === 'rouge' || glycemieAlerte === 'rouge') {
@@ -3972,11 +4485,11 @@ function calculerTriageOfficiel(data, drapeaux) {
         ctas = 4;
         ctasRaison = "Symptomes stables, evaluation dans l'heure";
     }
-    
+
     // ===== ESI (Emergency Severity Index, USA) =====
     let esi = 5;
     let esiRaison = "Consultation simple, peu de ressources";
-    
+
     // ESI 1 - Intervention immediate
     if (drapeaux.length > 0 ||
         data.convulsions ||
@@ -3988,14 +4501,13 @@ function calculerTriageOfficiel(data, drapeaux) {
         esi = 1;
         esiRaison = "Intervention vitale immediate requise";
     }
-    // ESI 2 - Haut risque
+    // ESI 2 - Haut risque (la hauteur de la fievre seule n'en fait pas partie)
     else if (
-        data.confusion ||
+        data.confusion || data.difficileReveiller ||
         data.respiType === 'tirage' ||
         (data.hasSpo2 && data.spo2Val === '92') ||
         data.cephaleeType === 'brutal' ||
         (data.abdoCarac && data.abdoCarac.includes('defense')) ||
-        (data.fievre && data.temp >= 40) ||
         data.paleurType === 'marbrures' ||
         data.gorgeType === 'bave' ||
         fcAlerte === 'orange' || frAlerte === 'orange' || taAlerte === 'orange' || glycemieAlerte === 'orange') {
@@ -4025,17 +4537,17 @@ function calculerTriageOfficiel(data, drapeaux) {
         esi = 4;
         esiRaison = "Une ressource (exam/prescription) probable";
     }
-    
+
     // ===== FRENCH (SAMU / SFMU) =====
     let french = 4;
     let frenchRaison = "Consultation de medecine generale";
-    
+
     // P1 - Urgence absolue
     if (drapeaux.length > 0 ||
         data.convulsions ||
         data.respiType === 'cyanose' ||
         data.fatigueLevel === 'prostration' ||
-        data.confusion ||
+        data.confusion || data.difficileReveiller ||
         (data.fievre && data.raideurNuque) ||
         (data.fievre && data.eruptionType === 'purpura') ||
         (data.faiblesseMusculaire && data.respiration) ||
@@ -4045,11 +4557,10 @@ function calculerTriageOfficiel(data, drapeaux) {
         french = 1;
         frenchRaison = "Urgence vitale - SAMU 15";
     }
-    // P2 - Urgence vraie
+    // P2 - Urgence vraie (la hauteur de la fievre seule n'en fait pas partie)
     else if (
         data.respiType === 'tirage' ||
         (data.abdoCarac && data.abdoCarac.includes('defense')) ||
-        (data.fievre && data.temp >= 40) ||
         data.paleurType === 'marbrures' ||
         data.cephaleeType === 'brutal' ||
         data.gorgeType === 'bave' ||
@@ -4072,7 +4583,7 @@ function calculerTriageOfficiel(data, drapeaux) {
         french = 3;
         frenchRaison = "Urgence relative - Consultation dans la journee";
     }
-    
+
     return {
         ctas: { niveau: ctas, raison: ctasRaison },
         esi: { niveau: esi, raison: esiRaison },
@@ -4081,170 +4592,182 @@ function calculerTriageOfficiel(data, drapeaux) {
     };
 }
 
-// === AFFICHAGE RESULTATS AVEC CRITERES COLORES ===
-function afficherResultat(resultats, drapeaux, data) {
+// === AFFICHAGE RESULTATS ===
+const NIVEAUX_ACTION = {
+    rouge: { icon: '&#x1F534;', titre: 'Appeler le 15', sous: "Le medecin regulateur decide avec vous : conseil, medecin ou ambulance. L'appel ne coute rien." },
+    orange: { icon: '&#x1F7E0;', titre: "Medecin aujourd'hui", sous: "Medecin traitant, SOS Medecins ou maison medicale de garde. Si aucun n'est joignable : appeler le 15, pas les urgences directement." },
+    jaune: { icon: '&#x1F7E1;', titre: 'Medecin sous 24-48 h', sous: "Rendez-vous chez le medecin traitant. Si cela s'aggrave : appeler le 15." },
+    vert: { icon: '&#x1F7E2;', titre: 'Surveillance a la maison', sous: "Rien d'inquietant dans ce qui est coche. Surveillez les signes listes plus bas." }
+};
+
+function afficherResultat(a, data) {
     const div = document.getElementById('resultat');
+    const niveau = a.niveau;
     let html = '';
-    
-    // Determiner niveau global
-    let niveau = 'vert';
-    if (drapeaux.length > 0) niveau = 'rouge';
-    else if (resultats.length > 0 && resultats[0].niveau === 'rouge') niveau = 'rouge';
-    else if (resultats.length > 0 && resultats[0].niveau === 'orange') niveau = 'orange';
-    else if (resultats.length > 0) niveau = 'jaune';
-    
-    const niveaux = {
-        rouge: { icon: '&#x1F534;', titre: 'URGENCE - Appeler le 15' },
-        orange: { icon: '&#x1F7E0;', titre: 'Consultation dans la journee' },
-        jaune: { icon: '&#x1F7E1;', titre: 'Consultation sous 24-48h' },
-        vert: { icon: '&#x1F7E2;', titre: 'Surveillance a domicile' }
-    };
-    
+
     div.className = 'niveau-' + niveau;
-    html += `<h3><span style="font-size:1.5em">${niveaux[niveau].icon}</span> ${niveaux[niveau].titre}</h3>`;
-    
-    // Drapeaux rouges
-    if (drapeaux.length > 0) {
-        html += '<div class="alerte-rouge"><h4>&#x1F6A8; ALERTES URGENTES</h4>';
-        drapeaux.forEach(d => html += `<p><strong>${d.maladie}</strong>: ${d.message}</p>`);
+    html += `<h3><span style="font-size:1.5em">${NIVEAUX_ACTION[niveau].icon}</span> ${NIVEAUX_ACTION[niveau].titre}</h3>`;
+    html += `<p style="margin:-5px 0 10px 0">${NIVEAUX_ACTION[niveau].sous}</p>`;
+    if (a.psyRouge) {
+        html += '<p><strong>Ne laissez pas l\'enfant seul ; eloignez medicaments, armes et objets dangereux.</strong> Le <strong>3114</strong> (24 h/24, gratuit) conseille aussi les parents.</p>';
+    }
+
+    // Age hors de la tranche prevue
+    if (data.age !== null && (data.age < 6 || data.age > 15)) {
+        html += '<div class="alerte-rouge"><strong>Outil prevu pour les 6-15 ans.</strong> ';
+        html += data.age < 6 ? "Avant 6 ans les seuils different : en cas de doute, appelez le 15 (avant 3 mois, toute fievre justifie un appel)." : "Apres 15 ans, les seuils adultes s'appliquent : en cas de doute, appelez le 15.";
         html += '</div>';
     }
-    
-    // Pathologies candidates avec criteres colores
-    if (resultats.length > 0) {
-        html += '<div class="pathologies-probables"><h4>&#x1F50D; Hypotheses diagnostiques</h4>';
-        
-        resultats.slice(0, 8).forEach((r, idx) => {
+
+    // Pourquoi ce niveau
+    const raisons = [];
+    a.drapeaux.forEach(d => raisons.push({ n: 'rouge', m: `<strong>${d.maladie}</strong> : ${d.message}` }));
+    a.signes.forEach(s => raisons.push({ n: s.n, m: s.m }));
+    raisons.sort((x, y) => RANG_NIVEAU[y.n] - RANG_NIVEAU[x.n]);
+    const vus = new Set();
+    const raisonsUniques = raisons.filter(r => { if (vus.has(r.m)) return false; vus.add(r.m); return true; });
+    if (raisonsUniques.length > 0) {
+        html += `<div class="${niveau === 'rouge' ? 'alerte-rouge' : 'conseils'}"><h4>&#x1F6A8; Pourquoi ce niveau</h4><ul>`;
+        raisonsUniques.forEach(r => html += `<li>${getNiveauIcon(r.n)} ${r.m}</li>`);
+        html += '</ul></div>';
+    }
+
+    // Detresse psychique : numeros
+    if (a.psy) {
+        html += '<div class="conseils" style="border-left:4px solid #7b61a8"><h4>&#x260E; Numeros utiles</h4><ul>';
+        html += '<li><strong>15</strong> : danger immediat</li>';
+        html += '<li><strong>3114</strong> : prevention du suicide, 24 h/24, gratuit, pour l\'enfant comme pour les parents</li>';
+        if (data.harcelement) html += '<li><strong>3018</strong> : harcelement et cyberharcelement, 7 j/7</li>';
+        html += '<li><strong>119</strong> : enfance en danger</li>';
+        html += '</ul></div>';
+    }
+
+    // Sommeil : conseils
+    if (data.sommeil && data.sommeilType) {
+        html += '<div class="conseils"><h4>&#x1F319; Sommeil</h4><ul>';
+        if (data.sommeilType === 'ecran') {
+            html += '<li>Telephone et console hors de la chambre la nuit (chargeur dans le salon)</li>';
+            html += '<li>Ecrans coupes 1 h avant le coucher</li>';
+            html += '<li>Heure de lever fixe, meme le week-end</li>';
+            if (data.sommeilSansEcranOk) html += '<li>S\'il dort bien sans ecran : pas d\'inquietude particuliere</li>';
+        } else if (['rumine', 'reveilTot', 'cauchemars', 'hypersomnie'].includes(data.sommeilType)) {
+            html += '<li>Parler de ses soucis en journee, pas au moment du coucher</li>';
+            html += '<li>Si cela dure plus de 2 semaines ou touche l\'humeur : medecin traitant, qui orientera vers un psychologue</li>';
+        } else if (data.sommeilType === 'apnees') {
+            html += '<li>Ronflement avec pauses : en parler au medecin (amygdales, vegetations)</li>';
+        }
+        html += '</ul></div>';
+    }
+
+    // Conseils
+    html += '<div class="conseils"><h4>&#x1F4A1; Que faire</h4><ul>';
+    if (niveau === 'rouge') {
+        html += '<li><strong>Appelez le 15 maintenant</strong></li>';
+        html += '<li>Restez avec l\'enfant ; le bouton "Exporter symptomes" copie la liste a lire au regulateur</li>';
+    } else if (niveau === 'orange') {
+        html += '<li>Faites-le examiner aujourd\'hui</li>';
+        html += '<li>Si cela s\'aggrave avant : appelez le 15</li>';
+    } else if (niveau === 'jaune') {
+        html += '<li>Prenez rendez-vous avec votre medecin</li>';
+        html += '<li>Paracetamol si fievre ou douleur, hydratation et repos en attendant</li>';
+    } else {
+        html += '<li>Repos et hydratation</li>';
+        html += '<li>Paracetamol si fievre ou douleur</li>';
+    }
+    html += '</ul></div>';
+
+    // Ce qui rassure
+    if (niveau === 'vert' || niveau === 'jaune') {
+        html += '<div class="surveillance"><h4>&#x1F44D; Ce qui rassure</h4><ul>';
+        html += '<li>Il joue, sourit et parle normalement quand la fievre baisse</li>';
+        html += '<li>Il boit et urine normalement</li>';
+        html += '<li>Mains chaudes, peau de couleur normale</li>';
+        html += '<li>Il respire sans effort</li>';
+        html += '</ul><p style="margin-bottom:0">Reevaluez 1 h apres le paracetamol : s\'il joue, boit et sourit, c\'est rassurant ; s\'il reste abattu alors que la fievre a baisse, medecin aujourd\'hui.</p></div>';
+    }
+
+    // Pistes (3 au plus, sans pourcentage ; une piste grave n'est nommee que si elle a un drapeau ou au moins 50 %)
+    const visibles = a.resultats.filter(r => !(r.niveau === 'rouge' && !a.idsDrapeau.has(r.id) && r.pourcent < 50));
+    const graveMasquee = visibles.length < a.resultats.length;
+    if (visibles.length > 0 || graveMasquee) {
+        html += '<div class="pathologies-probables"><h4>&#x1F50D; Pistes que le medecin envisagera</h4>';
+        html += '<p style="font-size:0.85em;color:#5f6b72;margin-top:0">Ce ne sont pas des diagnostics : seul l\'examen par un medecin le permet.</p>';
+        visibles.slice(0, 3).forEach((r, idx) => {
             const m = maladiesDB[r.id];
             html += `<div class="patho-card ${idx === 0 ? 'top' : ''}">`;
-            
-            // Header
-            html += '<div class="patho-header">';
-            html += `<strong>${getNiveauIcon(r.niveau)} ${r.nom}</strong>`;
-            html += `<span class="patho-score">${r.pourcent}%</span>`;
-            html += '</div>';
-            
-            // Description
+            html += `<div class="patho-header"><strong>${getNiveauIcon(r.niveau)} ${r.nom}</strong></div>`;
             html += `<div class="patho-desc">${r.description}</div>`;
-            
-            // CRITERES ATTENDUS (bleu pale, cercle vert si coche)
-            // Dedoupliquer par texte, mais cercler vert si AU MOINS UN critere avec ce texte matche
+            html += '<details><summary style="cursor:pointer;font-size:0.85em">Pourquoi cette piste</summary>';
             const criteresParTexte = {};
-            m.criteres.forEach(c => {
-                if (!criteresParTexte[c.texte]) criteresParTexte[c.texte] = [];
-                criteresParTexte[c.texte].push(c);
-            });
-            html += '<div><small><strong>Criteres attendus :</strong></small>';
-            html += '<div class="criteres-box">';
+            m.criteres.forEach(c => { (criteresParTexte[c.texte] = criteresParTexte[c.texte] || []).push(c); });
+            html += '<div><small><strong>Criteres attendus :</strong></small><div class="criteres-box">';
             for (const [texte, criteres] of Object.entries(criteresParTexte)) {
                 const match = criteres.some(c => champEstCoche(data, c));
                 html += `<span class="critere-tag critere-attendu ${match ? 'critere-match' : ''}">${texte}</span>`;
             }
             html += '</div></div>';
-            
-            // EXCLUSIONS (rouge pale, cercle vert si coche = probleme)
             if (m.exclusions && m.exclusions.length > 0) {
                 const exclusionsParTexte = {};
-                m.exclusions.forEach(e => {
-                    if (!exclusionsParTexte[e.texte]) exclusionsParTexte[e.texte] = [];
-                    exclusionsParTexte[e.texte].push(e);
-                });
-                html += '<div style="margin-top:6px"><small><strong>Filtres negatifs :</strong></small>';
-                html += '<div class="criteres-box">';
+                m.exclusions.forEach(e => { (exclusionsParTexte[e.texte] = exclusionsParTexte[e.texte] || []).push(e); });
+                html += '<div style="margin-top:6px"><small><strong>Filtres negatifs :</strong></small><div class="criteres-box">';
                 for (const [texte, exclusions] of Object.entries(exclusionsParTexte)) {
                     const match = exclusions.some(e => champEstCoche(data, e));
                     html += `<span class="critere-tag critere-exclusion ${match ? 'critere-match' : ''}">${texte}</span>`;
                 }
                 html += '</div></div>';
             }
-            
-            html += '</div>';
+            html += '</details></div>';
         });
-        
+        if (graveMasquee) {
+            html += '<p style="font-size:0.9em"><strong>Une cause qui demande un avis rapide n\'est pas exclue</strong> : elle compte dans le niveau affiche.</p>';
+        }
         html += '</div>';
-    } else {
-        html += '<div class="pathologies-probables"><p>Aucune pathologie ne correspond precisement aux symptomes selectionnes.</p></div>';
     }
-    
-    // Conseils
-    html += '<div class="conseils"><h4>&#x1F4A1; Conseils generaux</h4><ul>';
-    if (niveau === 'rouge') {
-        html += '<li><strong>Appelez le 15 (SAMU)</strong> ou rendez-vous aux urgences</li>';
-    } else if (niveau === 'orange') {
-        html += '<li>Consultez un medecin aujourd\'hui</li>';
-        html += '<li>Si aggravation : appelez le 15</li>';
-    } else if (niveau === 'jaune') {
-        html += '<li>Prenez rendez-vous avec votre medecin</li>';
-        html += '<li>Hydratation et repos en attendant</li>';
-    } else {
-        html += '<li>Repos et hydratation</li>';
-        html += '<li>Paracetamol si fievre ou douleur</li>';
-    }
+
+    // Reconsulter si
+    html += '<div class="surveillance"><h4>&#x26A0; Appeler le 15 ou reconsulter si :</h4><ul>';
+    html += '<li>Il devient difficile a reveiller, ne reagit plus comme d\'habitude</li>';
+    html += '<li>Taches qui ne s\'effacent pas sous un verre</li>';
+    html += '<li>Mains et pieds froids, marbrures, levres bleues</li>';
+    html += '<li>Respire avec effort ou tres vite</li>';
+    html += '<li>Refuse de boire, n\'urine plus</li>';
+    html += '<li>Fievre au-dela de 3 jours, ou qui revient apres une amelioration</li>';
+    html += '<li>Vous etes inquiet</li>';
     html += '</ul></div>';
-    
-    // Triage officiel (CTAS / ESI / SAMU)
-    const triageOfficiel = calculerTriageOfficiel(data, drapeaux);
-    
-    html += '<div class="pathologies-probables" style="margin-top: 20px; background: #fffdf8; border: 2px solid #5f6b72;">';
-    html += '<h4>&#x1F4CA; Niveaux de triage (protocoles officiels)</h4>';
-    html += '<p style="font-size: 0.85em; color: #5f6b72; margin-bottom: 15px;">Classification selon 3 standards internationaux :</p>';
-    
-    // CTAS
+
+    // Pour le medecin : triage officiel et constantes
+    const t = a.triage;
+    html += '<details class="pathologies-probables" style="margin-top: 20px; background: #fffdf8; border: 2px solid #5f6b72;">';
+    html += '<summary style="cursor:pointer;font-weight:bold">&#x1F4CA; Pour le medecin : niveaux CTAS / ESI / SAMU</summary>';
     const ctasColors = ['', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#1f7f8c'];
     const ctasLabels = ['', 'Reanimation', 'Tres urgent', 'Urgent', 'Moins urgent', 'Non urgent'];
     const ctasDelais = ['', 'Immediat', '< 15 min', '< 30 min', '< 60 min', '< 120 min'];
-    html += `<div style="display: flex; align-items: center; padding: 10px; margin: 5px 0; background: white; border-radius: 6px; border-left: 4px solid ${ctasColors[triageOfficiel.ctas.niveau]};">`;
-    html += `<span style="font-weight: bold; min-width: 120px;">&#x1F1E8;&#x1F1E6; CTAS</span>`;
-    html += `<span style="background: ${ctasColors[triageOfficiel.ctas.niveau]}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold; margin-right: 10px;">Niveau ${triageOfficiel.ctas.niveau}</span>`;
-    html += `<span style="flex: 1;">${ctasLabels[triageOfficiel.ctas.niveau]} (${ctasDelais[triageOfficiel.ctas.niveau]})</span>`;
-    html += `</div>`;
-    
-    // ESI
-    const esiColors = ['', '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#1f7f8c'];
     const esiLabels = ['', 'Reanimation', 'Haut risque', 'Urgence', 'Peu urgent', 'Non urgent'];
-    html += `<div style="display: flex; align-items: center; padding: 10px; margin: 5px 0; background: white; border-radius: 6px; border-left: 4px solid ${esiColors[triageOfficiel.esi.niveau]};">`;
-    html += `<span style="font-weight: bold; min-width: 120px;">&#x1F1FA;&#x1F1F8; ESI</span>`;
-    html += `<span style="background: ${esiColors[triageOfficiel.esi.niveau]}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold; margin-right: 10px;">Niveau ${triageOfficiel.esi.niveau}</span>`;
-    html += `<span style="flex: 1;">${esiLabels[triageOfficiel.esi.niveau]}</span>`;
-    html += `</div>`;
-    
-    // French SAMU
-    const frenchColors = ['', '#dc3545', '#fd7e14', '#ffc107', '#28a745'];
     const frenchLabels = ['', 'P1 - Urgence absolue', 'P2 - Urgence vraie', 'P3 - Urgence relative', 'P4 - Consultation'];
-    html += `<div style="display: flex; align-items: center; padding: 10px; margin: 5px 0; background: white; border-radius: 6px; border-left: 4px solid ${frenchColors[triageOfficiel.french.niveau]};">`;
-    html += `<span style="font-weight: bold; min-width: 120px;">&#x1F1EB;&#x1F1F7; SAMU</span>`;
-    html += `<span style="background: ${frenchColors[triageOfficiel.french.niveau]}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold; margin-right: 10px;">${frenchLabels[triageOfficiel.french.niveau].split(' - ')[0]}</span>`;
-    html += `<span style="flex: 1;">${frenchLabels[triageOfficiel.french.niveau].split(' - ')[1] || ''}</span>`;
-    html += `</div>`;
-    
-    html += '<p style="font-size: 0.8em; color: #888; margin-top: 10px; margin-bottom: 0;">&#x26A0; Ces classifications sont indicatives et ne remplacent pas l\'avis medical.</p>';
-    html += '</div>';
-    
-    // Alertes constantes vitales
-    const ac = triageOfficiel.alertesConstantes;
+    const ligne = (drapeau, couleur, badge, texte) =>
+        `<div style="display: flex; flex-wrap: wrap; align-items: center; padding: 10px; margin: 5px 0; background: white; border-radius: 6px; border-left: 4px solid ${couleur};">` +
+        `<span style="font-weight: bold; min-width: 90px;">${drapeau}</span>` +
+        `<span style="background: ${couleur}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: bold; margin-right: 10px;">${badge}</span>` +
+        `<span style="flex: 1;">${texte}</span></div>`;
+    html += ligne('&#x1F1E8;&#x1F1E6; CTAS', ctasColors[t.ctas.niveau], 'Niveau ' + t.ctas.niveau, `${ctasLabels[t.ctas.niveau]} (${ctasDelais[t.ctas.niveau]})`);
+    html += ligne('&#x1F1FA;&#x1F1F8; ESI', ctasColors[t.esi.niveau], 'Niveau ' + t.esi.niveau, esiLabels[t.esi.niveau]);
+    html += ligne('&#x1F1EB;&#x1F1F7; SAMU', ctasColors[t.french.niveau], frenchLabels[t.french.niveau].split(' - ')[0], frenchLabels[t.french.niveau].split(' - ')[1] || '');
+    const ac = t.alertesConstantes;
     if (ac.fc || ac.fr || ac.ta || ac.glycemie) {
-        html += '<div class="pathologies-probables" style="margin-top: 15px; background: #fff3cd; border: 2px solid #ffc107;">';
-        html += '<h4>&#x1F4CF; Constantes vitales anormales</h4><ul>';
-        if (ac.fc === 'rouge') html += '<li style="color:#dc3545"><strong>FC critique</strong> - Bradycardie/tachycardie severe</li>';
-        else if (ac.fc === 'orange') html += '<li style="color:#fd7e14"><strong>FC anormale</strong> - A surveiller</li>';
-        if (ac.fr === 'rouge') html += '<li style="color:#dc3545"><strong>FR critique</strong> - Detresse respiratoire</li>';
-        else if (ac.fr === 'orange') html += '<li style="color:#fd7e14"><strong>FR elevee</strong> - Polypnee</li>';
-        if (ac.ta === 'rouge') html += '<li style="color:#dc3545"><strong>TA critique</strong> - Choc ou HTA severe</li>';
-        else if (ac.ta === 'orange') html += '<li style="color:#fd7e14"><strong>TA anormale</strong> - A surveiller</li>';
-        if (ac.glycemie === 'rouge') html += '<li style="color:#dc3545"><strong>Glycemie critique</strong> - Hypo/hyperglycemie severe</li>';
-        else if (ac.glycemie === 'orange') html += '<li style="color:#fd7e14"><strong>Glycemie anormale</strong> - A controler</li>';
-        html += '</ul></div>';
+        html += '<h4 style="margin-bottom:5px">&#x1F4CF; Constantes vitales anormales</h4><ul>';
+        const lib = { fc: ['FC critique', 'FC anormale'], fr: ['FR critique', 'FR elevee'], ta: ['TA critique', 'TA anormale'], glycemie: ['Glycemie critique', 'Glycemie anormale'] };
+        for (const k of ['fc', 'fr', 'ta', 'glycemie']) {
+            if (ac[k] === 'rouge') html += `<li style="color:#dc3545"><strong>${lib[k][0]}</strong></li>`;
+            else if (ac[k] === 'orange') html += `<li style="color:#b86a00"><strong>${lib[k][1]}</strong></li>`;
+        }
+        html += '</ul>';
     }
-    
-    // Surveillance
-    html += '<div class="surveillance"><h4>&#x26A0; Reconsulter si :</h4><ul>';
-    html += '<li>Fievre > 48-72h ou aggravation</li>';
-    html += '<li>Difficultes respiratoires</li>';
-    html += '<li>Prostration, somnolence</li>';
-    html += '<li>Refus de boire</li>';
-    html += '<li>Eruption qui ne s\'efface pas</li>';
-    html += '</ul></div>';
-    
+    if ((data.hasFc || data.hasFr) && data.age === null) {
+        html += '<p style="font-size:0.85em">Age non saisi : normes de 9-12 ans utilisees.</p>';
+    }
+    html += '<p style="font-size: 0.8em; color: #888; margin-top: 10px; margin-bottom: 0;">&#x26A0; Classifications indicatives, ne remplacent pas l\'avis medical.</p>';
+    html += '</details>';
+
     div.innerHTML = html;
     div.style.display = 'block';
     div.scrollIntoView({ behavior: 'smooth' });
@@ -4395,13 +4918,52 @@ function exporterSymptomes() {
         traumaImpotence: 'Impossibilite bouger',
         traumaAppuiPossible: 'Appui possible',
         traumaZone: 'Zone touchee',
-        traumaMecanisme: 'Mecanisme trauma'
+        traumaMecanisme: 'Mecanisme trauma',
+        age: 'Age (ans)',
+        difficileReveiller: 'Difficile a reveiller',
+        comportementInhabituel: 'Ne reagit pas comme d\'habitude',
+        refusBoire: 'Refuse de boire / ne garde rien',
+        aggravationRapide: 'Aggravation en quelques heures',
+        inquietudeParent: 'Parent inquiet',
+        extremitesFroides: 'Mains et pieds froids',
+        recolorationLente: 'Recoloration > 3 s',
+        douleurJambes: 'Mal aux jambes / refuse de marcher',
+        malaiseEffort: 'Malaise a l\'effort',
+        pupilles: 'Pupilles anormales',
+        pupillesType: 'Type pupilles',
+        polyuriePolydipsie: 'Boit et urine beaucoup',
+        protoxyde: 'Consommation de proto',
+        substances: 'Consommation de produits',
+        sommeil: 'Dort mal',
+        sommeilType: 'Type trouble du sommeil',
+        sommeilSansEcranOk: 'Dort bien sans ecran',
+        tristesse: 'Tristesse > 2 semaines',
+        plaintesEcole: 'Plaintes les jours d\'ecole',
+        harcelement: 'Signes de harcelement',
+        refusScolaire: 'Refus scolaire anxieux',
+        alimentationTrouble: 'Ne mange plus / se fait vomir',
+        changementBrutal: 'Changement brutal de comportement',
+        crisePanique: 'Crise de peur intense',
+        paniquePremiere: 'Premiere crise',
+        tremblements: 'Tremblements',
+        trembAssoc: 'Tremblements associes a',
+        scarifications: 'Se fait du mal',
+        ideesNoires: 'Idees noires',
+        ideesType: 'Idees noires (precision)',
+        ingestion: 'Ingestion medicament / produit',
+        agitation: 'Agitation',
+        hallucinations: 'Propos incoherents / hallucinations',
+        traumaVomi: 'Vomit plusieurs fois apres le choc',
+        traumaCephaleeAugmente: 'Mal de tete qui augmente',
+        traumaEcoulement: 'Ecoulement nez / oreille',
+        traumaMecanismeViolent: 'Choc violent'
     };
     
     // Filtrer valeurs actives
     const lignes = [];
     
     for (const [key, val] of Object.entries(data)) {
+        if (key === 'fcAge' || key === 'frAge') continue;
         if (val === null || val === undefined || val === false || val === '') continue;
         if (Array.isArray(val) && val.length === 0) continue;
         
@@ -4434,10 +4996,17 @@ function exporterSymptomes() {
         return;
     }
     
+    // Niveau calcule et triage officiel, pour le medecin
+    const a = analyserDonnees(data);
+    const raisons = a.drapeaux.map(d => d.maladie + ' : ' + d.message).concat(a.signes.map(s => s.m));
+    const analyse = '\n\nNIVEAU CALCULE : ' + NIVEAUX_ACTION[a.niveau].titre +
+                    (raisons.length ? '\n- ' + raisons.join('\n- ') : '') +
+                    '\nCTAS ' + a.triage.ctas.niveau + ' / ESI ' + a.triage.esi.niveau + ' / SAMU P' + a.triage.french.niveau;
+
     // Construire le texte
     const txt = 'SYMPTOMES OBSERVES\n' +
                 '==================\n\n' +
-                lignes.join('\n') +
+                lignes.join('\n') + analyse +
                 '\n\n--\nExport Triage Pediatrique - ' + new Date().toLocaleDateString('fr-FR');
     
     navigator.clipboard.writeText(txt).then(() => {
@@ -4470,10 +5039,11 @@ function genererListeMaladies() {
         else if (/dengue|chikungunya|leptospirose|palu/i.test(id)) cat = 'Arboviroses / Tropical';
         else if (/meningite|encephalite|guillain|htic|avc/i.test(id)) cat = 'Neurologique';
         else if (/kawasaki|anaphylaxie|sepsis/i.test(id)) cat = 'Urgences pediatriques';
-        else if (/cystite|pyelonephrite|torsion_test|geu/i.test(id)) cat = 'Uro-genital';
+        else if (/cystite|pyelonephrite|torsion_test|torsion_ovaire|geu/i.test(id)) cat = 'Uro-genital';
         else if (/myocardite|pericardite|endocardite/i.test(id)) cat = 'Cardiovasculaire';
         else if (/drepa|pti|crise_vaso/i.test(id)) cat = 'Hematologique';
-        else if (/intox|botulisme/i.test(id)) cat = 'Toxicologique';
+        else if (/diabete/i.test(id)) cat = 'Metabolique';
+        else if (/intox|botulisme|envenimation/i.test(id)) cat = 'Toxicologique';
         else if (/herpes_ocul|zona_ophtal|cellulite_orb|conjonctivite/i.test(id)) cat = 'Ophtalmologique';
         else if (/arthrite_sept/i.test(id)) cat = 'Osteo-articulaire';
         else if (/tc_pci|fracture|entorse|luxation|rupture_ligam/i.test(id)) cat = 'Traumatologie';
@@ -4514,10 +5084,10 @@ function afficherMaladie() {
     if (!m) return;
     
     const niveauLabels = {
-        vert: '&#x1F7E2; Surveillance a domicile',
-        jaune: '&#x1F7E1; Consultation sous 24-48h',
-        orange: '&#x1F7E0; Consultation dans la journee',
-        rouge: '&#x1F534; URGENCE - Appeler le 15'
+        vert: '&#x1F7E2; Surveillance a la maison',
+        jaune: '&#x1F7E1; Medecin sous 24-48 h',
+        orange: '&#x1F7E0; Medecin aujourd\'hui (sinon le 15)',
+        rouge: '&#x1F534; Appeler le 15'
     };
     
     let html = '<div class="maladie-detail">';
@@ -4528,7 +5098,7 @@ function afficherMaladie() {
     // Criteres (symptomes attendus)
     if (m.criteres && m.criteres.length > 0) {
         html += '<div class="maladie-section section-symptomes">';
-        html += '<h4>? Symptomes typiques</h4><ul>';
+        html += '<h4>&#x2705; Symptomes typiques</h4><ul>';
         m.criteres.forEach(c => html += `<li>${c.texte}</li>`);
         html += '</ul></div>';
     }
@@ -4536,7 +5106,7 @@ function afficherMaladie() {
     // Exclusions (symptomes absents)
     if (m.exclusions && m.exclusions.length > 0) {
         html += '<div class="maladie-section section-absents">';
-        html += '<h4>? Symptomes habituellement absents</h4><ul>';
+        html += '<h4>&#x274C; Symptomes habituellement absents</h4><ul>';
         m.exclusions.forEach(e => html += `<li>${e.texte}</li>`);
         html += '</ul></div>';
     }
@@ -4573,22 +5143,7 @@ function afficherMaladie() {
 // MODE SUIVI - GESTION PATIENTS ET CONSTANTES
 // ============================================
 
-// Normes pediatriques par age
-const NORMES_PEDIATRIQUES = {
-    // FC : [min, max] par tranche d'age
-    fc: { '6-8': [70, 110], '9-12': [65, 105], '13-15': [60, 100] },
-    // FR : [min, max]
-    fr: { '6-8': [18, 24], '9-12': [16, 22], '13-15': [12, 20] },
-    // TA systolique : [min, max]
-    taSys: { '6-8': [90, 115], '9-12': [95, 120], '13-15': [100, 125] },
-    taDia: { '6-8': [55, 75], '9-12': [57, 78], '13-15': [60, 80] },
-    // SpO2
-    spo2: { min: 95 },
-    // Temperature
-    temp: { min: 36, max: 38 },
-    // Glycemie
-    glycemie: { min: 0.7, max: 1.1 }
-};
+// Normes et seuils : voir NORMES_PEDIATRIQUES et seuilConstante (communs au triage)
 
 function getTrancheAge(age) {
     if (age >= 6 && age <= 8) return '6-8';
@@ -4630,7 +5185,7 @@ function ajouterPatient() {
     
     if (!prenom) { alert('Prenom requis'); return; }
     if (!initiale) { alert('Initiale requise'); return; }
-    if (!age || age < 6 || age > 15) { alert('Ã‚ge entre 6 et 15 ans'); return; }
+    if (!age || age < 6 || age > 15) { alert('Age entre 6 et 15 ans'); return; }
     
     const patients = getPatients();
     const id = 'p_' + Date.now();
@@ -4761,47 +5316,11 @@ function enregistrerConstantes() {
 }
 
 // Evaluer si une constante est hors normes
-function evaluerConstante(type, valeur, age) {
-    if (valeur === null || valeur === undefined) return '';
-    const tranche = getTrancheAge(age);
-    
-    switch (type) {
-        case 'temp':
-            if (valeur >= 40) return 'alerte';
-            if (valeur >= 38.5) return 'warning';
-            if (valeur < 36) return 'warning';
-            if (valeur >= 38) return 'warning';
-            return 'ok';
-        case 'fc':
-            const fcNorm = NORMES_PEDIATRIQUES.fc[tranche];
-            if (valeur > fcNorm[1] + 30 || valeur < fcNorm[0] - 15) return 'alerte';
-            if (valeur > fcNorm[1] || valeur < fcNorm[0]) return 'warning';
-            return 'ok';
-        case 'fr':
-            const frNorm = NORMES_PEDIATRIQUES.fr[tranche];
-            if (valeur > frNorm[1] + 10 || valeur < frNorm[0] - 5) return 'alerte';
-            if (valeur > frNorm[1] || valeur < frNorm[0]) return 'warning';
-            return 'ok';
-        case 'spo2':
-            if (valeur < 92) return 'alerte';
-            if (valeur < 95) return 'warning';
-            return 'ok';
-        case 'taSys':
-            const taSysNorm = NORMES_PEDIATRIQUES.taSys[tranche];
-            if (valeur < 80 || valeur > 150) return 'alerte';
-            if (valeur < taSysNorm[0] || valeur > taSysNorm[1]) return 'warning';
-            return 'ok';
-        case 'glycemie':
-            if (valeur < 0.5 || valeur > 3) return 'alerte';
-            if (valeur < 0.7 || valeur > 1.26) return 'warning';
-            return 'ok';
-        case 'eva':
-            if (valeur >= 8) return 'alerte';
-            if (valeur >= 5) return 'warning';
-            return 'ok';
-        default:
-            return '';
-    }
+function evaluerConstante(type, valeur, age, temp) {
+    const s = seuilConstante(type, valeur, age, temp);
+    if (s === 'rouge' || s === 'orange') return 'alerte';
+    if (s === 'hors') return 'warning';
+    return s;
 }
 
 // Calculer delai depuis derniere miction
@@ -4854,10 +5373,10 @@ function afficherHistorique(patient) {
         html += '<tr>';
         html += `<td>${heure}</td>`;
         html += cellule(m.temp, 'temp', patient.age, 'C');
-        html += cellule(m.fc, 'fc', patient.age, '');
+        html += cellule(m.fc, 'fc', patient.age, '', m.temp);
         html += cellule(m.fr, 'fr', patient.age, '');
         html += cellule(m.spo2, 'spo2', patient.age, '%');
-        html += `<td>${m.taSys && m.taDia ? m.taSys + '/' + m.taDia : '-'}</td>`;
+        html += m.taSys && m.taDia ? cellule(m.taSys, 'taSys', patient.age, '/' + m.taDia) : '<td>-</td>';
         html += cellule(m.glycemie, 'glycemie', patient.age, '');
         html += `<td>${m.hydratation || '-'}</td>`;
         html += `<td>${m.miction || '-'}</td>`;
@@ -4885,9 +5404,9 @@ function afficherHistorique(patient) {
     container.innerHTML = html;
 }
 
-function cellule(val, type, age, unite) {
+function cellule(val, type, age, unite, temp) {
     if (val === null || val === undefined) return '<td>-</td>';
-    const status = evaluerConstante(type, val, age);
+    const status = evaluerConstante(type, val, age, temp);
     let cls = '';
     if (status === 'alerte') cls = 'val-alerte';
     else if (status === 'warning') cls = 'val-warning';
@@ -4908,7 +5427,7 @@ function exporterSuivi() {
     let txt = `SUIVI PEDIATRIQUE - ${new Date().toLocaleDateString('fr-FR')}\n`;
     txt += `${'='.repeat(50)}\n\n`;
     txt += `Patient : ${p.prenom} ${p.initiale}.\n`;
-    txt += `Ã‚ge : ${p.age} ans\n`;
+    txt += `Age : ${p.age} ans\n`;
     txt += `Normes FC : ${NORMES_PEDIATRIQUES.fc[tranche].join('-')} bpm\n`;
     txt += `Normes FR : ${NORMES_PEDIATRIQUES.fr[tranche].join('-')} /min\n\n`;
     
@@ -4926,10 +5445,10 @@ function exporterSuivi() {
             const dt = new Date(m.timestamp);
             txt += `\n${dt.toLocaleString('fr-FR')}\n`;
             if (m.temp !== null) txt += `  Temperature : ${m.temp}C ${evaluerConstante('temp', m.temp, p.age) !== 'ok' ? '!!' : ''}\n`;
-            if (m.fc !== null) txt += `  FC : ${m.fc} bpm ${evaluerConstante('fc', m.fc, p.age) !== 'ok' ? '!!' : ''}\n`;
+            if (m.fc !== null) txt += `  FC : ${m.fc} bpm ${evaluerConstante('fc', m.fc, p.age, m.temp) !== 'ok' ? '!!' : ''}\n`;
             if (m.fr !== null) txt += `  FR : ${m.fr}/min ${evaluerConstante('fr', m.fr, p.age) !== 'ok' ? '!!' : ''}\n`;
             if (m.spo2 !== null) txt += `  SpO2 : ${m.spo2}% ${evaluerConstante('spo2', m.spo2, p.age) !== 'ok' ? '!!' : ''}\n`;
-            if (m.taSys !== null && m.taDia !== null) txt += `  TA : ${m.taSys}/${m.taDia} mmHg\n`;
+            if (m.taSys !== null && m.taDia !== null) txt += `  TA : ${m.taSys}/${m.taDia} mmHg ${evaluerConstante('taSys', m.taSys, p.age) !== 'ok' ? '!!' : ''}\n`;
             if (m.glycemie !== null) txt += `  Glycemie : ${m.glycemie} g/L ${evaluerConstante('glycemie', m.glycemie, p.age) !== 'ok' ? '!!' : ''}\n`;
             if (m.hydratation !== null) txt += `  Hydratation : ${m.hydratation} mL\n`;
             if (m.miction) txt += `  Derniere miction : ${m.miction}\n`;
@@ -5043,7 +5562,12 @@ function htmlToDbField(htmlName) {
         'trauma-mecanisme': 'traumaMecanisme',
         'plaie-type': 'plaieType',
         'plaie-saignement': 'plaieSaignement',
-        'plaie-loc': 'plaieLoc'
+        'plaie-loc': 'plaieLoc',
+        'age-enfant': 'age',
+        'pupilles-type': 'pupillesType',
+        'sommeil-type': 'sommeilType',
+        'tremb-assoc': 'trembAssoc',
+        'idees-type': 'ideesType'
     };
     
     if (mapping[htmlName]) return mapping[htmlName];
@@ -5191,6 +5715,156 @@ function initDebugCtrlClick() {
     });
 }
 
+// ============================================
+// BANC DE NON-REGRESSION : ouvrir triage-pediatrique.html?banc
+// Chaque cas : nom, niveau(x) attendu(s) separes par |, donnees cochees.
+// ============================================
+const BANC = [
+    ["R01 Fievre 39 + purpura sans raideur", "rouge", { fievre: true, temp: 39, eruption: true, eruptionType: "purpura" }],
+    ["R02 Purpura sans fievre", "orange|rouge", { eruption: true, eruptionType: "purpura" }],
+    ["R03 Convulsions seules", "rouge", { convulsions: true }],
+    ["R04 Fievre 39 + confusion/somnolence", "rouge", { fievre: true, temp: 39, confusion: true }],
+    ["R05 Fievre 39 + prostration", "rouge", { fievre: true, temp: 39, fatigue: true, fatigueLevel: "prostration" }],
+    ["R06 Fievre 39 + marbrures", "rouge", { fievre: true, temp: 39, paleur: true, paleurType: "marbrures" }],
+    ["R07 SpO2 < 92 seule", "rouge", { hasSpo2: true, spo2Val: "90" }],
+    ["R08 Fievre 38.5 + tirage", "rouge", { fievre: true, temp: 38.5, respiration: true, respiType: "tirage" }],
+    ["R09 Levres bleues seules", "rouge", { respiration: true, respiType: "cyanose" }],
+    ["R10 Fievre + bave", "rouge", { fievre: true, temp: 39, gorge: true, gorgeType: "bave" }],
+    ["R11 Douleur testiculaire brutale", "rouge", { douleurTesticule: true, testiculeDebut: "brutal" }],
+    ["R12 Mal de tete brutal seul", "rouge", { cephalee: true, cephaleeType: "brutal" }],
+    ["R13 Choc a la tete + perte de connaissance", "rouge", { traumaCrane: true, traumaPCI: true }],
+    ["R14 Choc a la tete + vomissements repetes", "rouge", { traumaCrane: true, traumaVomi: true }],
+    ["R15 Vomissements verts seuls", "orange", { vomissements: true, vomiType: "bilieux", vomiFreq: "repetes" }],
+    ["R16 Douleur bas droit + ventre dur", "rouge", { douleurAbdo: true, abdoLoc: "fid", abdoCarac: ["constante", "defense"] }],
+    ["R17 Diarrhee + deshydratation severe", "rouge", { diarrhee: true, diarrheeType: "liquide", deshydratation: true, deshSignes: ["pli", "yeux", "pasurines"] }],
+    ["R18 Acidocetose (boit, urine, vomit, ventre)", "rouge", { polyuriePolydipsie: true, vomissements: true, vomiFreq: "repetes", douleurAbdo: true, abdoLoc: "diffuse", fatigue: true, fatigueLevel: "marquee" }],
+    ["R19 Fievre 39 retour Amazonie + frissons", "orange|rouge", { fievre: true, temp: 39, frissons: true, zonePalu: true, paluZone: "amazonie" }],
+    ["R20 Dengue + signes d'alerte", "orange|rouge", { fievre: true, temp: 39, douleurYeux: true, courbatures: true, douleurAbdo: true, abdoLoc: "epigastre", vomissements: true, vomiFreq: "repetes" }],
+    ["R21 Asthme + sifflements + parle difficilement", "rouge", { asthme: true, respiration: true, respiType: "sifflante", difficulteParler: true }],
+    ["R22 Urticaire + oedeme des levres", "rouge", { eruption: true, eruptionType: "urticaire", oedeme: true, oedemeLoc: "levres" }],
+    ["R23 Douleur thoracique seule", "jaune", { douleurThorax: true }],
+    ["R24 Fievre 5 j + yeux rouges + levres fissurees", "orange|rouge", { fievre: true, temp: 39, fievreDuree: "5j-plus", yeux: true, yeuxTypes: ["rouge"], levresFissures: true }],
+    ["R25 Faiblesse + fourmillements", "orange|rouge", { faiblesseMusculaire: true, paresthesies: true }],
+    ["R26 Fievre + raideur de nuque seule", "rouge", { fievre: true, temp: 39, raideurNuque: true }],
+    ["R27 Fievre + cephalee + photophobie + vomi", "orange|rouge", { fievre: true, temp: 39, cephalee: true, cephaleeType: "intense", photophobie: true, vomissements: true, vomiFreq: "repetes" }],
+    ["R28 Immunodeprime + fievre 38.5", "rouge", { fievre: true, temp: 38.5, immunodepression: true }],
+    ["R29 Drepanocytose + fievre 38.5", "rouge", { fievre: true, temp: 38.5, drepanocytose: true }],
+    ["R30 Fievre + boiterie + membre gonfle", "orange|rouge", { fievre: true, temp: 39, douleurMembre: true, membreSignes: ["gonfle", "rouge", "boiterie"] }],
+    ["R31 Plaie arterielle", "rouge", { plaie: true, plaieType: "coupure", plaieSaignement: "arteriel" }],
+    ["R32 Sang dans les selles + crampes", "orange|rouge", { diarrhee: true, diarrheeType: "sang", douleurAbdo: true, abdoCarac: ["crampes"] }],
+    ["R33 Fievre 39 + somnolence + vomi", "rouge", { fievre: true, temp: 39, confusion: true, vomissements: true, vomiFreq: "repetes" }],
+    ["R34 Fievre + mains froides + mal aux jambes", "rouge", { fievre: true, temp: 39, extremitesFroides: true, douleurJambes: true }],
+    ["R35 Fievre + mains froides seules", "orange", { fievre: true, temp: 39, extremitesFroides: true }],
+    ["R36 Difficile a reveiller", "rouge", { difficileReveiller: true }],
+    ["R37 Malaise pendant un effort", "rouge", { malaiseEffort: true }],
+    ["R38 Morsure de serpent", "rouge", { plaie: true, plaieType: "serpent" }],
+    ["R39 Douleur pelvienne brutale", "rouge", { douleurPelvienne: true, pelvienDebut: "brutal", vomissements: true }],
+    ["R40 Glycemie 3 g/L + vomissements", "rouge", { hasGlycemie: true, glycemieVal: "3", vomissements: true }],
+    ["R41 Boit et urine beaucoup, seul", "orange", { polyuriePolydipsie: true }],
+    ["R42 Proto + fourmillements", "orange", { protoxyde: true, paresthesies: true }],
+    ["R43 Choc a la tete, choc violent seul", "orange", { traumaCrane: true, traumaMecanismeViolent: true }],
+    ["R44 Fievre depuis 5 jours seule", "orange", { fievre: true, temp: 38.5, fievreDuree: "5j-plus" }],
+    ["R45 Asthme + sifflements", "orange", { asthme: true, respiration: true, respiType: "sifflante" }],
+    ["R46 Parent inquiet seul", "orange", { inquietudeParent: true }],
+    ["R47 FC 165 a 7 ans sans fievre", "orange|rouge", { age: 7, hasFc: true, fcValue: "165" }],
+    ["P01 Idees noires avec plan", "rouge", { ideesNoires: true, ideesType: "plan" }],
+    ["P02 Idees noires sans plan", "orange", { ideesNoires: true, ideesType: "sansPlan" }],
+    ["P03 Se fait du mal", "orange", { scarifications: true }],
+    ["P04 A avale des medicaments, va bien", "rouge", { ingestion: true }],
+    ["P05 Tremblements + agitation + pupilles dilatees", "rouge", { tremblements: true, trembAssoc: ["agitationPupilles"] }],
+    ["P06 Tremblements + sueurs + faim", "orange", { tremblements: true, trembAssoc: ["sueursFaim"] }],
+    ["P07 Pupilles inegales, c'est nouveau", "rouge", { pupilles: true, pupillesType: "inegalesNouveau" }],
+    ["P08 Hallucinations", "rouge", { hallucinations: true }],
+    ["P09 Rumine le soir", "jaune", { sommeil: true, sommeilType: "rumine" }],
+    ["P10 Tristesse depuis plus de 2 semaines", "jaune", { tristesse: true }],
+    ["P11 Harcelement", "jaune", { harcelement: true }],
+    ["P12 Crise de peur, pas la premiere", "jaune", { crisePanique: true }],
+    ["V01 Rhume", "vert", { nez: true, nezType: "clair", toux: true, touxType: "seche", touxDuree: "recent", fievre: true, temp: 38, fievreDuree: "1-2j", fatigue: true, fatigueLevel: "legere" }],
+    ["V02 Gastro simple", "vert|jaune", { vomissements: true, vomiType: "alimentaire", vomiFreq: "quelques", diarrhee: true, diarrheeType: "liquide", nausees: true, fievre: true, temp: 38, douleurAbdo: true, abdoLoc: "diffuse", abdoCarac: ["crampes"] }],
+    ["V03 Fievre 39 isolee 1-2 j", "vert|jaune", { fievre: true, temp: 39, fievreDuree: "1-2j" }],
+    ["V04 Angine probable", "jaune", { gorge: true, gorgeType: "avaler", fievre: true, temp: 38.5, ganglions: true, ganglionsLoc: "cou" }],
+    ["V05 Otite", "vert|jaune", { oreille: true, fievre: true, temp: 38.5, nez: true, nezType: "jaune" }],
+    ["V06 Varicelle", "vert|jaune", { eruption: true, eruptionType: "vesicules", eruptionLoc: ["tronc", "visage"], eruptionGratte: true, fievre: true, temp: 38 }],
+    ["V07 Entorse de cheville, appui possible", "vert|jaune", { traumaMembre: true, traumaAppuiPossible: true, traumaGonflement: true, traumaZone: ["cheville"], traumaMecanisme: "torsion" }],
+    ["V08 Mal de tete modere isole", "vert|jaune", { cephalee: true, cephaleeType: "modere" }],
+    ["V09 Toux grasse 2 semaines sans fievre", "vert|jaune", { toux: true, touxType: "grasse", touxDuree: "prolongee" }],
+    ["V10 Urticaire seule", "vert|jaune", { eruption: true, eruptionType: "urticaire", eruptionGratte: true }],
+    ["V11 Egratignure", "vert", { plaie: true, plaieType: "superficielle", plaieSaignement: "minime" }],
+    ["V12 Constipation + crampes", "vert|jaune", { constipation: true, douleurAbdo: true, abdoLoc: "periombilicale", abdoCarac: ["crampes"] }],
+    ["V13 Vertige isole", "vert|jaune", { vertiges: true }],
+    ["V14 Conjonctivite", "vert", { yeux: true, yeuxTypes: ["rouge", "colles"] }],
+    ["V15 Grippe", "vert|jaune", { fievre: true, temp: 39, fievreDuree: "1-2j", frissons: true, courbatures: true, toux: true, touxType: "seche", cephalee: true, cephaleeType: "modere", fatigue: true, fatigueLevel: "marquee" }],
+    ["V16 Laryngite sans tirage", "vert|jaune", { toux: true, touxType: "aboyante", voix: true, fievre: true, temp: 38 }],
+    ["V17 Fievre 40 seule, enfant bien", "vert|jaune", { fievre: true, temp: 40, fievreDuree: "1-2j" }],
+    ["V18 Crampes + diarrhee glaires + 38.5", "vert|jaune", { diarrhee: true, diarrheeType: "glaires", douleurAbdo: true, abdoCarac: ["crampes"], fievre: true, temp: 38.5 }],
+    ["V19 Gorge + nez + toux (viral)", "vert|jaune", { gorge: true, gorgeType: "douleur", nez: true, nezType: "clair", toux: true, touxType: "seche", fievre: true, temp: 38 }],
+    ["V20 Brulures urinaires sans fievre", "jaune", { urinaire: true, urinaireTypes: ["brulure", "frequent"] }],
+    ["V21 Choc a la tete sans aucun signe", "vert|jaune", { traumaCrane: true }],
+    ["V22 Pupilles inegales depuis toujours", "vert", { pupilles: true, pupillesType: "inegalesToujours" }],
+    ["V23 Dort mal a cause de l'ecran, bien sans", "vert", { sommeil: true, sommeilType: "ecran", sommeilSansEcranOk: true }],
+    ["V24 FC 150 a 7 ans avec fievre 39", "vert|jaune", { age: 7, fievre: true, temp: 39, hasFc: true, fcValue: "150" }]
+];
+
+// Controle statique : criteres et conditions d'urgence qui visent un champ ou une valeur absents du formulaire
+function controlerReferences(vide) {
+    const valeurs = {};
+    document.querySelectorAll('#mode-triage input[name]').forEach(i => {
+        const champ = htmlToDbField(i.name);
+        (valeurs[champ] = valeurs[champ] || new Set()).add(i.value);
+    });
+    const anomalies = [];
+    const verifier = (ou, champ, val) => {
+        if (!(champ in vide)) { anomalies.push(`${ou} : champ ${champ} absent`); return; }
+        if (valeurs[champ] && champ !== 'temp') {
+            (Array.isArray(val) ? val : [val]).forEach(v => {
+                if (typeof v === 'string' && !valeurs[champ].has(v)) anomalies.push(`${ou} : ${champ} = ${v} inexistant`);
+            });
+        }
+    };
+    for (const [id, m] of Object.entries(maladiesDB)) {
+        (m.criteres || []).forEach(c => verifier(id, c.champ, c.val));
+        (m.exclusions || []).forEach(c => verifier(id, c.champ, c.val));
+        if (m.urgence) {
+            const t = m.urgence.condition.toString();
+            for (const x of t.matchAll(/data\.(\w+)/g)) verifier(id + ' (urgence)', x[1], null);
+            for (const x of t.matchAll(/data\.(\w+)\s*===\s*'([^']+)'/g)) verifier(id + ' (urgence)', x[1], x[2]);
+            for (const x of t.matchAll(/data\.(\w+)\.includes\('([^']+)'\)/g)) verifier(id + ' (urgence)', x[1], x[2]);
+        }
+    }
+    for (const s of SIGNES) {
+        const t = s.t.toString();
+        for (const x of t.matchAll(/d\.(\w+)/g)) verifier('signe « ' + s.m.slice(0, 40) + ' »', x[1], null);
+        for (const x of t.matchAll(/d\.(\w+)\s*===\s*'([^']+)'/g)) verifier('signe « ' + s.m.slice(0, 40) + ' »', x[1], x[2]);
+    }
+    return [...new Set(anomalies)];
+}
+
+function lancerBanc() {
+    resetForm();
+    const vide = collecterDonnees();
+    let ok = 0;
+    let lignes = '';
+    for (const [nom, attendu, cas] of BANC) {
+        const data = Object.assign({}, vide, cas);
+        data.fcAge = data.frAge = trancheAge(data.age);
+        const a = analyserDonnees(data);
+        const bon = attendu.split('|').includes(a.niveau);
+        if (bon) ok++;
+        const raisons = a.drapeaux.map(d => d.maladie).concat(a.signes.map(s => s.m)).slice(0, 3).join(' ; ');
+        lignes += `<tr style="background:${bon ? '#d4edda' : '#f8d7da'}"><td>${bon ? 'OK' : 'ECART'}</td><td>${nom}</td><td>${attendu}</td><td>${getNiveauIcon(a.niveau)} ${a.niveau}</td><td style="font-size:0.8em">${raisons}</td></tr>`;
+    }
+    const anomalies = controlerReferences(vide);
+    const div = document.createElement('div');
+    div.id = 'banc';
+    div.className = 'category';
+    div.innerHTML = `<h2>&#x1F9EA; Banc de non-regression : ${ok} / ${BANC.length} conformes ; ${anomalies.length} reference(s) morte(s)</h2>` +
+        (anomalies.length ? '<ul>' + anomalies.map(x => `<li>${x}</li>`).join('') + '</ul>' : '') +
+        '<div style="overflow-x:auto"><table class="historique-table"><thead><tr><th></th><th>Cas</th><th>Attendu</th><th>Obtenu</th><th>Raisons</th></tr></thead><tbody>' +
+        lignes + '</tbody></table></div>';
+    document.querySelector('.mode-switch').before(div);
+    document.title = 'Banc ' + ok + '/' + BANC.length;
+}
+
 // === INIT ===
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof maladiesDB !== 'undefined') {
@@ -5204,6 +5878,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // Init debug Ctrl+Click
     initDebugCtrlClick();
+    // Banc de non-regression
+    if (/(^|[?&])banc/.test(location.search.slice(1))) lancerBanc();
 });
 </script>
 <footer class="azs-foot"><a href="mailto:eperret@azs.fr">eperret@azs.fr</a></footer>
