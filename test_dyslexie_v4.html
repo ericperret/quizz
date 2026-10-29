@@ -4,17 +4,62 @@
   Nom        : test_dyslexie_v4.html
   Objet      : Test Lecture & Orthographe — CM1/CM2
   Auteur     : Eric PERRET
-  Date       : 2026-10-10
+  Date       : 2026-10-29
+  Version    : 4.7
   Plateforme : HTML / CSS / JavaScript, fichier unique, aucune librairie
+  Historique :
+    4.0  2026-10-10  version de reference
+         2026-10-18  charte graphique AZS : bandeau AZS et pied de page
+                     (eperret@azs.fr), palette AZS (variante claire ou sombre),
+                     polices système ; aucun changement fonctionnel
+    4.1  2026-10-29  fiabilite de la mesure :
+                     - classe saisie (CE2 a 6e), reperes par classe : fluence
+                       DEPP septembre 2025, denomination rapide indicative
+                     - moteur phonetique de la dictee corrige (codes majuscules /
+                       minuscules melanges : « farmacie » etait juge implausible)
+                     - couleur bleue de la denomination rapide retablie (devenue
+                       ambre avec la charte)
+                     - 3 questions de phonologie corrigees, 2 pseudo-mots reels
+                       remplaces
+                     - vitesse (mots/min) des 3 listes, profil « lecture lente
+                       malgre une bonne precision »
+                     - memoire notee Juste / Faux par l'adulte (prioritaire sur
+                       la saisie)
+    4.2  2026-10-29  analyse des causes : erreur « regularisation »,
+                     comprehension orale, epreuve d'attention go / no-go,
+                     questionnaire attention parent + enseignant (18 criteres
+                     DSM-5), grille d'observation, toile des types de dyslexie,
+                     pourcentages dyslexie / TDAH (somme possible > 100 %),
+                     bloc « Pourquoi il bloque », libelles « signes evocateurs »
+    4.3  2026-10-29  programme prioritaire : cause principale + secondaire,
+                     3 exercices au plus, niveau de preuve, mots et graphies
+                     ratés de l'enfant, amenagements TDAH ; Borel-Maisonny
+                     replace en voie phonologique, GraphoLearn -> GraphoGame
+    4.4  2026-10-29  suivi : enregistrement local des passations, historique,
+                     courbe de fluence, export / import, re-test court avec
+                     decision (continuer / intensifier / changer d'axe)
+    4.5  2026-10-29  banc de non-regression integre (?banc), 6 profils types
+    4.6  2026-10-29  rime « maison » : « mouton » rimait aussi, remplace par
+                     « maman »
+    4.7  2026-10-29  - saisie des erreurs de lecture en un geste : clic (son ou
+                       lettre), double-clic (lu « a cote »), clic droit
+                       (saute / melange) ; mode au toucher ; legende unique ;
+                       types detailles facultatifs (case a cocher)
+                     - corrections : « train » sans /r/ (tain et tin se
+                       prononcent pareil), « plat » sans /p/ (la et lat
+                       idem), « sol » a l'envers (los se lit « lo »),
+                       migration (automne et printemps etaient justes),
+                       rhinoceros (irregulier), rhume et hypothese
+                       (reguliers), remplace par « second »
+                     - controle automatique du contenu dans ?banc :
+                       options homophones, rimes multiples, empan envers
 ================================================================================
-
- · (2026-10-18) charte graphique AZS : bandeau AZS et pied de page (eperret@azs.fr), palette AZS (variante claire ou sombre), polices système ; aucun changement fonctionnel
 -->
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Lecture & Orthographe — CM1/CM2</title>
+<title>Test Lecture & Orthographe — CE2 à 6e</title>
 <style>
 :root {
     --bg: #f4f1ea;
@@ -221,7 +266,12 @@ body {
     gap: 4px;
     margin-top: 6px;
 }
-.word-card.error .error-type-selector { display: flex; }
+body.details-erreurs .word-card.error .error-type-selector { display: flex; }
+.word-card { touch-action: manipulation; user-select: none; -webkit-user-select: none; flex-wrap: wrap; }
+.badge-cause { font-size: 11px; background: var(--red); color: white; padding: 2px 8px; border-radius: 10px; }
+.badge-cause:empty { display: none; }
+.mode-clic button { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-size: 13px; }
+.mode-clic button.actif { background: var(--accent); color: white; border-color: var(--accent); }
 .error-type-selector button {
     font-size: 11px;
     padding: 3px 8px;
@@ -565,13 +615,29 @@ body{color-scheme:light}
 </style>
 </head>
 <body>
-<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a></nav>
+<nav class="azs-barre"><a class="azs" href="https://www.azs.fr/" title="www.azs.fr">AZS</a><a class="fil" href="https://github.com/ericperret/quizz">quizz</a><span>v4.7</span></nav>
 <div class="app">
     <div class="app-header">
-        <h1>🔬 Test de Lecture & Orthographe — CM1/CM2</h1>
-        <p>Identifier précisément où et pourquoi ça bloque en français · 10 épreuves · Maman supervise</p>
+        <h1>🔬 Test de Lecture & Orthographe — CE2 à 6e</h1>
+        <p>Identifier précisément où et pourquoi ça bloque en français · 10 épreuves de lecture + compréhension orale, attention et observation · Maman supervise</p>
     </div>
 
+    <div class="card" id="classeCard" style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+        <label for="classe" style="font-weight:600">Classe de l'enfant :</label>
+        <select id="classe" onchange="state.classe=this.value" style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);font-size:15px">
+            <option value="">— choisir —</option>
+            <option value="CE2">CE2</option>
+            <option value="CM1">CM1</option>
+            <option value="CM2">CM2</option>
+            <option value="6e">6e</option>
+        </select>
+        <small style="color:var(--text2)">Les repères (fluence, vitesse, dénomination) dépendent de la classe.</small>
+        <button type="button" id="btnRetest" class="btn btn-secondary" style="margin-left:auto" onclick="activerRetest()">🔁 Re-test court (toutes les 6 semaines)</button>
+        <div id="bandeauRetest" style="display:none;width:100%;font-size:14px;background:var(--soft);padding:10px;border-radius:6px">
+            <strong>Re-test court :</strong> faire seulement les épreuves 3 (pseudo-mots), 6 (dictée de mots) et 7 (fluence), puis
+            <button type="button" class="btn btn-primary" style="padding:6px 12px" onclick="goResults()">📊 Résultats du re-test</button>
+        </div>
+    </div>
     <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
     <div class="nav" id="nav"></div>
 
@@ -588,7 +654,8 @@ body{color-scheme:light}
 const TESTS = [
     'Mots réguliers','Mots irréguliers','Pseudo-mots',
     'Dénomination rapide','Conscience phono','Dictée',
-    'Fluence','Compréhension','Mémoire de travail','Empan visuel'
+    'Fluence','Compréhension','Mémoire de travail','Empan visuel',
+    'Compréhension orale','Attention (go / no-go)','Questionnaire attention','Observation'
 ];
 
 // --- 2. MOTS RÉGULIERS (gradués) ---
@@ -596,25 +663,25 @@ const regularWords = {
     'Niveau 1 — Simples (CV, CVC)': ['ami','rue','bus','île','âne','col','dé','pic','vol','fée'],
     'Niveau 2 — Bisyllabiques': ['table','robe','livre','lampe','porte','banane','robot','valise','tortue','ballon'],
     'Niveau 3 — Trisyllabiques': ['chocolat','pantalon','cartable','mercredi','carotte','tulipe','lavabo','domino','solitude','catalogue'],
-    'Niveau 4 — Complexes': ['ordinateur','trampoline','rhinocéros','thermomètre','bibliothèque']
+    'Niveau 4 — Complexes': ['ordinateur','trampoline','hypothèse','thermomètre','bibliothèque'] // v4.7 : rhinocéros (s final prononcé) passe en irréguliers
 };
 
 // --- 3. MOTS IRRÉGULIERS ---
 const irregularWords = {
     'Niveau 1 — Fréquents': ['femme','monsieur','sept','fils','pays','ville','écho','clef','yacht','poêle'],
-    'Niveau 2 — Moyens': ['oignon','automne','album','paon','faon','choeur','rhume','sculpteur','baptême','orchidée'],
-    'Niveau 3 — Rares': ['aquarium','orchestre','compteur','chrysanthème','hypothèse']
+    'Niveau 2 — Moyens': ['oignon','automne','album','paon','faon','choeur','second','sculpteur','baptême','orchidée'], // v4.7 : rhume (régulier) remplacé
+    'Niveau 3 — Rares': ['aquarium','orchestre','compteur','chrysanthème','rhinocéros'] // v4.7 : hypothèse (régulier) passe en réguliers
 };
 
 // --- 4. PSEUDO-MOTS (gradués) ---
 const pseudoWords = {
-    'Niveau 1 — CVC / CVCV': ['bral','toup','fane','molu','rivo','daco','lupi','tobe'],
-    'Niveau 2 — CCVC / CVCCV': ['broton','clopir','flanque','drapule','flopir','grophe','trouche','plamure'],
+    'Niveau 1 — CVC / CVCV': ['bral','toup','fadu','molu','rivo','daco','lupi','tobe'],
+    'Niveau 2 — CCVC / CVCCV': ['broton','clopir','flinade','drapule','flopir','grophe','trouche','plamure'],
     'Niveau 3 — Complexes (CCC, graphèmes rares)': ['spanture','vrindale','chromile','phrétule','blansoir']
 };
 
 // --- 5. RAN ---
-const ranColors = ['#dc2626','#b86a00','#16a34a','#eab308','#1e1e1e'];
+const ranColors = ['#dc2626','#1d4ed8','#16a34a','#eab308','#1e1e1e']; // couleurs de donnees : ne pas aligner sur la charte
 const ranColorNames = ['rouge','bleu','vert','jaune','noir'];
 
 // --- 6. CONSCIENCE PHONOLOGIQUE ---
@@ -622,15 +689,15 @@ const phonoQuestions = [
     { cat:'Segmentation', q:"Combien de syllabes dans « papillon » ?", opts:['2','3','4'], correct:1 },
     { cat:'Segmentation', q:"Combien de syllabes dans « électricité » ?", opts:['4','5','6'], correct:1 },
     { cat:'Identification', q:"Quel son entends-tu au début de « chameau » ?", opts:['/k/','/ʃ/ (ch)','/s/'], correct:1 },
-    { cat:'Identification', q:"Quel son entends-tu à la fin de « parapluie » ?", opts:['/i/','/ɥi/ (ui)','/e/'], correct:1 },
+    { cat:'Identification', q:"Quel son entends-tu à la fin de « parapluie » ?", opts:['/i/','/ɥi/ (ui)','/e/'], correct:[0,1] },
     { cat:'Identification', q:"Combien de sons dans le mot « chat » ?", opts:['2','3','4'], correct:0 },
-    { cat:'Rime', q:"Quel mot rime avec « maison » ?", opts:['poisson','raisin','mouton'], correct:0 },
+    { cat:'Rime', q:"Quel mot rime avec « maison » ?", opts:['poisson','raisin','maman'], correct:0 }, // v4.6 : « mouton » rimait aussi (/ɔ̃/)
     { cat:'Rime', q:"Quel mot rime avec « cartable » ?", opts:['capable','carton','tableau'], correct:0 },
-    { cat:'Suppression', q:"Si on enlève /r/ à « train », qu'obtient-on ?", opts:['"tain"','"tin"','"tan"'], correct:0 },
-    { cat:'Suppression', q:"Si on enlève /p/ à « plat », qu'obtient-on ?", opts:['"la"','"lat"','"pa"'], correct:1 },
-    { cat:'Fusion', q:"Si on assemble /m/ + /a/ + /r/, quel mot obtient-on ?", opts:['mare','mars','marre'], correct:0 },
+    { cat:'Suppression', q:"Si on enlève /r/ à « train », qu'obtient-on ?", opts:['"tain"','"rain"','"tan"'], correct:0 }, // v4.7 : « tin » se prononçait comme « tain »
+    { cat:'Suppression', q:"Si on enlève /p/ à « plat », qu'obtient-on ?", opts:['"la"','"pla"','"pa"'], correct:0 }, // v4.7 : « lat » se prononçait comme « la »
+    { cat:'Fusion', q:"Si on assemble /m/ + /a/ + /r/, quel mot obtient-on ?", opts:['mare','mars','mur'], correct:0 },
     { cat:'Fusion', q:"Si on assemble /ʃ/ + /a/ + /t/, quel mot obtient-on ?", opts:['chat','chatte','char'], correct:1 },
-    { cat:'Inversion', q:"Dis « sol » à l'envers (inversement des sons), qu'obtient-on ?", opts:['"los"','"ols"','"lo"'], correct:0 },
+    { cat:'Inversion', q:"Dis « sol » à l'envers (inversement des sons), qu'obtient-on ?", opts:['"losse"','"olse"','"lo"'], correct:0 }, // v4.7 : « los » se lisait « lo »
     { cat:'Inversion', q:"Dis « car » à l'envers, qu'obtient-on ?", opts:['"rac"','"arc"','"cra"'], correct:0 },
     { cat:'Substitution', q:"Dans « car », remplace /k/ par /b/. Qu'obtient-on ?", opts:['"bar"','"par"','"tar"'], correct:0 },
     { cat:'Discrimination', q:"« pain » et « bain » : identiques ou différents ?", opts:['Identiques','Différents'], correct:1 },
@@ -674,7 +741,7 @@ const compTexts = [
         title: 'La migration des oiseaux (informatif)',
         text: "Chaque automne, des millions d'oiseaux quittent les régions froides pour se diriger vers des pays plus chauds. Ce voyage s'appelle la migration. Les oiseaux migrateurs, comme les hirondelles et les cigognes, peuvent parcourir des milliers de kilomètres. Ils se repèrent grâce au soleil, aux étoiles et au champ magnétique de la Terre. Le voyage est dangereux : les oiseaux doivent affronter le vent, la pluie et les prédateurs. Beaucoup d'entre eux ne survivent pas. Ceux qui arrivent passent l'hiver au chaud, puis reviennent au printemps pour se reproduire. Les scientifiques étudient la migration en posant de petites bagues sur les pattes des oiseaux.",
         questions: [
-            { q:"Quand la migration a-t-elle lieu ?", opts:['Au printemps','En automne','En été'], correct:1, type:'explicite' },
+            { q:"En quelle saison les oiseaux partent-ils vers les pays chauds ?", opts:['Au printemps','En automne','En été'], correct:1, type:'explicite' },
             { q:"Comment les scientifiques étudient-ils la migration ?", opts:['Avec des caméras','Avec des bagues aux pattes','Avec des satellites'], correct:1, type:'explicite' },
             { q:"Pourquoi beaucoup d'oiseaux ne survivent-ils pas au voyage ?", opts:["Parce qu'ils sont trop vieux","À cause du vent, de la pluie et des prédateurs","Parce qu'ils se perdent"], correct:1, type:'inférentielle' },
             { q:"Que signifie « champ magnétique de la Terre » dans ce texte ?", opts:["Un aimant posé au sol","Une force invisible qui aide les oiseaux à s'orienter","Le vent qui souffle vers le sud"], correct:1, type:'vocabulaire' },
@@ -732,6 +799,16 @@ const state = {
     memForward: [],
     memBackward: [],
     memWords: [],
+    memFwdOk: [],
+    memBwdOk: [],
+    memWordsOk: [],
+    classe: '',
+    oral: [],
+    gng: null,
+    obs: {},
+    modeRetest: false,
+    modeClic: 'conf',
+    attention: { parent: [], ens: [], avant12: '', sixMois: '', gene: [] },
     eva: [],
     done: new Set()
 };
@@ -777,7 +854,7 @@ function goResults() {
     document.getElementById('resultSection').classList.add('active');
     document.querySelectorAll('.nav button').forEach(b => { b.classList.remove('active'); b.classList.add('done'); });
     document.getElementById('progressBar').style.width = '100%';
-    buildResults();
+    if (state.modeRetest) buildRetestResults(); else buildResults();
     window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -805,6 +882,10 @@ function buildSections() {
     buildComprehension();
     buildMemory();
     buildEVA();
+    buildOral();
+    buildGNG();
+    buildQuestionnaire();
+    buildObservation();
 }
 
 // ============================================================
@@ -813,10 +894,12 @@ function buildSections() {
 const ERROR_TYPES = [
     { code:'vis', label:'Visuelle', desc:'b/d, p/q, m/n' },
     { code:'phon', label:'Phonémique', desc:'t/d, f/v, ch/j' },
+    { code:'conf', label:'Son ou lettre confondus', desc:'clic : b/d, t/d, on/ou…' },
     { code:'inv', label:'Inversion', desc:'lettres inversées' },
     { code:'omis', label:'Omission', desc:'lettre/syllabe sautée' },
     { code:'ajout', label:'Ajout', desc:'lettre/syllabe ajoutée' },
     { code:'lex', label:'Lexicalisation', desc:'lit un autre mot' },
+    { code:'reg', label:'Régularisation', desc:'lit le mot comme il s\'écrit (femme → « fème »)' },
     { code:'other', label:'Autre', desc:'' },
 ];
 
@@ -826,7 +909,8 @@ function buildReadingTest(key, testIdx, title, subtitle, wordData) {
     let h = `
         <div class="card-header"><h2>${title}</h2><p>${subtitle}</p></div>
         <div class="instruction"><strong>Consigne enfant :</strong> Lis chaque mot à voix haute, le plus correctement possible.</div>
-        <div class="examiner-note">👩 <strong>Maman :</strong> Lancez le chronomètre quand l'enfant commence. Cliquez sur un mot pour le marquer comme erreur, puis précisez le type d'erreur. Arrêtez le chrono quand il a fini.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Lancez le chronomètre quand l'enfant commence. Marquez chaque mot raté d'un seul geste (voir ci-dessous). Arrêtez le chrono quand il a fini.</div>
+        ${legendeErreurs(key)}
         <div class="timer-bar">
             <div class="timer-display" id="timer_${timerKey}">00:00.0</div>
             <button class="btn-start" id="tbtn_${timerKey}" onclick="toggleTimer('${timerKey}')">▶ Démarrer</button>
@@ -836,8 +920,9 @@ function buildReadingTest(key, testIdx, title, subtitle, wordData) {
         h += `<div class="level-group"><h4>${level}</h4><div class="word-grid">`;
         words.forEach((w, wi) => {
             const globalIdx = getGlobalWordIndex(wordData, level, wi);
-            h += `<div class="word-card" id="wc_${key}_${globalIdx}" onclick="toggleWordError('${key}',${globalIdx},this)">
+            h += `<div class="word-card" id="wc_${key}_${globalIdx}" onclick="motClic(event,'${key}',${globalIdx},this)" ondblclick="motDblClic(event,'${key}',${globalIdx},this)" oncontextmenu="motClicDroit(event,'${key}',${globalIdx},this)">
                 <span class="word">${w}</span>
+                <span class="badge-cause" id="bc_${key}_${globalIdx}"></span>
                 <div class="error-type-selector" id="et_${key}_${globalIdx}">
                     ${ERROR_TYPES.map(et => `<button onclick="event.stopPropagation();setErrorType('${key}',${globalIdx},'${et.code}',this)" title="${et.desc}">${et.label}</button>`).join('')}
                 </div>
@@ -1124,13 +1209,14 @@ function buildMemory() {
     let h = `
         <div class="card-header"><h2>🧠 Mémoire de travail</h2><p>Empan endroit, empan envers, empan de mots</p></div>
         <div class="instruction"><strong>Consigne :</strong> Écoute la séquence puis répète-la.</div>
-        <div class="examiner-note">👩 <strong>Maman :</strong> Cliquez sur écouter, puis l'enfant tape sa réponse. Pour l'empan envers, l'enfant doit répéter <strong>à l'envers</strong>.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cliquez sur écouter, puis l'enfant tape sa réponse. Pour l'empan envers, l'enfant doit répéter <strong>à l'envers</strong>.<br>L'enfant peut aussi répondre <strong>à voix haute</strong> : cochez alors <strong>Juste</strong> ou <strong>Faux</strong>. Votre note est prioritaire sur la saisie (une faute d'orthographe n'est pas un oubli).</div>
         <h3 style="margin:16px 0 8px">Empan endroit (répéter dans l'ordre)</h3>`;
     memoryForward.forEach((m, i) => {
         h += `<div class="q-block"><h4>${m.label}</h4>
             <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
             <input type="text" placeholder="Ex: ${m.seq.split('-').slice(0,2).join('-')}-..." id="mf${i}" onchange="state.memForward[${i}]=this.value">
             <small style="color:var(--text2);display:block;margin-top:4px">Sépare les chiffres par des tirets</small>
+            ${boutonsJusteFaux('memFwdOk', i)}
         </div>`;
     });
     h += '<h3 style="margin:24px 0 8px">Empan envers (répéter à l\'envers)</h3>';
@@ -1139,6 +1225,7 @@ function buildMemory() {
             <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
             <input type="text" placeholder="Répète à l'envers" id="mb${i}" onchange="state.memBackward[${i}]=this.value">
             <small style="color:var(--text2);display:block;margin-top:4px">Exemple : si tu entends 3-5, écris 5-3</small>
+            ${boutonsJusteFaux('memBwdOk', i)}
         </div>`;
     });
     h += '<h3 style="margin:24px 0 8px">Empan de mots</h3>';
@@ -1146,6 +1233,7 @@ function buildMemory() {
         h += `<div class="q-block"><h4>${m.label}</h4>
             <button class="audio-btn" onclick="speak('${m.seq.replace(/-/g,', ')}')">🔊 Écouter</button>
             <input type="text" placeholder="Mots séparés par des tirets" id="mw${i}" onchange="state.memWords[${i}]=this.value">
+            ${boutonsJusteFaux('memWordsOk', i)}
         </div>`;
     });
     h += `<div class="btn-row">
@@ -1173,7 +1261,8 @@ function buildEVA() {
     });
     h += `<div class="btn-row">
         <button class="btn btn-secondary" onclick="goTo(8)">← Retour</button>
-        <button class="btn btn-primary" onclick="goResults()">📊 Voir les résultats</button>
+        <button class="btn btn-primary" onclick="goTo(10)">Suivant →</button>
+        <button class="btn btn-secondary" onclick="goResults()">📊 Voir les résultats</button>
     </div>`;
     sec.innerHTML = h;
 }
@@ -1199,14 +1288,14 @@ function toApproxPhonetic(word) {
     p = p.replace(/sion/g,'ZJÕ');
     p = p.replace(/ille/g,'IJ').replace(/ill/g,'IJ');
     p = p.replace(/ail/g,'AJ').replace(/eil/g,'EJ').replace(/euil/g,'ŒJ').replace(/ouil/g,'UJ');
+    p = p.replace(/ain(?![aeiouyéèêàâîôûAEIOUYn])/g,'Ĩ').replace(/ein(?![aeiouyéèêàâîôûAEIOUYn])/g,'Ĩ').replace(/aim(?![aeiouyéèêm])/g,'Ĩ'); // v4.7 : avant « ai », sinon « tain » devenait « ten »
     p = p.replace(/eau/g,'O').replace(/au/g,'O').replace(/ai/g,'E').replace(/ei/g,'E');
     p = p.replace(/ou/g,'U').replace(/oi/g,'WA');
-    p = p.replace(/ain/g,'Ĩ').replace(/ein/g,'Ĩ').replace(/aim/g,'Ĩ');
-    p = p.replace(/on(?=[bp])/g,'Õ').replace(/om(?=[bp])/g,'Õ').replace(/on/g,'Õ').replace(/om$/g,'Õ');
+    p = p.replace(/on(?=[bp])/g,'Õ').replace(/om(?=[bp])/g,'Õ').replace(/on(?![aeiouyéèêàâîôûAEIOUYn])/g,'Õ').replace(/om$/g,'Õ');
     p = p.replace(/an(?=[bp])/g,'Ã').replace(/am(?=[bp])/g,'Ã').replace(/en(?=[bp])/g,'Ã').replace(/em(?=[bp])/g,'Ã');
-    p = p.replace(/in/g,'Ĩ').replace(/im(?=[bp])/g,'Ĩ').replace(/yn/g,'Ĩ').replace(/ym(?=[bp])/g,'Ĩ');
-    p = p.replace(/un/g,'Ĩ');
-    p = p.replace(/an/g,'Ã').replace(/am$/g,'Ã').replace(/en/g,'Ã').replace(/em$/g,'Ã');
+    p = p.replace(/in(?![aeiouyéèêàâîôûAEIOUYn])/g,'Ĩ').replace(/im(?=[bp])/g,'Ĩ').replace(/yn/g,'Ĩ').replace(/ym(?=[bp])/g,'Ĩ');
+    p = p.replace(/un(?![aeiouyéèêàâîôûAEIOUYn])/g,'Ĩ');
+    p = p.replace(/an(?![aeiouyéèêàâîôûAEIOUYn])/g,'Ã').replace(/am$/g,'Ã').replace(/en(?![aeiouyéèêàâîôûAEIOUYn])/g,'Ã').replace(/em$/g,'Ã');
     p = p.replace(/ph/g,'F').replace(/ch/g,'Ʃ').replace(/gn/g,'Ñ');
     p = p.replace(/qu/g,'K').replace(/gu(?=[ei])/g,'G');
     p = p.replace(/ss/g,'S').replace(/cc(?=[ei])/g,'KS');
@@ -1219,12 +1308,16 @@ function toApproxPhonetic(word) {
     p = p.replace(/â/g,'A').replace(/à/g,'A');
     p = p.replace(/y/g,'I');
     p = p.replace(/x$/g,'KS');
+    p = p.replace(/([aeiouyéèêàâîôûAEIOUY])s(?=[aeiouyéèêàâîôûAEIOUYÃÕĨ])/g, '$1Z'); // s entre deux voyelles = /z/
     // Silent final letters (French)
     p = p.replace(/ent$/g,''); // 3rd person plural verb ending
     p = p.replace(/[estdgxzp]$/g,'');
+    // v4.1 : un seul alphabet de codes (avant, « f » et « F » ou « e » et « E » ne se comparaient pas)
+    p = p.replace(/u/g,'Y').replace(/j/g,'Ʒ').replace(/x/g,'KS').replace(/œ/g,'E');
+    p = p.toUpperCase();
     // Double consonants
     p = p.replace(/(.)\1/g,'$1');
-    p = p.replace(/h/g,'');
+    p = p.replace(/H/g,'');
     return p;
 }
 
@@ -1411,6 +1504,52 @@ function normalize(s) {
 }
 
 // ============================================================
+//  v4.1 : NORMES PAR CLASSE ET AIDES DE NOTATION
+// ============================================================
+// fluence : seuil « satisfaisant » et moyenne nationale, DEPP septembre 2025 (debut d'annee)
+// ran : [limite basse, seuil deficitaire] en secondes pour 50 couleurs, indicatif (10 ans : 30 / 45 s)
+const NORMES_CLASSES = {
+    'CE2': { nom: 'CE2', fluence: 70, fluenceMoyenne: 86, ran: [35, 50] },
+    'CM1': { nom: 'CM1', fluence: 90, fluenceMoyenne: 98, ran: [32, 47] },
+    'CM2': { nom: 'CM2', fluence: 110, fluenceMoyenne: 112, ran: [30, 45] },
+    '6e':  { nom: '6e',  fluence: 120, fluenceMoyenne: 128, ran: [28, 42] }
+};
+// vitesse attendue d'une liste de mots isoles, en part du seuil de fluence en texte (indicatif)
+const COEF_VITESSE_LISTE = { regular: 0.6, irregular: 0.5, pseudo: 0.4 };
+
+function normesClasse() {
+    return NORMES_CLASSES[state.classe] || NORMES_CLASSES['CM1'];
+}
+
+function phonoJuste(q, rep) {
+    if (rep === undefined || rep === null) return false;
+    return Array.isArray(q.correct) ? q.correct.includes(rep) : rep === q.correct;
+}
+
+function boutonsJusteFaux(cle, i) {
+    return `<div class="jf" style="display:flex;gap:8px;margin-top:6px;align-items:center">
+        <small style="color:var(--text2)">Réponse orale :</small>
+        <button type="button" class="btn-jf" id="${cle}_${i}_1" onclick="noterJF('${cle}',${i},true)" style="padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card);cursor:pointer">✓ Juste</button>
+        <button type="button" class="btn-jf" id="${cle}_${i}_0" onclick="noterJF('${cle}',${i},false)" style="padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card);cursor:pointer">✗ Faux</button>
+    </div>`;
+}
+
+function noterJF(cle, i, juste) {
+    state[cle][i] = (state[cle][i] === juste) ? undefined : juste;
+    const b1 = document.getElementById(`${cle}_${i}_1`), b0 = document.getElementById(`${cle}_${i}_0`);
+    b1.style.background = state[cle][i] === true ? 'var(--green)' : 'var(--card)';
+    b1.style.color = state[cle][i] === true ? 'white' : 'var(--text)';
+    b0.style.background = state[cle][i] === false ? 'var(--red)' : 'var(--card)';
+    b0.style.color = state[cle][i] === false ? 'white' : 'var(--text)';
+}
+
+// note de l'adulte prioritaire ; sinon comparaison de la saisie
+function memJuste(cle, i, saisie, attendu) {
+    if (state[cle][i] === true || state[cle][i] === false) return state[cle][i];
+    return !!saisie && normalize(saisie) === normalize(attendu);
+}
+
+// ============================================================
 //  COMPUTE SCORES
 // ============================================================
 function computeScores() {
@@ -1425,17 +1564,25 @@ function computeScores() {
     scores.regular = { correct: regAll.length - regErrors, total: regAll.length, pct: ((regAll.length - regErrors)/regAll.length)*100, time: state.timers.regular, errors: state.regularErrors, words: regAll };
     scores.irregular = { correct: irrAll.length - irrErrors, total: irrAll.length, pct: ((irrAll.length - irrErrors)/irrAll.length)*100, time: state.timers.irregular, errors: state.irregularErrors, words: irrAll };
     scores.pseudo = { correct: pseAll.length - pseErrors, total: pseAll.length, pct: ((pseAll.length - pseErrors)/pseAll.length)*100, time: state.timers.pseudo, errors: state.pseudoErrors, words: pseAll };
+    // v4.1 : vitesse (mots lus par minute) et repere de lenteur par classe
+    scores.normes = normesClasse();
+    [['regular', 'regular'], ['irregular', 'irregular'], ['pseudo', 'pseudo']].forEach(([k, n]) => {
+        const sc = scores[k];
+        sc.mpm = sc.time > 0 ? Math.round(sc.total / (sc.time / 60000)) : 0;
+        sc.mpmSeuil = Math.round(scores.normes.fluence * COEF_VITESSE_LISTE[n]);
+        sc.lent = sc.mpm > 0 && sc.mpm < sc.mpmSeuil;
+    });
 
     scores.ran = { time: state.timers.ran, errors: state.ranErrors };
 
     let phonoCorrect = 0;
-    phonoQuestions.forEach((q, i) => { if(state.phono[i] === q.correct) phonoCorrect++; });
+    phonoQuestions.forEach((q, i) => { if(phonoJuste(q, state.phono[i])) phonoCorrect++; });
     scores.phono = { correct: phonoCorrect, total: phonoQuestions.length, pct: (phonoCorrect/phonoQuestions.length)*100 };
     const phonoCats = {};
     phonoQuestions.forEach((q, i) => {
         if(!phonoCats[q.cat]) phonoCats[q.cat] = {correct:0,total:0};
         phonoCats[q.cat].total++;
-        if(state.phono[i] === q.correct) phonoCats[q.cat].correct++;
+        if(phonoJuste(q, state.phono[i])) phonoCats[q.cat].correct++;
     });
     scores.phonoCats = phonoCats;
 
@@ -1467,21 +1614,21 @@ function computeScores() {
 
     let fwdCorrect = 0, fwdMaxSpan = 0;
     memoryForward.forEach((m, i) => {
-        if(state.memForward[i] && normalize(state.memForward[i]) === normalize(m.seq)) {
+        if(memJuste('memFwdOk', i, state.memForward[i], m.seq)) {
             fwdCorrect++;
             fwdMaxSpan = m.seq.split('-').length;
         }
     });
     let bwdCorrect = 0, bwdMaxSpan = 0;
     memoryBackward.forEach((m, i) => {
-        if(state.memBackward[i] && normalize(state.memBackward[i]) === normalize(m.answer)) {
+        if(memJuste('memBwdOk', i, state.memBackward[i], m.answer)) {
             bwdCorrect++;
             bwdMaxSpan = m.answer.split('-').length;
         }
     });
     let wordsMemCorrect = 0;
     memoryWords.forEach((m, i) => {
-        if(state.memWords[i] && normalize(state.memWords[i]) === normalize(m.seq)) wordsMemCorrect++;
+        if(memJuste('memWordsOk', i, state.memWords[i], m.seq)) wordsMemCorrect++;
     });
     scores.memory = {
         fwd: { correct: fwdCorrect, total: memoryForward.length, maxSpan: fwdMaxSpan },
@@ -1525,11 +1672,12 @@ function buildProfiles(s) {
     const fwdSpan = s.memory.fwd.maxSpan;
     const bwdSpan = s.memory.bwd.maxSpan;
     const ranSec = s.ran.time > 0 ? s.ran.time/1000 : 0;
+    const N = s.normes;
 
     // ========== Dyslexie mixte ==========
     if(pseudoPct < 70 && irregPct < 70 && regPct < 70) {
         profiles.push({
-            name:'Dyslexie mixte (probable)',
+            name:'Signes évocateurs d\'une dyslexie mixte',
             description:'Difficultés combinées touchant le décodage (voie phonologique) ET la reconnaissance globale (voie lexicale). Profil le plus sévère nécessitant une prise en charge intensive.',
             risk:'TRÈS ÉLEVÉ', riskClass:'risk-very-high',
             recommendations:[
@@ -1548,13 +1696,13 @@ function buildProfiles(s) {
     if(pseudoPct < 70 || (phonoPct < 65 && pseudoPct < 80)) {
         if(!profiles.find(p => p.name.includes('mixte'))) {
             profiles.push({
-                name:'Dyslexie phonologique (probable)',
+                name:'Signes évocateurs d\'une dyslexie phonologique',
                 description:'Difficultés de décodage : la conversion graphème-phonème est altérée. L\'enfant peine à lire les mots nouveaux mais peut reconnaître des mots familiers.',
                 risk:'ÉLEVÉ', riskClass:'risk-high',
                 recommendations:[
                     'Bilan orthophonique à programmer — imprimer ces résultats pour le rendez-vous',
                     'Travailler la conscience phonologique quotidiennement (15 min/jour)',
-                    'Exercices de décodage syllabique progressif (méthode multisensorielle)',
+                    'Exercices de décodage syllabique progressif (méthode multisensorielle, gestes Borel-Maisonny)',
                     'Supports audio pour tous les apprentissages scolaires (manuels audio, podcasts éducatifs)',
                     'Adapter les évaluations scolaires : éviter les dictées non préparées, autoriser l\'oral'
                 ],
@@ -1567,12 +1715,12 @@ function buildProfiles(s) {
     // ========== Dyslexie de surface ==========
     if(irregPct < 70 && pseudoPct >= 70) {
         profiles.push({
-            name:'Dyslexie de surface (probable)',
+            name:'Signes évocateurs d\'une dyslexie de surface',
             description:'Le décodage fonctionne mais la voie lexicale (reconnaissance globale) est déficiente. L\'enfant lit lentement, syllabe par syllabe, et peine avec les mots irréguliers.',
             risk:'ÉLEVÉ', riskClass:'risk-high',
             recommendations:[
                 'Bilan orthophonique à programmer — travail sur la voie lexicale',
-                'Constituer un répertoire visuel de mots fréquents (méthode Borel-Maisonny adaptée)',
+                'Constituer un répertoire visuel de mots fréquents',
                 'Lecture répétée des mêmes textes pour automatiser la reconnaissance',
                 'Utiliser l\'orthographe illustrée (dessiner le sens dans la forme du mot — approche Valdois)',
                 'Flashcards quotidiennes de mots irréguliers fréquents'
@@ -1600,7 +1748,7 @@ function buildProfiles(s) {
     }
 
     // ========== Déficit RAN isolé (NOUVEAU) ==========
-    if(ranSec > 40 && pseudoPct >= 70 && phonoPct >= 65) {
+    if(ranSec > N.ran[1] - 5 && pseudoPct >= 70 && phonoPct >= 65) {
         profiles.push({
             name:'Déficit de dénomination rapide isolé',
             description:'La vitesse de dénomination automatisée est ralentie malgré des compétences phonologiques préservées. Ce profil (Wolf & Bowers) affecte principalement la fluence de lecture et l\'automatisation.',
@@ -1617,7 +1765,7 @@ function buildProfiles(s) {
     }
 
     // ========== Double déficit (phono + RAN) ==========
-    if((pseudoPct < 70 || phonoPct < 65) && ranSec > 40) {
+    if((pseudoPct < 70 || phonoPct < 65) && ranSec > N.ran[1] - 5) {
         profiles.push({
             name:'Double déficit (phonologie + dénomination)',
             description:'Combinaison d\'un déficit phonologique et d\'une lenteur de dénomination rapide. Selon Wolf & Bowers, c\'est le profil le plus résistant à la rééducation et nécessite une approche combinée intensive.',
@@ -1689,7 +1837,7 @@ function buildProfiles(s) {
     }
 
     // ========== Fluence faible isolée ==========
-    if(s.fluence.mclmPerMin > 0 && s.fluence.mclmPerMin < 70 && regPct >= 70) {
+    if(s.fluence.mclmPerMin > 0 && s.fluence.mclmPerMin < Math.round(0.8 * N.fluence) && regPct >= 70) {
         profiles.push({
             name:'Déficit de fluence de lecture',
             description:'La précision de lecture est correcte mais la vitesse est insuffisante. L\'automatisation de la lecture n\'est pas acquise, ce qui surcharge la mémoire de travail et gêne la compréhension des textes longs.',
@@ -1702,6 +1850,23 @@ function buildProfiles(s) {
             ],
             exercises: buildExoFluence(),
             rti: 'Protocole 12 semaines : lecture répétée 15 min/jour. Mesurer le MCLM chaque vendredi sur un texte nouveau. Objectif : +3-5 MCLM/semaine.'
+        });
+    }
+
+    // ========== Lecture lente malgre une bonne precision (v4.1) ==========
+    if(regPct >= 70 && pseudoPct >= 70 && (s.regular.lent || s.pseudo.lent || s.irregular.lent)) {
+        const lents = [['regular','mots réguliers'],['irregular','mots irréguliers'],['pseudo','pseudo-mots']].filter(([k]) => s[k].lent).map(([k, l]) => `${l} ${s[k].mpm} mots/min (repère ${s[k].mpmSeuil})`).join(' ; ');
+        profiles.push({
+            name:'Lecture lente malgré une bonne précision',
+            description:`Les mots sont bien lus mais lentement : ${lents}. En fin de primaire, la lenteur est souvent le seul signe d'une dyslexie compensée : l'enfant décode juste, mais au prix d'un effort qui fatigue et gêne la compréhension.`,
+            risk:'MOYEN', riskClass:'risk-medium',
+            recommendations:[
+                'Mentionner la vitesse de lecture au bilan orthophonique (et pas seulement les erreurs)',
+                'Temps supplémentaire pour les évaluations écrites',
+                'Lecture répétée quotidienne pour automatiser'
+            ],
+            exercises: buildExoFluence(),
+            rti: 'Mesurer la vitesse sur une liste de mots nouveaux toutes les 2 semaines. Objectif : atteindre le repère de la classe en 12 semaines.'
         });
     }
 
@@ -1718,7 +1883,7 @@ function buildExoPhono() {
         { title:'🔨 Atelier des syllabes (5 min/jour)', desc:'Taper dans les mains pour chaque syllabe. Étape 1 : mots simples (ba-teau → 2 tapes). Étape 2 : supprimer une syllabe (« dis chocolat sans cho → colat »). Étape 3 : inverser les syllabes (ba-teau → teau-ba). Utiliser des cubes de couleur pour visualiser.', tags:['fun','evidence','daily'] },
         { title:'🎮 Discrimination auditive sons proches (5 min, 3×/sem)', desc:'Préparer des paires de mots : pain/bain, font/vont, chou/joue, deux/queue. L\'enfant ferme les yeux et dit « pareil » ou « différent ». Progresser vers des pseudo-mots : bra/pra, dou/tou. Tenir un score et montrer la progression.', tags:['fun','evidence'] },
         { title:'🧩 Fusion de phonèmes — jeu du robot (5 min/jour)', desc:'Le parent parle « comme un robot » en séparant les sons : /m/ - /a/ - /r/ - /i/. L\'enfant doit deviner le mot (mari). Commencer avec 2 sons, monter à 5. Inverser les rôles : l\'enfant fait le robot, le parent devine.', tags:['fun','evidence','daily'] },
-        { title:'📱 GraphoLearn (10 min, 4×/sem)', desc:'Application gratuite validée scientifiquement (Université de Jyväskylä). Entraînement au décodage graphème-phonème adaptatif. L\'enfant joue à son rythme, le niveau s\'ajuste automatiquement. Disponible sur tablette et téléphone.', tags:['tool','evidence'] },
+        { title:'📱 GraphoGame (10 min, 4×/sem)', desc:'Application d\'entraînement validée scientifiquement (Université de Jyväskylä ; version française « GraphoGame : Français », Aix-Marseille Université). Entraînement au décodage graphème-phonème adaptatif. L\'enfant joue à son rythme, le niveau s\'ajuste automatiquement. Disponible sur tablette et téléphone.', tags:['tool','evidence'] },
         { title:'🎨 Codage couleur des syllabes (pendant lecture)', desc:'Avec des surligneurs, colorier chaque syllabe d\'une couleur différente dans un texte court. Ex : « cho-co-lat » → rouge-bleu-vert. L\'enfant lit ensuite le texte coloré. Extension gratuite Lire Couleur pour LibreOffice fait ça automatiquement.', tags:['tool','evidence'] },
     ];
 }
@@ -1737,7 +1902,7 @@ function buildExoSurface() {
 function buildExoMixte() {
     return [
         { title:'🔑 Méthode multisensorielle VAKT (15 min/jour)', desc:'Voir-Audition-Kinesthésie-Toucher. Pour chaque nouveau mot : 1) VOIR le mot écrit en grand. 2) ENTENDRE le parent le prononcer syllabe par syllabe. 3) ÉCRIRE le mot en l\'air avec le doigt en disant les sons. 4) TOUCHER des lettres en relief (carton, sable, pâte à modeler). C\'est le protocole Orton-Gillingham adapté au français.', tags:['evidence','daily'] },
-        { title:'📱 GraphoLearn (10 min/jour)', desc:'Application gratuite d\'entraînement au décodage, validée scientifiquement. Niveau adaptatif automatique. Compléter par les exercices manuels, pas en substitut.', tags:['tool','evidence','daily'] },
+        { title:'📱 GraphoGame (10 min/jour)', desc:'Application gratuite d\'entraînement au décodage, validée scientifiquement. Niveau adaptatif automatique. Compléter par les exercices manuels, pas en substitut.', tags:['tool','evidence','daily'] },
         { title:'🎧 Audio-livres + suivi du texte (20 min/jour)', desc:'L\'enfant écoute ET suit le texte avec le doigt simultanément. Cela crée le lien entre forme visuelle et forme sonore du mot. Bibliothèque gratuite : Audiocité, Littérature Audio. Commencer par des textes courts et motivants (BD lues, contes).', tags:['fun','evidence','daily'] },
         { title:'🧩 Jeu de segmentation couleur (10 min, 3×/sem)', desc:'Imprimer un texte simple. L\'enfant colorie chaque syllabe d\'une couleur avec des surligneurs. Puis relire le texte coloré 3 fois. Semaine suivante : colorier soi-même, sans modèle.', tags:['fun','evidence'] },
         { title:'📖 Lecture partagée quotidienne (15 min)', desc:'Le parent lit une phrase, l\'enfant lit la suivante. Quand l\'enfant bloque, le parent donne le mot sans commentaire et on continue. Objectif : maintenir le plaisir de lire malgré les difficultés. Choisir des livres que l\'enfant VEUT lire (BD, manga, magazines, livres sur ses passions).', tags:['fun','daily'] },
@@ -1768,7 +1933,7 @@ function buildExoDoubleDef() {
     return [
         { title:'🔨 Combo phono + vitesse (15 min/jour)', desc:'Diviser la séance en 2 : 8 min de conscience phonologique (fusion, segmentation, rimes — voir exercices dyslexie phonologique) + 7 min de dénomination rapide chronométrée (voir exercices RAN). Ne JAMAIS sacrifier la partie phono pour la vitesse — les deux sont indispensables.', tags:['evidence','daily'] },
         { title:'📖 Lecture répétée chronométrée (15 min/jour)', desc:'Texte de 80-100 mots. Lecture 1 : chronométrée (résultat noté). Lectures 2-3 : relecture. Lecture 4 : chronométrée (nouveau résultat). L\'enfant voit concrètement sa progression. Nouveau texte tous les 3 jours.', tags:['evidence','daily'] },
-        { title:'📱 GraphoLearn + Dénomination rapide', desc:'10 min de GraphoLearn (décodage) puis 5 min de dénomination rapide manuelle. L\'appli travaille la voie phonologique, l\'exercice manuel travaille la vitesse d\'accès. C\'est l\'approche combinée recommandée par la recherche.', tags:['tool','evidence','daily'] },
+        { title:'📱 GraphoGame + Dénomination rapide', desc:'10 min de GraphoGame (décodage) puis 5 min de dénomination rapide manuelle. L\'appli travaille la voie phonologique, l\'exercice manuel travaille la vitesse d\'accès. C\'est l\'approche combinée recommandée par la recherche.', tags:['tool','evidence','daily'] },
         { title:'🎮 Course de mots (10 min, 3×/sem)', desc:'Écrire 20 mots sur des cartons. Mélanger. L\'enfant retourne une carte et lit le plus vite possible. S\'il met plus de 3 secondes, la carte retourne dans la pile. Quand toutes les cartes sont lues en moins de 3s chacune, ajouter 10 mots.', tags:['fun'] },
         { title:'🎧 Écoute + suivi du doigt (15 min/jour)', desc:'Audio-livre avec le texte sous les yeux. L\'enfant suit chaque mot avec le doigt pendant qu\'il écoute. Cela synchronise vitesse de traitement + décodage. Progresser en augmentant la vitesse de lecture (×1.1, ×1.2).', tags:['fun','evidence','daily'] },
     ];
@@ -1874,8 +2039,11 @@ function buildResults() {
     const profiles = buildProfiles(s);
 
     let h = '<h2 style="margin-bottom:20px">📊 Résultats détaillés</h2>';
+    h += `<p style="margin:-10px 0 16px;color:var(--text2)">Classe : <strong>${s.normes.nom}</strong>${state.classe ? '' : ' (non choisie : repères de CM1 utilisés)'}</p>`;
 
     // Radar chart
+    const an = analyserCauses(s);
+    h += blocCauses(s, an);
     h += `<div class="radar-container"><h3>Profil global</h3><canvas id="radarCanvas" width="480" height="480" style="max-width:100%"></canvas></div>`;
 
 
@@ -1888,12 +2056,12 @@ function buildResults() {
     // RAN with age-adjusted norms
     const ranSec = s.ran.time > 0 ? (s.ran.time/1000).toFixed(1) + 's' : 'Non chronométré';
     const ranSeconds = s.ran.time / 1000;
-    const ranClass = ranSeconds > 0 ? (ranSeconds > 45 ? 'red' : ranSeconds > 35 ? 'orange' : 'green') : '';
+    const ranClass = ranSeconds > 0 ? (ranSeconds > s.normes.ran[1] ? 'red' : ranSeconds > s.normes.ran[0] ? 'orange' : 'green') : '';
     h += `<div class="result-card ${ranClass}">
         <h3>4. Dénomination rapide (RAN)</h3>
         <div class="time-info">⏱ Temps : ${ranSec} · Erreurs : ${s.ran.errors}</div>
         <p class="detail">50 items · Vitesse de traitement et accès lexical</p>
-        <p class="threshold-note">Repères 10 ans : &lt;30s normal · 30-45s limite · &gt;45s déficitaire (normes indicatives RAN couleurs)</p>
+        <p class="threshold-note">Repères ${s.normes.nom} : &lt;${s.normes.ran[0]}s normal · ${s.normes.ran[0]}-${s.normes.ran[1]}s limite · &gt;${s.normes.ran[1]}s déficitaire (indicatif, RAN couleurs ; 10 ans : 30 / 45 s)</p>
     </div>`;
 
     // Phono
@@ -1944,14 +2112,15 @@ function buildResults() {
     h += '</div></div>';
 
     // Fluence
-    h += `<div class="result-card ${s.fluence.mclmPerMin >= 90 ? 'green' : s.fluence.mclmPerMin >= 60 ? 'orange' : 'red'}">
+    h += `<div class="result-card ${s.fluence.mclmPerMin >= s.normes.fluence ? 'green' : s.fluence.mclmPerMin >= Math.round(0.8 * s.normes.fluence) ? 'orange' : 'red'}">
         <h3>7. Fluence de lecture</h3>
         <div class="score">${s.fluence.mclmPerMin} MCLM</div>
         <div class="detail">Mots lus : ${s.fluence.wordsRead} · Erreurs : ${s.fluence.errors} · Temps : ${formatTime(s.fluence.time)}</div>
         <div class="detail" style="margin-top:6px">
             ${s.fluence.mclmPerMin > 0 ? `Repères : CM2 ~120 MCLM · CM1 ~95 MCLM · CE2 ~75 MCLM` : 'Non mesuré'}
         </div>
-        <p class="threshold-note">Normes françaises de fluence (Lequette, Pouget & Zorman, 2008)</p>
+        <div class="detail" style="margin-top:6px">Repère ${s.normes.nom} (début d'année) : seuil satisfaisant ${s.normes.fluence} MCLM · moyenne nationale ${s.normes.fluenceMoyenne} MCLM · alerte sous ${Math.round(0.8 * s.normes.fluence)}</div>
+        <p class="threshold-note">Normes françaises de fluence (Lequette, Pouget & Zorman, 2008) ; DEPP, évaluations de septembre 2025 (note 26.31). Textes différents : comparaison indicative.</p>
     </div>`;
 
     // Compréhension
@@ -1986,6 +2155,9 @@ function buildResults() {
     // Error type summary
     h += buildReadingErrorSummary(s);
 
+    // Programme prioritaire (v4.3)
+    h += blocProgramme(s, an);
+
     // Profiles with exercises
     if(profiles.length > 0) {
         profiles.forEach(p => {
@@ -2009,12 +2181,18 @@ function buildResults() {
         <strong>⚠️ Important :</strong> Ce test est un outil de <strong>dépistage indicatif</strong>, pas un diagnostic. Les seuils sont indicatifs et non étalonnés sur une population de référence — seuls les outils standardisés (BALE, EVALEO, ODEDYS-2, Alouette-R) permettent un diagnostic. Ce test permet de <strong>localiser précisément les difficultés</strong> et de <strong>préparer un éventuel bilan orthophonique</strong>. Les exercices proposés peuvent être commencés immédiatement à la maison en attendant un rendez-vous.
     </div>
     <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-primary" onclick="enregistrerPassation()">💾 Enregistrer</button>
         <button class="btn btn-primary" onclick="window.print()">🖨 Imprimer</button>
         <button class="btn btn-secondary" onclick="location.reload()">↺ Recommencer</button>
     </div>`;
 
+    h += blocSuivi();
     container.innerHTML = h;
-    setTimeout(() => drawRadar(radarAxes), 100);
+    setTimeout(() => {
+        drawRadar(radarAxes);
+        drawRadar(Object.entries(an.types).map(([k, v]) => ({ label: TYPES_COURTS[k] + (v === null ? ' (—)' : ''), value: v === null ? 0 : v * 100 })), 'radarTypes', true);
+        dessinerHisto();
+    }, 100);
 }
 
 function buildScoreCard(title, data) {
@@ -2033,10 +2211,11 @@ function buildScoreCard(title, data) {
             }).filter(Boolean).join(' · ');
         }
     }
+    const vitesse = data.mpm > 0 ? ` · ${data.mpm} mots/min${data.lent ? ` <span style="color:var(--red)">(lent : repère ${data.mpmSeuil})</span>` : ` (repère ${data.mpmSeuil})`}` : '';
     return `<div class="result-card ${scoreClass(data.pct)}">
         <h3>${title}</h3>
         <div class="score">${data.correct}/${data.total} (${Math.round(data.pct)}%)</div>
-        ${timeStr ? `<div class="time-info">${timeStr}</div>` : ''}
+        ${timeStr ? `<div class="time-info">${timeStr}${vitesse}</div>` : ''}
         ${errorDetail ? `<div class="detail">Types d'erreurs : ${errorDetail}</div>` : ''}
         <p class="threshold-note">Seuils indicatifs — un étalonnage normé est nécessaire pour un diagnostic</p>
     </div>`;
@@ -2075,8 +2254,8 @@ function scoreClass(pct) {
 // ============================================================
 //  RADAR CHART (Canvas)
 // ============================================================
-function drawRadar(axes){ 
-    const canvas = document.getElementById('radarCanvas');
+function drawRadar(axes, idCanvas, inverse){ 
+    const canvas = document.getElementById(idCanvas || 'radarCanvas');
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
@@ -2152,7 +2331,8 @@ function drawRadar(axes){
         const y = cy + R * val * Math.sin(angle);
         ctx.beginPath();
         ctx.arc(x, y, 5, 0, Math.PI*2);
-        ctx.fillStyle = a.value >= 80 ? '#16a34a' : a.value >= 60 ? '#ea580c' : '#dc2626';
+        const v = inverse ? 100 - a.value : a.value; // toile des types : haut = beaucoup de signes
+        ctx.fillStyle = v >= 80 ? '#16a34a' : v >= 60 ? '#ea580c' : '#dc2626';
         ctx.fill();
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 2;
@@ -2161,7 +2341,7 @@ function drawRadar(axes){
 
     ctx.beginPath();
     ctx.setLineDash([4,4]);
-    const rr80 = 0.8 * R;
+    const rr80 = (inverse ? 0.5 : 0.8) * R; // types : seuil 50 % ; scores : repere 80 %
     for(let i=0; i<=n; i++) {
         const angle = (Math.PI * 2 * i / n) - Math.PI/2;
         const x = cx + rr80 * Math.cos(angle);
@@ -2170,16 +2350,963 @@ function drawRadar(axes){
         else ctx.lineTo(x, y);
     }
     ctx.closePath();
-    ctx.strokeStyle = '#16a34a';
+    ctx.strokeStyle = inverse ? '#dc2626' : '#16a34a';
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.setLineDash([]);
 }
 
 // ============================================================
+//  v4.2 : COMPRÉHENSION ORALE, ATTENTION, QUESTIONNAIRE, OBSERVATION
+// ============================================================
+
+// --- 11. COMPRÉHENSION ORALE (texte écouté, pas lu) ---
+const oralTexts = [
+    {
+        title: 'Lina et le chiot (narratif)',
+        text: "Un samedi matin, Lina entend des petits gémissements derrière la haie du jardin. Elle s'approche doucement et découvre un chiot tout mouillé, sans collier. Il tremble et refuse de bouger. Lina court chercher une vieille serviette et un bol d'eau tiède. Le chiot boit lentement, puis remue enfin la queue. Le soir, sa grand-mère colle des affiches dans le quartier. Deux jours plus tard, un garçon sonne à la porte, les yeux rouges : c'est son chien, Biscuit, qui s'était enfui pendant l'orage. Lina est un peu triste de le rendre, mais elle sourit en voyant le garçon serrer Biscuit dans ses bras.",
+        questions: [
+            { q: "Où Lina trouve-t-elle le chiot ?", opts: ['Derrière la haie du jardin', 'Dans la rue', 'Sous son lit'], correct: 0, type: 'explicite' },
+            { q: "Que fait la grand-mère le soir ?", opts: ['Elle appelle le vétérinaire', 'Elle colle des affiches', 'Elle achète un collier'], correct: 1, type: 'explicite' },
+            { q: "Pourquoi le chiot était-il mouillé ?", opts: ['Il était tombé dans une piscine', "Il avait passé l'orage dehors", "Lina l'avait lavé"], correct: 1, type: 'inférentielle' },
+            { q: "Pourquoi le garçon a-t-il les yeux rouges ?", opts: ["Il a pleuré parce qu'il avait perdu son chien", 'Il est allergique aux chiens', 'Il a couru très vite'], correct: 0, type: 'inférentielle' },
+            { q: "Que veut dire « gémissements » ?", opts: ['Des aboiements très forts', 'Des petits cris plaintifs', 'Des bruits de pas'], correct: 1, type: 'vocabulaire' }
+        ]
+    },
+    {
+        title: 'Le paresseux (informatif)',
+        text: "Le paresseux vit dans les forêts d'Amérique du Sud, et même en Guyane. Il passe presque toute sa vie accroché aux branches, la tête en bas. Il dort de longues heures et se déplace très lentement : il lui faut parfois une minute pour avancer d'un mètre. Cette lenteur l'aide à économiser son énergie, car il se nourrit surtout de feuilles, qui apportent peu de forces. Ses poils abritent de minuscules algues qui lui donnent une couleur verdâtre. Ainsi, il se confond avec les feuillages et échappe plus facilement aux aigles et aux jaguars. Environ une fois par semaine, il descend au sol pour faire ses besoins.",
+        questions: [
+            { q: "Où le paresseux passe-t-il presque toute sa vie ?", opts: ['Dans les rivières', 'Accroché aux branches', 'Dans un terrier'], correct: 1, type: 'explicite' },
+            { q: "De quoi se nourrit-il surtout ?", opts: ['De fruits', "D'insectes", 'De feuilles'], correct: 2, type: 'explicite' },
+            { q: "Pourquoi sa couleur verdâtre le protège-t-elle ?", opts: ['Elle fait peur aux jaguars', 'Elle le rend difficile à voir dans les arbres', 'Elle le réchauffe'], correct: 1, type: 'inférentielle' },
+            { q: "Pourquoi le paresseux est-il si lent ?", opts: ["Parce qu'il est malade", 'Parce que sa nourriture lui donne peu d\'énergie', "Parce qu'il a peur de tomber"], correct: 1, type: 'inférentielle' },
+            { q: "Que veut dire « il se confond avec les feuillages » ?", opts: ['Il se trompe de chemin', 'On ne le distingue pas des feuilles', 'Il mange les feuilles'], correct: 1, type: 'vocabulaire' }
+        ]
+    }
+];
+
+// Lecture phrase par phrase (certaines voix coupent les textes longs)
+function lireTexte(text) {
+    if (!('speechSynthesis' in window)) { alert('Synthèse vocale indisponible : lisez le texte à voix haute.'); return; }
+    speechSynthesis.cancel();
+    text.split(/(?<=[.!?:])\s+/).forEach(ph => {
+        const u = new SpeechSynthesisUtterance(ph);
+        u.lang = 'fr-FR';
+        u.rate = 0.9;
+        speechSynthesis.speak(u);
+    });
+}
+
+function buildOral() {
+    const sec = document.getElementById('sec10');
+    let h = `
+        <div class="card-header"><h2>👂 Compréhension orale</h2><p>Même type de questions que la compréhension écrite, mais le texte est écouté</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Écoute bien l'histoire, puis réponds aux questions. Tu n'as rien à lire.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Faites écouter le texte (ou lisez-le vous-même, sans le montrer). Lisez les questions et les réponses à voix haute si besoin.<br>Comparer avec la compréhension écrite : <strong>bonne à l'oral et faible à l'écrit</strong> → la lecture technique gêne (dyslexie) ; <strong>faible dans les deux</strong> → piste du langage oral ou de l'attention.</div>`;
+    let qIdx = 0;
+    oralTexts.forEach(t => {
+        h += `<div class="card"><h3 style="margin-bottom:12px">${t.title}</h3>
+            <button class="audio-btn" onclick="lireTexte(oralTexts[${oralTexts.indexOf(t)}].text)">🔊 Écouter le texte</button>
+            <details style="margin:10px 0"><summary style="cursor:pointer;font-size:13px;color:var(--text2)">Texte pour l'adulte (ne pas montrer)</summary><div style="background:var(--soft);padding:12px;border-radius:6px;margin-top:6px">${t.text}</div></details>`;
+        t.questions.forEach(q => {
+            const typeLabel = q.type === 'explicite' ? '📌 Explicite' : q.type === 'inférentielle' ? '🔍 Inférentielle' : '📖 Vocabulaire';
+            h += `<div class="q-block"><h4><span style="font-size:11px;background:var(--soft);padding:2px 8px;border-radius:10px;margin-right:6px">${typeLabel}</span> ${q.q}</h4><div class="q-options">`;
+            q.opts.forEach((o, oi) => {
+                h += `<label><input type="radio" name="oral${qIdx}" value="${oi}" onchange="state.oral[${qIdx}]=${oi}"><span>${o}</span></label>`;
+            });
+            h += '</div></div>';
+            qIdx++;
+        });
+        h += '</div>';
+    });
+    h += `<div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(9)">← Retour</button>
+        <button class="btn btn-primary" onclick="goTo(11)">Suivant →</button>
+    </div>`;
+    sec.innerHTML = h;
+}
+
+// --- 12. ATTENTION : GO / NO-GO ---
+const GNG = { essais: 100, entrainement: 10, stim: 250, soa: 1250, propNoGo: 0.2, lettres: 'ABCDEFGHJKLMNPRSTUVZ' };
+let gng = null;
+
+function buildGNG() {
+    const sec = document.getElementById('sec11');
+    sec.innerHTML = `
+        <div class="card-header"><h2>🎯 Attention : appuie, sauf sur X</h2><p>Épreuve sans lecture : régularité de l'attention et contrôle de l'impulsivité</p></div>
+        <div class="instruction"><strong>Consigne enfant :</strong> Des lettres vont apparaître une par une. Appuie le plus vite possible sur la <strong>barre d'espace</strong> (ou sur le gros bouton) pour <strong>toutes les lettres, SAUF le X</strong>. Quand tu vois X, tu ne touches à rien.</div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Faites d'abord l'entraînement (10 lettres), puis l'épreuve (100 lettres, un peu plus de 2 minutes). Ne parlez pas pendant l'épreuve. Pièce calme, pas d'écran allumé à côté.</div>
+        <div class="card" style="text-align:center">
+            <div id="gngLettre" style="font:700 88px/1 ui-monospace,Menlo,Consolas,monospace;height:110px;display:flex;align-items:center;justify-content:center;color:var(--text)">+</div>
+            <div id="gngInfo" style="font-size:13px;color:var(--text2);margin:6px 0 12px">Prêt</div>
+            <button type="button" id="gngBouton" onpointerdown="event.preventDefault();gngAppui()" style="width:100%;max-width:420px;padding:28px;font-size:20px;border-radius:12px;border:2px solid var(--accent);background:var(--soft);cursor:pointer;touch-action:manipulation">APPUIE</button>
+            <div class="btn-row" style="justify-content:center">
+                <button class="btn btn-secondary" id="gngEntr" onclick="demarrerGNG(true)">▶ Entraînement</button>
+                <button class="btn btn-primary" id="gngTest" onclick="demarrerGNG(false)">▶ Épreuve</button>
+            </div>
+            <div id="gngResultat" style="font-size:14px;margin-top:10px"></div>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="goTo(10)">← Retour</button>
+            <button class="btn btn-primary" onclick="goTo(12)">Suivant →</button>
+        </div>`;
+}
+
+function demarrerGNG(entrainement) {
+    if (gng && gng.enCours) return;
+    const n = entrainement ? GNG.entrainement : GNG.essais;
+    const seq = [];
+    for (let i = 0; i < n; i++) {
+        let nogo = Math.random() < GNG.propNoGo;
+        if (nogo && i >= 2 && seq[i - 1].nogo && seq[i - 2].nogo) nogo = false;
+        if (entrainement && (i === 3 || i === 7)) nogo = true;
+        seq.push({ nogo, lettre: nogo ? 'X' : GNG.lettres[Math.floor(Math.random() * GNG.lettres.length)], rt: null, appui: false });
+    }
+    gng = { seq, i: -1, entrainement, t0: 0, enCours: true };
+    document.getElementById('gngResultat').textContent = '';
+    document.getElementById('gngEntr').disabled = document.getElementById('gngTest').disabled = true;
+    document.getElementById('gngLettre').textContent = '+';
+    setTimeout(gngSuivant, 1000);
+}
+
+function gngSuivant() {
+    if (!gng) return;
+    gng.i++;
+    const el = document.getElementById('gngLettre');
+    if (gng.i >= gng.seq.length) { gngFin(); return; }
+    const e = gng.seq[gng.i];
+    el.textContent = e.lettre;
+    el.style.color = 'var(--text)';
+    gng.t0 = performance.now();
+    document.getElementById('gngInfo').textContent = (gng.entrainement ? 'Entraînement ' : 'Épreuve ') + (gng.i + 1) + ' / ' + gng.seq.length;
+    setTimeout(() => { if (gng && gng.seq[gng.i] === e) el.textContent = '+'; }, GNG.stim);
+    setTimeout(gngSuivant, GNG.soa);
+}
+
+function gngAppui() {
+    if (!gng || !gng.enCours || gng.i < 0 || gng.i >= gng.seq.length) return;
+    const e = gng.seq[gng.i];
+    if (e.appui) return;
+    const rt = performance.now() - gng.t0;
+    if (rt < 100) return; // anticipation
+    e.appui = true;
+    e.rt = rt;
+    if (gng.entrainement) {
+        const el = document.getElementById('gngLettre');
+        el.style.color = e.nogo ? 'var(--red)' : 'var(--green)';
+    }
+}
+
+function mesuresGNG(seq) {
+    const go = seq.filter(e => !e.nogo), nogo = seq.filter(e => e.nogo);
+    const rts = go.filter(e => e.appui).map(e => e.rt);
+    const moyRt = rts.length ? rts.reduce((a, b) => a + b, 0) / rts.length : 0;
+    const sd = rts.length > 1 ? Math.sqrt(rts.reduce((a, b) => a + (b - moyRt) ** 2, 0) / (rts.length - 1)) : 0;
+    return {
+        n: seq.length,
+        omissions: go.length ? (go.length - rts.length) / go.length : 0,
+        commissions: nogo.length ? nogo.filter(e => e.appui).length / nogo.length : 0,
+        rtMoyen: Math.round(moyRt),
+        rtSd: Math.round(sd),
+        cv: moyRt ? sd / moyRt : 0
+    };
+}
+
+function gngFin() {
+    gng.enCours = false;
+    document.getElementById('gngLettre').textContent = '✓';
+    document.getElementById('gngEntr').disabled = document.getElementById('gngTest').disabled = false;
+    document.getElementById('gngInfo').textContent = 'Terminé';
+    const m = mesuresGNG(gng.seq);
+    if (gng.entrainement) {
+        document.getElementById('gngResultat').textContent = 'Entraînement terminé. Lancez l\'épreuve quand l\'enfant a compris.';
+        return;
+    }
+    const moitie = Math.floor(gng.seq.length / 2);
+    m.debut = mesuresGNG(gng.seq.slice(0, moitie));
+    m.fin = mesuresGNG(gng.seq.slice(moitie));
+    state.gng = m;
+    document.getElementById('gngResultat').innerHTML = `Oublis : ${Math.round(m.omissions * 100)} % · Appuis sur X : ${Math.round(m.commissions * 100)} % · Temps moyen : ${m.rtMoyen} ms · Irrégularité (CV) : ${m.cv.toFixed(2)}`;
+}
+
+document.addEventListener('keydown', ev => {
+    if ((ev.code === 'Space' || ev.key === ' ') && gng && gng.enCours) { ev.preventDefault(); gngAppui(); }
+});
+
+// --- 13. QUESTIONNAIRE ATTENTION (parent et enseignant) ---
+// Formulation libre reprenant les 18 critères du DSM-5 : 9 inattention, 9 hyperactivité / impulsivité
+const ATTENTION_ITEMS = [
+    'Ne fait pas attention aux détails, fait des fautes d\'étourderie',
+    'A du mal à rester concentré sur une tâche ou un jeu',
+    'Semble ne pas écouter quand on lui parle directement',
+    'Ne va pas au bout des consignes, laisse son travail inachevé',
+    'A du mal à organiser son travail et ses affaires',
+    'Évite ou rechigne devant ce qui demande un effort de réflexion prolongé',
+    'Perd souvent ses affaires (trousse, cahiers, vêtements)',
+    'Se laisse facilement distraire par ce qui se passe autour',
+    'Oublie souvent des choses dans la vie de tous les jours',
+    'Remue les mains ou les pieds, se tortille sur sa chaise',
+    'Se lève quand il devrait rester assis',
+    'Court ou grimpe partout quand ce n\'est pas le moment',
+    'A du mal à jouer ou à faire une activité calmement',
+    'Est toujours en mouvement, « monté sur ressorts »',
+    'Parle trop',
+    'Répond avant la fin de la question',
+    'A du mal à attendre son tour',
+    'Interrompt les autres ou s\'impose dans leurs jeux ou conversations'
+];
+const ECHELLE_ATTENTION = ['Jamais', 'Parfois', 'Souvent', 'Très souvent'];
+
+function buildQuestionnaire() {
+    const sec = document.getElementById('sec12');
+    const choix = (qui, i) => `<select onchange="state.attention.${qui}[${i}]=this.value===''?undefined:parseInt(this.value)" style="padding:4px;border-radius:6px;border:1px solid var(--border);max-width:130px">
+        <option value="">—</option>${ECHELLE_ATTENTION.map((e, v) => `<option value="${v}">${e}</option>`).join('')}</select>`;
+    let h = `
+        <div class="card-header"><h2>📝 Questionnaire attention</h2><p>Parent et enseignant : le TDAH se juge sur au moins deux lieux de vie</p></div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Remplissez la colonne <strong>Parent</strong> en pensant aux 6 derniers mois. Faites remplir la colonne <strong>Enseignant</strong> par l'enseignant (bouton imprimer en bas). Répondez pour l'enfant tel qu'il est d'habitude, pas un jour particulier.</div>
+        <div class="card" style="overflow-x:auto">
+        <table class="questionnaire" style="width:100%;border-collapse:collapse;font-size:14px">
+            <thead><tr><th style="text-align:left;padding:6px">Comportement</th><th style="padding:6px">Parent</th><th style="padding:6px">Enseignant</th></tr></thead><tbody>`;
+    ATTENTION_ITEMS.forEach((it, i) => {
+        if (i === 0) h += `<tr><td colspan="3" style="padding:8px 6px 4px;font-weight:700;color:var(--accent2)">Inattention</td></tr>`;
+        if (i === 9) h += `<tr><td colspan="3" style="padding:8px 6px 4px;font-weight:700;color:var(--accent2)">Agitation / impulsivité</td></tr>`;
+        h += `<tr style="border-top:1px solid var(--border)"><td style="padding:6px">${i + 1}. ${it}</td><td style="padding:6px;text-align:center">${choix('parent', i)}</td><td style="padding:6px;text-align:center">${choix('ens', i)}</td></tr>`;
+    });
+    h += `</tbody></table></div>
+        <div class="card">
+            <h3 style="margin-bottom:8px">Cadrage</h3>
+            <div class="q-block"><h4>Ces difficultés existaient-elles avant 12 ans ?</h4><div class="q-options">
+                ${['oui', 'non', 'ne sait pas'].map(v => `<label><input type="radio" name="avant12" value="${v}" onchange="state.attention.avant12='${v}'"><span>${v}</span></label>`).join('')}</div></div>
+            <div class="q-block"><h4>Durent-elles depuis plus de 6 mois ?</h4><div class="q-options">
+                ${['oui', 'non'].map(v => `<label><input type="radio" name="sixmois" value="${v}" onchange="state.attention.sixMois='${v}'"><span>${v}</span></label>`).join('')}</div></div>
+            <div class="q-block"><h4>Elles gênent vraiment (cocher) :</h4><div class="q-options">
+                ${['à l\'école', 'à la maison', 'avec les copains'].map((v, i) => `<label><input type="checkbox" onchange="state.attention.gene[${i}]=this.checked"><span>${v}</span></label>`).join('')}</div></div>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="goTo(11)">← Retour</button>
+            <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimer pour l'enseignant</button>
+            <button class="btn btn-primary" onclick="goTo(13)">Suivant →</button>
+        </div>`;
+    sec.innerHTML = h;
+}
+
+// --- 14. OBSERVATION DE L'ADULTE ---
+const OBS_CODES = [['distrait', 'Distrait'], ['repeter', 'Fait répéter'], ['agite', "S'agite"], ['abandonne', 'Abandonne'], ['fatigue', 'Fatigué']];
+
+function buildObservation() {
+    const sec = document.getElementById('sec13');
+    let h = `
+        <div class="card-header"><h2>👀 Observation de l'adulte</h2><p>Comment l'enfant s'est comporté pendant chaque épreuve</p></div>
+        <div class="examiner-note">👩 <strong>Maman :</strong> Cochez ce que vous avez vu. Conseil : faites passer le test en <strong>deux séances</strong> (épreuves 1 à 7, puis 8 à 12) pour ne pas confondre fatigue et inattention.</div>
+        <div class="card" style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead><tr><th style="text-align:left;padding:6px">Épreuve</th>${OBS_CODES.map(c => `<th style="padding:6px">${c[1]}</th>`).join('')}</tr></thead><tbody>`;
+    TESTS.slice(0, 12).forEach((t, i) => {
+        h += `<tr style="border-top:1px solid var(--border)"><td style="padding:6px">${i + 1}. ${t}</td>${OBS_CODES.map(c => `<td style="text-align:center"><input type="checkbox" onchange="noterObs(${i},'${c[0]}',this.checked)"></td>`).join('')}</tr>`;
+    });
+    h += `</tbody></table></div>
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="goTo(12)">← Retour</button>
+            <button class="btn btn-primary" onclick="goResults()">📊 Voir les résultats</button>
+        </div>`;
+    sec.innerHTML = h;
+}
+
+function noterObs(i, code, coche) {
+    state.obs[i] = state.obs[i] || {};
+    state.obs[i][code] = coche;
+}
+
+// ============================================================
+//  v4.2 : ANALYSE DES CAUSES (types de dyslexie, dyslexie % / TDAH %)
+// ============================================================
+const borne01 = x => Math.max(0, Math.min(1, x));
+// part de déficit : 0 si la valeur atteint « bon », 1 si elle atteint « mauvais » (fonctionne dans les deux sens)
+const deficit = (v, bon, mauvais) => (v === null || v === undefined || isNaN(v)) ? null : borne01((bon - v) / (bon - mauvais));
+const moyenneP = arr => {
+    let s = 0, w = 0;
+    arr.forEach(([v, p = 1]) => { if (v !== null && v !== undefined && !isNaN(v)) { s += v * p; w += p; } });
+    return w ? s / w : null;
+};
+const maxNonNul = (...v) => { const x = v.filter(a => a !== null && a !== undefined && !isNaN(a)); return x.length ? Math.max(...x) : null; };
+
+function epreuvesFaites(s) {
+    return {
+        regular: state.timers.regular > 0 || Object.keys(state.regularErrors).length > 0,
+        irregular: state.timers.irregular > 0 || Object.keys(state.irregularErrors).length > 0,
+        pseudo: state.timers.pseudo > 0 || Object.keys(state.pseudoErrors).length > 0,
+        ran: state.timers.ran > 0,
+        phono: state.phono.some(v => v !== undefined && v !== null),
+        dictee: state.dicteeWords.some(Boolean) || state.dicteePhrases.some(Boolean),
+        fluence: s.fluence.mclmPerMin > 0,
+        comp: state.comprehension.some(v => v !== undefined && v !== null),
+        oral: state.oral.some(v => v !== undefined && v !== null),
+        memoire: state.memForward.some(Boolean) || state.memBackward.some(Boolean) || [...state.memFwdOk, ...state.memBwdOk].some(v => v === true || v === false),
+        eva: state.eva.some(Boolean),
+        gng: !!state.gng,
+        parent: state.attention.parent.filter(v => v !== undefined).length >= 9,
+        ens: state.attention.ens.filter(v => v !== undefined).length >= 9,
+        obs: Object.keys(state.obs).length > 0
+    };
+}
+
+function scoreOral() {
+    let c = 0, t = 0, qIdx = 0;
+    const parType = { explicite: { c: 0, t: 0 }, 'inférentielle': { c: 0, t: 0 }, vocabulaire: { c: 0, t: 0 } };
+    oralTexts.forEach(tx => tx.questions.forEach(q => {
+        t++; parType[q.type].t++;
+        if (state.oral[qIdx] === q.correct) { c++; parType[q.type].c++; }
+        qIdx++;
+    }));
+    return { correct: c, total: t, pct: t ? c / t * 100 : 0, byType: parType };
+}
+
+function partTypeErreur(erreurs, code) {
+    const liste = Object.values(erreurs);
+    if (liste.length < 2) return null;
+    const codes = Array.isArray(code) ? code : [code];
+    return liste.filter(e => (e.types || []).some(t => codes.includes(t))).length / liste.length;
+}
+
+function analyserCauses(s) {
+    const f = epreuvesFaites(s);
+    const N = s.normes;
+    const oral = scoreOral();
+    const toutesErreurs = { ...prefixer('r', s.regular.errors), ...prefixer('i', s.irregular.errors), ...prefixer('p', s.pseudo.errors) };
+    const sum = s.dictee.summary;
+    const dicteePct = sum.total ? sum.correct / sum.total * 100 : 0;
+    const phrasesErr = s.dictee.phrases.flatMap(p => p.wordErrors || []);
+
+    // ---- mesures élémentaires (null = non mesuré) ----
+    const m = {
+        phono: f.phono ? deficit(s.phono.pct, 85, 50) : null,
+        pseudoAcc: f.pseudo ? deficit(s.pseudo.pct, 90, 60) : null,
+        pseudoSpd: s.pseudo.mpm > 0 ? deficit(s.pseudo.mpm / s.pseudo.mpmSeuil, 1, 0.5) : null,
+        regAcc: f.regular ? deficit(s.regular.pct, 90, 60) : null,
+        regSpd: s.regular.mpm > 0 ? deficit(s.regular.mpm / s.regular.mpmSeuil, 1, 0.5) : null,
+        irrAcc: f.irregular ? deficit(s.irregular.pct, 85, 50) : null,
+        irrSpd: s.irregular.mpm > 0 ? deficit(s.irregular.mpm / s.irregular.mpmSeuil, 1, 0.5) : null,
+        regularisation: partTypeErreur(s.irregular.errors, 'reg'),
+        erreursPhon: partTypeErreur(toutesErreurs, ['phon', 'conf']),
+        erreursVis: partTypeErreur(toutesErreurs, 'vis'),
+        dictee: f.dictee ? deficit(dicteePct, 80, 40) : null,
+        implausible: (sum.phonoPlausible + sum.phonoImplausible) >= 2 ? sum.phonoImplausible / (sum.phonoPlausible + sum.phonoImplausible) : null,
+        eva: f.eva ? moyenneP([[deficit(s.eva.maxSpan, 5, 3), 2], [deficit(s.eva.pct, 80, 30), 1]]) : null,
+        ran: f.ran ? deficit(s.ran.time / 1000, N.ran[0], N.ran[1]) : null,
+        fluence: f.fluence ? deficit(s.fluence.mclmPerMin / N.fluence, 1, 0.6) : null,
+        compEcrite: f.comp ? deficit(s.comp.pct, 80, 40) : null,
+        compOrale: f.oral ? deficit(oral.pct, 80, 40) : null,
+        empanEndroit: f.memoire ? deficit(s.memory.fwd.maxSpan, 5, 3) : null,
+        empanEnvers: f.memoire ? deficit(s.memory.bwd.maxSpan, 4, 2) : null
+    };
+    const plausibleDict = m.implausible === null ? null : (1 - m.implausible) * (m.dictee || 0);
+    const implausibleDict = m.implausible === null ? null : m.implausible * (m.dictee || 0);
+
+    // ---- types de dyslexie (0..1) ----
+    const types = {
+        phonologique: moyenneP([[m.phono, 2], [m.pseudoAcc, 2], [m.pseudoSpd, 1], [implausibleDict, 1], [m.erreursPhon, 0.5]]),
+        surface: moyenneP([[m.irrAcc, 2], [m.regularisation, 1.5], [plausibleDict, 1], [m.irrSpd, 1]]),
+        visuo: moyenneP([[m.eva, 2], [m.erreursVis, 1]]),
+        ran: moyenneP([[m.ran, 2], [m.fluence, 1]]),
+        ortho: moyenneP([[m.dictee, 2]]),
+        lent: moyenneP([[m.fluence, 1.5], [m.regSpd, 1], [m.pseudoSpd, 1], [m.irrSpd, 0.5]])
+    };
+
+    // ---- dyslexie % ----
+    const lecture = maxNonNul(moyenneP([[m.regAcc], [m.pseudoAcc], [m.irrAcc]]), moyenneP([[m.regSpd], [m.pseudoSpd], [m.irrSpd]]), m.fluence);
+    const causeCog = maxNonNul(m.phono, m.ran, m.eva);
+    const dysBrut = moyenneP([[lecture, 2], [causeCog, 1], [m.dictee, 1]]);
+    const dys = dysBrut === null ? null : Math.round(dysBrut * 100);
+
+    // ---- TDAH % ----
+    const att = state.attention;
+    const scoreRepondant = rep => {
+        const ia = rep.slice(0, 9).filter(v => v >= 2).length, hi = rep.slice(9, 18).filter(v => v >= 2).length;
+        return { ia, hi, score: Math.max(Math.min(1, ia / 6), Math.min(1, hi / 6)) };
+    };
+    const qp = f.parent ? scoreRepondant(att.parent) : null;
+    const qe = f.ens ? scoreRepondant(att.ens) : null;
+    let quest = qp && qe ? (qp.score + qe.score) / 2 : qp ? qp.score * 0.75 : qe ? qe.score * 0.75 : null;
+    if (quest !== null && att.avant12 === 'non') quest *= 0.5;
+    if (quest !== null && att.sixMois === 'non') quest *= 0.7;
+    if (quest !== null && (att.avant12 || att.sixMois) && !att.gene.some(Boolean)) quest *= 0.7;
+
+    const g = state.gng;
+    const gngDef = g ? moyenneP([[deficit(g.omissions, 0.05, 0.20), 1], [deficit(g.commissions, 0.20, 0.50), 1], [deficit(g.cv, 0.25, 0.45), 1.5]]) : null;
+
+    // profil d'erreurs : erreurs sur les mots faciles, mots oubliés en dictée, empan envers seul faible, observation
+    const nReg1 = Object.values(regularWords)[0].length, nIrr1 = Object.values(irregularWords)[0].length;
+    const errReg = Object.keys(s.regular.errors).map(Number), errIrr = Object.keys(s.irregular.errors).map(Number);
+    const totErr = errReg.length + errIrr.length;
+    const faciles = errReg.filter(i => i < nReg1).length + errIrr.filter(i => i < nIrr1).length;
+    const partFaciles = totErr >= 3 ? faciles / totErr : null;
+    const motsOublies = phrasesErr.filter(e => (e.errors || []).some(x => /mot omis|accord/.test(x))).length;
+    const partOublis = phrasesErr.length >= 2 ? motsOublies / phrasesErr.length : null;
+    const execMem = f.memoire ? (s.memory.fwd.maxSpan >= 5 && s.memory.bwd.maxSpan <= 2 ? 1 : (s.memory.bwd.maxSpan <= s.memory.fwd.maxSpan - 3 ? 0.6 : 0)) : null;
+    const obsLignes = Object.values(state.obs);
+    const obsTaux = obsLignes.length ? obsLignes.filter(o => o.distrait || o.agite || o.repeter).length / obsLignes.length : null;
+    const fatigueFin = Object.entries(state.obs).filter(([i, o]) => o.fatigue && Number(i) >= 6).length;
+    const profErr = moyenneP([[deficit(partFaciles, 0.15, 0.5), 1], [deficit(partOublis, 0.2, 0.6), 1], [execMem, 1], [deficit(obsTaux, 0.1, 0.5), 1.5]]);
+
+    const tdahBrut = moyenneP([[quest, 3], [gngDef, 2], [profErr, 1]]);
+    const tdah = tdahBrut === null ? null : Math.round(tdahBrut * 100);
+    const sourcesTdah = [qp && 'questionnaire parent', qe && 'questionnaire enseignant', g && 'épreuve go / no-go', profErr !== null && 'profil d\'erreurs'].filter(Boolean);
+
+    // ---- conclusion ----
+    const D = dys || 0, T = tdah || 0;
+    let conclusion, code;
+    if (D >= 50 && T >= 50) { code = 'deux'; conclusion = 'Signes évocateurs de dyslexie ET de TDAH : les deux prises en charge sont nécessaires.'; }
+    else if (D >= 50) { code = 'dys'; conclusion = 'Signes évocateurs de dyslexie, sans signe net de TDAH.'; }
+    else if (T >= 50) { code = 'tdah'; conclusion = 'Signes évocateurs de TDAH : les difficultés de lecture viennent peut-être surtout de l\'attention.'; }
+    else if (Math.max(D, T) >= 30) { code = 'leger'; conclusion = 'Signes légers : à surveiller, refaire un re-test dans 6 semaines.'; }
+    else { code = 'aucun'; conclusion = 'Ni dyslexie ni TDAH évidents dans ce test.'; }
+
+    return { types, dys, tdah, quest, qp, qe, gngDef, profErr, partFaciles, partOublis, execMem, obsTaux, fatigueFin, m, oral, f, conclusion, code, sourcesTdah };
+}
+
+function prefixer(p, obj) {
+    const o = {};
+    Object.entries(obj).forEach(([k, v]) => { o[p + k] = v; });
+    return o;
+}
+
+const TYPES_LIBELLES = {
+    phonologique: 'Phonologique', surface: 'Surface (lexicale)', visuo: 'Visuo-attentionnelle',
+    ran: 'Dénomination rapide', ortho: 'Dysorthographie', lent: 'Lecture lente'
+};
+
+const TYPES_COURTS = { phonologique: 'Phonologique', surface: 'Surface', visuo: 'Visuelle', ran: 'Dénomination', ortho: 'Dictée', lent: 'Lenteur' };
+
+function pct(x) { return x === null || x === undefined ? '—' : Math.round(x * 100) + ' %'; }
+
+function blocCauses(s, an) {
+    const barre = (label, v, couleur) => `<div style="margin:10px 0">
+        <div style="display:flex;justify-content:space-between;font-weight:700"><span>${label}</span><span>${v === null ? 'non mesuré' : v + ' %'}</span></div>
+        <div style="background:var(--soft);height:22px;border-radius:11px;overflow:hidden"><div style="width:${v || 0}%;height:100%;background:${couleur}"></div></div></div>`;
+    let h = `<div class="card" id="blocCauses"><h3 style="margin-bottom:6px">🧭 Dyslexie et TDAH</h3>
+        <p style="font-size:13px;color:var(--text2)">Deux mesures indépendantes : un enfant peut avoir les deux, la somme peut donc dépasser 100 %.</p>
+        ${barre('Dyslexie', an.dys, 'var(--accent)')}
+        ${barre('TDAH', an.tdah, '#7b61a8')}
+        <p style="font-size:12px;color:var(--text2)">TDAH mesuré à partir de : ${an.sourcesTdah.length ? an.sourcesTdah.join(', ') : 'rien (questionnaire et épreuve d\'attention non faits)'}${an.qe ? '' : ' — sans avis de l\'enseignant, le TDAH ne peut pas être retenu (deux lieux de vie nécessaires)'}.</p>
+        <p style="font-weight:700;margin-top:8px">${an.conclusion}</p></div>`;
+    h += `<div class="radar-container"><h3>Types de dyslexie (signes évocateurs)</h3><canvas id="radarTypes" width="480" height="480" style="max-width:100%"></canvas>
+        <p style="font-size:12px;color:var(--text2)">0 = aucun signe, 100 = tous les signes du type. Plusieurs pointes élevées = profil mixte.</p></div>`;
+    h += blocPourquoi(s, an);
+    return h;
+}
+
+function blocPourquoi(s, an) {
+    const m = an.m, l = [];
+    const ligne = (titre, v, pour, contre) => {
+        if (v === null) return;
+        l.push(`<li><strong>${titre} : ${pct(v)}</strong>${pour.length ? '<br><span style="color:var(--red)">Pour :</span> ' + pour.join(' ; ') : ''}${contre.length ? '<br><span style="color:var(--green)">Contre :</span> ' + contre.join(' ; ') : ''}</li>`);
+    };
+    const t = an.types;
+    const P = (c, txt) => c ? [txt] : [];
+    ligne('Phonologique', t.phonologique,
+        [...P(m.phono >= 0.4, `conscience phonologique ${Math.round(s.phono.pct)} %`), ...P(m.pseudoAcc >= 0.4, `pseudo-mots ${Math.round(s.pseudo.pct)} %`), ...P(m.pseudoSpd >= 0.4, `pseudo-mots lents (${s.pseudo.mpm} mots/min)`), ...P(m.implausible >= 0.5, 'erreurs de dictée qui changent les sons')],
+        [...P(m.phono !== null && m.phono < 0.2, 'conscience phonologique correcte'), ...P(m.pseudoAcc !== null && m.pseudoAcc < 0.2, 'pseudo-mots bien lus')]);
+    ligne('Surface (lexicale)', t.surface,
+        [...P(m.irrAcc >= 0.4, `mots irréguliers ${Math.round(s.irregular.pct)} %`), ...P(m.regularisation >= 0.3, 'mots irréguliers lus « comme ils s\'écrivent »'), ...P(m.implausible !== null && m.implausible < 0.5 && m.dictee >= 0.3, 'fautes de dictée qui gardent les sons (farmacie)')],
+        [...P(m.irrAcc !== null && m.irrAcc < 0.2, 'mots irréguliers bien lus')]);
+    ligne('Visuo-attentionnelle', t.visuo,
+        [...P(m.eva >= 0.4, `empan visuel ${s.eva.maxSpan} lettres`), ...P(m.erreursVis >= 0.3, 'erreurs visuelles (b/d, p/q)')],
+        [...P(m.eva !== null && m.eva < 0.2, 'empan visuel correct')]);
+    ligne('Dénomination rapide', t.ran,
+        [...P(m.ran >= 0.4, `dénomination ${(s.ran.time / 1000).toFixed(0)} s`), ...P(m.fluence >= 0.4, `fluence ${s.fluence.mclmPerMin} mots/min`)],
+        [...P(m.ran !== null && m.ran < 0.2, 'dénomination rapide normale')]);
+    ligne('Dysorthographie', t.ortho, [...P(m.dictee >= 0.4, 'dictée en difficulté')], []);
+    ligne('Lecture lente', t.lent, [...P(m.fluence >= 0.4, `fluence ${s.fluence.mclmPerMin} (repère ${s.normes.fluence})`), ...P(s.regular.lent, 'liste de mots lente')], []);
+    // langage et attention
+    if (m.compOrale !== null || m.compEcrite !== null) {
+        const ecr = m.compEcrite, ora = m.compOrale;
+        let txt = '';
+        if (ecr !== null && ora !== null) {
+            if (ecr >= 0.4 && ora < 0.25) txt = 'Compréhension bonne à l\'oral, faible à l\'écrit : la lecture technique gêne (en faveur d\'une dyslexie).';
+            else if (ecr >= 0.4 && ora >= 0.4) txt = 'Compréhension faible à l\'oral comme à l\'écrit : piste du langage oral ou de l\'attention, à faire explorer (orthophoniste).';
+            else txt = 'Compréhension orale et écrite sans écart notable.';
+        } else txt = ora === null ? 'Compréhension orale non faite : elle permettrait de distinguer lecture et langage.' : 'Compréhension écrite non faite.';
+        l.push(`<li><strong>Langage :</strong> ${txt}</li>`);
+    }
+    const att = [];
+    if (an.qp) att.push(`parent : ${an.qp.ia}/9 inattention, ${an.qp.hi}/9 agitation`);
+    if (an.qe) att.push(`enseignant : ${an.qe.ia}/9 inattention, ${an.qe.hi}/9 agitation`);
+    if (state.gng) att.push(`go / no-go : oublis ${Math.round(state.gng.omissions * 100)} %, appuis sur X ${Math.round(state.gng.commissions * 100)} %, irrégularité ${state.gng.cv.toFixed(2)}${state.gng.fin && state.gng.debut && state.gng.fin.omissions > state.gng.debut.omissions + 0.1 ? ', baisse en fin d\'épreuve' : ''}`);
+    if (an.partFaciles !== null) att.push(`${Math.round(an.partFaciles * 100)} % des erreurs de lecture sur les mots faciles`);
+    if (an.partOublis !== null) att.push(`${Math.round(an.partOublis * 100)} % des erreurs de phrases = mots ou accords oubliés`);
+    if (an.execMem) att.push('répétition à l\'envers faible alors que l\'endroit est correct');
+    if (an.obsTaux !== null) att.push(`distraction ou agitation observée dans ${Math.round(an.obsTaux * 100)} % des épreuves`);
+    if (an.fatigueFin) att.push('fatigue en fin de test : refaire les dernières épreuves un autre jour');
+    if (att.length) l.push(`<li><strong>Attention (TDAH ${an.tdah === null ? 'non mesuré' : an.tdah + ' %'}) :</strong> ${att.join(' ; ')}</li>`);
+    if (an.code === 'deux') l.push('<li>Une partie des erreurs de lecture peut venir de l\'inattention : le bilan fera la part des choses.</li>');
+    let h = `<div class="card"><h3 style="margin-bottom:8px">🔎 Pourquoi il bloque</h3><ul style="padding-left:20px;line-height:1.7">${l.join('') || '<li>Pas assez d\'épreuves faites pour conclure.</li>'}</ul>
+        <p style="margin-top:10px;font-size:13px"><strong>À vérifier avant de conclure</strong> (ces causes imitent dyslexie ou TDAH) : vue (contrôle de moins d'un an), audition (otites à répétition), langue(s) parlée(s) à la maison, sommeil et écrans le soir, anxiété ou tristesse, absences (regard fixe quelques secondes, plusieurs fois par jour).</p></div>`;
+    return h;
+}
+
+// ============================================================
+//  v4.3 : PROGRAMME D'EXERCICES HIÉRARCHISÉ ET PERSONNALISÉ
+// ============================================================
+// niveau de preuve : solide (curatif démontré), modere, compensation (aide, pas un traitement)
+const PREUVE = { solide: ['✅ Curatif, preuves solides', 'evidence'], modere: ['🟡 Preuves modérées', 'daily'], compensation: ['🔧 Compensation, pas un traitement', 'tool'] };
+const PROGRAMMES = {
+    phonologique: [
+        { t: 'Lettres-sons explicite', min: 8, p: 'solide', d: 'Chaque jour, 2 graphies de la liste « à revoir » : les montrer, les dire, les écrire en les prononçant, puis lire 10 pseudo-mots qui les contiennent (fabriqués en changeant une lettre de vrais mots). Gestes Borel-Maisonny possibles pour fixer chaque son.' },
+        { t: 'Manipulation de sons avec lettres mobiles', min: 5, p: 'solide', d: 'Lettres découpées ou magnétiques : composer un mot, puis changer une lettre (chat → chou → choux), enlever un son, inverser deux sons. Toujours dire le son en bougeant la lettre : à cet âge, travailler au niveau du son isolé, avec les lettres, plutôt que les rimes.' },
+        { t: 'Lecture répétée chronométrée', min: 7, p: 'solide', d: 'Texte de 100 mots à son niveau : lu 3 fois dans la séance, temps noté à la 1re et à la 3e lecture. Nouveau texte chaque semaine.' }
+    ],
+    surface: [
+        { t: 'Mots de la semaine (flash)', min: 7, p: 'modere', d: '5 mots de la liste « mots ratés » : les regarder, les épeler, les écrire de mémoire, puis les lire en flash (2 s → 1 s → 0,5 s). Un mot est gagné quand il est lu en 0,5 s trois jours de suite.' },
+        { t: 'Lecture répétée assistée', min: 8, p: 'solide', d: 'Le parent lit d\'abord le texte, puis lecture à deux voix, puis l\'enfant seul. Même texte 3 jours de suite.' },
+        { t: 'Familles de mots et lettres muettes', min: 5, p: 'solide', d: 'Trouver la lettre muette par la famille : chat → chaton, grand → grande, dent → dentiste. Afficher un arbre de famille par semaine.' }
+    ],
+    visuo: [
+        { t: 'Lecture flash de mots', min: 6, p: 'modere', d: 'Mots de 2 puis 3 syllabes affichés brièvement (1 s → 0,5 s), lus en entier sans découper. Le logiciel EVAsion (Valdois) propose ce type d\'entraînement.' },
+        { t: 'Flash de lettres progressif', min: 4, p: 'modere', d: '3 lettres montrées 1 s, l\'enfant les redit ; quand c\'est réussi 3 fois, passer à 4 puis 5 lettres et raccourcir le temps.' },
+        { t: 'Lecture répétée chronométrée', min: 8, p: 'solide', d: 'Texte de 100 mots, 3 lectures, temps noté.' }
+    ],
+    ran: [
+        { t: 'Lecture répétée chronométrée', min: 10, p: 'solide', d: 'La vitesse d\'accès s\'entraîne surtout en lisant : même texte 3 fois, courbe de temps affichée.' },
+        { t: 'Course de mots', min: 6, p: 'modere', d: '20 cartes de mots fréquents ; une carte lue en plus de 3 s retourne dans la pile ; ajouter 10 mots quand tout est lu en moins de 3 s.' },
+        { t: 'Dénomination rapide (couleurs, chiffres)', min: 4, p: 'compensation', d: 'Grille chronométrée : utile pour suivre la vitesse, peu de transfert prouvé vers la lecture.' }
+    ],
+    ortho: [
+        { t: 'Dictée préparée', min: 8, p: 'solide', d: '5 mots de la liste « mots ratés » étudiés le lundi, dictée à trous le mercredi, dictée complète le vendredi ; correction avec l\'enfant.' },
+        { t: 'Familles de mots et lettres muettes', min: 5, p: 'solide', d: 'terre → terrain, atterrir ; chat → chaton. Connaître la famille aide à écrire tous ses mots.' },
+        { t: 'Graphies d\'un même son', min: 5, p: 'solide', d: 'Pour chaque son de la liste « à revoir » : écrire toutes ses façons de l\'écrire (/o/ : o, au, eau), puis choisir la bonne dans 5 mots.' }
+    ],
+    lent: [
+        { t: 'Lecture répétée chronométrée', min: 10, p: 'solide', d: 'Texte de 100 à 120 mots, 3 lectures, temps noté ; objectif : rejoindre le repère de la classe.' },
+        { t: 'Lecture alternée parent-enfant', min: 7, p: 'solide', d: 'Une phrase chacun ; quand l\'enfant bloque, le parent donne le mot tout de suite.' },
+        { t: 'Théâtre de lecture', min: 5, p: 'modere', d: 'Un dialogue relu 3 ou 4 fois pour le jouer : la fluidité vient avec l\'envie de bien jouer.' }
+    ]
+};
+
+function graphiesRatees(s) {
+    const graphies = ['eau', 'ain', 'ein', 'ill', 'ph', 'ch', 'gn', 'qu', 'gu', 'ou', 'oi', 'on', 'an', 'en', 'in', 'au', 'ss', 'é', 'è', 'ê'];
+    const res = new Set();
+    s.dictee.words.forEach(w => {
+        if (w.correct || w.given === '(vide)') return;
+        graphies.forEach(g => { if (w.expected.includes(g) && !w.given.includes(g)) res.add(g); });
+    });
+    return [...res];
+}
+
+function motsRates(s) {
+    const mots = [];
+    Object.keys(s.irregular.errors).forEach(i => mots.push(s.irregular.words[i]));
+    Object.keys(s.regular.errors).forEach(i => mots.push(s.regular.words[i]));
+    s.dictee.words.filter(w => !w.correct).forEach(w => mots.push(w.expected));
+    return [...new Set(mots)];
+}
+
+function blocProgramme(s, an) {
+    const classement = Object.entries(an.types).filter(([, v]) => v !== null && v >= 0.3).sort((a, b) => b[1] - a[1]);
+    let h = `<div class="card" style="border-left:4px solid var(--accent)"><h3 style="margin-bottom:6px">🗓️ Programme prioritaire (20 min par jour, 5 jours sur 7)</h3>`;
+    if (!classement.length) {
+        h += `<p>Pas de programme de rééducation nécessaire d'après ce test : 15 min de lecture plaisir par jour, livres choisis par l'enfant.</p>`;
+    } else {
+        const principal = classement[0][0], second = classement[1] ? classement[1][0] : null;
+        const choisis = [...PROGRAMMES[principal].slice(0, second ? 2 : 3)];
+        if (second) {
+            const autre = PROGRAMMES[second].find(e => !choisis.some(c => c.t === e.t));
+            if (autre) choisis.push(autre);
+        }
+        h += `<p>Cause principale : <strong>${TYPES_LIBELLES[principal]}</strong>${second ? ` · secondaire : <strong>${TYPES_LIBELLES[second]}</strong>` : ''}. Trois exercices au plus, dans cet ordre.</p>`;
+        if (an.tdah !== null && an.tdah >= 50) h += `<p style="color:#7b61a8"><strong>TDAH probable :</strong> faire les exercices en blocs de 7 à 10 min séparés par une pause qui bouge, minuteur visible, récompense immédiate.</p>`;
+        h += '<div class="exo-list">';
+        choisis.forEach((e, i) => {
+            const [lib, cls] = PREUVE[e.p];
+            h += `<div class="exo-item"><strong>${i + 1}. ${e.t} — ${e.min} min</strong><p>${e.d}</p><div><span class="exo-tag ${cls}">${lib}</span></div></div>`;
+        });
+        h += '</div>';
+        const mr = motsRates(s), gr = graphiesRatees(s);
+        h += `<p style="margin-top:10px"><strong>Mots de la semaine</strong> (ses propres erreurs) : ${mr.length ? mr.slice(0, 10).join(', ') : 'aucun mot raté'}</p>`;
+        h += `<p><strong>Graphies à revoir</strong> (dictée) : ${gr.length ? gr.join(', ') : 'aucune'}</p>`;
+        h += `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:8px"><tr>${['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(j => `<th style="border:1px solid var(--border);padding:4px">${j}</th>`).join('')}</tr><tr>${[1, 2, 3, 4, 5].map(() => `<td style="border:1px solid var(--border);padding:4px;text-align:center">${choisis.length} exos</td>`).join('')}<td style="border:1px solid var(--border);padding:4px;text-align:center">lecture</td><td style="border:1px solid var(--border);padding:4px;text-align:center">repos</td></tr></table></div>`;
+        h += `<p style="font-size:13px;margin-top:8px">Re-test court dans 6 semaines (bouton en haut de page) pour vérifier que le programme fonctionne.</p>`;
+    }
+    if (an.tdah !== null && an.tdah >= 50) {
+        h += `<div class="rti-box" style="margin-top:12px"><h4>🎯 Aménagements TDAH</h4><p>Consignes courtes, une à la fois · travail en blocs de 10 min avec pause · minuteur visible · récompense immédiate · pas d'écran pendant les devoirs · programme d'entraînement aux habiletés parentales (type Barkley) · consultation d'un médecin (pédiatre, neuropédiatre ou pédopsychiatre) avec le questionnaire de l'enseignant. Les jeux d'« entraînement de l'attention » sont une compensation, pas un traitement. Le traitement du TDAH améliore l'attention, pas le décodage : si une dyslexie est aussi présente, les deux prises en charge sont nécessaires.</p></div>`;
+    }
+    h += `<p style="font-size:12px;color:var(--text2);margin-top:8px">Niveaux de preuve : ✅ curatif démontré · 🟡 preuves modérées · 🔧 compensation. Les programmes détaillés par profil restent plus bas.</p></div>`;
+    return h;
+}
+
+// ============================================================
+//  v4.4 : SUIVI DES PASSATIONS ET RE-TEST COURT
+// ============================================================
+const CLE_HISTO = 'testDyslexie_passations';
+
+function lireHisto() {
+    try { return JSON.parse(localStorage.getItem(CLE_HISTO) || '[]'); } catch (e) { return []; }
+}
+function ecrireHisto(h) {
+    try { localStorage.setItem(CLE_HISTO, JSON.stringify(h)); return true; } catch (e) { alert('Enregistrement impossible dans ce navigateur : utilisez l\'export.'); return false; }
+}
+
+function resumePassation(s, an) {
+    return {
+        date: new Date().toISOString(),
+        classe: s.normes.nom,
+        retest: !!state.modeRetest,
+        fluence: s.fluence.mclmPerMin || null,
+        pseudoPct: state.timers.pseudo > 0 ? Math.round(s.pseudo.pct) : null,
+        pseudoMpm: s.pseudo.mpm || null,
+        regMpm: s.regular.mpm || null,
+        dicteeMots: state.dicteeWords.some(Boolean) ? Math.round(s.dictee.words.filter(w => w.correct).length / s.dictee.words.length * 100) : null,
+        dys: an ? an.dys : null,
+        tdah: an ? an.tdah : null,
+        types: an ? Object.fromEntries(Object.entries(an.types).map(([k, v]) => [k, v === null ? null : Math.round(v * 100)])) : null
+    };
+}
+
+function enregistrerPassation() {
+    const s = computeScores();
+    const an = state.modeRetest ? null : analyserCauses(s);
+    const h = lireHisto();
+    h.push(resumePassation(s, an));
+    if (ecrireHisto(h)) {
+        const z = document.getElementById('zoneHisto');
+        if (z) { z.innerHTML = blocHistorique(); dessinerHisto(); }
+        alert('Passation enregistrée dans ce navigateur.');
+    }
+}
+
+function exporterHisto() {
+    const blob = new Blob([JSON.stringify(lireHisto(), null, 1)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'test_dyslexie_historique.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function importerHisto(input) {
+    const f = input.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+        try {
+            const imp = JSON.parse(r.result);
+            if (!Array.isArray(imp)) throw new Error('format');
+            const h = lireHisto();
+            imp.forEach(p => { if (p && p.date && !h.some(x => x.date === p.date)) h.push(p); });
+            h.sort((a, b) => a.date.localeCompare(b.date));
+            ecrireHisto(h);
+            const z = document.getElementById('zoneHisto');
+            if (z) { z.innerHTML = blocHistorique(); dessinerHisto(); }
+        } catch (e) { alert('Fichier non reconnu.'); }
+    };
+    r.readAsText(f);
+}
+
+function blocHistorique() {
+    const h = lireHisto();
+    let x = `<h3 style="margin-bottom:8px">📈 Historique des passations (ce navigateur)</h3>`;
+    if (!h.length) return x + '<p style="font-size:14px">Aucune passation enregistrée.</p>';
+    x += `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr>${['Date', 'Classe', 'Type', 'Fluence', 'Pseudo-mots', 'Dictée mots', 'Dyslexie', 'TDAH'].map(t => `<th style="padding:4px;border-bottom:1px solid var(--border);text-align:left">${t}</th>`).join('')}</tr></thead><tbody>`;
+    h.forEach(p => {
+        const v = a => a === null || a === undefined ? '—' : a;
+        x += `<tr><td style="padding:4px">${new Date(p.date).toLocaleDateString('fr-FR')}</td><td>${p.classe}</td><td>${p.retest ? 're-test' : 'complet'}</td><td>${v(p.fluence)}</td><td>${p.pseudoPct === null ? '—' : p.pseudoPct + ' %'}${p.pseudoMpm ? ' · ' + p.pseudoMpm + '/min' : ''}</td><td>${p.dicteeMots === null ? '—' : p.dicteeMots + ' %'}</td><td>${p.dys === null ? '—' : p.dys + ' %'}</td><td>${p.tdah === null ? '—' : p.tdah + ' %'}</td></tr>`;
+    });
+    x += `</tbody></table></div><canvas id="histoCanvas" width="640" height="220" style="max-width:100%;margin-top:10px"></canvas>`;
+    return x;
+}
+
+function dessinerHisto() {
+    const c = document.getElementById('histoCanvas');
+    const h = lireHisto().filter(p => p.fluence);
+    if (!c || h.length < 1) return;
+    const ctx = c.getContext('2d'), W = c.width, H = c.height, m = 34;
+    ctx.clearRect(0, 0, W, H);
+    const maxV = Math.max(140, ...h.map(p => p.fluence));
+    ctx.strokeStyle = '#d8d0c0'; ctx.fillStyle = '#5f6b72'; ctx.font = '11px system-ui';
+    for (let v = 0; v <= maxV; v += 20) { const y = H - m - (v / maxV) * (H - 2 * m); ctx.beginPath(); ctx.moveTo(m, y); ctx.lineTo(W - 10, y); ctx.stroke(); ctx.fillText(v, 4, y + 4); }
+    const seuil = (NORMES_CLASSES[h[h.length - 1].classe] || NORMES_CLASSES.CM1).fluence;
+    const ys = H - m - (seuil / maxV) * (H - 2 * m);
+    ctx.setLineDash([5, 4]); ctx.strokeStyle = '#16a34a'; ctx.beginPath(); ctx.moveTo(m, ys); ctx.lineTo(W - 10, ys); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#16a34a'; ctx.fillText('repère ' + seuil, W - 80, ys - 4);
+    ctx.strokeStyle = '#b86a00'; ctx.lineWidth = 2.5; ctx.beginPath();
+    h.forEach((p, i) => {
+        const x = h.length === 1 ? W / 2 : m + i * (W - m - 20) / (h.length - 1);
+        const y = H - m - (p.fluence / maxV) * (H - 2 * m);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    h.forEach((p, i) => {
+        const x = h.length === 1 ? W / 2 : m + i * (W - m - 20) / (h.length - 1);
+        const y = H - m - (p.fluence / maxV) * (H - 2 * m);
+        ctx.fillStyle = '#b86a00'; ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#5f6b72'; ctx.fillText(new Date(p.date).toLocaleDateString('fr-FR').slice(0, 5), x - 14, H - 12);
+    });
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#1c2428'; ctx.fillText('Fluence (mots correctement lus / min)', m, 14);
+}
+
+function blocSuivi() {
+    return `<div class="card" id="zoneSuivi">
+        <div id="zoneHisto">${blocHistorique()}</div>
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="enregistrerPassation()">💾 Enregistrer cette passation</button>
+            <button class="btn btn-secondary" onclick="exporterHisto()">⬇ Exporter l'historique</button>
+            <label class="btn btn-secondary" style="cursor:pointer">⬆ Importer<input type="file" accept="application/json,.json" style="display:none" onchange="importerHisto(this)"></label>
+        </div>
+        <p style="font-size:12px;color:var(--text2)">Données gardées seulement dans ce navigateur (classe, date et scores, aucun nom). L'export permet de les conserver ou de les montrer au professionnel.</p>
+    </div>`;
+}
+
+function activerRetest() {
+    state.modeRetest = !state.modeRetest;
+    const b = document.getElementById('btnRetest');
+    b.textContent = state.modeRetest ? '✖ Quitter le re-test court' : '🔁 Re-test court (toutes les 6 semaines)';
+    document.getElementById('bandeauRetest').style.display = state.modeRetest ? 'block' : 'none';
+    document.querySelectorAll('.nav button').forEach((bt, i) => { bt.style.opacity = state.modeRetest && ![2, 5, 6].includes(i) ? '0.35' : ''; });
+    if (state.modeRetest) goTo(2);
+}
+
+function buildRetestResults() {
+    const s = computeScores();
+    const r = resumePassation(s, null);
+    const histo = lireHisto();
+    const prec = histo.length ? histo[histo.length - 1] : null;
+    let h = '<h2 style="margin-bottom:12px">🔁 Re-test court</h2>';
+    h += `<p style="margin-bottom:12px;color:var(--text2)">Classe : <strong>${s.normes.nom}</strong> · Fluence ${r.fluence || '—'} · Pseudo-mots ${r.pseudoPct === null ? '—' : r.pseudoPct + ' %'}${r.pseudoMpm ? ' (' + r.pseudoMpm + ' mots/min)' : ''} · Dictée de mots ${r.dicteeMots === null ? '—' : r.dicteeMots + ' %'}</p>`;
+    if (!prec) {
+        h += '<div class="card">Aucune passation précédente dans ce navigateur : enregistrez celle-ci, elle servira de point de départ.</div>';
+    } else {
+        const jours = Math.max(1, (Date.now() - new Date(prec.date)) / 86400000), sem = jours / 7;
+        const dF = (r.fluence && prec.fluence) ? r.fluence - prec.fluence : null;
+        const parSem = dF === null ? null : dF / sem;
+        let decision;
+        if (parSem === null) decision = 'Fluence non mesurée : impossible de juger la progression.';
+        else if (parSem >= 3) decision = '✅ Bon progrès : continuer le même programme.';
+        else if (parSem >= 1) decision = '🟡 Progrès lent : intensifier (5 jours sur 7 réellement faits ?) ou changer l\'exercice principal.';
+        else decision = '🔴 Plateau : changer d\'axe. Après deux re-tests sans progrès, demander un bilan orthophonique.';
+        const delta = (a, b, u = '') => (a === null || b === null || a === undefined || b === undefined) ? '—' : ((a - b >= 0 ? '+' : '') + (a - b) + u);
+        h += `<div class="card"><h3 style="margin-bottom:8px">Depuis le ${new Date(prec.date).toLocaleDateString('fr-FR')} (${Math.round(sem)} semaine(s))</h3>
+            <ul style="padding-left:20px;line-height:1.8">
+                <li>Fluence : ${delta(r.fluence, prec.fluence, ' mots/min')}${parSem !== null ? ` (${parSem.toFixed(1)} par semaine ; objectif 3 à 5)` : ''}</li>
+                <li>Pseudo-mots : ${delta(r.pseudoPct, prec.pseudoPct, ' points')} · vitesse ${delta(r.pseudoMpm, prec.pseudoMpm, ' mots/min')}</li>
+                <li>Dictée de mots : ${delta(r.dicteeMots, prec.dicteeMots, ' points')}</li>
+            </ul>
+            <p style="font-weight:700;margin-top:8px">${decision}</p></div>`;
+    }
+    h += blocSuivi();
+    h += `<div class="btn-row"><button class="btn btn-secondary" onclick="window.print()">🖨 Imprimer</button><button class="btn btn-secondary" onclick="activerRetest();goTo(0)">↩ Quitter le re-test</button></div>`;
+    document.getElementById('resultSection').innerHTML = h;
+    setTimeout(dessinerHisto, 100);
+}
+
+// ============================================================
+//  v4.7 : SAISIE DES ERREURS EN UN GESTE
+// ============================================================
+const GESTES = {
+    conf: { badge: 'son / lettre', titre: 'Clic', texte: 's\'est trompé de son ou de lettre (b/d, t/d, on/ou…)' },
+    acote: { badge: 'à côté', titre: 'Double-clic', texte: 'a lu « à côté » : a deviné un autre mot, ou a lu le mot comme il s\'écrit (« fème » pour femme)' },
+    saute: { badge: 'sauté / mélangé', titre: 'Clic droit', texte: 'a sauté, oublié, ajouté ou mélangé des lettres ou une syllabe' }
+};
+function codeGeste(key, geste) {
+    if (geste === 'acote') return key === 'irregular' ? 'reg' : 'lex';
+    if (geste === 'saute') return 'omis';
+    return 'conf';
+}
+
+function legendeErreurs(key) {
+    const modes = Object.entries(GESTES).map(([g, v]) => `<button type="button" data-mode="${g}" class="${state.modeClic === g ? 'actif' : ''}" onclick="choisirModeClic('${g}')">${v.badge}</button>`).join(' ');
+    const complet = key === 'regular';
+    return `<div class="card" style="font-size:14px">
+        ${complet ? `<strong>Comment noter un mot raté</strong> (même règle pour les 3 listes) :
+        <ul style="margin:6px 0 8px 20px;line-height:1.7">
+            ${Object.values(GESTES).map(v => `<li><strong>${v.titre}</strong> : ${v.texte}</li>`).join('')}
+            <li>Le même geste une 2e fois <strong>annule</strong>. Pas sûr de la cause ? Un simple clic suffit.</li>
+        </ul>` : `<strong>Rappel</strong> : clic = son ou lettre · double-clic = lu « à côté » · clic droit = sauté ou mélangé · même geste = annule.`}
+        <div class="mode-clic" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px">
+            <span style="color:var(--text2)">Sur téléphone, un appui note :</span> ${modes}
+        </div>
+        <label style="display:block;margin-top:8px;color:var(--text2);font-size:13px"><input type="checkbox" onchange="document.body.classList.toggle('details-erreurs', this.checked)" ${document.body.classList.contains('details-erreurs') ? 'checked' : ''}> Afficher les types détaillés (facultatif, pour l'orthophoniste)</label>
+    </div>`;
+}
+
+function choisirModeClic(g) {
+    state.modeClic = g;
+    document.querySelectorAll('.mode-clic button').forEach(b => b.classList.toggle('actif', b.dataset.mode === g));
+}
+
+let minuterieClic = null;
+function motClic(ev, key, idx, el) {
+    if (ev.target.closest('.error-type-selector')) return;
+    if (ev.detail > 1) return;
+    clearTimeout(minuterieClic);
+    minuterieClic = setTimeout(() => marquerMot(key, idx, el, state.modeClic), 260);
+}
+function motDblClic(ev, key, idx, el) {
+    if (ev.target.closest('.error-type-selector')) return;
+    clearTimeout(minuterieClic);
+    marquerMot(key, idx, el, 'acote');
+}
+function motClicDroit(ev, key, idx, el) {
+    ev.preventDefault();
+    clearTimeout(minuterieClic);
+    marquerMot(key, idx, el, 'saute');
+}
+
+function marquerMot(key, idx, el, geste) {
+    const st = state[key + 'Errors'];
+    const code = codeGeste(key, geste);
+    if (st[idx] && st[idx].types.length === 1 && st[idx].types[0] === code) {
+        delete st[idx];
+        el.classList.remove('error');
+    } else {
+        st[idx] = { error: true, types: [code] };
+        el.classList.add('error');
+    }
+    const badge = document.getElementById('bc_' + key + '_' + idx);
+    if (badge) badge.textContent = st[idx] ? GESTES[geste].badge : '';
+    const sel = document.getElementById('et_' + key + '_' + idx);
+    if (sel) sel.querySelectorAll('button').forEach((b, i) => b.classList.toggle('selected', !!st[idx] && st[idx].types.includes(ERROR_TYPES[i].code)));
+}
+
+// ============================================================
+//  v4.7 : CONTRÔLE AUTOMATIQUE DU CONTENU (affiché dans ?banc)
+// ============================================================
+// prononciations que le moteur approché ne peut pas deviner (s final prononcé, etc.)
+const PRONONCIATION_FORCEE = { mars: 'MARS', bus: 'BYS', fils: 'FIS', ours: 'URS' };
+function codeSon(mot) {
+    const m = mot.replace(/["«»]/g, '').trim().toLowerCase();
+    return PRONONCIATION_FORCEE[m] || toApproxPhonetic(m);
+}
+function rimeDe(code) {
+    const r = code.match(/[AEIOUYÃÕĨŒ]+[^AEIOUYÃÕĨŒ]*$/);
+    return r ? r[0] : code;
+}
+function controleContenu() {
+    const alertes = [];
+    phonoQuestions.forEach((q, i) => {
+        if (!['Rime', 'Suppression', 'Fusion', 'Inversion', 'Substitution'].includes(q.cat)) return;
+        const codes = q.opts.map(codeSon);
+        codes.forEach((c, a) => codes.forEach((d, b) => {
+            if (a < b && c === d) alertes.push(`Phono ${i + 1} (${q.cat}) : « ${q.opts[a]} » et « ${q.opts[b]} » se prononcent pareil`);
+        }));
+        if (q.cat === 'Rime') {
+            const cible = (q.q.match(/« (.+?) »/) || [])[1];
+            if (cible) {
+                const r = rimeDe(codeSon(cible));
+                const justes = q.opts.filter(o => rimeDe(codeSon(o)) === r);
+                if (justes.length !== 1) alertes.push(`Phono ${i + 1} : ${justes.length} réponses riment avec « ${cible} » (${justes.join(', ')})`);
+            }
+        }
+        const bonnes = Array.isArray(q.correct) ? q.correct : [q.correct];
+        if (bonnes.some(b => b < 0 || b >= q.opts.length)) alertes.push(`Phono ${i + 1} : réponse juste hors des choix`);
+    });
+    memoryBackward.forEach(m => {
+        if (m.seq.split('-').reverse().join('-') !== m.answer) alertes.push(`Empan envers « ${m.seq} » : réponse attendue ${m.answer} fausse`);
+    });
+    [...compTexts, ...oralTexts].forEach(t => t.questions.forEach(q => {
+        if (q.correct < 0 || q.correct >= q.opts.length) alertes.push(`« ${q.q} » : réponse juste hors des choix`);
+        if (new Set(q.opts).size !== q.opts.length) alertes.push(`« ${q.q} » : deux choix identiques`);
+    }));
+    const tousMots = [...getAllWords(regularWords), ...getAllWords(irregularWords), ...getAllWords(pseudoWords)];
+    tousMots.forEach((w, i) => { if (tousMots.indexOf(w) !== i) alertes.push(`« ${w} » apparaît deux fois dans les listes`); });
+    return alertes;
+}
+
+// ============================================================
+//  v4.5 : BANC DE NON-RÉGRESSION (test_dyslexie_v4.html?banc)
+// ============================================================
+function etatBanc(p) {
+    // remet l'état à zéro puis applique un profil type
+    Object.assign(state, {
+        regularErrors: {}, irregularErrors: {}, pseudoErrors: {},
+        timers: { regular: 0, irregular: 0, pseudo: 0, ran: 0, fluence: 0 },
+        ranErrors: 0, phono: [], dicteeWords: [], dicteePhrases: [], fluenceLastWord: -1, fluenceErrors: [],
+        comprehension: [], oral: [], memForward: [], memBackward: [], memWords: [], memFwdOk: [], memBwdOk: [], memWordsOk: [],
+        eva: [], gng: null, obs: {}, classe: 'CM1', modeRetest: false,
+        attention: { parent: [], ens: [], avant12: '', sixMois: '', gene: [] }
+    });
+    const toutJuste = () => {
+        state.timers.regular = 25000; state.timers.irregular = 25000; state.timers.pseudo = 30000; state.timers.ran = 28000;
+        state.timers.fluence = 60000; state.fluenceLastWord = 104;
+        phonoQuestions.forEach((q, i) => { state.phono[i] = Array.isArray(q.correct) ? q.correct[0] : q.correct; });
+        dicteeWords.forEach((w, i) => { state.dicteeWords[i] = w.word; });
+        dicteePhrases.forEach((w, i) => { state.dicteePhrases[i] = w.text; });
+        let k = 0; compTexts.forEach(t => t.questions.forEach(q => { state.comprehension[k++] = q.correct; }));
+        k = 0; oralTexts.forEach(t => t.questions.forEach(q => { state.oral[k++] = q.correct; }));
+        memoryForward.forEach((m, i) => { state.memForward[i] = m.seq; });
+        memoryBackward.forEach((m, i) => { state.memBackward[i] = m.answer; });
+        memoryWords.forEach((m, i) => { state.memWords[i] = m.seq; });
+        evaSequences.forEach((e, i) => { state.eva[i] = e.letters; });
+    };
+    const attention = (val, ia, hi) => { const r = []; for (let i = 0; i < 18; i++) r[i] = (i < 9 ? i < ia : i - 9 < hi) ? val : 0; return r; };
+    toutJuste();
+    state.attention.parent = attention(0, 0, 0); state.attention.ens = attention(0, 0, 0);
+    state.attention.avant12 = 'oui'; state.attention.sixMois = 'oui';
+    state.gng = { omissions: 0.02, commissions: 0.12, cv: 0.2, rtMoyen: 450, rtSd: 90 };
+    const erreurs = (cle, idx, type) => idx.forEach(i => { state[cle][i] = { error: true, types: type ? [type] : [] }; });
+    if (p.includes('phono')) {
+        erreurs('pseudoErrors', [8, 9, 10, 11, 12, 13, 16, 17, 18, 19], 'phon');
+        erreurs('regularErrors', [22, 24, 26, 27, 30, 31, 32, 33, 34], 'phon');
+        state.timers.pseudo = 75000; state.timers.regular = 52000;
+        [0, 1, 5, 7, 8, 9, 11, 12, 13].forEach(i => { state.phono[i] = (phonoQuestions[i].opts.length - 1) === state.phono[i] ? 0 : phonoQuestions[i].opts.length - 1; });
+        state.dicteeWords[2] = 'prosse'; state.dicteeWords[4] = 'parmacie'; state.dicteeWords[5] = 'greunouille'; state.dicteeWords[6] = 'sinbatique';
+        state.fluenceLastWord = 55;
+    }
+    if (p.includes('surface')) {
+        erreurs('irregularErrors', [0, 1, 4, 10, 11, 12, 15, 20, 21, 23], 'reg');
+        state.timers.irregular = 50000;
+        state.dicteeWords[4] = 'farmacie'; state.dicteeWords[6] = 'sinpatique'; state.dicteeWords[7] = 'envelope'; state.dicteeWords[5] = 'grenouie';
+        state.fluenceLastWord = 72;
+    }
+    if (p.includes('lent')) {
+        state.timers.regular = 70000; state.timers.irregular = 60000; state.timers.pseudo = 80000; state.fluenceLastWord = 60; state.timers.ran = 44000;
+    }
+    if (p.includes('tdah')) {
+        state.attention.parent = attention(3, 7, 6); state.attention.ens = attention(2, 6, 5);
+        state.attention.gene = [true, true, false];
+        state.gng = { omissions: 0.16, commissions: 0.46, cv: 0.44, rtMoyen: 520, rtSd: 230 };
+        erreurs('regularErrors', [0, 3, 6], 'omis');
+        state.dicteePhrases[1] = 'Les enfants joue dans jardin.';
+        state.memBackward = ['2-6', '', '', ''];
+        [0, 1, 2, 3, 4, 5, 7, 8].forEach(i => { state.obs[i] = { distrait: true }; });
+    }
+}
+
+const BANC_DYS = [
+    // nom, profil, attentes : dys [min,max], tdah [min,max], type dominant attendu (ou null)
+    ['Enfant sans difficulté', 'normal', [0, 29], [0, 29], null],
+    ['Dyslexie phonologique', 'phono', [50, 100], [0, 29], 'phonologique'],
+    ['Dyslexie de surface', 'surface', [30, 100], [0, 29], 'surface'],
+    ['Lecture lente compensée', 'lent', [30, 100], [0, 29], 'lent'],
+    ['TDAH seul', 'tdah', [0, 49], [50, 100], null],
+    ['Dyslexie + TDAH', 'phono+tdah', [50, 100], [50, 100], 'phonologique']
+];
+
+function lancerBancDys() {
+    let ok = 0, lignes = '';
+    for (const [nom, profil, [d0, d1], [t0, t1], typeAttendu] of BANC_DYS) {
+        etatBanc(profil);
+        const s = computeScores();
+        const an = analyserCauses(s);
+        const dom = Object.entries(an.types).filter(([, v]) => v !== null).sort((a, b) => b[1] - a[1])[0];
+        const bon = an.dys >= d0 && an.dys <= d1 && an.tdah >= t0 && an.tdah <= t1 && (!typeAttendu || (dom && dom[0] === typeAttendu));
+        if (bon) ok++;
+        lignes += `<tr style="background:${bon ? '#d4edda' : '#f8d7da'}"><td>${bon ? 'OK' : 'ÉCART'}</td><td>${nom}</td><td>${d0}-${d1} / ${t0}-${t1}${typeAttendu ? ' / ' + typeAttendu : ''}</td><td>${an.dys} / ${an.tdah} / ${dom ? dom[0] + ' ' + Math.round(dom[1] * 100) : '—'}</td></tr>`;
+    }
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.id = 'banc';
+    const cc = controleContenu();
+    div.innerHTML = `<h2>🧪 Banc de non-régression : ${ok} / ${BANC_DYS.length} conformes · contrôle du contenu : ${cc.length ? cc.length + ' alerte(s)' : 'aucune alerte'}</h2>${cc.length ? '<ul>' + cc.map(x => '<li>' + x + '</li>').join('') + '</ul>' : ''}<div style="overflow-x:auto"><table style="width:100%;font-size:13px;border-collapse:collapse"><tr><th></th><th>Profil</th><th>Attendu dys / tdah / type</th><th>Obtenu</th></tr>${lignes}</table></div>`;
+    document.querySelector('.app').prepend(div);
+    document.title = 'Banc ' + ok + '/' + BANC_DYS.length + ' contenu ' + cc.length;
+    etatBanc('normal');
+}
+
+// ============================================================
 //  INIT
 // ============================================================
 init();
+if (/(^|[?&])banc/.test(location.search.slice(1))) lancerBancDys();
 </script>
 <footer class="azs-foot"><a href="mailto:eperret@azs.fr">eperret@azs.fr</a></footer>
 </body>
